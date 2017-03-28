@@ -1,7 +1,7 @@
-evac
-===
+# **evac**
 
-Ensemble Verification and Creation. An evolution of my WEM package.
+Ensemble Verification and Creation. An evolution of my WEM package. Written
+in Python 3.5.
 
 NOT TESTED YET - still refactoring WEM.
 
@@ -10,8 +10,15 @@ users in publications and presentations. There is often little incentive for
 researchers to open source their efforts, yet it is a process that needs
 to be encouraged.
 
-Where do I start?
-=================
+## Dependencies
+
+* numpy
+* matplotlib (incl. basemap)
+* netCDF4 (if using netCDF files)
+* pygrib (if using grib files)
+
+
+## Where do I start?
 
 Documentation incoming. For now, check out the READMEs and in-line
 commenting.
@@ -19,21 +26,18 @@ commenting.
 ## TO DO
 * Folder naming - should it clash with scripts within the directories?
 
-Contributors & Attributions
-===========================
+## Contributors & Attributions
 
 Some files or methods contain attributions to other programmers whose
 code has been refactored to fit this project (or is/will become a
 prerequisite). In summary, thanks to:
 
-SHARPpy
--------
+### SHARPpy
 
 * Patrick Marsh
 * John Hart
 
-HootPy/PulsatrixWx project
---------------------------
+### HootPy/PulsatrixWx project
 
 URL: http://www.atmos.washington.edu/~lmadaus/pyscripts.html
 
@@ -41,14 +45,12 @@ URL: http://www.atmos.washington.edu/~lmadaus/pyscripts.html
 * Tim Supinie
 * Luke Madaus
 
-PyWRF project (Monash)
-----------------------
+### PyWRF project (Monash)
 
 URL: http://code.google.com/p/pywrf/
 URL: https://github.com/scaine1/pyWRF/
 
-PyWRFPlot project
------------------
+### PyWRFPlot project
 
 URL: https://code.google.com/p/pywrfplot/
 

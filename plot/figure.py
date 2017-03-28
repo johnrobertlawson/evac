@@ -1,22 +1,19 @@
-"""
-All matplotlib figures are subclasses of Figure.
+"""All figures are subclasses of Figure.
 
 """
+import pdb
+import os
 
-# Imports
 import numpy as N
 import matplotlib as M
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
-import pdb
-import os
 
-# Custom imports
-import WEM.utils as utils
-import WEM.utils.reproject as reproject
+import ..utils
+import evac.utils.reproject as reproject
 from .defaults import Defaults
 
-class Figure(object):
+class Figure:
     def __init__(self,nc=False,ax=0,fig=0,plotn=(1,1),layout='normal',
                         figsize=(8,6)):
         """
@@ -26,7 +23,7 @@ class Figure(object):
         self.W = nc
         self.D = Defaults()
         self.save_figure = True
-        
+
         # Create main figure
         if ax and fig:
             self.ax = ax
@@ -162,7 +159,7 @@ class Figure(object):
                 Slim = lats.min()
                 Elim = lons.max()
                 Wlim = lons.min()
-            
+
             m = Basemap(projection=proj,
                         llcrnrlat=Slim,
                         llcrnrlon=Wlim,
