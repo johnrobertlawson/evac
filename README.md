@@ -3,6 +3,8 @@ evac
 
 Ensemble Verification and Creation. An evolution of my WEM package.
 
+NOT TESTED YET - still refactoring WEM.
+
 As a sidenote, I encourage all users of Python to cite packages and acknowledge fellow
 users in publications and presentations. There is often little incentive for
 researchers to open source their efforts, yet it is a process that needs
@@ -11,7 +13,8 @@ to be encouraged.
 Where do I start?
 =================
 
-Documentation incoming.
+Documentation incoming. For now, check out the READMEs and in-line
+commenting.
 
 ## TO DO
 * Folder naming - should it clash with scripts within the directories?
