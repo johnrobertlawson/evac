@@ -1,3 +1,10 @@
+"""
+RUC/RAP data will probably need to be cut down to fit the WRF domain
+it is compared to.
+
+This script should inherit WRFOut and override the 'get' command.
+"""
+
 import os
 import matplotlib as M
 M.use('Agg')
@@ -8,7 +15,7 @@ import pdb
 from mpl_toolkits.basemap import Basemap
 import time
 import glob
-import calendar 
+import calendar
 
 import sys
 #sys.path.append('/home/jrlawson/gitprojects/')
@@ -18,12 +25,7 @@ from .figure import Figure
 from .defaults import Defaults
 from .wrfout import WRFOut
 
-"""
-RUC/RAP data will probably need to be cut down to fit the WRF domain
-it is compared to.
 
-This script should inherit WRFOut and override the 'get' command.
-"""
 
 debug_get = 0
 
@@ -62,18 +64,18 @@ class RUC(WRFOut):
         # else:
             # self.lons1D = self.lons[:,self.lons.shape[0]/2]
         self.levels = self.get('pressure')[:].flatten()
-       
+
         self.DX, self.DY = self.get_grid_spacing()
         self.dx = self.DX
         self.dy = self.DY
- 
+
         if self.nc.variables[self.get_key('pressure')].units == 'Pa':
             self.levels = self.levels/100.0
 
         # Set dimension names, lengths.
         self.dimensions = [d for d in self.nc.dimensions]
         x,y,z = self.dimensions[:3]
-            
+
         self.x_dim = len(self.nc.dimensions[x])
         self.y_dim = len(self.nc.dimensions[y])
         self.z_dim = len(self.nc.dimensions[z])
@@ -186,7 +188,7 @@ class RUC(WRFOut):
         """
 
         RUCvrbl = self.get_key(vrbl)
-        
+
         coords = utils.check_vertical_coordinate(level)
         if level is False:
             lvidx = False
@@ -546,7 +548,7 @@ class RUC(WRFOut):
         KEYS['T2'] = {0:'TMP_252_SFC'}
         # This is specific humidity, not mixing ratio of water tut tut
         KEYS['Q2'] = {0:'SPF_H_252_HTGL'}
-        # KEYS['Q2'] = 
+        # KEYS['Q2'] =
         KEYS['pressure'] = {0:'lv_ISBL2',1:'lv_ISBL2',2:'lv_ISBL0',3:'lv_ISBL0'}
         # KEYS['T'] = {0:'TMP_252_ISBL'} I THINK TMP = DRYBULB
         KEYS['drybulb'] = {0: 'TMP_252_ISBL',1: 'TMP_P0_L100_GLC0',2:'TMP_P0_L100_GLC0',3:'TMP_P0_L100_GLC0'}

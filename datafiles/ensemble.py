@@ -1,3 +1,9 @@
+""" Ensemble of forecasts.
+
+TODO: Change from ensemble of WRFOut files to any sort of datafile.
+TODO: consistency with method names (e.g., get() )
+"""
+
 import os
 import pdb
 import datetime
@@ -20,7 +26,7 @@ Todo:
 # Dummy variable in place of proper subclass of WRFOut
 AuxWRFOut = object
 
-class Ensemble(object):
+class Ensemble:
     def __init__(self,rootdir,initutc,doms=1,ctrl='ctrl',aux=False,
         model='wrf',fmt='em_real',f_prefix=None,loadobj=True,
         ncf=False,debug=False):
@@ -230,7 +236,7 @@ class Ensemble(object):
                             dom=1):
         """
         Return probability of exceeding or reaching a threshold.
-        
+
         Arguments:
             vrbl (str,N.array): variable. If N.array, use provided data
                 (i.e. override the loading)
@@ -345,7 +351,7 @@ class Ensemble(object):
             members = (members,)
         else:
             pass
-            
+
 
         for nm,mem in enumerate(members):
             if self.debug:
@@ -410,7 +416,7 @@ class Ensemble(object):
 
         TODO:
             Logic to work out if values are for each history output
-                timestep, from the start of the simulation, from the 
+                timestep, from the start of the simulation, from the
                 start of the data file...
 
         """
@@ -492,7 +498,7 @@ class Ensemble(object):
         elif give_path:
             return arb['fpath']
         else:
-            return arb 
+            return arb
 
     def list_of_filetimes(self,arb=False,member=False,dom=1):
         """Return list of times for each data file's first time entry,
@@ -511,7 +517,7 @@ class Ensemble(object):
             raise Exception("Specify member name if not picking arbitrarily.")
         elif arb is True:
             member = self.member_names[0]
-        
+
         alltimes = sorted(list(self.members[member][dom].keys()))
         return alltimes
 
@@ -531,12 +537,12 @@ class Ensemble(object):
             hdt = DF.dt
         return hdt
 
-        
+
     def find_file_for_t(self,simutc,member,dom=1):
         """Determine file to load given required time.
 
         Raises exception if history time doesn't exist.
-        
+
         Arguments:
             utc (datetime.datetime): Desired time
             member (str): Name of member to look up. If "arb", pick
@@ -556,7 +562,7 @@ class Ensemble(object):
 
         if not ((simutc <= self.ftime) and (simutc >= self.itime)):
             raise Exception("Time outside range of data times.")
-        
+
         # Returns index of file containing data
         ftidx, tdiff = utils.closest_datetime(self.filetimes,simutc,round='beforeinc')
 

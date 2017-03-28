@@ -1,20 +1,26 @@
+""" ECMWF data in NetCDF format.
+
+TODO: make this work!
+"""
+
 import calendar
+import os
+
 from netCDF4 import Dataset
 import matplotlib.pyplot as plt
-from .defaults import Defaults
 from mpl_toolkits.basemap import Basemap
 import numpy as N
 
-import WEM.utils as utils
-import os
+import ..utils
+from .ncfile import NCFile
 
-class ECMWF:
+class ECMWF(NCFile):
     def __init__(self,fpath,config):
         self.C = config
         self.D = Defaults()
         self.ec = Dataset(fpath,'r')
         self.times = self.ecmwf_times()
-        # self.dx = 
+        # self.dx =
         # self.dy =
         self.lats = self.ec.variables['g0_lat_2'][:] #N to S
         self.lons = self.ec.variables['g0_lon_3'][:] #W to E
@@ -70,7 +76,7 @@ class ECMWF:
             data = self.get(va,lv,t)
             m, x, y = self.basemap_setup()
 
-            if 'scale' in kwargs:   
+            if 'scale' in kwargs:
                 S = kwargs['scale']
                 f1 = m.contour(x,y,data,S,colors='k')
             else:

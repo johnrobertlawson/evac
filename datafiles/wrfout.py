@@ -3,6 +3,8 @@
 Dimensions of 4D variable X are X.dimensions:
 (Time,bottom_top,south_north,west_east_stag)
 Time, levels, latitude, longitude
+
+TODO: move computation of derived variables to derive/ folder!
 """
 
 from netCDF4 import Dataset
@@ -42,7 +44,7 @@ class WRFOut(NC):
 
         """
         super().__init__(fpath)
-        
+
         self.dx = self.nc.DX
         self.dy = self.nc.DY
 
@@ -93,7 +95,7 @@ class WRFOut(NC):
         else:
             self.z_dim = len(self.nc.dimensions['bottom_top'])
             self.lvkey = 'bottom'
-        
+
         return
 
     def em_real_init(self):

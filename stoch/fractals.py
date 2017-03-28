@@ -13,7 +13,7 @@ import scipy.stats as SS
 R = 0 # Function, varying with scale t
 dR = 0 # height of pulse - rainfatll intensity increment
 rho = 3 # width of pulse - rainfall duration
-ppcen = 0 # centre of pulse according to Poisson process
+ppcen = 0 # centre of pulse according to Poisson process 
 mu = 0.025 # constant rate for Poisson process
 rhotick = 0 # random duration
 alpha = 5/3 # ?>>
@@ -109,7 +109,7 @@ def fractal_worker(size=False,high=False,rholist=False,xx=False,
 
         while rhotick < rho_i:
             rhotick = N.random.choice(rholist,p=pdf_full)
-
+       
         dR = N.random.choice((-1,1)) * rhotick**H
         # Rc = N.zeros_like(R)
         u = N.sqrt(((xx-cenx)**2)+((yy-ceny)**2))
@@ -124,7 +124,7 @@ def fractal_worker(size=False,high=False,rholist=False,xx=False,
         # R[int(centreP-hw):int(centreP+hw)] += dR
     # return R
     q.put(R)
-
+    
 
 fig8 = 1
 import time
@@ -212,7 +212,7 @@ if __name__ == '__main__':
     # R[R<0] = 1e-5
     # ISNAN = N.isnan(R)
     # R[ISNAN] = 0
-    # R = R[int(l/2):-int(l/2),int(l/2):-int(l/2))
+    # R = R[int(l/2):-int(l/2),int(l/2):-int(l/2)) 
     # xx, yy = N.mgrid[:l,:l]
     ax = axes.flat[0]
     cc = ax.pcolormesh(xx,yy,R,cmap=M.cm.Greys_r,)
@@ -254,7 +254,7 @@ dR = N.random.randint(-1,1) * A**H
 
 # best pulse shape
 LAMB = 1.2 # Radius
-radius = N.pi
+radius = N.pi 
 LAMBstar = N.sqrt(LAMB**2 - 1) # ?
 delta = 0.5*(LAMBstar + LAMB)
 sigma = 0.5*(LAMB-LAMBstar)
@@ -265,7 +265,7 @@ pulseshape = dR * N.exp(-1*((u**2/rhotick**2)-delta**2)/sigma**2)**(2*s)
 ppcens = get_poissons()
 for ppcen in ppcens:
     px, py = ppcen
-
+    
     field[px,py] = 0
 # fractal = field
 rate = field-RT
