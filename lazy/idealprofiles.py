@@ -90,7 +90,7 @@ class Profile(object):
             Drybumb, dewpoint at "mdel level 2", C
         offset_spd, offset_dir  :   int, float
             Speed and direction of background flow
-       
+
 
         """
         # if zT not in z:
@@ -104,7 +104,7 @@ class Profile(object):
             self.fdir = fdir
             self.th0 = th0
             self.thT = thT
-            self.tT = tT 
+            self.tT = tT
             self.zT = zT
             self.qv0 = qv0
             self.Us = Us
@@ -113,7 +113,7 @@ class Profile(object):
             self.offset_dir = offset_dir
             self.profile_th, self.profile_rv = self.MWtemphum()
             self.profile_u, self.profile_v = self.MWwind()
-        
+
         elif method is 'MW01':
 
             self.test_old_b = test_old_b
@@ -185,20 +185,20 @@ class Profile(object):
 
         # Buoyancy profile
         b = ((E*dz*m**2)/(H**2))*N.exp((m/H)*-dz)
-        
+
         # Set buoyancy to zero at and above tropopause
         # troposphere = N.where(z>=zT)
         # bT = copy.copy(b)
         # bT[troposphere] = 0
 
-        # Generating other arrays 
+        # Generating other arrays
         P = N.zeros_like(z,dtype=N.dtype('f8'))
         Theta = N.zeros_like(P)
         Rv = N.zeros_like(P)
         DryBulb = N.zeros_like(P)
 
         # Stats at k2
-        P[k2idx] = self.k2P        
+        P[k2idx] = self.k2P
         Rv[k2idx] = self.compute_rv(self.k2P,Td=self.k2Td)
         self.k2RH = self.compute_RH(self.k2Td,self.k2T)
         Theta[k2idx] = self.compute_theta_2(self.k2P,self.k2T)
@@ -281,10 +281,10 @@ class Profile(object):
             Theta[zidx] = self.compute_theta(self.k2the,Rv[zidx],self.k2T)
 
             # MIGHT NEED RICHARDSON CONSTRAINT
-            
+
         # Create isothermal layer above tropopause
         isotherm = DryBulb[Tidx]
-        
+
         # for zidx in range(Tidx+1,len(z)):
         # Theta = isothermC * (100000/P)**(mc.R/mc.cp)
         TRO = slice(Tidx+1,len(z))
@@ -324,7 +324,7 @@ class Profile(object):
         # Change PW
         # Substract ~8C from theta and dewpoint
         # T in C; RH in 0-100 %
-        # Td = utils.dewpoint(T,RH) 
+        # Td = utils.dewpoint(T,RH)
         # Modified RH
 
         # Extra fields for plotting skew-T
@@ -335,8 +335,8 @@ class Profile(object):
         sT.plot_profile(P/100,DRYBULB-273.15,T_D-273.15,self.fdir)
         # sT.plot_profile(pres,oldtemps,dewpoints,self.fdir,fname='skewT_oldtemps.png')
 
-        pdb.set_trace() 
-        return THETA, RV 
+        pdb.set_trace()
+        return THETA, RV
 
     def compute_std_P(self,z):
         """Compute pressure in the tropopause as a function
@@ -345,7 +345,7 @@ class Profile(object):
 
         P = 101290*((288.14-(0.00649*z))/288.08)**5.256
         return P
-    
+
     def compute_drybulb(self,theta,P):
         T = theta/((100000/P)**(mc.R/mc.cp))
         return T
@@ -386,7 +386,7 @@ class Profile(object):
         """Approximation for saturation water pressure of water.
         """
         TC = T-273.15
-        es = 6.1078*N.exp((19.8*TC)/(273+TC))    
+        es = 6.1078*N.exp((19.8*TC)/(273+TC))
         return es*100       # This is in Pa
 
     def compute_e(self,Td=None,es=None,RH=None):
@@ -496,7 +496,7 @@ class Profile(object):
         TC = T-273.15
         Lv = (2.501 - (0.00237*TC))*10**6
         return Lv
-    
+
     def compute_qs(self,es,p):
         hPa = p/100
         eshPa = es/100
@@ -605,9 +605,9 @@ class Profile(object):
     def plot_skewT(self):
         # fname = self.fname + '_skewT.png'
         # fpath = os.path.join(self.fdir,fname)
-        
+
         pass
-    
+
     def compute_Td(self,T,RH):
         TC = T-273.15
         Td = (N.log(RH)/0.073) + TC
@@ -628,7 +628,7 @@ class Profile(object):
 
     def RH_invert_RV(self,P,T,RV):
         es = self.compute_es(T)
-        
+
         P = P/100
         es = es/100
 
@@ -642,7 +642,7 @@ class Profile(object):
         H = (mc.Rd * Tv)/mc.g
         Ptop = Pbot * N.exp(-1*(dz/H))
         # pdb.set_trace()
-        return Ptop 
+        return Ptop
         # return dP
 
     def compute_T_with_LCL(self,P,PLCL,TLCL):
@@ -802,7 +802,7 @@ class Profile(object):
         stdP = N.zeros_like(z,dtype=N.dtype('f8'))
         stdP[0] = 101325
         for idx in range(1,len(stdP)):
-            dZ = z[idx] 
+            dZ = z[idx]
             mT = N.mean(stdT[:idx])
             mP = N.mean(stdT[:idx])
             stdP[idx] = stdP[0] - ((dZ*mP*mc.g)/(mc.R*mT))

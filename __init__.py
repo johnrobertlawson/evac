@@ -1,5 +1,5 @@
 import datafiles
-import derive
+import derived
 import lazy
 import plot
 import stats
