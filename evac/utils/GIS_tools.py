@@ -4,21 +4,22 @@ import calendar
 import collections
 import fnmatch
 import math
-import matplotlib as M
-import numpy as N
 import os
 import pdb
 import sys
 import time
 import glob
-import pickle as pickle
-from . import unix_tools as utils
+import pickle
 import datetime
 import heapq
 
-from . import getdata
+import matplotlib as M
+import numpy as N
 
-def decompose_wind(wspd,wdir,convert=0):
+#from . import unix_tools
+#from . import get_data
+
+def decompose_wind(wspd,wdir,convert=False):
     # Split wind speed/wind direction into u,v
     if (type(wspd) == N.array) & (type(wdir) == N.array):
         uwind = N.array([-s * N.sin(N.radians(d)) if ((s>-1)&(d>-1)) else -9999
@@ -879,7 +880,7 @@ def closest_datetime(times,t,round=False):
             idx = bidx_exc
         else:
             raise Exception("Enter valid value for round.")
-    
+
     return idx, dtss[idx]
 
 def dstack_loop(data, obj):
@@ -1035,7 +1036,7 @@ def ensure_datenum(times,fmt='int'):
         elif times[0]<3000: #4
             dntimes = convert_tuple_to_dntimes(times)
         elif isinstance(times[0],datetime.datetime):
-            dntimes = [convert_tuple_to_dntimes(datetime_to_timetuple(t)) 
+            dntimes = [convert_tuple_to_dntimes(datetime_to_timetuple(t))
                         for t in times]
         else: #2,3
             dntimes = times
@@ -1085,7 +1086,7 @@ def ensure_timetuple(times,fmt='single'):
             tttimes = [list(time.gmtime(t)) for t in times]
 
     # import pdb; pdb.set_trace()
-    
+
     if (fmt == 'list') or (len(tttimes)>1):
         return tttimes
     elif (fmt == 'single') or (len(tttimes)==1):
@@ -1163,7 +1164,7 @@ def get_netcdf_naming(model,t,dom=0):
     wrfout files don't have an extension
     other files have .nc extension (convert first)
     """
-    
+
     t = ensure_datetime(t)
     # import pdb; pdb.set_trace()
     if (model=='wrfout') or (model=='wrf'):
@@ -1259,7 +1260,7 @@ def return_subdomain(data,lats,lons,Nlim,Elim,Slim,Wlim,
     on specified limits.
     """
     # import pdb; pdb.set_trace()
-    Nidx = closest(lats,Nlim) 
+    Nidx = closest(lats,Nlim)
     Eidx = closest(lons,Elim)
     Sidx = closest(lats,Slim)
     Widx = closest(lons,Wlim)
@@ -1299,7 +1300,7 @@ def return_subdomain(data,lats,lons,Nlim,Elim,Slim,Wlim,
         # flipud for RUC data - does this break WRF?
         lats = lats[Sidx:Nidx+1]
         # lats = N.flipud(lats[Sidx:Nidx+1])
-    if Widx<Eidx: 
+    if Widx<Eidx:
         lons = lons[Widx:Eidx+1]
     else:
         lons = lons[Eidx:Widx+1]
