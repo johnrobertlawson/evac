@@ -1,10 +1,10 @@
-""" Storm reports from this website...
+""" NWS storm events from <this website>...
 
 """
 
 from .csvfile import CSVFile
 
-class StormReports(CSVFile):
+class StormEvents(CSVFile):
     def __init__(self,fpath,):
         self.r = N.genfromtxt(fpath,dtype=None,
                 names=True,delimiter=',',)#missing='',filling_values='none')

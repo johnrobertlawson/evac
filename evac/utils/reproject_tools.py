@@ -8,45 +8,58 @@ from WEM.postWRF.postWRF.wrfout import WRFOut
 from WEM.postWRF.postWRF.hrrr import HRRR
 
 class WRF_native_grid:
-    def __init__(self,fpath):
-        """Generates a basemap object for a WRF file's domain.  
+    def __init__(self,fpath,resolution='i'):
+        """Generates a basemap object for a WRF file's domain.
         """
-        W = WRFOut(fpath)
-        cen_lat = W.nc.CEN_LAT
-        cen_lon = W.nc.CEN_LON
-        tlat1 = W.nc.TRUELAT1
-        tlat2 = W.nc.TRUELAT2
-        lllon = W.lons[0,0]
-        lllat = W.lats[0,0]
-        urlon = W.lons[-1,-1]
-        urlat = W.lats[-1,-1]
-        self.m = Basemap(projection='lcc',lat_1=tlat1,lat_2=tlat2,lat_0=cen_lat,
-                            lon_0=cen_lon,llcrnrlon=lllon,llcrnrlat=lllat,
-                            urcrnrlon=urlon,urcrnrlat=urlat,resolution='i')
-        self.lons, self.lats, self.xx, self.yy = self.m.makegrid(W.lons.shape[1],W.lons.shape[0],returnxy=True)
+        # keyword arguments to basemap generation
+        self.kwargs = {'resolution':resolution}
+
+        self.load_wrfout(fpath)
+        self.load_attrs()
+        self.load_corners()
+        self.generate_basemap()
+
+    def load_wrfout(self,fpath):
+        self.W = WRFOut(fpath)
+        return
+
+    def load_attrs(self,):
+        self.kwargs['lat_0'] = self.W.nc.CEN_LAT
+        self.kwargs['lon_0'] = self.W.nc.CEN_LON
+        self.kwargs['lat_1'] = self.W.nc.TRUELAT1
+        self.kwargs['lat_2'] = self.W.nc.TRUELAT2
+
+    def load_corners(self):
+        self.kwargs['llcrnrlon'] = self.W.lons[0,0]
+        self.kwargs['llcrnrlat'] = self.W.lats[0,0]
+        self.kwargs['urcrnrlon'] = self.W.lons[-1,-1]
+        self.kwargs['urcrnrlat'] = self.W.lats[-1,-1]
+
+    def generate_basemap(self):
+        self.m = Basemap(projection='lcc',**self.kwargs)
+        self.lons, self.lats, self.xx, self.yy = self.m.makegrid(
+                        self.W.lons.shape[1],self.W.lons.shape[0],returnxy=True)
 
 class HRRR_native_grid(WRF_native_grid):
     """AS WRF_native_grid, but with some info about operational HRRR.
     """
     def __init__(self,fpath):
-        W = HRRR(fpath)
-        cen_lat = 38.5
-        cen_lon = -97.5
-        tlat1 = 38.5
-        tlat2 = 38.5
-        # lllon = -105.43488 # [0,0]
-        lllon = W.lons[0,0]
-        #lllat = 35.835026 # [0,0]
-        lllat = W.lats[0,0]
-        #urlon = -96.506653 # [-1,-1]
-        urlon = W.lons[-1,-1]
-        #urlat = 42.708714 # [-1,-1]
-        urlat = W.lats[-1,-1]
-        self.m = Basemap(projection='lcc',lat_1=tlat1,lat_2=tlat2,lat_0=cen_lat,
-                            lon_0=cen_lon,llcrnrlon=lllon,llcrnrlat=lllat,
-                            urcrnrlon=urlon,urcrnrlat=urlat,resolution='i')
-        self.lons, self.lats, self.xx, self.yy = self.m.makegrid(W.lons.shape[1],W.lons.shape[0],returnxy=True)
-        # return m, lons, lats, xx[0,:], yy[:,0]
+        super(HRRR_native_grid,self).__init__(fpath)
+
+    def load_wrfout(self,fpath):
+        """Over-riden from parent.
+        """
+        self.W = HRRR(fpath)
+
+    def load_attrs(self,):
+        """Over-riden from parent.
+
+        TODO: get rid of this and just load from HRRR object.
+        """
+        self.kwargs['lat_0'] = 38.5
+        self.kwargs['lon_0'] = -97.5
+        self.kwargs['lat_1'] = 38.5
+        self.kwargs['lat_2'] = 38.5
 
 
 def create_new_grid(Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
@@ -73,7 +86,7 @@ def create_new_grid(Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
         m = Basemap(projection='lcc',lat_1=tlat1,lat_2=tlat2,lat_0=cen_lat,
                             lon_0=cen_lon,llcrnrlon=lllon,llcrnrlat=lllat,
                             urcrnrlon=urlon,urcrnrlat=urlat,resolution='i')
-        
+
     lons, lats, xx, yy = m.makegrid(nx,ny,returnxy=True)
     return m, lons, lats, xx[0,:], yy[:,0]
 
@@ -107,4 +120,3 @@ def reproject(data_orig,xx_orig=False,yy_orig=False,lats_orig=False,lons_orig=Fa
     data_new = griddata((xx_orig.flatten(),yy_orig.flatten()),data_orig.flatten(),
                         (mx.flatten(),my.flatten())).reshape(xx_new_dim,yy_new_dim)
     return data_new
-

@@ -15,7 +15,7 @@ import evac.utils.unix_tools as unix_tools
 import evac.utils.gis_tools as gis_tools
 
 class Figure:
-    def __init__(self,nc=None,ax=None,fig=None,layout='normal',
+    def __init__(self,ax=None,fig=None,layout='normal',
                     mplargs=[],mplkwargs={},use_defaults=False):
         """ Parent class for creating a figure in matplotlib.
 
@@ -23,7 +23,6 @@ class Figure:
             (No mandatory)
 
         Optional:
-            nc                  :   WRFOut class to attach to figure. May deprecate soon.
             ax                  :   matplotlib.axes instance to plot to
             fig                 :   matplotlib.figure instance to plot to
             layout (str)        :   if "insetv" or "inseth", uses GridSpec to create subplots
@@ -35,8 +34,6 @@ class Figure:
         """
 
         self.D = Defaults()
-        if nc is not None:
-            self.W = nc
         self.save_figure = True
 
         # Create main figure
@@ -95,16 +92,15 @@ class Figure:
         fname = self.enforce_png_ext(fname)
         unix_tools.trycreate(outpath)
         fpath = os.path.join(outpath,fname)
-        #self.fig.savefig(fpath)
         if tight:
             self.fig.tight_layout()
         self.fig.savefig(fpath,bbox_inches='tight')
         print(("Saving figure {0}".format(fpath)))
         plt.close(self.fig)
 
-    def add_colorbar(self,datacb):
-        self.fig.colorbar(datacb)
-        return
+#    def add_colorbar(self,datacb):
+#        self.fig.colorbar(datacb)
+#        return
 
     def just_one_colorbar(self,fpath,fname,cf,label=False,tix=False):
         try:
@@ -154,12 +150,15 @@ class Figure:
                         Nlim=False,Elim=False,Slim=False,Wlim=False,
                         drawcounties=False):
         """
+        TODO:
+        Merge with above method.
         Needs rewriting to include limited domains based on lats/lons.
         Currently, assuming whole domain is plotted.
         """
 
         # Fetch settings
-        basemap_res = self.D.basemap_res
+        if self.use_defaults:
+            basemap_res = self.D.basemap_res
 
         if proj=='lcc':
             width_m = self.W.dx*(self.W.x_dim-1)
@@ -170,6 +169,7 @@ class Figure:
                 lon_0=self.W.cen_lon,lat_0=self.W.cen_lat,lat_1=self.W.truelat1,
                 lat_2=self.W.truelat2,resolution=basemap_res,area_thresh=500,
                 ax=self.ax)
+
         elif proj=='merc':
             if self.W and not Nlim and not isinstance(lats,N.ndarray):
                 Nlim,Elim,Slim,Wlim = self.W.get_limits()

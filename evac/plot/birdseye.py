@@ -3,6 +3,9 @@ Top-down 2D plots, which are so common in meteorology
 that they get their own file here.
 
 Subclass of Figure.
+
+TODO: multiple plots on same figure - like a 'hold' - maybe by
+using set and get decorators. Or stopping save/close.
 """
 
 import pdb
@@ -15,86 +18,30 @@ import collections
 import os
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from .wrfout import WRFOut
-from .defaults import Defaults
-from .figure import Figure
-import WEM.utils as utils
-from .scales import Scales
-from . import stats
+from evac.datafiles.wrfout import WRFOut
+from evac.utils.defaults import Defaults
+from evac.plot.figure import Figure
+import WEM.utils.gis_tools as gis_tools
+from evac.plot.scales import Scales
+import evac.stats as stats
 
 class BirdsEye(Figure):
-    def __init__(self,nc=False,ax=0,fig=0,ideal=False):
-        super(BirdsEye,self).__init__(nc=nc,ax=ax,fig=fig)
+    def __init__(self,ax=None,fig=None,ideal=False,
+                 mplargs=[],mplkwargs={}):
+        """ Setting ideal to True removes the geography (e.g. for idealised
+        plots)
+        """
+        super(BirdsEye,self).__init__(ax=ax,fig=fig,mplargs=mplargs,
+                                      mplkwargs=mplkwargs)
         self.ideal = ideal
 
-    def get_plot_arguments(self,cmap=False,clvs=False,color=False,
-            ideal=False,alpha=1.0):
-        """
-        Returns colourmap and contouring levels
-
-        Options keyword arguments:
-        clvs    :   manually override contour levels
-        """
-        # import pdb; pdb.set_trace()
-        # data = self.data.reshape((self.la_n,self.lo_n))
-        data = self.data
-
-        # List of args and dictionary of kwargs
-        plotargs = [self.x,self.y,data]
-        plotkwargs = {}
-
-        # if self.mplcommand == 'contour':
-            # multiplier = S.get_multiplier(vrbl,lv)
-        if clvs is not False:
-            plotkwargs['levels'] = clvs
-
-        if cmap is not False:
-            # cmap = eval('M.cm.{0}'.format(cmap))
-            plotkwargs['cmap'] = cmap
-
-        plotkwargs['alpha'] = alpha
-        return plotargs, plotkwargs
-
-    def axes_of_dilatation(self,xdata,ydata,fname,outdir,
-                    lats=False,lons=False,smooth=False, locations=False,
-                    x=False,y=False,m=False,
-                    Nlim=False,Elim=False,Slim=False,Wlim=False):
-
-        if x is False and y is False and m is False:
-            if not Nlim:
-                self.bmap,self.x,self.y = self.basemap_setup(smooth=smooth,lats=lats,
-                                                    lons=lons,)#ax=self.ax)
-            else:
-                self.bmap,self.x,self.y = self.basemap_setup(smooth=smooth,lats=lats,
-                                                    lons=lons,Nlim=Nlim,Elim=Elim,
-                                                    Slim=Slim,Wlim=Wlim)
-
-        else:
-            self.bmap = m
-            self.x = x
-            self.y = y
-
-        # self.la_n = self.data.shape[-2]
-        # self.lo_n = self.data.shape[-1]
-        # import pdb; pdb.set_trace()
-        # b = 10
-        # self.bmap.quiver(self.x[::b],self.y[::b],xdata[::b,::b],ydata[::b,::b],headwidth=0, units='xy',scale=10)
-        self.bmap.streamplot(self.x,self.y,xdata,ydata)
-        # m.streamplot(x[self.W.x_dim/2,:],y[:,self.W.y_dim/2],U,V,
-                        # density=1.8,linewidth=lw,color='k',arrowsize=3)
-    
-        self.save(outdir,fname)
-        plt.close(self.fig)
-
-    # Old plot_data
     def plot2D(self,data,fname,outdir,plottype='contourf',
                     save=True,smooth=1,lats=False,lons=False,
                     clvs=False,cmap=False,title=False,cb=True,
                     locations=False,m=False,x=False,y=False,
                     Nlim=False,Elim=False,Slim=False,Wlim=False,
-                    color='k',inline=False,lw=False,extend=False,
-                    cblabel=False,ideal=False,alpha=1.0,return_basemap=False,
-                    drawcounties=False):
+                    color='k',inline=False,cblabel=False,ideal=False,
+                    drawcounties=False,mplargs=[],mplkwargs={}):
 
         """
         Generic method that plots any matrix of data on a map
@@ -117,7 +64,6 @@ class BirdsEye(Figure):
         """
         # INITIALISE
         self.data = data
-        # pdb.set_trace()
         if self.ideal:
             ideal = True
         if ideal:
@@ -126,6 +72,7 @@ class BirdsEye(Figure):
             self.y = N.arange(len(data[:,0]))
             self.x = N.arange(len(data[0,:]))
 
+        # Can all this be moved into Figure() or whatever?
         elif x is False and y is False:
             if m is False:
                 if not Nlim:
@@ -144,20 +91,13 @@ class BirdsEye(Figure):
             self.x = x
             self.y = y
 
-        # pdb.set_trace()
-        # self.la_n = self.data.shape[-2]
-        # self.lo_n = self.data.shape[-1]
+        mplargs = [self.x,self.y,self.data,] + mplargs
 
-        plotargs, plotkwargs = self.get_plot_arguments(clvs=clvs,cmap=cmap,color=color,
-                                alpha=alpha,ideal=ideal)
-
-        # import pdb; pdb.set_trace()
+        # TODO: move this logic to other methods
         if plottype == 'contour':
-            plotkwargs['colors'] = color
-            plotkwargs['inline'] = inline
-            if lw:
-                plotkwargs['lw'] = lw
-            f1 = self.bmap.contour(*plotargs,**plotkwargs)
+            mplkwargs['colors'] = color
+            mplkwargs['inline'] = inline
+            f1 = self.bmap.contour(*mplargs,**mplkwargs)
             if inline:
                 plt.clabel(f1,inline=True,fmt='%d',color='black',fontsize=9)
         elif plottype == 'contourf':
@@ -171,7 +111,7 @@ class BirdsEye(Figure):
         elif plottype == 'scatter':
             f1 = self.bmap.scatter(*plotargs,**plotkwargs)
         # elif plottype == 'quiver':
-            # f1 = self.bmap.quiver(*plotargs,**plotkwargs) 
+            # f1 = self.bmap.quiver(*plotargs,**plotkwargs)
         else:
             print("Specify correct plot type.")
             raise Exception
@@ -179,19 +119,9 @@ class BirdsEye(Figure):
         if ideal:
             self.ax.set_aspect('equal')
         if isinstance(locations,dict):
-            for k,v in locations.items():
-                if isinstance(v,tuple) and len(v) == 2:
-                    xpt, ypt = self.bmap(v[1],v[0])
-                    # bbox_style = {'boxstyle':'square','fc':'white','alpha':0.5}
-                    self.bmap.plot(xpt,ypt,'ko',markersize=3,zorder=100)
-                    self.ax.text(xpt,ypt,k,ha='left',fontsize=7)
-                    # self.ax.text(xpt-15000,ypt,k,bbox=bbox_style,ha='left',fontsize=7)
-                else:
-                    print("Not a valid location argument.")
-                    raise Exception
-
+            self.plot_locations(locations)
         if isinstance(title,str):
-            plt.title(title)
+            self.ax.set_title(title)
         if cb != False:
             if cb==True:
                 cb1 = plt.colorbar(f1,orientation='vertical',ax=self.ax)
@@ -211,11 +141,28 @@ class BirdsEye(Figure):
         if save:
             self.save(outdir,fname)
         plt.close(self.fig)
-        # pdb.set_trace()
-        if return_basemap:
-            return self.bmap
-        else:
-            return f1
+
+    def plot_locations(self,locations):
+        for k,v in locations.items():
+            if isinstance(v,tuple) and len(v) == 2:
+                    xpt, ypt = self.bmap(v[1],v[0])
+                    # bbox_style = {'boxstyle':'square','fc':'white','alpha':0.5}
+                    self.bmap.plot(xpt,ypt,'ko',markersize=3,zorder=100)
+                    self.ax.text(xpt,ypt,k,ha='left',fontsize=7)
+                    # self.ax.text(xpt-15000,ypt,k,bbox=bbox_style,ha='left',fontsize=7)
+                else:
+                    print("Not a valid location argument.")
+                    raise Exception
+        return
+
+    def do_contour_plot(self):
+        pass
+
+    def do_contourf_plot(self):
+        pass
+
+    def do_pcolormesh_plot(self):
+        pass
 
     def plot_streamlines(self,U,V,outdir,fname,lats=False,lons=False,smooth=1,
                             title=False,lw_speed=False,density=1.8,ideal=False):
