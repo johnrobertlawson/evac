@@ -19,37 +19,77 @@ import numpy as N
 #from . import unix_tools
 #from . import get_data
 
-def decompose_wind(wspd,wdir,convert=False):
-    # Split wind speed/wind direction into u,v
-    if (type(wspd) == N.array) & (type(wdir) == N.array):
-        uwind = N.array([-s * N.sin(N.radians(d)) if ((s>-1)&(d>-1)) else -9999
-                    for s,d in zip(wspd,wdir)])
-        vwind = N.array([-s * N.cos(N.radians(d)) if ((s>-1)&(d>-1)) else -9999
-                    for s,d in zip(wspd,wdir)])
-    else:
-        uwind = -wspd * N.sin(N.radians(wdir))
-        vwind = -wspd * N.cos(N.radians(wdir))
-    if convert == 'ms_kt':
-        uwind *= 1.94384449
-        vwind *= 1.94384449
-    elif convert == 'ms_mph':
-        uwind *= 2.23694
-        vwind *= 2.23694
-    elif convert == 'kt_ms':
-        uwind *= 0.51444444
-        vwind *= 0.51444444
-    else:
-        pass
-    return uwind, vwind
+def decompose_wind(wspd,wdir,wdir_fmt='deg'):
+    """
+    Turn a wind speed and direction into u and v components.
 
+    Uses meteorological convention - so a westerly wind is 270.
+
+    TODO: Add option to use bearings (westerly wind is 90) or mathematical
+    (i.e., zero begins at 3 o'clock)
+
+    Arguments:
+        wspd        :   Wind speed. Can be float, integer, or N.ndarray
+        wdir        :   Wind direction. Can be float, integer, or N.ndarray.
+    Optional:
+        wdir_fmt    :   wdir is degrees by default ('deg'). Use 'rad' to use radians.
+    """
+    #if (type(wspd) == N.array) & (type(wdir) == N.array):
+    #    uwind = N.array([-s * N.sin(N.radians(d)) if ((s>-1)&(d>-1)) else -9999
+    #                for s,d in zip(wspd,wdir)])
+    #    vwind = N.array([-s * N.cos(N.radians(d)) if ((s>-1)&(d>-1)) else -9999
+    #                for s,d in zip(wspd,wdir)])
+    #else:
+
+    if wdir_fmt == 'deg':
+        wdir = N.radians(wdir)
+    elif wdir_fmt == 'rad':
+        pass
+    else:
+        raise Exception("Choose 'deg' or 'rad' for wdir_fmt.")
+        
+    u = -wspd * N.sin(wdir)
+    v = -wspd * N.cos(wdir)
+
+    return u,v
+
+def convert_velocity_units(V,conversion):
+    """
+    Convert a velocity from one unit to another.
+    Arguments:
+        V       :   a number (int, float, array)
+        convert :   'ms_kt' converts the output from m/s to knots.
+                    'ms_mph' converts from m/s to mph.
+                    'kt_ms' converts from knots to m/s.
+                    'kt_mph' converts from knots to mph.
+                    'mph_kt' converts from mph to knots.
+                    'mph_ms' converts from mph to m/s.
+    TODO: add km/h
+    """
+    if conversion == 'ms_kt':
+        factor = 1.94384449
+    elif conversion == 'ms_mph':
+        factor = 2.23694
+    elif conversion == 'kt_ms':
+        factor = 0.51444444
+    elif conversion == 'kt_mph':
+        factor = 1.15078
+    elif conversion == 'mph_ms':
+        factor = 0.44704
+    elif conversion == 'mph_kt':
+        factor = 0.868976
+    elif conversion in (False,None):
+        factor = 1.0
+    else:
+        raise Exception("Conversion argument {} is not recognised.".format(
+                        conversion))
+    
+    return V * factor
+    
 def combine_wind_components(u,v):
-    wdir = N.degrees(N.arctan2(u,v)) + 180
+    wdir = N.degrees(N.arctan2(u,v)) + 180.0
     wspd = N.sqrt(u**2 + v**2)
     return wspd, wdir
-
-def convert_kt2ms(wspd):
-    wspd_ms = wspd*0.51444
-    return wspd_ms
 
 def dewpoint(T,RH): # Lawrence 2005 BAMS?
     #T in C

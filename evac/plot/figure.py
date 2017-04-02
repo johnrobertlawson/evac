@@ -9,23 +9,38 @@ import matplotlib as M
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 
-import ..utils
+from evac.utils.defaults import Defaults
 import evac.utils.reproject as reproject
-from .defaults import Defaults
+import evac.utils.unix_tools as unix_tools
+import evac.utils.gis_tools as gis_tools
 
 class Figure:
-    def __init__(self,nc=False,ax=0,fig=0,plotn=(1,1),layout='normal',
-                        figsize=(8,6)):
+    def __init__(self,nc=None,ax=None,fig=None,layout='normal',
+                    mplargs=[],mplkwargs={},use_defaults=False):
+        """ Parent class for creating a figure in matplotlib.
+
+        Arguments:
+            (No mandatory)
+
+        Optional:
+            nc                  :   WRFOut class to attach to figure. May deprecate soon.
+            ax                  :   matplotlib.axes instance to plot to
+            fig                 :   matplotlib.figure instance to plot to
+            layout (str)        :   if "insetv" or "inseth", uses GridSpec to create subplots
+                                    of different sizes.
+            mplargs (tuple,list):   other arguments to pass to matplotlib figure creation
+            mplkwargs (dict)    :   other keyword arguments to pass to matplotlib
+            use_defaults (bool) :   whether to load Defaults class. Set to be False
+                                    if e.g. using your own matplotlibrc.
         """
-        C   :   configuration settings
-        W   :   data
-        """
-        self.W = nc
+
         self.D = Defaults()
+        if nc is not None:
+            self.W = nc
         self.save_figure = True
 
         # Create main figure
-        if ax and fig:
+        if ax is not None and fig is not None:
             self.ax = ax
             self.fig = fig
             self.save_figure = False
@@ -40,41 +55,45 @@ class Figure:
             self.ax0 = plt.subplot(self.gs[0])
             self.ax1 = plt.subplot(self.gs[1])
         else:
-            self.fig, self.ax = plt.subplots(nrows=plotn[0],ncols=plotn[1],figsize=figsize)
-        self.fig.set_dpi(self.D.dpi)
-        # self.ax = self.fig.add_subplot(111)
+            self.fig, self.ax = plt.subplots(*mplargs,**mplkwargs)
 
-    def create_fname(self,*naming):
-        """Default naming should be:
-        Variable + time + level
+        if self.use_defaults:
+            self.fig.set_dpi(self.D.dpi)
+
+    def create_fname(self,*naming,joiner='_',append_ext=True):
+        """Creates file name from list of arguments.
+
+        Optional:
+            append_ext (bool)   :   If True, add .png extension
         """
-        fname = '_'.join([str(a) for a in naming])
-        #pdb.set_trace()
+        fname = joiner.join([str(a) for a in naming])
+        if append_ext:
+            fname = self.enforce_png_ext(fname)
         return fname
 
-    def title_time(self):
-        self.T = utils.padded_times(self.timeseq)
-        pdb.set_trace()
+    def enforce_png_ext(self,fname):
+        """Make sure file name or path ends with png.
+        """
+        if not fname.endswith('.png'):
+            fname = fname + '.png'
+        return fname
 
-    def figsize(self,defwidth,defheight,fig):
-        width = getattr(self.C,'width',defwidth)
-        height = getattr(self.C,'height',defheight)
+    def get_title_time(self,t):
+        """Create pretty formatted date/time.
+        """
+        return utils.padded_times(t)
+
+    def set_figsize(self,width,height,fig):
         fig.set_size_inches(width,height)
-        return fig
+        return
 
     def get_meshgrid_coords(self):
         self.mx,self.my = N.meshgrid(self.xx,self.yy)
         return
 
     def save(self,outpath,fname,tight=True):
-        # if self.save_figure:
-        # fig.tight_layout()
-        if fname[-4:] == '.png':
-            pass
-        else:
-            fname = fname + '.png'
-
-        utils.trycreate(outpath)
+        fname = self.enforce_png_ext(fname)
+        unix_tools.trycreate(outpath)
         fpath = os.path.join(outpath,fname)
         #self.fig.savefig(fpath)
         if tight:
