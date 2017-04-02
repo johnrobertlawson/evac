@@ -1,9 +1,17 @@
 # **evac**
 
 Ensemble Verification and Creation. An evolution of my WEM package. Written
-in Python 3.5.
+and tested in Python 3.5.x on various Linux distros and Mac OS, using only
+the Anaconda distributions of Python 3.
 
-NOT TESTED YET - still refactoring WEM.
+**NOT FULLY TESTED YET - still refactoring WEM.**
+
+If you're a slave to Python 2.x, it's easy to create a new Anaconda environment in
+Python 3.x (replace `yourcustomname` with the name of the new environment). 
+
+`conda create -n yourcustomname python=3.5`
+
+It's important to use no higher than 3.5, as pygrib will not work with 3.6 via conda install.
 
 As a sidenote, I encourage all users of Python to cite packages and acknowledge fellow
 users in publications and presentations. There is often little incentive for
@@ -12,11 +20,16 @@ to be encouraged.
 
 ## Dependencies
 
-* numpy
-* matplotlib (incl. basemap)
-* netCDF4 (if using netCDF files)
-* pygrib (if using grib files)
+Thanks to weirdness with pygrib, it is recommended you install the following in this order with this command:
 
+`conda install -c conda-forge <package>`
+
+* pygrib 
+* netCDF4
+* numpy
+* scipy
+* matplotlib
+* basemap
 
 ## Where do I start?
 
