@@ -196,68 +196,11 @@ def csvprocess(data,names,convert=0):
 
     return D
 
-# WRF terrain in height above sea level
-def WRFterrain(fileselection='control',dom=1):
-    if fileselection=='nouintah':
-        fname = '/uufs/chpc.utah.edu/common/home/horel-group/lawson/wrfout/1/NAM/2011112906_nouintah/wrfout_d0'+str(dom)+'_2011-11-29_06:00:00'
-    elif fileselection=='withuintah':
-        fname = '/uufs/chpc.utah.edu/common/home/horel-group/lawson/wrfout/1/NAM/2011112906_withuintah/wrfout_d0'+str(dom)+'_2011-11-29_06:00:00'
-    else:
-        fname = '/uufs/chpc.utah.edu/common/home/horel-group/lawson/WRFV3/test/em_real/wrfout_1.3_wasatch/wrfout_d0'+str(dom)+'_2011-12-01_00:00:00'
-    nc = Dataset(fname,'r')
-    terrain = nc.variables['HGT'][0,:,:]
-    xlong = nc.variables['XLONG'][0]
-    xlat = nc.variables['XLAT'][0]
-    return terrain, xlong, xlat
-
-# WRF terrain in pressure coords...from first time stamp (won't vary THAT much for a tropospheric plot!)
-# SLICE keyword, when true, gives 1-D vector through middle of square.
-
-def WRFterrain_P(fileselection='control',dom=1,slice=0):
-    if fileselection=='nouintah':
-        fname = '/uufs/chpc.utah.edu/common/home/horel-group/lawson/wrfout/1/NAM/2011112906_nouintah/wrfout_d0'+str(dom)+'_2011-11-29_06:00:00'
-    elif fileselection=='withuintah':
-        fname = '/uufs/chpc.utah.edu/common/home/horel-group/lawson/wrfout/1/NAM/2011112906_withuintah/wrfout_d0'+str(dom)+'_2011-11-29_06:00:00'
-    else:
-        fname = '/uufs/chpc.utah.edu/common/home/horel-group/lawson/WRFV3/test/em_real/wrfout_1.3_wasatch/wrfout_d0'+str(dom)+'_2011-12-01_00:00:00'
-    nc = Dataset(fname,'r')
-    terrain = nc.variables['PSFC'][0,:,:]
-    xlong = nc.variables['XLONG'][0]
-    xlat = nc.variables['XLAT'][0]
-    if slice==1:
-        Nx = nc.getncattr('WEST-EAST_GRID_DIMENSION')-1
-        Ny = nc.getncattr('SOUTH-NORTH_GRID_DIMENSION')-1
-        xlong = xlong[Ny/2,:]
-        xlat = xlat[:,Nx/2]
-    return terrain, xlong, xlat
 
 # Constants
+# TO DO: Move this to constants file
 rE = 6378100 # radius of Earth in metres
 
-# Settings
-# plt.rc('text',usetex=True)
-# fonts = {'family':'Computer Modern','size':16}
-# plt.rc('font',**fonts)
-# height, width = (9,17)
-
-# outdir = '/uufs/chpc.utah.edu/common/home/u0737349/public_html/thesis/topoxs/'
-
-# Functions
-# First, if topography data is not in memory, load it
-# try:
-    # dataloaded
-# except NameError:
-    # topodata, lats, lons = gridded_data.gettopo()
-    # dataloaded = 1
-
-def get_map(Nlim,Elim,Slim,Wlim):
-    ymax,xmax = gridded_data.getXY(lats,lons,Nlim,Elim) #Here, x is lat, y is lon
-    ymin,xmin = gridded_data.getXY(lats,lons,Slim,Wlim) # Not sure why!
-    terrain = topodata[xmin:xmax,ymin:ymax]
-    xlat = lats[xmin:xmax]
-    xlon = lons[ymin:ymax]
-    #pdb.set_trace()
-    return terrain,xlat,xlon
 
 def get_cross_section(Alat, Alon, Blat, Blon):
     # Now find cross-sections
@@ -287,71 +230,8 @@ def get_cross_section(Alat, Alon, Blat, Blon):
     plt.savefig(outdir+fname,bbox_inches='tight',pad_inches=0.3)
     plt.clf()
 
-# datestring needs to be format yyyymmddhh
-def wrf_nc_load(dom,var,ncfolder,datestr,thin,Nlim=0,Elim=0,Slim=0,Wlim=0):
-    datestr2 = datestr[0:4]+'-'+datestr[4:6]+'-'+datestr[6:8]+'_'+datestr[8:10]+':00:00'
-    fname = ncfolder+'wrfout_'+dom+'_'+datestr2
-    try:
-        nc = Dataset(fname,'r')
-    except RuntimeError:
-        fname += '.nc'
-    finally:
-        nc = Dataset(fname,'r')
-    # Load in variables here - customise or automate perhaps?
-    u10 = nc.variables['U10']
-    v10 = nc.variables['V10']
-    terrain = nc.variables['HGT'][0,:,:]
-    times = nc.variables['Times']
 
-    ### PROCESSING
-    # x_dim and y_dim are the x and y dimensions of the model
-    # domain in gridpoints
-    x_dim = len(nc.dimensions['west_east'])
-    y_dim = len(nc.dimensions['south_north'])
-
-    # Get the grid spacing
-    dx = float(nc.DX)
-    dy = float(nc.DY)
-
-    width_meters = dx * (x_dim - 1)
-    height_meters = dy * (y_dim - 1)
-
-    cen_lat = float(nc.CEN_LAT)
-    cen_lon = float(nc.CEN_LON)
-    truelat1 = float(nc.TRUELAT1)
-    truelat2 = float(nc.TRUELAT2)
-    standlon = float(nc.STAND_LON)
-
-    # Draw the base map behind it with the lats and
-    # lons calculated earlier
-
-    if Nlim:
-        m = Basemap(projection='lcc',lon_0=cen_lon,lat_0=cen_lat,
-                    llcrnrlat=Slim,urcrnrlat=Nlim,llcrnrlon=Wlim,
-                    urcrnrlon=Elim,rsphere=6371200.,resolution='h',
-                    area_thresh=100)
-    else:
-        m = Basemap(resolution='i',projection='lcc',
-            width=width_meters,height=height_meters,
-            lat_0=cen_lat,lon_0=cen_lon,lat_1=truelat1,
-            lat_2=truelat2)
-    xlong = nc.variables['XLONG'][0]
-    xlat = nc.variables['XLAT'][0]
-    #xlong = xlongtot[N.where((xlongtot < Elim) & (xlongtot > Wlim))]
-    #xlat = xlattot[N.where((xlattot < Nlim) & (xlattot > Slim))]
-    #x,y = m(nc.variables['XLONG'][0],nc.variables['XLAT'][0])
-    #px,py = m(xlongtot,xlattot)
-    #x,y = N.meshgrid(px,py)
-    x,y = m(xlong,xlat)
-    # This sets a thinned out grid point structure for plotting
-    # wind barbs at the interval specified in "thin"
-    #x_th,y_th = m(nc.variables['XLONG'][0,::thin,::thin],\
-    #        nc.variables['XLAT'][0,::thin,::thin])
-    x_th, y_th = m(xlong[::thin, ::thin],xlat[::thin,::thin])
-    data = (times,terrain,u10,v10)
-    return m, x, y, x_th, y_th, data, nc
-
-def mkloop(dom='d03',fpath='./'):
+def generate_image_loop(dom='d03',fpath='./'):
     print("Creating a pretty loop...")
     os.system('convert -delay 50 '+fpath+dom+'*.png > -loop '+fpath+dom+'_windloop.gif')
     print("Finished!")
