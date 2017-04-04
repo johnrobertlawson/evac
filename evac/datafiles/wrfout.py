@@ -36,18 +36,21 @@ class WRFOut(NC):
         Initialisation fetches and computes basic user-friendly
         variables that are most often accessed.
 
-        :param fpath:   absolute path to netCDF4 (wrfout) file
-        :type fpath:    str
-
-        ncks (bool): whether WRFOut file has been stripped to a few variables.
-                        Hence check for KeyErrors for variables
+        Args:
+            fpath    :    absolute path to netCDF4 (wrfout) file
+            fmt (str,optional)      : em_real or ideal or met_em
+            ncks (bool,optional)    : whether WRFOut file has been stripped to a few variables.
+                                        Hence check for KeyErrors for variables
 
         """
         super().__init__(fpath)
 
+        self.fmt = fmt
+        self.fpath = fpath
+        self.ncks = ncks
+        
         self.dx = self.nc.DX
         self.dy = self.nc.DY
-
         self.get_dimensions(fmt)
 
         # if ncks:
@@ -57,11 +60,12 @@ class WRFOut(NC):
             self.wrf_times = N.arange(self.t_dim)
         else:
             # Get times in nicer format
-            self.utc = self.wrftime_to_datenum()
-            if len(self.utc) == 1:
+            self.utcs = self.wrftime_to_datenum()
+            if len(self.utcs) == 1:
                 self.dt = None
             else:
-                self.dt = self.utc[1]-self.utc[0]
+                self.dt = self.utcs[1]-self.utcs[0]
+                # Assuming constant time steps!
 
         if (ncks is False) and (fmt is 'em_real'):
             self.P_top = self.nc.variables['P_TOP'][0]
@@ -99,6 +103,15 @@ class WRFOut(NC):
         return
 
     def em_real_init(self):
+        """
+        Grab the 2D arrays of the wrfout file.
+        
+        self.lats and self.lons represent the 2D arrays.
+        
+        self.lats1D and self.lons1D represent the 1D arrays intersecting
+        the middle of the domain. They shouldn't be used for plotting.
+        
+        """
         self.lats = self.nc.variables['XLAT'][0,...] # Might fail if only one time?
         self.lons = self.nc.variables['XLONG'][0,...]
 
@@ -115,9 +128,9 @@ class WRFOut(NC):
         pass
 
 
-    def wrftime_to_datenum(self):
+    def wrftime_to_datenum(self,fmt='timegm'):
         """
-        Convert wrf's weird Times variable to datenum time.
+        Convert wrf's weird Times variable to datenum or datetime.
 
         """
         times = self.wrf_times
@@ -133,17 +146,21 @@ class WRFOut(NC):
             mins = int(tstr[14:16])
             sec = int(tstr[17:19])
 
-            wrf_times_epoch[n] = calendar.timegm([yr,mth,day,hr,mins,sec])
-
+            if fmt == 'timegm':
+                wrf_times_epoch[n] = calendar.timegm([yr,mth,day,hr,mins,sec])
+            elif fmt == 'datetime':
+                wrf_time_epoch[n] = datetime.datetime(yr,mth,day,hr,mins,sec)
         return wrf_times_epoch
 
 
-    def get_time_idx(self,utc):
-
+    def get_time_idx(self,utcs):
         """
-        :param utc:     time
-        :type utc:      tuple,list,int
-        :returns tidx:  int -- closest index to desired time
+        Get closest index to desired time
+        
+        Args:
+            utcs (list,tuple, int)    :    times
+        Returns:
+            tidx (int): closest index to desired time
 
         """
         # import pdb; pdb.set_trace()
