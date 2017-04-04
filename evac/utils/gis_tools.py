@@ -20,8 +20,7 @@ import numpy as N
 #from . import get_data
 
 def decompose_wind(wspd,wdir,wdir_fmt='deg'):
-    """
-    Turn a wind speed and direction into u and v components.
+    """Turn a wind speed and direction into u and v components.
 
     Uses meteorological convention - so a westerly wind is 270.
 
@@ -54,9 +53,9 @@ def decompose_wind(wspd,wdir,wdir_fmt='deg'):
     return u,v
 
 def convert_velocity_units(V,conversion):
-    """
-    Convert a velocity from one unit to another.
-    Arguments:
+    """Convert a velocity from one unit to another.
+    
+    Args:
         V       :   a number (int, float, array)
         convert :   'ms_kt' converts the output from m/s to knots.
                     'ms_mph' converts from m/s to mph.
@@ -64,7 +63,8 @@ def convert_velocity_units(V,conversion):
                     'kt_mph' converts from knots to mph.
                     'mph_kt' converts from mph to knots.
                     'mph_ms' converts from mph to m/s.
-    TODO: add km/h
+    Todo: 
+        * add km/h
     """
     if conversion == 'ms_kt':
         factor = 1.94384449
@@ -327,21 +327,21 @@ def latlon_1D(nc):
     return lats, lons
 
 def netcdf_files_in(folder,dom=1,init_time=0,model='auto',return_model=False):
-    """
-    Hunt through given folder to find the right netcdf file for data.
+    """ Hunt through given folder to find the right netcdf file for data.
+    Return ncpath (absolute path to file) and model (RUC, WRF, etc).
 
 
-    Inputs:
-    folder      :   Absolute path to directory
-    dom         :   specify domain. None specified if zero.
-    init_time   :   initialisation time. Can be tuple or datenum.
-                    If zero, then folder must contain one unambiguous file.
-    model       :   Default: automatically detect the type of netcdf file
-                    (RUC data, wrfout file, etc)
+    Args:
+        folder      :   Absolute path to directory
+        dom         :   specify domain. None specified if zero.
+        init_time   :   initialisation time. Can be tuple or datenum.
+                        If zero, then folder must contain one unambiguous file.
+        model       :   Default: automatically detect the type of netcdf file
+                        (RUC data, wrfout file, etc)
+
     Returns:
-    ncpath      :   Absolute path to file
-    model       :   Model (RUC, WRF) of netcdf file,
-                    if return_model is True and model is 'auto'.
+        ncpath      :   Absolute path to file
+
     """
     t = 'auto'
     if init_time:
@@ -424,18 +424,18 @@ def wrfout_files_in(folders,dom=0,init_time='notset',descend=1,avoid=0,
     Hunt through given folder(s) to find all occurrences of wrfout
     files.
 
-    Inputs:
-    folders     :   list of absolute paths to directories
-    dom         :   specify domain. None specified if zero.
-    init_time   :   tuple of initialisation time
-    descend     :   boolean: go into subfolders
-    avoid       :   string of filenames. if a subfolder contains
+    Args:
+        folders     :   list of absolute paths to directories
+        dom         :   specify domain. None specified if zero.
+        init_time   :   tuple of initialisation time
+        descend     :   boolean: go into subfolders
+        avoid       :   string of filenames. if a subfolder contains
                     the string, do not descend into this one.
-    unambiguous :   only return a single absolute path, else throw
+        unambiguous :   only return a single absolute path, else throw
                     an Exception.
 
     Returns:
-    wrfouts     :   list of absolute paths to wrfout files
+        wrfouts     :   list of absolute paths to wrfout files
     """
 
     folders = get_sequence(folders)
@@ -749,15 +749,15 @@ def closest_datetime(times,t,round=False):
     """Find closest value in list of datetimes.
     Return index of closest.
 
-    Arguments:
-        times (list,tuple): collection of datetimes.
-        t (datetime.datetime): required time
-        round (bool,str): If False, return closest index only.
+    Args:
+        times (list,tuple)      : collection of datetimes.
+        t (datetime.datetime)   : required time
+        round (bool,str)        : If False, return closest index only.
             If 'afterinc', return index of first time after t.
-                (If closest time is identical to t, return that index)
+            (If closest time is identical to t, return that index)
             If 'afterexc', same, but if closest time = t, return one after.
             If 'beforeinc', return index of last time before t.
-                (If closest time is identical to t, return that index)
+            (If closest time is identical to t, return that index)
             If 'beforeexc', same, but if closest time = t, return one before.
 
     Returns:
