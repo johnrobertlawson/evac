@@ -10,6 +10,8 @@ Welcome to evac's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   tutorial
+   evac
 
 
 Indices and tables
