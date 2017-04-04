@@ -5,6 +5,9 @@ and tested in Python 3.5.x on various Linux distros and Mac OS, using only
 the Anaconda distributions of Python 3.
 
 **NOT FULLY TESTED YET - still refactoring WEM.**
+Documentation will eventually be here:
+
+https://johnrobertlawson.github.io/evac/
 
 If you're a slave to Python 2.x, it's easy to create a new Anaconda environment in
 Python 3.x (replace `yourcustomname` with the name of the new environment). 

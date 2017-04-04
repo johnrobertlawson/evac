@@ -58,9 +58,15 @@ class Ensemble:
                 Default is None, which then uses a method to determine
                 the file name using default outputs from e.g. WRF.
         """
+        self.model = model.lower()
+        if self.model == 'wrf':
+            print("File type is wrfout.")
+            loadfunc = WRFOut
+        else:
+            raise NotImplementedError()
+
         self.debug = debug
         self.ctrl = ctrl
-        self.model = model.lower()
         self.rootdir = rootdir
         self.initutc = initutc
         self.doms = doms
@@ -229,58 +235,54 @@ class Ensemble:
                                 fname)),'control':ens is 'c00'}
         return members
 
-    def get_prob_threshold(self,vrbl,overunder,threshold,
-                            level=None,itime=False,
-                            ftime=False,fcsttime=False,Nlim=False,
-                            Elim=False,Slim=False,Wlim=False,
+    def get_exceedance_probs(self,vrbl,overunder,threshold,
+                            level=None,itime=None,
+                            ftime=None,fcsttime=None,Nlim=None,
+                            Elim=None,Slim=None,Wlim=None,
                             dom=1):
         """
         Return probability of exceeding or reaching a threshold.
 
         Arguments:
-            vrbl (str,N.array): variable. If N.array, use provided data
-                (i.e. override the loading)
-            overunder (str): 'over' or 'under' for threshold evaluation
-            threshold (float,int): the threshold in SI units
-            itime (datetime.datetime): initial time
-            ftime (datetime.datetime): final time
-            Nlim, Elim, Slim, Wlim (float,optional): bounding box
+            vrbl (str,N.array)      : variable. If N.array, use provided data
+                                        (i.e. override the loading).
+                                        Must be 5D.
+                                        [ensemble_member,time,level,lat,lon]
+            overunder (str)         : threshold evaluation
+                                        'over', 'overeq','under','undereq','equal'
+            threshold (float,int)   : the threshold in same (SI) units as data
+
+        Optional:
+            itime (datetime.datetime)   : initial time
+            ftime (datetime.datetime)   : final time
+            fcsttime (datetime.datetime): single time (must be present if itime
+                                            and ftime are None.)
+            Nlim, Elim, Slim, Wlim (float,optional) : bounding box of lats/lons
         """
+        if not overunder in OU.keys():
+            raise Exception("Pick over or under for threshold comparison.")
+
         if isinstance(vrbl,N.ndarray):
+            assert len(vrbl.shape) == 5
             all_ens_data = vrbl
         else:
-            all_ens_data = self.ensemble_array(vrbl,level=level,itime=itime,ftime=ftime,
+            all_ens_data = self.get(vrbl,level=level,itime=itime,ftime=ftime,
                             fcsttime=fcsttime,Nlim=Nlim,Elim=Elim,
                             Slim=Slim,Wlim=Wlim,dom=dom)
 
-        if Nlim:
-            all_ens_data,lats,lons = all_ens_data
+        OU = {'over':__gt__,'under':__lt__,'overeq':__ge__,'undereq':__le__,
+                'equal':__eq__}
 
-        if overunder is 'over':
-            # True/False if member meets condition
-            bool_arr = N.where(all_ens_data > threshold,1,0)
-            # Find maximum for all times
-            max_arr = N.amax(bool_arr,axis=1)
-            # Count members that exceed the threshold
-            # And convert to percentage
-            count_arr = N.sum(max_arr,axis=0)
-            percent_arr = 100*(count_arr/self.nmems)
-        elif overunder is 'under':
-            # True/False if member meets condition
-            bool_arr = N.where(all_ens_data < threshold,1,0)
-            # Find minimum for all times
-            min_arr = N.amin(bool_arr,axis=1)
-            # Count members that exceed the threshold
-            # And convert to percentage
-            count_arr = N.sum(min_arr,axis=0)
-            percent_arr = 100*(count_arr/self.nmems)
-        else:
-            raise Exception("Pick over or under for threshold comparison.")
+        # True/False if member meets condition (5D)
+        bool_arr = N.where(all_ens_data.OU[overunder](threshold),1,0)
 
-        if Nlim:
-            return percent_arr[0,:,:],lats,lons
-        else:
-            return percent_arr[0,:,:]
+        # Count members that exceed the threshold (4D)
+        count_arr = N.sum(bool_arr,axis=0)
+
+        # And convert to percentage (4D) for each time
+        percent_arr = 100*(count_arr/self.nmems)
+
+        return percent_arr # [times,levels,lats,lons]
 
 
     def closest_to_mean(self,vrbl,level,fcsttime,Nlim=False,Elim=False,
@@ -290,11 +292,9 @@ class Ensemble:
         Passing latlon/box allows calculation over given area
         (Box is in grid spaces)
         """
-        all_ens_data = self.ensemble_array(vrbl,level=level,fcsttime=fcsttime,
+        all_ens_data = self.get(vrbl,level=level,fcsttime=fcsttime,
                                           Nlim=Nlim,Elim=Elim,
                                           Slim=Slim,Wlim=Wlim)
-        if Nlim:
-            all_ens_data,lats,lons = all_ens_data
         mean = N.mean(all_ens_data,axis=0)[0,0,:,:]
         diff = N.abs(N.sum((all_ens_data[:,0,0,:,:]-mean),axis=(1,2)))
         ensidx = N.argmin(diff,axis=0)
@@ -311,12 +311,7 @@ class Ensemble:
         DF = self.datafile_object(fpath,loadobj=True)
         return DF
 
-    def get(self,*args,**kwargs):
-        # Wrapper
-        returns = self.ensemble_array(*args,**kwargs)
-        return returns
-
-    def ensemble_array(self,vrbl,level=None,itime=False,ftime=False,
+    def get(self,vrbl,level=None,itime=False,ftime=False,
                         fcsttime=False,Nlim=None,Elim=None,
                         Slim=None,Wlim=None,inclusive=False,
                         lats=None,lons=None,dom=1,members=None):
@@ -371,28 +366,11 @@ class Ensemble:
                 else:
                     fts = [fcsttime,]
 
-                # if Nlim:
-                    # data = self.members[mem][dom][t]['data'].get(
-                                                        # vrbl,level=level)
-                    # ens_data,lats,lons = utils.return_subdomain(
-                                                    # data,self.examplenc.lats1D,
-                                                    # self.examplenc.lons1D,Nlim,
-                                                    # Elim,Slim,Wlim,fmt='latlon')
-                # else:
-                # pdb.set_trace()
                 for tn, ft in enumerate(fts):
-                    # if len(fts) > 1:
                     t, tidx = self.find_file_for_t(ft,mem,dom=dom)
-                    # else:
-                        # t = self.initutc
-                        # tidx = ft
                     if self.debug:
                         print("Loading data for time {0}".format(ft))
-                    # pdb.set_trace()
                     fpath = self.members[mem][dom][t]['fpath']
-                    # print("Filepath",fpath)
-                    # print("tidx",tidx)
-                    # pdb.set_trace()
                     DF = self.datafile_object(fpath,loadobj=True)
                     m_t_data = DF.get(vrbl,utc=tidx,level=level,lons=lons,lats=lats)[0,...]
 
@@ -403,9 +381,6 @@ class Ensemble:
 
                 all_ens_data[ens_no-1,tn,:,:,:] = m_t_data
 
-        if Nlim:
-            return all_ens_data,lats,lons
-        else:
             return all_ens_data
 
     def accumulated(self,vrbl='RAINNC',itime=0,ftime=-1,level=False,Nlim=False,
@@ -426,13 +401,13 @@ class Ensemble:
             ftime = self.ftime
 
         if vrbl is 'RAINNC':
-            itime_rainnc = self.ensemble_array('RAINNC',fcsttime=itime,
+            itime_rainnc = self.get('RAINNC',fcsttime=itime,
                     lons=lons,lats=lats)
-            ftime_rainnc = self.ensemble_array('RAINNC',fcsttime=ftime,
+            ftime_rainnc = self.get('RAINNC',fcsttime=ftime,
                     lons=lons,lats=lats)
             accum = ftime_rainnc - itime_rainnc
         else:
-            all_ens_data = self.ensemble_array(vrbl,itime=itime,ftime=ftime,
+            all_ens_data = self.get(vrbl,itime=itime,ftime=ftime,
                                         inclusive=inclusive,lats=lats,lons=lons)
             # time axis is 1
             accum = N.sum(all_ens_data,axis=1)
@@ -445,12 +420,9 @@ class Ensemble:
         """
         Returns mean.
         """
-        all_ens_data = self.ensemble_array(vrbl,level=level,fcsttime=fcsttime,
+        all_ens_data = self.get(vrbl,level=level,fcsttime=fcsttime,
                                     Nlim=Nlim,Elim=Elim,Slim=Slim,Wlim=Wlim,
                                     itime=itime,ftime=ftime)
-        if Nlim:
-            all_ens_data, lats, lons = all_ens_data
-
         mean = N.mean(all_ens_data,axis=0)
 
         if Nlim:
@@ -462,12 +434,9 @@ class Ensemble:
             Nlim=False,Elim=False,Slim=False,Wlim=False):
         """Return standard devation
         """
-        all_ens_data = self.ensemble_array(vrbl,level=level,fcsttime=fcsttime,
+        all_ens_data = self.get(vrbl,level=level,fcsttime=fcsttime,
                                     Nlim=Nlim,Elim=Elim,Slim=Slim,Wlim=Wlim,
                                     itime=itime,ftime=ftime)
-        if Nlim:
-            all_ens_data, lats, lons = all_ens_data
-
         std = N.std(all_ens_data,axis=0)
 
         if Nlim:
