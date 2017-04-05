@@ -144,14 +144,14 @@ class BirdsEye(Figure):
     def plot_locations(self,locations):
         for k,v in locations.items():
             if isinstance(v,tuple) and len(v) == 2:
-                    xpt, ypt = self.bmap(v[1],v[0])
-                    # bbox_style = {'boxstyle':'square','fc':'white','alpha':0.5}
-                    self.bmap.plot(xpt,ypt,'ko',markersize=3,zorder=100)
-                    self.ax.text(xpt,ypt,k,ha='left',fontsize=7)
-                    # self.ax.text(xpt-15000,ypt,k,bbox=bbox_style,ha='left',fontsize=7)
-                else:
-                    print("Not a valid location argument.")
-                    raise Exception
+                xpt, ypt = self.bmap(v[1],v[0])
+                # bbox_style = {'boxstyle':'square','fc':'white','alpha':0.5}
+                self.bmap.plot(xpt,ypt,'ko',markersize=3,zorder=100)
+                self.ax.text(xpt,ypt,k,ha='left',fontsize=7)
+                # self.ax.text(xpt-15000,ypt,k,bbox=bbox_style,ha='left',fontsize=7)
+            else:
+                print("Not a valid location argument.")
+                raise Exception
         return
 
     def do_contour_plot(self):

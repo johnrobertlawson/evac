@@ -4,7 +4,6 @@
 Plotting functions and objects that mostly wrap matplotlib.
 
 .. toctree::
-    evac.plot.axes
     evac.plot.birdseye
     evac.plot.clicker
     evac.plot.colourtables

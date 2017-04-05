@@ -4,12 +4,12 @@ Utility scripts to help with directory, file, etc issues
 
 import pdb
 import os
-from . import GIS_tools as utils
 try:
     import paramiko
 except ImportError:
     print("Module paramiko unavailable.")
 import base64 
+import .gis_tools as utils
 
 def dir_from_naming(root,*args):
     """

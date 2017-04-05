@@ -15,14 +15,13 @@ import os
 import numpy as N
 import calendar
 import pdb
-from . import constants as cc
 import scipy.ndimage
 import collections
 import scipy.interpolate
 import datetime
 
-import WEM.utils as utils
-from WEM.utils import metconstants as mc
+import evac.utils as utils
+import evac.utils.met_constants as mc
 from WEM.postWRF.postWRF.ncfile import NC
 
 debug_get = 0

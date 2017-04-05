@@ -19,10 +19,10 @@ import calendar
 
 import sys
 #sys.path.append('/home/jrlawson/gitprojects/')
-import WEM.utils as utils
-from WEM.utils import metconstants as mc
-from .figure import Figure
-from .defaults import Defaults
+import evac.utils as utils
+import evac.utils.metconstants as mc
+from evac.plot.figure import Figure
+from evac.utils.defaults import Defaults
 from .wrfout import WRFOut
 
 
