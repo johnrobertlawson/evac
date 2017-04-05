@@ -1,8 +1,8 @@
-`datafiles.binaryfile`
-=======
+`datafiles.spclsr`
+==================
 
 
-.. automodule:: evac.datafiles.binaryfile
+.. automodule:: evac.datafiles.spclsr
     :members:
     :undoc-members:
     :show-inheritance:

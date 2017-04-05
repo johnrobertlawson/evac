@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 import numpy as N
 
-import ..utils
+import evac.utils as utils
 from .ncfile import NCFile
 
 class ECMWF(NCFile):
