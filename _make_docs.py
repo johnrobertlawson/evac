@@ -11,8 +11,10 @@ rootdir = os.path.dirname(evacdir)
 htmldir = os.path.join(rootdir,'evac_docs','html')
 
 def cmd(s,d):
-    p = subprocess.Popen(s.split(' '),cwd=d)
-    p.wait()
+    os.chdir(d)
+    os.system(s)
+    # p = subprocess.Popen(s.split(' '),cwd=d)
+    # p.wait()
     return
 
 # Commit changes
