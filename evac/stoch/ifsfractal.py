@@ -5,7 +5,7 @@ import numpy as N
 import scipy.ndimage.interpolation as INT
 from scipy.interpolate import RectBivariateSpline as RBS
 
-class FracGen(object):
+class IFSFractal(object):
     def __init__(self,arr=False):
         self.arr = arr
         pass
@@ -71,4 +71,3 @@ class FracGen(object):
         shift = (0,self.f)
         arr_out = INT.shift(arr_in,shift)
         return arr_out
-
