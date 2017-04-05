@@ -18,6 +18,7 @@ from .ncfile import NCFile
 
 class ECMWF(NCFile):
     def __init__(self,fpath,config):
+        super().__init__(fpath)
         self.C = config
         self.D = Defaults()
         self.ec = Dataset(fpath,'r')

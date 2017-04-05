@@ -10,9 +10,10 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 
 from evac.utils.defaults import Defaults
-import evac.utils.reproject as reproject
-import evac.utils.unix_tools as unix_tools
-import evac.utils.gis_tools as gis_tools
+import evac.utils as utils
+# import evac.utils.reproject as reproject
+# import evac.utils.unix_tools as unix_tools
+# import evac.utils.gis_tools as gis_tools
 
 class Figure:
     def __init__(self,ax=None,fig=None,layout='normal',
@@ -90,7 +91,7 @@ class Figure:
 
     def save(self,outpath,fname,tight=True):
         fname = self.enforce_png_ext(fname)
-        unix_tools.trycreate(outpath)
+        utils.trycreate(outpath)
         fpath = os.path.join(outpath,fname)
         if tight:
             self.fig.tight_layout()
@@ -132,9 +133,9 @@ class Figure:
                     drawcounties=False):
         """Wrapper for utility method.
         """
-        # m,lons,lats,xx,yy = reproject.create_new_grid(*args,**kwargs)
+        # m,lons,lats,xx,yy = utils.create_new_grid(*args,**kwargs)
         # return m, lons, lats, xx[0,:], yy[:,0]
-        self.m, self.lons, self.lats, self.xx, self.yy = reproject.create_new_grid(
+        self.m, self.lons, self.lats, self.xx, self.yy = utils.create_new_grid(
                     Nlim=Nlim,Elim=Elim,Slim=Slim,Wlim=Wlim,proj=proj,
                     lat_ts=lat_ts,resolution=resolution,nx=nx,ny=ny,
                     tlat1=tlat1,tlat2=tlat2,cen_lat=cen_lat,cen_lon=cen_lon,

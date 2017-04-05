@@ -7,9 +7,9 @@ import numpy as N
 N.set_printoptions(precision=4,suppress=True)
 import scipy.integrate as integrate
 
-import WEM.utils as utils
-from WEM.utils import metconstants as mc
-import WEM.postWRF.postWRF.skewt2 as sT
+import evac.utils as utils
+from evac.utils import met_constants as mc
+import WEM.postWRF.postWRF._skewt2 as sT
 
 """
 ROWS:

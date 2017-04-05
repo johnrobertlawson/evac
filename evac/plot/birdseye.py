@@ -21,7 +21,6 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from evac.datafiles.wrfout import WRFOut
 from evac.utils.defaults import Defaults
 from evac.plot.figure import Figure
-import WEM.utils.gis_tools as gis_tools
 from evac.plot.scales import Scales
 import evac.stats as stats
 

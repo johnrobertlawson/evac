@@ -11,7 +11,7 @@ import datetime
 
 import numpy as N
 
-import WEM.utils as utils
+import evac.utils as utils
 from .wrfout import WRFOut
 
 # Dummy variable in place of proper subclass of WRFOut

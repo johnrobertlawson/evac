@@ -1,6 +1,7 @@
 """ Any miscellaneous binary file.
 """
+from .datafile import DataFile
 
-class BinaryFile():
+class BinaryFile(DataFile):
     def __init__(self):
-        pass
+        super().__init__(fpath)

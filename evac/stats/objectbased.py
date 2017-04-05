@@ -1,3 +1,7 @@
+"""
+Todos:
+    * Refactor this and sal.py
+"""
 import numpy as N
 import pdb
 import scipy.ndimage as ndimage
@@ -7,11 +11,13 @@ import matplotlib.pyplot as plt
 from .wrfout import WRFOut
 from .obs import Radar
 
-class SAL(object):
+class ObjectBased:
     def __init__(self,Wctrl_fpath,Wmod_fpath,vrbl=False,utc=False,lv=False,
                     accum_hr=False,radar_datadir=False,thresh=False,
                     footprint=500,ctrl_fmt='obs',mod_fmt='WRF',dx=False,dy=False,
                     f=1/15.0,datafmt=False):
+        """Generate objects from data.
+        """
         # Set data formats for both inputs to override defaults
         if datafmt:
             ctrl_fmt = datafmt

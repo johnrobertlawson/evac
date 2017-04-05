@@ -10,7 +10,7 @@ import itertools
 import time
 import os
 
-import WEM.utils as utils
+import evac.utils as utils
 
 from .wrfout import WRFOut
 

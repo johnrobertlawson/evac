@@ -2,9 +2,10 @@
 
 Adapted from code by Luke Madaus and David-John Gagne II
 """
+import pdb
+
 from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
-import pdb
 
 # def default(*args):
     # jet_cdict = plt.cm.jet

@@ -1,3 +1,8 @@
+"""
+Todos:
+    * Make subclass of ObjectBased.
+"""
+
 import numpy as N
 import pdb
 import scipy.ndimage as ndimage

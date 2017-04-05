@@ -4,7 +4,7 @@ import pdb
 import numpy as N
 from scipy.ndimage.filters import uniform_filter
 
-from WEM.utils.exceptions import QCError, FormatError
+from evac.utils.exceptions import QCError, FormatError
 
 class Casati:
     def __init__(self,fcstdata,verifdata,thresholds=(0.5,1,4,16,64),
@@ -13,17 +13,25 @@ class Casati:
 
         All data in SI units (mm). 
 
-        Optional:
-        store_all_arrays (bool) -   if False, delete arrays to conserve memory.
-
-        Attribute dictionaries (all accessed by a threshold then spatial key):
-        self.father, self.mother    -   wavelet decompositions (in do_BED)
-        self.MSE, self.MSE_total    -   Mean Square Error (by scale and total)
-        self.SS                     -   Skill score
+        Attrs. all accessed by a threshold then spatial key.
 
         e.g. 
         self.SS[4][3] will return the skill score for 4 mm/hr threshold 
             and the L=3 spatial scale (= 2**3 grid points)
+
+        Args:
+            fcstdata (N.ndarray)    :   forecast 2D array
+            verifdata (N.ndarray)   :   verification 2D array
+            thresholds (tuple,list,optional)    :   thresholds for stats
+            store_all_arrays (bool,optional)    :   If False, delete arrays
+                                                        to conserve memory.
+            recalibration (bool,optional)       :   whether to remove bias
+
+        Attributes:
+        self.father, self.mother    :   wavelet decompositions (in do_BED)
+        self.MSE, self.MSE_total    :   Mean Square Error (by scale and total)
+        self.SS                     :   Skill score
+
         """
         self.thresholds = thresholds
         self.raw_fcstdata = fcstdata

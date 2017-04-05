@@ -13,7 +13,8 @@ class GribFile(DataFile):
         * Make general, i.e. remove HRRR etc specifics
     """
     def __init__(self,fpath):
-        self.fpath = fpath
+        super().__init__(fpath)
+        # self.fpath = fpath
         self.G = pygrib.open(self.fpath)
         self.available_records = [gg for gg in self.G]
         self.G.seek(0) # Screw you GRIB!

@@ -3,7 +3,7 @@ import os
 import numpy as N
 import scipy.ndimage.filters
 
-from WEM.utils.exceptions import FormatError
+from evac.utils.exceptions import FormatError
 
 class self.FSS():
     def __init__(self,data_fcst,data_obs,itime=False,ftime=False,

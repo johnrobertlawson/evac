@@ -1,3 +1,7 @@
+"""
+Todos:
+    * Move into objectbased.py
+"""
 import os
 import numpy as N
 import pdb

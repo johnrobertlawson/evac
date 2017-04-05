@@ -2,6 +2,12 @@
 
 Mixin of deterministic and probabilistic scores.
 """
+import pdb
+
+import numpy as N
+
+from .detscores import DetScores
+from .probscores import ProbScores
 
 class ROC(DetScores,ProbScores):
     def __init__(self,nens,pf,ob):

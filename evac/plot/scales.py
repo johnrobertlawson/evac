@@ -22,7 +22,7 @@ import numpy as N
 import matplotlib.pyplot as plt
 
 from . import colourtables as ct
-import WEM.utils as utils
+import evac.utils as utils
 import evac.utils.evac_types as evac_types
 
 class Scales(object):

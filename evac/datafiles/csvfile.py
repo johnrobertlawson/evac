@@ -5,4 +5,4 @@ from .datafile import DataFile
 
 class CSVFile(DataFile):
     def __init__(self,):
-        pass
+        super().__init__(fpath)

@@ -4,7 +4,7 @@ import pdb
 import time
 import subprocess
 
-import WEM.utils as utils
+import evac.utils as utils
 
 class LazyWRF:
     def __init__(self,sched,path_to_WRF,path_to_wrfout,submit_fname,
