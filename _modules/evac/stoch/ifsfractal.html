@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.stoch.ifsfractal &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.stoch.ifsfractal</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+
+<span class="kn">import</span> <span class="nn">scipy.ndimage.interpolation</span> <span class="k">as</span> <span class="nn">INT</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">RectBivariateSpline</span> <span class="k">as</span> <span class="n">RBS</span>
+
+<div class="viewcode-block" id="IFSFractal"><a class="viewcode-back" href="../../../evac.stoch.ifsfractal.html#evac.stoch.ifsfractal.IFSFractal">[docs]</a><span class="k">class</span> <span class="nc">IFSFractal</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="IFSFractal.IFS_go"><a class="viewcode-back" href="../../../evac.stoch.ifsfractal.html#evac.stoch.ifsfractal.IFSFractal.IFS_go">[docs]</a>    <span class="k">def</span> <span class="nf">IFS_go</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">e</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">f</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="c1"># new_arr = INT.zoom(self.arr,3,output=int)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ydim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="n">s</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span>
+        <span class="c1"># Need to make phi different from theta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phi</span> <span class="o">=</span> <span class="n">phi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">xdim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ydim</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">xx_in</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yy_in</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydim</span><span class="p">)</span>
+
+        <span class="n">arr_mod</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">arr_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_r</span><span class="p">(</span><span class="n">arr_mod</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">arr_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_s</span><span class="p">(</span><span class="n">arr_mod</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">theta</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">arr_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_theta</span><span class="p">(</span><span class="n">arr_mod</span><span class="p">)</span>
+        <span class="c1"># if phi != 0:</span>
+            <span class="c1"># arr_mod = self.apply_phi(arr_mod)</span>
+        <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">arr_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_e</span><span class="p">(</span><span class="n">arr_mod</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">arr_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_f</span><span class="p">(</span><span class="n">arr_mod</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">arr_mod</span></div>
+
+<div class="viewcode-block" id="IFSFractal.apply_r"><a class="viewcode-back" href="../../../evac.stoch.ifsfractal.html#evac.stoch.ifsfractal.IFSFractal.apply_r">[docs]</a>    <span class="k">def</span> <span class="nf">apply_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr_in</span><span class="p">):</span>
+        <span class="c1"># Scaling in the horizontal</span>
+        <span class="n">xx_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xx_in</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="n">rbs</span> <span class="o">=</span> <span class="n">RBS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yy_in</span><span class="p">,</span><span class="n">xx_out</span><span class="p">,</span><span class="n">arr_in</span><span class="p">)</span>
+        <span class="n">nn</span> <span class="o">=</span> <span class="n">rbs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yy_in</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xx_in</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">round</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IFSFractal.apply_s"><a class="viewcode-back" href="../../../evac.stoch.ifsfractal.html#evac.stoch.ifsfractal.IFSFractal.apply_s">[docs]</a>    <span class="k">def</span> <span class="nf">apply_s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr_in</span><span class="p">):</span>
+        <span class="c1"># Scaling in the vertical</span>
+        <span class="n">yy_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yy_in</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="n">rbs</span> <span class="o">=</span> <span class="n">RBS</span><span class="p">(</span><span class="n">yy_out</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xx_in</span><span class="p">,</span><span class="n">arr_in</span><span class="p">)</span>
+        <span class="n">nn</span> <span class="o">=</span> <span class="n">rbs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yy_in</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xx_in</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">round</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IFSFractal.apply_theta"><a class="viewcode-back" href="../../../evac.stoch.ifsfractal.html#evac.stoch.ifsfractal.IFSFractal.apply_theta">[docs]</a>    <span class="k">def</span> <span class="nf">apply_theta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr_in</span><span class="p">):</span>
+        <span class="n">arr_out</span> <span class="o">=</span> <span class="n">INT</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">arr_in</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span><span class="n">reshape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">arr_out</span></div>
+
+<div class="viewcode-block" id="IFSFractal.apply_phi"><a class="viewcode-back" href="../../../evac.stoch.ifsfractal.html#evac.stoch.ifsfractal.IFSFractal.apply_phi">[docs]</a>    <span class="k">def</span> <span class="nf">apply_phi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr_in</span><span class="p">):</span>
+        <span class="n">arr_out</span> <span class="o">=</span> <span class="n">INT</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">arr_in</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">phi</span><span class="p">,</span><span class="n">reshape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">arr_out</span></div>
+
+<div class="viewcode-block" id="IFSFractal.apply_e"><a class="viewcode-back" href="../../../evac.stoch.ifsfractal.html#evac.stoch.ifsfractal.IFSFractal.apply_e">[docs]</a>    <span class="k">def</span> <span class="nf">apply_e</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr_in</span><span class="p">):</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">arr_out</span> <span class="o">=</span> <span class="n">INT</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">arr_in</span><span class="p">,</span><span class="n">shift</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">arr_out</span></div>
+
+<div class="viewcode-block" id="IFSFractal.apply_f"><a class="viewcode-back" href="../../../evac.stoch.ifsfractal.html#evac.stoch.ifsfractal.IFSFractal.apply_f">[docs]</a>    <span class="k">def</span> <span class="nf">apply_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr_in</span><span class="p">):</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">arr_out</span> <span class="o">=</span> <span class="n">INT</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">arr_in</span><span class="p">,</span><span class="n">shift</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">arr_out</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.stats.detscores &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.stats.detscores</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Miscellaneous (and more simple) deterministic scores.</span>
+
+<span class="sd">Using Buizza 2001, MWR.</span>
+
+<span class="sd">a = observed and forecast</span>
+<span class="sd">b = forecast but not observed</span>
+<span class="sd">c = observed but not forecast</span>
+<span class="sd">d = neither observed nor forecast</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DetScores"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores">[docs]</a><span class="k">class</span> <span class="nc">DetScores</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+        <span class="c1"># Number of total events</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">d</span>
+
+        <span class="c1"># Contingency table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">an</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+
+<div class="viewcode-block" id="DetScores.compute_pcli"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_pcli">[docs]</a>    <span class="k">def</span> <span class="nf">compute_pcli</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Observed frequency of event under consideration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pcli</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">return</span> <span class="n">pcli</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_hitrate"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_hitrate">[docs]</a>    <span class="k">def</span> <span class="nf">compute_hitrate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Accuracy.</span>
+<span class="sd">        </span>
+<span class="sd">        Eq. 6 in B01.&quot;&quot;&quot;</span>
+        <span class="n">HR</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">return</span> <span class="n">HR</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_threat"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_threat">[docs]</a>    <span class="k">def</span> <span class="nf">compute_threat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Accuracy.</span>
+<span class="sd">        </span>
+<span class="sd">        Eq. 7 in B01.&quot;&quot;&quot;</span>
+        <span class="n">TS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TS</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_pod"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_pod">[docs]</a>    <span class="k">def</span> <span class="nf">compute_pod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Accuracy - probability of detection.</span>
+
+<span class="sd">        Eq. 8 in B01.&quot;&quot;&quot;</span>
+        <span class="n">POD1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">POD2</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_pcli</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="n">POD1</span> <span class="o">==</span> <span class="n">POD2</span>
+        <span class="k">return</span> <span class="n">POD1</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_pfd"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_pfd">[docs]</a>    <span class="k">def</span> <span class="nf">compute_pfd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Accuracy - probability of false detection.</span>
+
+<span class="sd">        Eq. 9 in B01.&quot;&quot;&quot;</span>
+        <span class="n">PFD1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">PFD2</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_pcli</span><span class="p">()))</span>
+        <span class="k">assert</span> <span class="n">PFD1</span> <span class="o">==</span> <span class="n">PFD2</span>
+        <span class="k">return</span> <span class="n">PFD1</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_bias"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_bias">[docs]</a>    <span class="k">def</span> <span class="nf">compute_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Eq. 10 in B01.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">B</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_kss"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_kss">[docs]</a>    <span class="k">def</span> <span class="nf">compute_kss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Eq. 13 in B01.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">KSS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pod</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pfd</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">KSS</span></div></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

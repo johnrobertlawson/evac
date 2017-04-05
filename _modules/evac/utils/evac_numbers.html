@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.utils.evac_numbers &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.utils.evac_numbers</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Scripts to check the nature of numbers.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+
+<div class="viewcode-block" id="check_type"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.check_type">[docs]</a><span class="k">def</span> <span class="nf">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">typ</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Return true if input n is a given &#39;type&#39;. If n is an array, it </span>
+<span class="sd">    checks if the dtype of the array matches the type. If the array is</span>
+<span class="sd">    made up of many types, it raises an error.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        n           :   Any object (N.ndarray, int, N.int32, N.float64...)</span>
+<span class="sd">        typ (str)   :   &#39;int&#39; is any type or dtype resembling an integer</span>
+<span class="sd">                        &#39;float&#39; is any type or dtype resembling a float</span>
+
+<span class="sd">    TODO: raise error if array has more than one dtype.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_array</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">ntyp</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ntyp</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">N</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">ntyp</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s1">&#39;float&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">N</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">ntyp</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">float</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="is_array"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.is_array">[docs]</a><span class="k">def</span> <span class="nf">is_array</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="is_integer"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.is_integer">[docs]</a><span class="k">def</span> <span class="nf">is_integer</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="s1">&#39;int&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="has_integers"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.has_integers">[docs]</a><span class="k">def</span> <span class="nf">has_integers</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="s1">&#39;int&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="has_floats"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.has_floats">[docs]</a><span class="k">def</span> <span class="nf">has_floats</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="s1">&#39;float&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="is_float"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.is_float">[docs]</a><span class="k">def</span> <span class="nf">is_float</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="s1">&#39;float&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

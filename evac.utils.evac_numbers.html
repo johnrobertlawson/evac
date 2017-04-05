@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>utils.evac_numbers &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="utils.evac_types" href="evac.utils.evac_types.html" />
+    <link rel="prev" title="utils.defaults" href="evac.utils.defaults.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="utils-evac-numbers">
+<h1><cite>utils.evac_numbers</cite><a class="headerlink" href="#utils-evac-numbers" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-evac.utils.evac_numbers"></span><p>Scripts to check the nature of numbers.</p>
+<dl class="function">
+<dt id="evac.utils.evac_numbers.check_type">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">check_type</code><span class="sig-paren">(</span><em>n</em>, <em>typ</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#check_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.check_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return true if input n is a given &#8216;type&#8217;. If n is an array, it
+checks if the dtype of the array matches the type. If the array is
+made up of many types, it raises an error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>n</strong> &#8211; Any object (N.ndarray, int, N.int32, N.float64...)</li>
+<li><strong>typ</strong> (<em>str</em>) &#8211; &#8216;int&#8217; is any type or dtype resembling an integer
+&#8216;float&#8217; is any type or dtype resembling a float</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>TODO: raise error if array has more than one dtype.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.has_floats">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">has_floats</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#has_floats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.has_floats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.has_integers">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">has_integers</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#has_integers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.has_integers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.is_array">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">is_array</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#is_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.is_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.is_float">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">is_float</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#is_float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.is_float" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.is_integer">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">is_integer</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#is_integer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.is_integer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="evac.html">evac package</a><ul>
+  <li><a href="evac.utils.html"><cite>utils</cite></a><ul>
+      <li>Previous: <a href="evac.utils.defaults.html" title="previous chapter"><cite>utils.defaults</cite></a></li>
+      <li>Next: <a href="evac.utils.evac_types.html" title="next chapter"><cite>utils.evac_types</cite></a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/evac.utils.evac_numbers.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/evac.utils.evac_numbers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

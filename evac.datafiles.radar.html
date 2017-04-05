@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>datafiles.radar &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="datafiles.ruc" href="evac.datafiles.ruc.html" />
+    <link rel="prev" title="datafiles.pngfile" href="evac.datafiles.pngfile.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="datafiles-radar">
+<h1><cite>datafiles.radar</cite><a class="headerlink" href="#datafiles-radar" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-evac.datafiles.radar"></span><p>Radar download, manipulation, and plotting.</p>
+<p>This uses composite reflectivity data stored on Iowa State Univ.
+servers.</p>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>Allow different inheritance depending on the data format.</dt>
+<dd>Probably using the __next__ built-in.</dd>
+</dl>
+</li>
+<li>Remove redundant basemap generation method.</li>
+</ul>
+</dd>
+</dl>
+<dl class="class">
+<dt id="evac.datafiles.radar.Radar">
+<em class="property">class </em><code class="descclassname">evac.datafiles.radar.</code><code class="descname">Radar</code><span class="sig-paren">(</span><em>utc</em>, <em>datapath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="evac.datafiles.pngfile.html#evac.datafiles.pngfile.PNGFile" title="evac.datafiles.pngfile.PNGFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.pngfile.PNGFile</span></code></a></p>
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.generate_basemap">
+<code class="descname">generate_basemap</code><span class="sig-paren">(</span><em>fig</em>, <em>ax</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.generate_basemap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.generate_basemap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate basemap.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.get_dBZ">
+<code class="descname">get_dBZ</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.get_dBZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.get_dBZ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.get_radar_fname">
+<code class="descname">get_radar_fname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.get_radar_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.get_radar_fname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.get_radar_url">
+<code class="descname">get_radar_url</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.get_radar_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.get_radar_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.get_subdomain">
+<code class="descname">get_subdomain</code><span class="sig-paren">(</span><em>Nlim</em>, <em>Elim</em>, <em>Slim</em>, <em>Wlim</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.get_subdomain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.get_subdomain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return data array between bounds</p>
+<p>If overwrite is True, replace class data with new subdomain</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.plot_radar">
+<code class="descname">plot_radar</code><span class="sig-paren">(</span><em>outdir=False</em>, <em>fig=False</em>, <em>ax=False</em>, <em>fname=False</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em>, <em>cb=True</em>, <em>drawcounties=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.plot_radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.plot_radar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot radar data.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="evac.html">evac package</a><ul>
+  <li><a href="evac.datafiles.html"><cite>datafiles</cite></a><ul>
+      <li>Previous: <a href="evac.datafiles.pngfile.html" title="previous chapter"><cite>datafiles.pngfile</cite></a></li>
+      <li>Next: <a href="evac.datafiles.ruc.html" title="next chapter"><cite>datafiles.ruc</cite></a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/evac.datafiles.radar.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/evac.datafiles.radar.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

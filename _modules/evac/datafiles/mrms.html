@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.datafiles.mrms &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.datafiles.mrms</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Multi-radar, multi-sensor data. Converts from their custom</span>
+<span class="sd">binary data format.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.binaryfile</span> <span class="k">import</span> <span class="n">BinaryFile</span>
+
+<div class="viewcode-block" id="MRMS"><a class="viewcode-back" href="../../../evac.datafiles.mrms.html#evac.datafiles.mrms.MRMS">[docs]</a><span class="k">class</span> <span class="nc">MRMS</span><span class="p">(</span><span class="n">BinaryFile</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">rootdir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">product</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">utc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A helper function to automatically generate file name</span>
+<span class="sd">        to load needs to be written.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fpath (str, optional): file path to data. If False, other</span>
+<span class="sd">                information must be presented to search for data (below).</span>
+<span class="sd">            rootdir (str, optional): if fpath is False, this is required</span>
+<span class="sd">                to search for data based on product and time</span>
+<span class="sd">            product (str, optional): if fpath is False, this is required</span>
+<span class="sd">                to find correct product. Pick from PRECIPRATE...</span>
+<span class="sd">            utc (datetime.datetime, optional): if fpath is False, this</span>
+<span class="sd">                is required to find data file for valid time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fpath</span><span class="p">:</span>
+            <span class="n">fpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_fpath</span><span class="p">(</span><span class="n">rootdir</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">utc</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MRMS.generate_fpath"><a class="viewcode-back" href="../../../evac.datafiles.mrms.html#evac.datafiles.mrms.MRMS.generate_fpath">[docs]</a>    <span class="k">def</span> <span class="nf">generate_fpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rootdir</span><span class="p">,</span><span class="n">prod</span><span class="p">,</span><span class="n">utc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an absolute path based on product and time of data</span>
+<span class="sd">        that is required, in a root directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Fill this out</span>
+        <span class="n">valid_products</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;PRECIPRATE&#39;</span><span class="p">,)</span>
+        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">prod</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_products</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Product name not valid.&quot;</span><span class="p">)</span>
+
+        <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.</span><span class="si">{1}{2}{3}</span><span class="s1">.</span><span class="si">{4}{5}{6}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prod</span><span class="p">,</span><span class="n">utc</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="n">utc</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                                <span class="n">utc</span><span class="o">.</span><span class="n">day</span><span class="p">,</span><span class="n">utc</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span><span class="n">utc</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span><span class="n">utc</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
+        <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rootdir</span><span class="p">,</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fpath</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

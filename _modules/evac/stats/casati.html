@@ -1,0 +1,380 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.stats.casati &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.stats.casati</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">from</span> <span class="nn">scipy.ndimage.filters</span> <span class="k">import</span> <span class="n">uniform_filter</span>
+
+<span class="kn">from</span> <span class="nn">WEM.utils.exceptions</span> <span class="k">import</span> <span class="n">QCError</span><span class="p">,</span> <span class="n">FormatError</span>
+
+<div class="viewcode-block" id="Casati"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati">[docs]</a><span class="k">class</span> <span class="nc">Casati</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fcstdata</span><span class="p">,</span><span class="n">verifdata</span><span class="p">,</span><span class="n">thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">64</span><span class="p">),</span>
+                    <span class="n">store_all_arrays</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">recalibration</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Casati et al. 2004, Meteorol. Appl.</span>
+
+<span class="sd">        All data in SI units (mm). </span>
+
+<span class="sd">        Optional:</span>
+<span class="sd">        store_all_arrays (bool) -   if False, delete arrays to conserve memory.</span>
+
+<span class="sd">        Attribute dictionaries (all accessed by a threshold then spatial key):</span>
+<span class="sd">        self.father, self.mother    -   wavelet decompositions (in do_BED)</span>
+<span class="sd">        self.MSE, self.MSE_total    -   Mean Square Error (by scale and total)</span>
+<span class="sd">        self.SS                     -   Skill score</span>
+
+<span class="sd">        e.g. </span>
+<span class="sd">        self.SS[4][3] will return the skill score for 4 mm/hr threshold </span>
+<span class="sd">            and the L=3 spatial scale (= 2**3 grid points)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span> <span class="o">=</span> <span class="n">thresholds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_fcstdata</span> <span class="o">=</span> <span class="n">fcstdata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_verifdata</span> <span class="o">=</span> <span class="n">verifdata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recalibration</span> <span class="o">=</span> <span class="n">recalibration</span>
+
+        <span class="c1"># Format checks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enforce_2D</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_square_check</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_QC</span><span class="p">()</span>
+
+        <span class="c1"># Pre-processing</span>
+        <span class="c1"># self.do_norain_pixels() # NOW ELSEWHERE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_dithering</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_normalize</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">recalibration</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_recalibration</span><span class="p">()</span>
+
+        <span class="c1"># Set length scales</span>
+        <span class="c1"># This is the number of grid spaces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ls</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">L</span><span class="p">)</span> <span class="k">for</span> <span class="n">L</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="c1"># This is the big L from the paper</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ls</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ls</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="c1"># Verification</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_BED</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_MSE</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_SS</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Casati.enforce_2D"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.enforce_2D">[docs]</a>    <span class="k">def</span> <span class="nf">enforce_2D</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot;Make sure the grid is 2-D.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Pass a 2D array.&#39;</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_fcstdata</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_verifdata</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FormatError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">FormatError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Passed 2D grid check.&quot;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+    
+<div class="viewcode-block" id="Casati.do_square_check"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_square_check">[docs]</a>    <span class="k">def</span> <span class="nf">do_square_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assert that the grid is a power of 2.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_fcstdata</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_verifdata</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">N</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">])</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Data dimension not square/power of 2, but of shape </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                    <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">FormatError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="n">FormatError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Passed square check.&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">]))</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Casati.do_QC"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_QC">[docs]</a>    <span class="k">def</span> <span class="nf">do_QC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">print_location</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">min_thresh</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">max_thresh</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+                <span class="n">fatal_exception</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check for stupid values in data.</span>
+<span class="sd">        </span>
+<span class="sd">        Optional:</span>
+<span class="sd">        print_location (bool) - if True, print the array location where</span>
+<span class="sd">                                the nonsensical values exist</span>
+<span class="sd">        min_thresh, max_thresh (float,int) - min and max values of allowable</span>
+<span class="sd">                                                range, to raise Exception</span>
+<span class="sd">        fatal_exception     -   if True, kill script if there are out-of-range vals.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_fcstdata</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_verifdata</span><span class="p">):</span>
+            <span class="n">where_under</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">min_thresh</span><span class="p">)</span>
+            <span class="n">where_over</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">max_thresh</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">print_location</span><span class="p">:</span>
+                <span class="n">pass_idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">where_under</span><span class="p">,</span><span class="n">where_over</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pass_idx</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">where_over</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">where_over</span><span class="p">[</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">where_under</span><span class="p">[</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">fatal_exception</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">QCExrror</span><span class="p">(</span><span class="s2">&quot;Unacceptable data found.&quot;</span><span class="p">,</span><span class="n">pass_idx</span><span class="o">=</span><span class="n">pass_idx</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unacceptable data found at these idx: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="o">*</span><span class="n">pass_idx</span><span class="p">)</span>
+            <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Casati.do_dithering"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_dithering">[docs]</a>    <span class="k">def</span> <span class="nf">do_dithering</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dithrange</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">64</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot;Apply dithering to non-zero precipitation values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_fcstdata</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_verifdata</span><span class="p">):</span>
+            <span class="n">where_nonzero</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">dithrange</span><span class="p">)</span>
+            <span class="c1">#shp = [where_nonzero[n].shape for n in range(len(where_nonzero))]</span>
+            <span class="n">sze</span> <span class="o">=</span> <span class="n">where_nonzero</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+            <span class="c1"># sze = sum([where_nonzero[n].size for n in range(len(where_nonzero))])</span>
+            <span class="n">noise</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=-</span><span class="mi">1</span><span class="o">*</span><span class="n">dithrange</span><span class="p">,</span><span class="n">high</span><span class="o">=</span><span class="n">dithrange</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">sze</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">where_nonzero</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noise</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dithering complete.&quot;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+    <span class="k">def</span> <span class="nf">__do_norain_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="o">=-</span><span class="mi">6</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Now incorporated into norm_func.</span>
+
+<span class="sd">        Assign value to no-rain pixels.</span>
+<span class="sd">        TODO: Should be range around 0, not exactly, due to round-off?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_fcstdata</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_verifdata</span><span class="p">):</span>
+            <span class="n">norain_idx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">norain_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No-rain pixels now set to </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Casati.norm_func"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.norm_func">[docs]</a>    <span class="k">def</span> <span class="nf">norm_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">orig</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; More QC here with negative values?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">orig</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="o">-</span><span class="mf">6.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">orig</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new</span></div>
+
+<div class="viewcode-block" id="Casati.do_normalize"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_normalize">[docs]</a>    <span class="k">def</span> <span class="nf">do_normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot;Normalise data by base 2 where it isn&#39;t -6.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vf</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_func</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm_fcstdata</span> <span class="o">=</span> <span class="n">vf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_fcstdata</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm_verifdata</span> <span class="o">=</span> <span class="n">vf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_verifdata</span><span class="p">)</span>
+        <span class="c1"># normidx_fc = N.where(self.raw_fcstdata != -6.0)</span>
+        <span class="c1"># self.norm_fcstdata = N.log2(self.raw_fcstdata[normidx_fc])</span>
+        <span class="c1"># normidx_ve = N.where(self.raw_fcstdata != -6.0)</span>
+        <span class="c1"># self.norm_verifdata = N.log2(self.raw_verifdata[normidx_ve])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Normalization complete.&quot;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Casati.do_recalibration"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_recalibration">[docs]</a>    <span class="k">def</span> <span class="nf">do_recalibration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;faster&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Yr = (1/Fx) * Fy</span>
+
+<span class="sd">        Yr = recalibrated forecast</span>
+<span class="sd">        Fx = Empirical cum. dist. of verif</span>
+<span class="sd">        Fy = Empirical cum. dist. of fcst</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;vectorize&#39;</span><span class="p">:</span>
+            <span class="c1"># Convert calc_ecdf to a vectorized function</span>
+            <span class="n">vf</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_ecdf</span><span class="p">,</span><span class="n">excluded</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;arr&#39;</span><span class="p">,])</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting recalibration for Fx&quot;</span><span class="p">)</span>
+            <span class="n">Fx</span> <span class="o">=</span> <span class="n">vf</span><span class="p">(</span><span class="n">arr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_verifdata</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_fcstdata</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting recalibration for Fy&quot;</span><span class="p">)</span>
+            <span class="n">Fy</span> <span class="o">=</span> <span class="n">vf</span><span class="p">(</span><span class="n">arr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_fcstdata</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_verifdata</span><span class="p">)</span>
+            <span class="c1"># for fcstval in self.norm_fcstdata:</span>
+                <span class="c1"># Fx = calc_ecdf(self.norm_verifdata,fcstval)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recalib_fcstdata</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">Fx</span><span class="p">)</span> <span class="o">*</span> <span class="n">Fy</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting recalibration for Fx&quot;</span><span class="p">)</span>
+            <span class="n">Fx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_ecdf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_verifdata</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_fcstdata</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting recalibration for Fy&quot;</span><span class="p">)</span>
+            <span class="n">Fy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_ecdf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_fcstdata</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_verifdata</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recalib_fcstdata</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">Fx</span><span class="p">)</span> <span class="o">*</span> <span class="n">Fy</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Recalibration complete.&quot;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Casati.calc_ecdf"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.calc_ecdf">[docs]</a>    <span class="k">def</span> <span class="nf">calc_ecdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Do empirical cumulative distribution of an array.</span>
+<span class="sd">        </span>
+<span class="sd">        arr -   N.ndarray</span>
+<span class="sd">        val -   threshold</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+        <span class="n">valshape</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">valshape</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">ecd</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">if</span> <span class="n">valshape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ecd</span> <span class="o">=</span> <span class="n">ecd</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">valshape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ecd</span></div>
+    
+<div class="viewcode-block" id="Casati.do_BED"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_BED">[docs]</a>    <span class="k">def</span> <span class="nf">do_BED</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot;Binary error decomposition.</span>
+
+<span class="sd">        Yr = Recalibrated forecast</span>
+<span class="sd">        X = Normalized analysis/verif</span>
+<span class="sd">        Z3 = Binary error (Eq. 3 in paper)</span>
+<span class="sd">        IYr = Binary image for recal. fcst (Eq.2 in paper)</span>
+<span class="sd">        Ix = Binary image for norm. verif (Eq.2 in paper)</span>
+<span class="sd">        Zf, Zm = Father and mother wavelets from Eq. 4 / Appendix in paper</span>
+<span class="sd">        Z = binary error image, post-Haar</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_verifdata</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recalibration</span><span class="p">:</span>
+            <span class="n">Yr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">recalib_fcstdata</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Yr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_fcstdata</span>
+        <span class="n">vBED</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">BED</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">IYr</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ix</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Zl</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Z3</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Zf</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Zm</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ztotal</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IYr</span><span class="p">[</span><span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="n">vBED</span><span class="p">(</span><span class="n">Yr</span><span class="p">,</span><span class="n">th</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Ix</span><span class="p">[</span><span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="n">vBED</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">th</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Z3</span><span class="p">[</span><span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IYr</span><span class="p">[</span><span class="n">th</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ix</span><span class="p">[</span><span class="n">th</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Zl</span><span class="p">[</span><span class="n">th</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">Zf</span><span class="p">[</span><span class="n">th</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zm</span><span class="p">[</span><span class="n">th</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ztotal</span><span class="p">[</span><span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Haar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Z3</span><span class="p">[</span><span class="n">th</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Binary error decomposition complete.&quot;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Casati.BED"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.BED">[docs]</a>    <span class="k">def</span> <span class="nf">BED</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pixel</span><span class="p">,</span><span class="n">thresh</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">pixel</span> <span class="o">&gt;</span> <span class="n">thresh</span> <span class="k">else</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Casati.Haar"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.Haar">[docs]</a>    <span class="k">def</span> <span class="nf">Haar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Z14 is Eq 14 from paper.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">father</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">mother</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">father</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Z</span>
+        <span class="n">Zl</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">Zl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Z</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Beginning Haar decomposition.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">Lidx</span><span class="p">,</span><span class="n">L</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ls</span><span class="p">):</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">L</span><span class="p">)</span>
+            <span class="c1"># l0 = int(l/2)</span>
+            <span class="n">L0</span> <span class="o">=</span> <span class="n">L</span><span class="o">-</span><span class="mi">1</span>
+            <span class="c1"># pdb.set_trace()</span>
+            <span class="n">father</span><span class="p">[</span><span class="n">L</span><span class="p">]</span> <span class="o">=</span> <span class="n">uniform_filter</span><span class="p">(</span><span class="n">Z</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span><span class="n">size</span><span class="o">=</span><span class="n">l</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span><span class="n">cval</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># TODO - remove the padded zeros.</span>
+            <span class="n">mother</span><span class="p">[</span><span class="n">L</span><span class="p">]</span> <span class="o">=</span> <span class="n">father</span><span class="p">[</span><span class="n">L0</span><span class="p">]</span><span class="o">-</span><span class="n">father</span><span class="p">[</span><span class="n">L</span><span class="p">]</span>
+            <span class="n">Zl</span><span class="p">[</span><span class="n">L</span><span class="p">]</span> <span class="o">=</span> <span class="n">father</span><span class="p">[</span><span class="n">L</span><span class="p">]</span> <span class="o">+</span> <span class="n">mother</span><span class="p">[</span><span class="n">L</span><span class="p">]</span> <span class="c1"># is this the same as old Z?</span>
+
+        <span class="c1"># assert N.all(father[self.Ls[-1]] == 0.0)</span>
+        <span class="n">Ztotal</span> <span class="o">=</span> <span class="n">father</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">Ls</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">dstack</span><span class="p">([</span><span class="n">mother</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ls</span><span class="p">]),</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished Haar decomposition.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Zl</span><span class="p">,</span> <span class="n">father</span><span class="p">,</span> <span class="n">mother</span><span class="p">,</span> <span class="n">Ztotal</span></div>
+
+<div class="viewcode-block" id="Casati.do_MSE"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_MSE">[docs]</a>    <span class="k">def</span> <span class="nf">do_MSE</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="c1"># Eq. 8 etc are ambiguous.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MSE</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">[</span><span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ls</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Zl</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">l</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MSE_total</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ls</span><span class="p">])</span>
+        <span class="c1"># MSE(l=1) should equal MSE_total</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MSE calculation complete.&quot;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Casati.do_SS"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_SS">[docs]</a>    <span class="k">def</span> <span class="nf">do_SS</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SS</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SS</span><span class="p">[</span><span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ls</span><span class="p">:</span>
+                <span class="c1"># self.SS[th][l] = ((self.MSE[th] - MSErandom[th])/</span>
+                               <span class="c1"># (MSEbest[th] - MSErandom[th]))</span>
+                <span class="c1"># Epsilon is base rate - fraction of rain vs no rain pixels</span>
+                <span class="n">ep</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Zl</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">l</span><span class="p">])</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Zl</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">l</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">SS</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">l</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">ep</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ep</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">l</span><span class="p">)))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SS calculation complete.&quot;</span><span class="p">)</span></div></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,882 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.lazy.ideal_profiles &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.lazy.ideal_profiles</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="n">N</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">scipy.integrate</span> <span class="k">as</span> <span class="nn">integrate</span>
+
+<span class="kn">import</span> <span class="nn">WEM.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">WEM.utils</span> <span class="k">import</span> <span class="n">metconstants</span> <span class="k">as</span> <span class="n">mc</span>
+<span class="kn">import</span> <span class="nn">WEM.postWRF.postWRF.skewt2</span> <span class="k">as</span> <span class="nn">sT</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">ROWS:</span>
+<span class="sd">line 1 is surface information</span>
+<span class="sd">lines 2 onwards is a point in profile</span>
+
+<span class="sd">COLUMNS:</span>
+<span class="sd">column 1 is surface pressure (hPa) for row 1</span>
+<span class="sd">--- set this as 1000.00.</span>
+<span class="sd">otherwise it is height (m) for rows 2 onwards</span>
+<span class="sd">--- increasing in height with row number</span>
+
+<span class="sd">column 2 is potential temperature (K)</span>
+<span class="sd">--- set row 1 as 300.0 K as reference, probably</span>
+
+<span class="sd">column 3 is vapour mixing ratio (g/kg)</span>
+<span class="sd">--- set row 1 as 14.00 g/kg, for instance</span>
+
+<span class="sd">column 4 is U wind (m/s)</span>
+<span class="sd">--- no row 1</span>
+
+<span class="sd">column 5 is V wind (m/s)</span>
+<span class="sd">--- no row 1</span>
+
+<span class="sd">METHODS FOR PROFILE GENERATION</span>
+<span class="sd">Temp:</span>
+<span class="sd">    - Weisman and Klemp</span>
+<span class="sd">    etc</span>
+<span class="sd">Wind:</span>
+<span class="sd">    - Blah</span>
+
+<span class="sd">Dewpoint:</span>
+<span class="sd">    - Blah</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Profile"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile">[docs]</a><span class="k">class</span> <span class="nc">Profile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">fdir</span><span class="p">,</span><span class="n">zL</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">E</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span><span class="n">m</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">hodotype</span><span class="o">=</span><span class="s1">&#39;curved&#39;</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">V</span><span class="o">=</span><span class="mf">12.0</span><span class="p">,</span><span class="n">PW</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">thT</span><span class="o">=</span><span class="mi">343</span><span class="p">,</span><span class="n">tT</span><span class="o">=</span><span class="mi">213</span><span class="p">,</span><span class="n">th0</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span><span class="n">qv0</span><span class="o">=</span><span class="mi">16</span><span class="n">E</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="n">Us</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+                    <span class="n">fname</span><span class="o">=</span><span class="s1">&#39;profile&#39;</span><span class="p">,</span><span class="n">H</span><span class="o">=</span><span class="mi">14500</span><span class="p">,</span><span class="n">zT</span><span class="o">=</span><span class="mi">14000</span><span class="p">,</span><span class="n">RH</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span><span class="n">zs</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
+                    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;MW01&#39;</span><span class="p">,</span><span class="n">k2P</span><span class="o">=</span><span class="mi">96500</span><span class="p">,</span><span class="n">k2T</span><span class="o">=</span><span class="mf">296.65</span><span class="p">,</span><span class="n">k2Td</span><span class="o">=</span><span class="mf">296.15</span><span class="p">,</span>
+                    <span class="n">k2z</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span><span class="n">offset_spd</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">offset_dir</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create profile text file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            z (N.ndarray)       :   Altitude above ground level (metres)</span>
+<span class="sd">            zL (int,float)      :   LCL (metres AGL)</span>
+<span class="sd">            E (int, float)      :   Specified CAPE</span>
+<span class="sd">            m (int, float)      :   Profile compression parameter</span>
+<span class="sd">            hodotype (str)      :   Hodograph type {&#39;straight&#39;,&#39;curved&#39;}</span>
+<span class="sd">            n (int)             :   Curvature parameter</span>
+<span class="sd">            V (int, float)      :   Maximum wind (m/s); overall vert. shear</span>
+<span class="sd">            fdir (str)          :   Directory for output file</span>
+<span class="sd">            PW (float,int,optional) :   Precip. water (mm)</span>
+<span class="sd">            fname (str, optional)   :   Filename for output</span>
+<span class="sd">            H (int, float, optional)    :   Vertical scale parameter</span>
+<span class="sd">            zT (int, float, optional)   :   Height of the tropopause (m).</span>
+<span class="sd">                                                Must be in z</span>
+<span class="sd">            RH (float, optional)    : Relative humidity above LCL (as a decimal)</span>
+<span class="sd">            method  (str)       :   {&#39;MW01,} Paper from which to create profile</span>
+<span class="sd">            k2P (int, float, optional)  :   Pressure at &quot;model level 2&quot;, Pa</span>
+<span class="sd">            k2T, k2Td (int, float, optional)    :   Drybumb, dewpoint at &quot;model level 2&quot;, C</span>
+<span class="sd">            offset_spd, offset_dir (int, float) :   Speed and direction of background flow</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if zT not in z:</span>
+            <span class="c1"># raise Exception(&quot;Height of the tropopause must be&quot;</span>
+                                <span class="c1"># &quot;in array of altitudes.&quot;)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="s1">&#39;WK82&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fdir</span> <span class="o">=</span> <span class="n">fdir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">th0</span> <span class="o">=</span> <span class="n">th0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thT</span> <span class="o">=</span> <span class="n">thT</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tT</span> <span class="o">=</span> <span class="n">tT</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">zT</span> <span class="o">=</span> <span class="n">zT</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">qv0</span> <span class="o">=</span> <span class="n">qv0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Us</span> <span class="o">=</span> <span class="n">Us</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">zs</span> <span class="o">=</span> <span class="n">zs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">offset_spd</span> <span class="o">=</span> <span class="n">offset_spd</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">offset_dir</span> <span class="o">=</span> <span class="n">offset_dir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile_th</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MWtemphum</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile_u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MWwind</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">method</span> <span class="ow">is</span> <span class="s1">&#39;MW01&#39;</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">test_old_b</span> <span class="o">=</span> <span class="n">test_old_b</span>
+
+            <span class="c1"># pdb.set_trace()</span>
+            <span class="k">if</span> <span class="n">zL</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">z</span><span class="p">:</span>
+                <span class="n">insidx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">z</span><span class="o">&gt;</span><span class="n">zL</span><span class="p">)</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">insidx</span><span class="p">,</span><span class="n">zL</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">k2z</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">z</span><span class="p">:</span>
+                <span class="n">insidx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">z</span><span class="o">&gt;</span><span class="n">k2z</span><span class="p">)</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">insidx</span><span class="p">,</span><span class="n">k2z</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">zL</span> <span class="o">=</span> <span class="n">zL</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="n">E</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">m</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hodotype</span> <span class="o">=</span> <span class="n">hodotype</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">V</span> <span class="o">=</span> <span class="n">V</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">PW</span> <span class="o">=</span> <span class="n">PW</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fdir</span> <span class="o">=</span> <span class="n">fdir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">H</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">zT</span> <span class="o">=</span> <span class="n">zT</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RH</span> <span class="o">=</span> <span class="n">RH</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k2P</span> <span class="o">=</span> <span class="n">k2P</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k2T</span> <span class="o">=</span> <span class="n">k2T</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k2Td</span> <span class="o">=</span> <span class="n">k2Td</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k2z</span> <span class="o">=</span> <span class="n">k2z</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile_th</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buoyancy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">profile_u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wind</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Choose method.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_textfile</span><span class="p">()</span>
+        <span class="c1"># self.plot_skewT()</span>
+
+<div class="viewcode-block" id="Profile.buoyancy"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.buoyancy">[docs]</a>    <span class="k">def</span> <span class="nf">buoyancy</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot; Parcel buoyancy profile, or Eq. (A1) in MW01.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        b   :   array_like</span>
+<span class="sd">            Atmospheric profile of buoyancy.</span>
+<span class="sd">        qv  :   array_like</span>
+<span class="sd">            Atmospheric profile of mixing ratio</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span>
+        <span class="n">zL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zL</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span>
+        <span class="n">zT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zT</span>
+        <span class="n">RH</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RH</span>
+
+        <span class="c1"># z&#39; in Eq (1)</span>
+        <span class="n">dz</span> <span class="o">=</span> <span class="n">z</span><span class="o">-</span><span class="n">zL</span>
+
+        <span class="c1"># Index of LCL, k2, and tropopause</span>
+        <span class="n">Lidx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">z</span><span class="o">==</span><span class="n">zL</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">k2idx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">z</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">k2z</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">Tidx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">z</span><span class="o">==</span><span class="n">zT</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Height above LCL of max buoyancy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Zb</span> <span class="o">=</span> <span class="n">H</span><span class="o">/</span><span class="n">m</span>
+
+        <span class="c1"># Buoyancy profile</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="p">((</span><span class="n">E</span><span class="o">*</span><span class="n">dz</span><span class="o">*</span><span class="n">m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">H</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">m</span><span class="o">/</span><span class="n">H</span><span class="p">)</span><span class="o">*-</span><span class="n">dz</span><span class="p">)</span>
+
+        <span class="c1"># Set buoyancy to zero at and above tropopause</span>
+        <span class="c1"># troposphere = N.where(z&gt;=zT)</span>
+        <span class="c1"># bT = copy.copy(b)</span>
+        <span class="c1"># bT[troposphere] = 0</span>
+
+        <span class="c1"># Generating other arrays</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">N</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">Theta</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+        <span class="n">Rv</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+        <span class="n">DryBulb</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+
+        <span class="c1"># Stats at k2</span>
+        <span class="n">P</span><span class="p">[</span><span class="n">k2idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k2P</span>
+        <span class="n">Rv</span><span class="p">[</span><span class="n">k2idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_rv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k2P</span><span class="p">,</span><span class="n">Td</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">k2Td</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k2RH</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_RH</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k2Td</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">k2T</span><span class="p">)</span>
+        <span class="n">Theta</span><span class="p">[</span><span class="n">k2idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_theta_2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k2P</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">k2T</span><span class="p">)</span>
+        <span class="n">DryBulb</span><span class="p">[</span><span class="n">k2idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k2T</span>
+
+        <span class="c1"># Temperature at the LCL</span>
+        <span class="n">TLCL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_TLCL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k2Td</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">k2T</span><span class="p">)</span>
+        <span class="c1"># self.k2the = self.compute_thetae_4(DryBulb[k2idx],P[k2idx],</span>
+                            <span class="c1"># Rv[k2idx],TLCL)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k2the</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_thetaep</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">k2idx</span><span class="p">],</span><span class="n">Rv</span><span class="p">[</span><span class="n">k2idx</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">k2T</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">k2RH</span><span class="p">)</span>
+
+        <span class="c1"># self.k2the = self.compute_thetae_3(Theta[k2idx],self.k2P,self.k2Td, self.k2T,Rv[k2idx],TL=TLCL)</span>
+        <span class="c1"># self.k2the = self.compute_thetae(self.k2T,self.k2rv,self.k2P,self.k2Td)</span>
+        <span class="c1"># self.k2the = self.compute_thetae_2(self.k2th,self.k2rv,self.k2T)+4</span>
+
+        <span class="c1"># Get to next z level</span>
+        <span class="c1"># dZ = zdiff[znext]</span>
+        <span class="c1"># dP = self.compute_P_at_z(self.k2P,self.k2T,dZ)</span>
+        <span class="c1"># P[znext] = self.k2P + dP</span>
+        <span class="c1"># DryBulb[znext] = self.compute_T_with_LCL(P[znext],self.k2P,self.k2T)</span>
+        <span class="c1"># DryBulb[znext] = self.compute_T_invert_thetae(self.k2the,P[znext],self.k2rv,self.k2T)</span>
+        <span class="c1"># Rv[znext] =  self.compute_rv(P[znext],T=DryBulb[znext],RH=self.RH)</span>
+        <span class="c1"># Theta-e is conserved, and use T of LCL</span>
+        <span class="c1"># Theta[znext] = self.compute_theta(self.k2the,Rv[znext],self.k2T)</span>
+        <span class="c1"># Theta[znext] = self.compute_theta_2(P[znext],DryBulb[znext])</span>
+
+
+
+        <span class="c1"># Now iterate up sounding from k2 thru LCL to top of model</span>
+        <span class="k">for</span> <span class="n">zidx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k2idx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">)):</span>
+            <span class="n">zbot</span> <span class="o">=</span> <span class="n">zidx</span><span class="o">-</span><span class="mi">1</span>
+            <span class="n">dZ</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span><span class="o">-</span><span class="n">z</span><span class="p">[</span><span class="n">zbot</span><span class="p">]</span>
+            <span class="n">dP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_P_at_z</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">zbot</span><span class="p">],</span><span class="n">DryBulb</span><span class="p">[</span><span class="n">zbot</span><span class="p">]</span><span class="o">-</span><span class="p">(</span><span class="mf">6.5</span><span class="o">*</span><span class="n">dZ</span><span class="o">*</span><span class="mi">10</span><span class="o">**-</span><span class="mi">3</span><span class="p">),</span><span class="n">dZ</span><span class="p">)</span>
+            <span class="c1"># dP = self.compute_P_at_z(P[zbot],DryBulb[zbot],dZ)</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">zbot</span><span class="p">]</span> <span class="o">+</span> <span class="n">dP</span>
+
+            <span class="k">if</span> <span class="n">zidx</span> <span class="o">&lt;</span> <span class="n">Lidx</span><span class="p">:</span>
+                <span class="n">Rv</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Rv</span><span class="p">[</span><span class="n">k2idx</span><span class="p">]</span>
+                <span class="c1"># DryBulb[zidx] = self.compute_T_with_LCL(P[zidx],self.k2P,self.k2T)</span>
+                <span class="n">Theta</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_theta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k2the</span><span class="p">,</span><span class="n">Rv</span><span class="p">[</span><span class="n">k2idx</span><span class="p">],</span><span class="n">TLCL</span><span class="p">)</span>
+                <span class="n">DryBulb</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_drybulb</span><span class="p">(</span><span class="n">Theta</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="n">P</span><span class="p">[</span><span class="n">zidx</span><span class="p">])</span>
+
+            <span class="k">elif</span> <span class="n">zidx</span> <span class="o">==</span> <span class="n">Lidx</span><span class="p">:</span>
+                <span class="c1"># Using LCL RH = 0.9. Could try 1?</span>
+                <span class="n">DryBulb</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">TLCL</span>
+                <span class="n">Theta</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_theta_2</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="n">TLCL</span><span class="p">)</span>
+                <span class="n">Rv</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_rv</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="n">T</span><span class="o">=</span><span class="n">DryBulb</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="n">RH</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">RH</span><span class="p">)</span>
+                <span class="n">TdLCL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Td</span><span class="p">(</span><span class="n">DryBulb</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">RH</span><span class="p">)</span>
+                <span class="c1"># theLCL = self.compute_thetae_4(DryBulb[zidx],P[zidx],</span>
+                            <span class="c1"># Rv[zidx],TLCL)</span>
+                <span class="n">theLCL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_thetaep</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="n">Rv</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="n">DryBulb</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">RH</span><span class="p">)</span>
+                <span class="c1"># theLCL = self.compute_thetae_3(Theta[zidx],P[zidx],TdLCL,TLCL,Rv[zidx])</span>
+
+            <span class="k">elif</span> <span class="n">zidx</span> <span class="o">&gt;</span> <span class="n">Lidx</span><span class="p">:</span>
+                <span class="n">T2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_T_with_LCL</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="n">P</span><span class="p">[</span><span class="n">Lidx</span><span class="p">],</span><span class="n">TLCL</span><span class="p">)</span>
+                <span class="n">Th2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_theta_2</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="n">T2</span><span class="p">)</span>
+                <span class="n">Rv2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_rv</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="n">T</span><span class="o">=</span><span class="n">T2</span><span class="p">,</span><span class="n">RH</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">RH</span><span class="p">)</span>
+                <span class="c1"># Th1 = self.compute_theta(theLCL,Rv[zbot],TLCL)</span>
+                <span class="c1"># T1 = self.compute_drybulb(Th1,P[zidx])</span>
+                <span class="c1"># T3 = self.compute_T_invert_thetae(theLCL,P[zidx],Rv[zbot],TLCL)</span>
+                <span class="c1"># Th3 = self.compute_theta_2(P[zidx],T3)</span>
+                <span class="n">Theta</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Th2</span>
+                <span class="n">DryBulb</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">T2</span>
+                <span class="n">Rv</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Rv2</span>
+                <span class="c1"># pdb.set_trace()</span>
+        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+
+        <span class="c1"># Now iterate down from LCL to surface</span>
+        <span class="k">for</span> <span class="n">zidx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Lidx</span><span class="o">+</span><span class="mi">1</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">ztop</span> <span class="o">=</span> <span class="n">zidx</span><span class="o">+</span><span class="mi">1</span>
+
+            <span class="n">dZ</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span><span class="o">-</span><span class="n">z</span><span class="p">[</span><span class="n">ztop</span><span class="p">]</span>
+            <span class="n">dP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_P_at_z</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">ztop</span><span class="p">],</span><span class="n">DryBulb</span><span class="p">[</span><span class="n">ztop</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="mf">6.5</span><span class="o">*</span><span class="n">dZ</span><span class="o">*</span><span class="mi">10</span><span class="o">**-</span><span class="mi">3</span><span class="p">),</span><span class="n">dZ</span><span class="p">)</span>
+            <span class="c1"># pdb.set_trace()</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">ztop</span><span class="p">]</span> <span class="o">+</span> <span class="n">dP</span>
+            <span class="c1"># DryBulb[zidx] = self.compute_T_invert_thetae(self.k2the,P[zidx],Rv[zbot],self.k2T)</span>
+            <span class="n">DryBulb</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_T_with_LCL</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">k2P</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">k2T</span><span class="p">)</span>
+            <span class="c1"># Rv[zidx] = self.compute_rv(P[zidx],T=DryBulb[zidx],RH=self.RH)</span>
+            <span class="n">Rv</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Rv</span><span class="p">[</span><span class="n">Lidx</span><span class="p">]</span>
+            <span class="n">Theta</span><span class="p">[</span><span class="n">zidx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_theta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k2the</span><span class="p">,</span><span class="n">Rv</span><span class="p">[</span><span class="n">zidx</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">k2T</span><span class="p">)</span>
+
+            <span class="c1"># MIGHT NEED RICHARDSON CONSTRAINT</span>
+
+        <span class="c1"># Create isothermal layer above tropopause</span>
+        <span class="n">isotherm</span> <span class="o">=</span> <span class="n">DryBulb</span><span class="p">[</span><span class="n">Tidx</span><span class="p">]</span>
+
+        <span class="c1"># for zidx in range(Tidx+1,len(z)):</span>
+        <span class="c1"># Theta = isothermC * (100000/P)**(mc.R/mc.cp)</span>
+        <span class="n">TRO</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">Tidx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        <span class="n">Theta</span><span class="p">[</span><span class="n">TRO</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_theta_2</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">TRO</span><span class="p">],</span><span class="n">isotherm</span><span class="p">)</span>
+        <span class="n">DryBulb</span><span class="p">[</span><span class="n">TRO</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_drybulb</span><span class="p">(</span><span class="n">Theta</span><span class="p">[</span><span class="n">TRO</span><span class="p">],</span><span class="n">P</span><span class="p">[</span><span class="n">TRO</span><span class="p">])</span>
+        <span class="c1"># ttt = Theta/( (100000/P)**(mc.R/mc.cp))</span>
+        <span class="c1"># Enforce 90% again</span>
+        <span class="c1"># Rv[zidx] = self.compute_rv(p=P[zidx],T=ttt, RH=self.RH)</span>
+        <span class="n">Rv</span><span class="p">[</span><span class="n">TRO</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_rv</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">P</span><span class="p">[</span><span class="n">TRO</span><span class="p">],</span><span class="n">T</span><span class="o">=</span><span class="n">DryBulb</span><span class="p">[</span><span class="n">TRO</span><span class="p">],</span> <span class="n">RH</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">RH</span><span class="p">)</span>
+
+        <span class="c1"># Integrate CAPE between LCL and model top after isothermal calc</span>
+        <span class="n">Et</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="n">Lidx</span><span class="p">:],</span><span class="n">x</span><span class="o">=</span><span class="n">z</span><span class="p">[</span><span class="n">Lidx</span><span class="p">:])</span>
+
+        <span class="c1"># Multiply buoyancy profile by CAPE ratio</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">b</span> <span class="o">*</span> <span class="p">(</span><span class="n">E</span><span class="o">/</span><span class="n">Et</span><span class="p">)</span>
+
+        <span class="c1"># Calc virtual temp perturbations from buoyancy</span>
+        <span class="c1"># Tpert = (B*Theta)/mc.g</span>
+        <span class="n">Tpert</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_thetapert</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="n">DryBulb</span><span class="p">,</span><span class="n">Rv</span><span class="p">)</span>
+
+        <span class="c1"># Change theta, sfc/LCL to tropopause, to create CAPE==E in sounding</span>
+        <span class="n">THETA</span> <span class="o">=</span> <span class="n">Theta</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">modify_bLCL</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">modify_bLCL</span><span class="p">:</span>
+            <span class="c1"># Only change LCL upward</span>
+            <span class="n">THETA</span><span class="p">[</span><span class="n">Lidx</span><span class="p">:</span><span class="n">Tidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Theta</span><span class="p">[</span><span class="n">Lidx</span><span class="p">:</span><span class="n">Tidx</span><span class="p">]</span><span class="o">-</span><span class="n">Tpert</span><span class="p">[</span><span class="n">Lidx</span><span class="p">:</span><span class="n">Tidx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Change near surface too</span>
+            <span class="n">THETA</span><span class="p">[:</span><span class="n">Tidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Theta</span><span class="p">[:</span><span class="n">Tidx</span><span class="p">]</span><span class="o">-</span><span class="n">Tpert</span><span class="p">[:</span><span class="n">Tidx</span><span class="p">]</span>
+
+        <span class="c1"># Enforce RH = 90% for new theta values</span>
+        <span class="n">DRYBULB</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_drybulb</span><span class="p">(</span><span class="n">THETA</span><span class="p">,</span><span class="n">P</span><span class="p">)</span>
+        <span class="n">SL</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">Lidx</span><span class="p">,</span><span class="n">Tidx</span><span class="p">)</span>
+        <span class="n">RV</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_rv</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">T</span><span class="o">=</span><span class="n">DRYBULB</span><span class="p">,</span><span class="n">RH</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">RH</span><span class="p">)</span>
+        <span class="c1"># RV[SL] = self.compute_rv(P[SL],T=DRYBULB[SL],RH=self.RH)</span>
+
+        <span class="c1"># Change PW</span>
+        <span class="c1"># Substract ~8C from theta and dewpoint</span>
+        <span class="c1"># T in C; RH in 0-100 %</span>
+        <span class="c1"># Td = utils.dewpoint(T,RH)</span>
+        <span class="c1"># Modified RH</span>
+
+        <span class="c1"># Extra fields for plotting skew-T</span>
+        <span class="n">ES</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_es</span><span class="p">(</span><span class="n">DRYBULB</span><span class="p">)</span>
+        <span class="n">RVs</span> <span class="o">=</span> <span class="mf">0.622</span><span class="o">*</span><span class="p">(</span><span class="n">ES</span><span class="o">/</span><span class="p">(</span><span class="n">P</span><span class="o">-</span><span class="n">ES</span><span class="p">))</span>
+        <span class="n">RHs</span> <span class="o">=</span> <span class="n">RV</span><span class="o">/</span><span class="n">RVs</span>
+        <span class="n">T_D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Td</span><span class="p">(</span><span class="n">DRYBULB</span><span class="p">,</span><span class="n">RHs</span><span class="p">)</span>
+        <span class="n">sT</span><span class="o">.</span><span class="n">plot_profile</span><span class="p">(</span><span class="n">P</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span><span class="n">DRYBULB</span><span class="o">-</span><span class="mf">273.15</span><span class="p">,</span><span class="n">T_D</span><span class="o">-</span><span class="mf">273.15</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">fdir</span><span class="p">)</span>
+        <span class="c1"># sT.plot_profile(pres,oldtemps,dewpoints,self.fdir,fname=&#39;skewT_oldtemps.png&#39;)</span>
+
+        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">THETA</span><span class="p">,</span> <span class="n">RV</span></div>
+
+<div class="viewcode-block" id="Profile.compute_std_P"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_std_P">[docs]</a>    <span class="k">def</span> <span class="nf">compute_std_P</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute pressure in the tropopause as a function</span>
+<span class="sd">        of height, for a standard atmosphere.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">P</span> <span class="o">=</span> <span class="mi">101290</span><span class="o">*</span><span class="p">((</span><span class="mf">288.14</span><span class="o">-</span><span class="p">(</span><span class="mf">0.00649</span><span class="o">*</span><span class="n">z</span><span class="p">))</span><span class="o">/</span><span class="mf">288.08</span><span class="p">)</span><span class="o">**</span><span class="mf">5.256</span>
+        <span class="k">return</span> <span class="n">P</span></div>
+
+<div class="viewcode-block" id="Profile.compute_drybulb"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_drybulb">[docs]</a>    <span class="k">def</span> <span class="nf">compute_drybulb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="n">P</span><span class="p">):</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">theta</span><span class="o">/</span><span class="p">((</span><span class="mi">100000</span><span class="o">/</span><span class="n">P</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">R</span><span class="o">/</span><span class="n">mc</span><span class="o">.</span><span class="n">cp</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">T</span></div>
+
+<div class="viewcode-block" id="Profile.compute_RH"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_RH">[docs]</a>    <span class="k">def</span> <span class="nf">compute_RH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Td</span><span class="p">,</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">RH</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">0.073</span><span class="o">*</span><span class="p">(</span><span class="n">Td</span><span class="o">-</span><span class="n">T</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">RH</span></div>
+
+<div class="viewcode-block" id="Profile.P_to_z"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.P_to_z">[docs]</a>    <span class="k">def</span> <span class="nf">P_to_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">Pa</span><span class="p">,</span><span class="n">refPa</span><span class="o">=</span><span class="mi">100000</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert pressure to altitude.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        T   :   int, float, array_like</span>
+<span class="sd">            Dry-bulb temperature. If array, must be identical to Pa in size</span>
+<span class="sd">        Pa  :   int, float, array_like</span>
+<span class="sd">            Pressure (Pa). If array, must be identical to T in size</span>
+<span class="sd">        refPa   :   int, float, optional</span>
+<span class="sd">            Reference pressure (Pa).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        z   :   float, array_like</span>
+<span class="sd">            Height(s) above ground level (m), same size as Pa, T.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">z</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="p">((</span><span class="n">mc</span><span class="o">.</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">)</span><span class="o">/</span><span class="n">mc</span><span class="o">.</span><span class="n">g</span><span class="p">)</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Pa</span><span class="o">/</span><span class="n">refPa</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">z</span></div>
+
+<div class="viewcode-block" id="Profile.z_to_P"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.z_to_P">[docs]</a>    <span class="k">def</span> <span class="nf">z_to_P</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">refPa</span><span class="o">=</span><span class="mi">100000</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert altitude to pressure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">Pa</span> <span class="o">=</span> <span class="n">refPa</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="n">mc</span><span class="o">.</span><span class="n">g</span><span class="o">*</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="n">mc</span><span class="o">.</span><span class="n">R</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Pa</span></div>
+
+<div class="viewcode-block" id="Profile.compute_es"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_es">[docs]</a>    <span class="k">def</span> <span class="nf">compute_es</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">T</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Approximation for saturation water pressure of water.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">TC</span> <span class="o">=</span> <span class="n">T</span><span class="o">-</span><span class="mf">273.15</span>
+        <span class="n">es</span> <span class="o">=</span> <span class="mf">6.1078</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="mf">19.8</span><span class="o">*</span><span class="n">TC</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">273</span><span class="o">+</span><span class="n">TC</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">es</span><span class="o">*</span><span class="mi">100</span>       <span class="c1"># This is in Pa</span></div>
+
+<div class="viewcode-block" id="Profile.compute_e"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_e">[docs]</a>    <span class="k">def</span> <span class="nf">compute_e</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Td</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">es</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">RH</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;RH is decimal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Td</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Td</span> <span class="o">=</span> <span class="n">Td</span><span class="o">-</span><span class="mf">273.15</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="mf">6.1</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">0.073</span><span class="o">*</span><span class="n">Td</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eshPa</span> <span class="o">=</span> <span class="n">es</span><span class="o">/</span><span class="mi">100</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">RH</span><span class="o">*</span><span class="n">eshPa</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">e</span> <span class="o">*</span> <span class="mi">100</span> <span class="c1"># into Pa</span>
+        <span class="k">return</span> <span class="n">e</span></div>
+
+<div class="viewcode-block" id="Profile.compute_thetae"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_thetae">[docs]</a>    <span class="k">def</span> <span class="nf">compute_thetae</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">Td</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">RH</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># r is mixing ratio here</span>
+        <span class="n">TC</span> <span class="o">=</span> <span class="n">T</span><span class="o">-</span><span class="mf">273.15</span>
+        <span class="n">PhPa</span> <span class="o">=</span> <span class="n">P</span><span class="o">/</span><span class="mi">100</span>
+        <span class="n">pkap</span> <span class="o">=</span> <span class="mf">0.2854</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">Td</span><span class="p">:</span>
+            <span class="n">Td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Td</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">RH</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">es</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_es</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_e</span><span class="p">(</span><span class="n">Td</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">e</span><span class="o">/</span><span class="n">es</span>
+
+        <span class="n">thetae</span> <span class="o">=</span> <span class="n">TC</span><span class="o">*</span><span class="p">(</span><span class="mi">1000</span><span class="o">/</span><span class="n">PhPa</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">pkap</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mf">0.28</span><span class="o">*</span><span class="n">r</span><span class="p">))</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                        <span class="p">(</span><span class="mf">3.376</span><span class="o">/</span><span class="n">mc</span><span class="o">.</span><span class="n">R</span><span class="o">-</span><span class="mf">0.00254</span><span class="p">)</span><span class="o">*</span><span class="mf">1000.0</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mf">0.81</span><span class="o">*</span><span class="n">r</span><span class="p">))</span>
+
+        <span class="c1"># Tstar = self.compute_Tstar(TK,e)</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="c1"># thetae = T*((100000/P)**(0.2854*(1-(0.28*r))))*N.exp(</span>
+                    <span class="c1"># r*(1+(0.81*r))*((3376/Tstar)-2.54))</span>
+        <span class="c1"># thetae = (T + (r * mc.Lv/mc.cp))*(100000/P)**mc.kappa</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span> <span class="n">thetae</span> <span class="o">+</span> <span class="mf">273.15</span></div>
+
+<div class="viewcode-block" id="Profile.compute_thetae_2"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_thetae_2">[docs]</a>    <span class="k">def</span> <span class="nf">compute_thetae_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">TLCL</span><span class="p">):</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">r</span> <span class="c1">#*1000</span>
+        <span class="c1"># TLCL = TLCL-273.15</span>
+        <span class="n">thetae</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                <span class="p">((</span><span class="mf">3.376</span><span class="o">/</span><span class="n">TLCL</span><span class="p">)</span><span class="o">-</span><span class="mf">0.00254</span><span class="p">)</span><span class="o">*</span>
+                <span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="mf">0.81</span><span class="o">*</span><span class="n">R</span><span class="o">*</span><span class="mi">10</span><span class="o">**-</span><span class="mi">3</span><span class="p">))))</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span> <span class="n">thetae</span></div>
+
+<div class="viewcode-block" id="Profile.compute_thetae_3"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_thetae_3">[docs]</a>    <span class="k">def</span> <span class="nf">compute_thetae_3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">Td</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">TL</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">P</span><span class="o">/</span><span class="mi">100</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_e</span><span class="p">(</span><span class="n">Td</span><span class="o">=</span><span class="n">Td</span><span class="p">)</span><span class="o">/</span><span class="mi">100</span>
+        <span class="c1"># Td = Td-273.15</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">TL</span><span class="p">:</span>
+            <span class="n">TL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_TLCL</span><span class="p">(</span><span class="n">Td</span><span class="p">,</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">thL</span> <span class="o">=</span> <span class="n">T</span><span class="o">*</span><span class="p">((</span><span class="mi">1000</span><span class="o">/</span><span class="p">(</span><span class="n">P</span><span class="o">-</span><span class="n">e</span><span class="p">))</span><span class="o">**</span><span class="mf">0.2854</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">T</span><span class="o">/</span><span class="n">TL</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">0.28</span><span class="o">*</span><span class="n">r</span><span class="p">))</span>
+        <span class="n">thetae</span> <span class="o">=</span> <span class="n">thL</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(((</span><span class="mi">3036</span><span class="o">/</span><span class="n">TL</span><span class="p">)</span><span class="o">-</span><span class="mf">1.78</span><span class="p">)</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="mf">0.448</span><span class="o">*</span><span class="n">r</span><span class="p">)))</span>
+        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">thetae</span></div>
+
+<div class="viewcode-block" id="Profile.compute_thetae_4"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_thetae_4">[docs]</a>    <span class="k">def</span> <span class="nf">compute_thetae_4</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">TL</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">/</span><span class="mi">100</span>
+        <span class="c1"># r = r*1000</span>
+
+        <span class="n">thetae</span> <span class="o">=</span> <span class="n">T</span><span class="o">*</span><span class="p">((</span><span class="mi">1000</span><span class="o">/</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">0.2854</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="mf">0.28E-3</span><span class="p">))))</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                    <span class="p">(((</span><span class="mf">3.376</span><span class="o">/</span><span class="n">TL</span><span class="p">)</span><span class="o">-</span><span class="mf">0.00254</span><span class="p">)</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="mf">0.81E-3</span><span class="p">))))</span>
+        <span class="k">return</span> <span class="n">thetae</span></div>
+
+<div class="viewcode-block" id="Profile.compute_thetaep"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_thetaep">[docs]</a>    <span class="k">def</span> <span class="nf">compute_thetaep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">RH</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">/</span><span class="mi">100</span>
+        <span class="n">es</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_es</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_e</span><span class="p">(</span><span class="n">es</span><span class="o">=</span><span class="n">es</span><span class="p">,</span><span class="n">RH</span><span class="o">=</span><span class="n">RH</span><span class="p">)</span>
+        <span class="n">Tstar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Tstar</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">thetaep</span> <span class="o">=</span> <span class="n">T</span><span class="o">*</span><span class="p">((</span><span class="mi">1000</span><span class="o">/</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">0.2854</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="mf">0.28</span><span class="o">*</span><span class="n">r</span><span class="p">))))</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                    <span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="mf">0.81</span><span class="p">))</span><span class="o">*</span><span class="p">((</span><span class="mi">3376</span><span class="o">/</span><span class="n">Tstar</span><span class="p">)</span><span class="o">-</span><span class="mf">2.54</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">thetaep</span></div>
+
+<div class="viewcode-block" id="Profile.compute_TLCL"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_TLCL">[docs]</a>    <span class="k">def</span> <span class="nf">compute_TLCL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Td</span><span class="p">,</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">TL</span> <span class="o">=</span> <span class="mi">56</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">Td</span><span class="o">-</span><span class="mi">56</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">T</span><span class="o">/</span><span class="n">Td</span><span class="p">)</span><span class="o">/</span><span class="mi">800</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">TL</span></div>
+
+<div class="viewcode-block" id="Profile.compute_Tstar"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_Tstar">[docs]</a>    <span class="k">def</span> <span class="nf">compute_Tstar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">TK</span><span class="p">,</span><span class="n">e</span><span class="p">):</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">TK</span><span class="o">-</span><span class="mf">273.15</span>
+        <span class="n">Tstar</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2840</span><span class="o">/</span><span class="p">(</span><span class="mf">3.5</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">TK</span><span class="p">)</span> <span class="o">-</span> <span class="n">N</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">-</span> <span class="mf">4.805</span><span class="p">))</span> <span class="o">+</span> <span class="mi">55</span>
+        <span class="k">return</span> <span class="n">Tstar</span></div>
+
+<div class="viewcode-block" id="Profile.compute_theta"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_theta">[docs]</a>    <span class="k">def</span> <span class="nf">compute_theta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">thetae</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">TLCL</span><span class="p">):</span>
+        <span class="c1"># L = mc.Lv</span>
+        <span class="n">TLCL</span> <span class="o">=</span> <span class="n">TLCL</span><span class="o">-</span><span class="mf">273.15</span>
+        <span class="c1"># L = self.compute_Lv(TLCL)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="mi">1000</span>
+        <span class="c1"># R = r</span>
+        <span class="c1"># es = self.compute_es(T)</span>
+        <span class="c1"># qs = self.compute_qs(es,P)</span>
+        <span class="c1"># theta = thetae/(</span>
+                <span class="c1"># 1+((L*qs)/(mc.cp*TLCL)))</span>
+                <span class="c1"># (1+(L*qs))/(mc.cp*TLCL))</span>
+
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">thetae</span><span class="o">/</span><span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                <span class="p">((</span><span class="mf">3.376</span><span class="o">/</span><span class="n">TLCL</span><span class="p">)</span><span class="o">-</span><span class="mf">0.00254</span><span class="p">)</span><span class="o">*</span>
+                <span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="mf">0.81</span><span class="o">*</span><span class="n">R</span><span class="o">*</span><span class="mi">10</span><span class="o">**-</span><span class="mi">3</span><span class="p">))))</span>
+
+                <span class="c1"># 1.0723 * 10E-6 * (L/TLCL_C) *</span>
+                <span class="c1"># r*(1+(0.81*r*10**-3)))</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span> <span class="n">theta</span><span class="o">+</span><span class="mf">273.15</span></div>
+
+<div class="viewcode-block" id="Profile.compute_Lv"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_Lv">[docs]</a>    <span class="k">def</span> <span class="nf">compute_Lv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">TC</span> <span class="o">=</span> <span class="n">T</span><span class="o">-</span><span class="mf">273.15</span>
+        <span class="n">Lv</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.501</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.00237</span><span class="o">*</span><span class="n">TC</span><span class="p">))</span><span class="o">*</span><span class="mi">10</span><span class="o">**</span><span class="mi">6</span>
+        <span class="k">return</span> <span class="n">Lv</span></div>
+
+<div class="viewcode-block" id="Profile.compute_qs"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_qs">[docs]</a>    <span class="k">def</span> <span class="nf">compute_qs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">es</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">hPa</span> <span class="o">=</span> <span class="n">p</span><span class="o">/</span><span class="mi">100</span>
+        <span class="n">eshPa</span> <span class="o">=</span> <span class="n">es</span><span class="o">/</span><span class="mi">100</span>
+        <span class="n">qs</span> <span class="o">=</span> <span class="p">(</span><span class="n">eshPa</span><span class="o">*</span><span class="n">mc</span><span class="o">.</span><span class="n">R</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">hPa</span><span class="o">*</span><span class="n">mc</span><span class="o">.</span><span class="n">Rv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">qs</span></div>
+
+<div class="viewcode-block" id="Profile.compute_thetae_profile"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_thetae_profile">[docs]</a>    <span class="k">def</span> <span class="nf">compute_thetae_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">TK</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">RH</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Bolton&#39;s theta E profile.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        TK  :   int, float</span>
+<span class="sd">            Temp at initial level (K)</span>
+<span class="sd">        p   :   int, float</span>
+<span class="sd">            Pressure at initial level (Pa)</span>
+<span class="sd">        r   :   int, float</span>
+<span class="sd">            Mixing ratio at initial level (g/kg?)</span>
+<span class="sd">        RH  :   int, float</span>
+<span class="sd">            RH...where? (percent)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">/</span><span class="mi">100</span>
+        <span class="n">TL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_TL</span><span class="p">(</span><span class="n">TK</span><span class="p">,</span><span class="n">RH</span><span class="p">)</span>
+        <span class="n">thetaE</span> <span class="o">=</span> <span class="p">(</span><span class="n">TK</span><span class="o">*</span><span class="p">(</span><span class="mi">1000</span><span class="o">/</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">0.2854</span><span class="o">*</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="mf">0.28</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">r</span><span class="p">))</span><span class="o">*</span>
+                    <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(((</span><span class="mf">3.376</span><span class="o">/</span><span class="n">TL</span><span class="p">)</span><span class="o">-</span><span class="mf">0.00254</span><span class="p">)</span><span class="o">*</span>
+                    <span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mf">0.81</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">r</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">thetaE</span></div>
+
+<div class="viewcode-block" id="Profile.compute_TL"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_TL">[docs]</a>    <span class="k">def</span> <span class="nf">compute_TL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">TK</span><span class="p">,</span><span class="n">rh</span><span class="p">):</span>
+        <span class="n">RH</span> <span class="o">=</span> <span class="n">rh</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="n">TL</span> <span class="o">=</span> <span class="mi">55</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">TK</span><span class="o">-</span><span class="mi">55</span><span class="p">))</span><span class="o">-</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">RH</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span><span class="o">/</span><span class="mi">2840</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">TL</span></div>
+
+<div class="viewcode-block" id="Profile.compute_w"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_w">[docs]</a>    <span class="k">def</span> <span class="nf">compute_w</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">):</span>
+        <span class="c1"># t = T-273.15</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_e</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="p">((</span><span class="mf">0.622</span><span class="o">*</span><span class="n">e</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">P</span><span class="o">-</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">w</span></div>
+
+<div class="viewcode-block" id="Profile.wind"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.wind">[docs]</a>    <span class="k">def</span> <span class="nf">wind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wind profiles.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        u, v    :   array-like</span>
+<span class="sd">            Arrays of u and v profiles</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">V</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+        <span class="n">zL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zL</span>
+        <span class="n">Zv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zb</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span>
+
+        <span class="n">dz</span> <span class="o">=</span> <span class="n">z</span><span class="o">-</span><span class="n">zL</span>
+        <span class="n">cn</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">vc</span> <span class="o">=</span> <span class="n">cn</span><span class="o">*</span><span class="n">V</span><span class="o">*</span><span class="p">((</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">H</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="n">dz</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">dz</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="n">H</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">hodoyupe</span> <span class="ow">is</span> <span class="s1">&#39;straight&#39;</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">V</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">vc</span><span class="o">/</span><span class="n">V</span><span class="p">)</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">dz</span><span class="o">*</span><span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">hodotype</span> <span class="ow">is</span> <span class="s1">&#39;curved&#39;</span><span class="p">:</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sign</span><span class="p">((</span><span class="n">dz</span><span class="o">-</span><span class="n">Zv</span><span class="p">))</span><span class="o">*</span><span class="p">((</span><span class="n">V</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="n">vc</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">vc</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Specify correct hodotype.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">u</span><span class="p">,</span><span class="n">v</span></div>
+
+<div class="viewcode-block" id="Profile.compute_P_levels"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_P_levels">[docs]</a>    <span class="k">def</span> <span class="nf">compute_P_levels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">zz</span><span class="p">,</span><span class="n">theta</span><span class="p">):</span>
+        <span class="n">Plist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">P0</span> <span class="o">=</span> <span class="mi">100000</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">R</span><span class="o">/</span><span class="n">mc</span><span class="o">.</span><span class="n">cp</span>
+        <span class="n">th0</span> <span class="o">=</span> <span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">th</span><span class="p">,</span><span class="n">z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="n">zz</span><span class="p">):</span>
+            <span class="n">PL</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(((</span><span class="n">K</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">log</span><span class="p">(((</span><span class="n">mc</span><span class="o">.</span><span class="n">g</span><span class="o">*</span><span class="n">P0</span><span class="o">**</span><span class="n">K</span><span class="p">)</span><span class="o">/</span><span class="n">mc</span><span class="o">.</span><span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">th</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">th0</span><span class="o">**-</span><span class="mi">1</span><span class="p">)))</span><span class="o">+</span>
+                                <span class="n">N</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">P0</span><span class="o">**</span><span class="p">(</span><span class="n">K</span><span class="o">-</span><span class="mi">1</span><span class="p">))))</span>
+            <span class="n">Plist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PL</span><span class="p">)</span>
+        <span class="n">Plist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">P0</span>
+        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">N</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Plist</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Profile.calc_theta"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.calc_theta">[docs]</a>    <span class="k">def</span> <span class="nf">calc_theta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">ztr</span><span class="o">=</span><span class="mf">12000.0</span><span class="p">,</span><span class="n">theta0</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span><span class="n">thetatr</span><span class="o">=</span><span class="mi">343</span><span class="p">,</span><span class="n">Ttr</span><span class="o">=</span><span class="mi">213</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="o">&lt;=</span> <span class="n">ztr</span><span class="p">:</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="n">theta0</span> <span class="o">+</span> <span class="p">(</span><span class="n">thetatr</span> <span class="o">-</span> <span class="n">theta0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">/</span><span class="n">ztr</span><span class="p">)</span><span class="o">**</span><span class="mf">1.25</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="n">thetatr</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">mc</span><span class="o">.</span><span class="n">g</span><span class="o">/</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">cp</span><span class="o">*</span><span class="n">Ttr</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="n">ztr</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">theta</span></div>
+
+<div class="viewcode-block" id="Profile.calc_RH"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.calc_RH">[docs]</a>    <span class="k">def</span> <span class="nf">calc_RH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">ztr</span><span class="o">=</span><span class="mf">12000.0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="o">&lt;=</span> <span class="n">ztr</span><span class="p">:</span>
+            <span class="n">RH</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="mf">0.75</span><span class="o">*</span><span class="p">(</span><span class="n">z</span><span class="o">/</span><span class="n">ztr</span><span class="p">)</span><span class="o">**</span><span class="mf">1.25</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">RH</span> <span class="o">=</span> <span class="mf">0.25</span>
+        <span class="k">return</span> <span class="n">RH</span></div>
+
+<div class="viewcode-block" id="Profile.calc_U"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.calc_U">[docs]</a>    <span class="k">def</span> <span class="nf">calc_U</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">us</span><span class="p">,</span><span class="n">zs</span><span class="o">=</span><span class="mi">3000</span><span class="p">):</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">us</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">zs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">U</span></div>
+
+    <span class="k">def</span> <span class="nf">create_textfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># fpath = os.path.join(self.fdir,self.fname)</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="Profile.plot_skewT"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.plot_skewT">[docs]</a>    <span class="k">def</span> <span class="nf">plot_skewT</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># fname = self.fname + &#39;_skewT.png&#39;</span>
+        <span class="c1"># fpath = os.path.join(self.fdir,fname)</span>
+
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Profile.compute_Td"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_Td">[docs]</a>    <span class="k">def</span> <span class="nf">compute_Td</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">RH</span><span class="p">):</span>
+        <span class="n">TC</span> <span class="o">=</span> <span class="n">T</span><span class="o">-</span><span class="mf">273.15</span>
+        <span class="n">Td</span> <span class="o">=</span> <span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">RH</span><span class="p">)</span><span class="o">/</span><span class="mf">0.073</span><span class="p">)</span> <span class="o">+</span> <span class="n">TC</span>
+        <span class="k">return</span> <span class="n">Td</span><span class="o">+</span><span class="mf">273.15</span></div>
+
+<div class="viewcode-block" id="Profile.compute_rv"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_rv">[docs]</a>    <span class="k">def</span> <span class="nf">compute_rv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">Td</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">RH</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">T</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">PhPa</span> <span class="o">=</span> <span class="n">p</span><span class="o">/</span><span class="mi">100</span>
+        <span class="k">if</span> <span class="n">Td</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_e</span><span class="p">(</span><span class="n">Td</span><span class="o">=</span><span class="n">Td</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">es</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_es</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_e</span><span class="p">(</span><span class="n">es</span><span class="o">=</span><span class="n">es</span><span class="p">,</span><span class="n">RH</span><span class="o">=</span><span class="n">RH</span><span class="p">)</span>
+        <span class="n">ehPa</span> <span class="o">=</span> <span class="n">e</span><span class="o">/</span><span class="mi">100</span>
+        <span class="c1"># rv = (mc.Rd/mc.Rv) * (ehPa/(PhPa-ehPa))</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.622</span><span class="o">*</span><span class="n">e</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="n">e</span><span class="p">)</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span> <span class="n">rv</span></div>
+
+<div class="viewcode-block" id="Profile.RH_invert_RV"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.RH_invert_RV">[docs]</a>    <span class="k">def</span> <span class="nf">RH_invert_RV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">RV</span><span class="p">):</span>
+        <span class="n">es</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_es</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+
+        <span class="n">P</span> <span class="o">=</span> <span class="n">P</span><span class="o">/</span><span class="mi">100</span>
+        <span class="n">es</span> <span class="o">=</span> <span class="n">es</span><span class="o">/</span><span class="mi">100</span>
+
+        <span class="c1"># RH = (P*(RV+0.622))/(0.622*es)</span>
+        <span class="n">RH</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span> <span class="p">((</span><span class="mf">0.622</span><span class="o">*</span><span class="n">es</span><span class="p">)</span><span class="o">/</span><span class="n">P</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">RV</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mf">0.622</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">RH</span></div>
+
+<div class="viewcode-block" id="Profile.compute_P_at_z"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_P_at_z">[docs]</a>    <span class="k">def</span> <span class="nf">compute_P_at_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Pbot</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">dz</span><span class="p">):</span>
+        <span class="c1"># dP = (-dz*P*mc.g)/(mc.R*T)</span>
+        <span class="n">Tv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Tv</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">Rd</span> <span class="o">*</span> <span class="n">Tv</span><span class="p">)</span><span class="o">/</span><span class="n">mc</span><span class="o">.</span><span class="n">g</span>
+        <span class="n">Ptop</span> <span class="o">=</span> <span class="n">Pbot</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="p">(</span><span class="n">dz</span><span class="o">/</span><span class="n">H</span><span class="p">))</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span> <span class="n">Ptop</span></div>
+        <span class="c1"># return dP</span>
+
+<div class="viewcode-block" id="Profile.compute_T_with_LCL"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_T_with_LCL">[docs]</a>    <span class="k">def</span> <span class="nf">compute_T_with_LCL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">PLCL</span><span class="p">,</span><span class="n">TLCL</span><span class="p">):</span>
+        <span class="n">TLCL</span> <span class="o">=</span> <span class="n">TLCL</span> <span class="o">-</span> <span class="mf">273.15</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">TLCL</span> <span class="o">*</span> <span class="p">(</span><span class="n">PLCL</span><span class="o">/</span><span class="n">P</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">mc</span><span class="o">.</span><span class="n">R</span><span class="o">/</span><span class="n">mc</span><span class="o">.</span><span class="n">cp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">T</span> <span class="o">+</span> <span class="mf">273.15</span></div>
+
+<div class="viewcode-block" id="Profile.compute_T_invert_thetae"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_T_invert_thetae">[docs]</a>    <span class="k">def</span> <span class="nf">compute_T_invert_thetae</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">thetae</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">TLCL</span><span class="p">):</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">r</span> <span class="c1">#* 1000</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">P</span><span class="o">/</span><span class="mi">100</span>
+        <span class="n">power</span> <span class="o">=</span> <span class="mf">0.2854</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="mf">0.28</span><span class="o">*</span><span class="n">R</span><span class="o">*</span><span class="mi">10</span><span class="o">**-</span><span class="mi">3</span><span class="p">))</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">thetae</span><span class="o">/</span><span class="p">(</span>
+                <span class="p">((</span><span class="mi">1000</span><span class="o">/</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="n">power</span><span class="p">)</span><span class="o">*</span>
+                <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(((</span><span class="mf">3.376</span><span class="o">/</span><span class="n">TLCL</span><span class="p">)</span><span class="o">-</span><span class="mf">0.00254</span><span class="p">)</span><span class="o">*</span>
+                <span class="n">R</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="mf">0.81</span><span class="o">*</span><span class="mi">10</span><span class="o">**-</span><span class="mi">3</span><span class="p">))))</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span> <span class="n">T</span></div>
+
+<div class="viewcode-block" id="Profile.compute_theta_2"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_theta_2">[docs]</a>    <span class="k">def</span> <span class="nf">compute_theta_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">TC</span> <span class="o">=</span> <span class="n">T</span> <span class="o">-</span> <span class="mf">273.15</span>
+        <span class="c1"># TC = T</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">TC</span> <span class="o">*</span> <span class="p">((</span><span class="mi">100000</span><span class="o">/</span><span class="n">P</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">R</span><span class="o">/</span><span class="n">mc</span><span class="o">.</span><span class="n">cp</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">theta</span><span class="o">+</span><span class="mf">273.15</span></div>
+
+<div class="viewcode-block" id="Profile.compute_Tv"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_Tv">[docs]</a>    <span class="k">def</span> <span class="nf">compute_Tv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">r</span><span class="p">):</span>
+        <span class="n">TC</span> <span class="o">=</span> <span class="n">T</span><span class="o">-</span><span class="mf">273.15</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="n">Tv</span> <span class="o">=</span> <span class="n">TC</span> <span class="o">*</span> <span class="p">((</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="n">R</span><span class="o">/</span><span class="mf">0.622</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">R</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Tv</span><span class="o">+</span><span class="mf">273.15</span></div>
+
+<div class="viewcode-block" id="Profile.compute_thetapert"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.compute_thetapert">[docs]</a>    <span class="k">def</span> <span class="nf">compute_thetapert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">r</span><span class="p">):</span>
+        <span class="n">Tv_env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Tv</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">Tv_pert</span> <span class="o">=</span> <span class="p">(</span><span class="n">B</span><span class="o">*</span><span class="n">Tv_env</span><span class="p">)</span><span class="o">/</span><span class="n">mc</span><span class="o">.</span><span class="n">g</span>
+        <span class="k">return</span> <span class="n">Tv_pert</span></div>
+
+<div class="viewcode-block" id="Profile.MWtemphum"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.MWtemphum">[docs]</a>    <span class="k">def</span> <span class="nf">MWtemphum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">Theta</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">N</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">RH</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Theta</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Theta</span><span class="p">)</span>
+        <span class="c1"># P = self.get_stdP(self.z)</span>
+        <span class="n">RV</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Theta</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Theta</span><span class="p">)</span>
+
+        <span class="c1"># P[0] = 101325</span>
+        <span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100000</span>
+        <span class="c1"># P[0] = 99500</span>
+        <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">th0</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">z</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">z</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zT</span><span class="p">:</span>
+                <span class="n">Theta</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">th0</span> <span class="o">+</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">thT</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">th0</span><span class="p">)</span><span class="o">*</span><span class="p">(</span>
+                                            <span class="p">(</span><span class="n">z</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">zT</span><span class="p">)</span><span class="o">**</span><span class="mf">1.25</span><span class="p">))</span>
+                <span class="n">RH</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.75</span><span class="o">*</span><span class="p">((</span><span class="n">z</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">zT</span><span class="p">)</span><span class="o">**</span><span class="mf">1.25</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">Theta</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thT</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                            <span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">g</span><span class="o">/</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">cp</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">tT</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">zT</span><span class="p">))</span>
+                <span class="n">RH</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.25</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">z</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">dZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1"># dZZ = self.z[idx]</span>
+
+                <span class="c1"># dP = self.compute_P_at_z(P[idx-1],DryBulb[idx-1]-(6.5*dZ*10**-3),dZ)</span>
+                <span class="c1"># dP = self.compute_P_at_z(P[idx-1],T[idx-1],dZ)</span>
+                <span class="c1"># dP = self.compute_P_at_z(P[idx-1],T[idx-1]-(7*dZ*10**-3),dZ)</span>
+                <span class="n">mT</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="mi">7</span><span class="o">*</span><span class="mf">0.5</span><span class="o">*</span><span class="n">dZ</span><span class="o">*</span><span class="mi">10</span><span class="o">**-</span><span class="mi">3</span><span class="p">)</span>
+                <span class="c1"># mT = T[idx-1]</span>
+                <span class="n">P</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_P_at_z</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">mT</span><span class="p">,</span><span class="n">RH</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span><span class="n">dZ</span><span class="p">)</span>
+                <span class="c1"># P[idx] = P[idx-1] + (1.0*dP)</span>
+                <span class="n">T</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_drybulb</span><span class="p">(</span><span class="n">Theta</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span><span class="n">P</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_drybulb</span><span class="p">(</span><span class="n">Theta</span><span class="p">,</span><span class="n">P</span><span class="p">)</span>
+        <span class="n">T_D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Td</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">RH</span><span class="p">)</span>
+        <span class="c1"># RV = self.compute_rv(P,T,RH)</span>
+        <span class="n">RV</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_rv</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">Td</span><span class="o">=</span><span class="n">T_D</span><span class="p">)</span>
+        <span class="n">RV</span> <span class="o">=</span> <span class="n">RV</span><span class="o">*</span><span class="mf">0.85</span>
+        <span class="c1"># Set constant mixing ratio at surface</span>
+        <span class="c1"># PBLidx = N.argmax(P&lt;85000)</span>
+        <span class="n">PBLidx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">RV</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">qv0</span><span class="p">)</span><span class="c1">#-2</span>
+        <span class="c1"># RV_const = RV[PBLidx+1]</span>
+        <span class="n">RV_const</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qv0</span>
+        <span class="n">RV</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">PBLidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">RV_const</span>
+
+        <span class="n">RH2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RH_invert_RV</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">RV</span><span class="p">)</span>
+
+        <span class="c1"># Fix constant theta-e in lowest layer</span>
+        <span class="c1"># hLCL = ( 20 + ((T[0]-273.15)/5)) * (100-(100*RH2[0]))</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="c1"># LCLidx = N.argmax(self.z&gt;hLCL)#-2</span>
+        <span class="c1"># thE = self.compute_thetaep(P[LCLidx],RV[LCLidx],T[LCLidx],RH[LCLidx])</span>
+        <span class="c1"># Theta[0:LCLidx] = self.compute_theta(thE,RV[0:LCLidx],T[LCLidx])</span>
+        <span class="c1"># pdb.set_trace()</span>
+
+        <span class="n">test_plot</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">test_plot</span><span class="p">:</span>
+            <span class="c1"># Recalculate RH in PBL</span>
+            <span class="c1"># ES = self.compute_es(T)</span>
+            <span class="c1"># RVs = 0.622*(ES/(P-ES))</span>
+            <span class="c1"># RH2 = RV/RVs</span>
+            <span class="c1"># T_D = self.compute_Td(T,RH2)</span>
+            <span class="c1"># T = self.compute_drybulb(Theta,P)</span>
+            <span class="n">T_D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Td</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">RH2</span><span class="p">)</span>
+            <span class="n">sT</span><span class="o">.</span><span class="n">plot_profile</span><span class="p">(</span><span class="n">P</span><span class="o">/</span><span class="mi">100</span><span class="p">,</span><span class="n">T</span><span class="o">-</span><span class="mf">273.15</span><span class="p">,</span><span class="n">T_D</span><span class="o">-</span><span class="mf">273.15</span><span class="p">,</span><span class="s1">&#39;/home/johnlawson&#39;</span><span class="p">)</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span> <span class="n">Theta</span><span class="p">,</span> <span class="n">RV</span></div>
+
+<div class="viewcode-block" id="Profile.MWwind"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.MWwind">[docs]</a>    <span class="k">def</span> <span class="nf">MWwind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># U = N.zeros_like(self.z,dtype=N.dtype(&#39;f8&#39;))</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Us</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">zs</span><span class="p">))</span>
+        <span class="n">u</span><span class="p">,</span><span class="n">v</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">decompose_wind</span><span class="p">(</span><span class="n">U</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">offset_spd</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">offset_dir</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">u</span><span class="p">,</span><span class="n">v</span></div>
+
+<div class="viewcode-block" id="Profile.create_textfile"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.create_textfile">[docs]</a>    <span class="k">def</span> <span class="nf">create_textfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fdir</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_u</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_v</span>
+        <span class="n">TH</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_th</span>
+        <span class="n">RV</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_rv</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+        <span class="n">blanks</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">U</span><span class="p">)</span>
+        <span class="n">blanks</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">space</span> <span class="o">=</span> <span class="s1">&#39;    &#39;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">Z</span><span class="p">),</span><span class="mi">5</span><span class="p">])</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Z</span>
+        <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1000.0</span>
+        <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">TH</span>
+        <span class="n">data</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">RV</span><span class="o">*</span><span class="mf">1000.0</span>
+        <span class="n">data</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">U</span>
+        <span class="c1"># data[0,4] = &#39;&#39;</span>
+        <span class="n">data</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">V</span>
+        <span class="c1"># data[0,5] = &#39;&#39;</span>
+        <span class="n">fmts</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">%8.4f</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%8.4f</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%8.4f</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%8.4f</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%8.4f</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># for u,v,th,rv,z in zip(U,V,TH,RV,Z):</span>
+            <span class="c1"># lgen = &#39;{0}{1:.4f}{0}{2:.4f}{0}{3:.4f}{0}{4:.4f}{0}{5:.4f}&#39;.format(</span>
+                        <span class="c1"># space,z,th,r,u,v)</span>
+        <span class="n">N</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%8.4f</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">delimiter</span><span class="o">=</span><span class="n">space</span><span class="p">,)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved profile to </span><span class="si">{0}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fpath</span><span class="p">))</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Profile.get_stdT"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.get_stdT">[docs]</a>    <span class="k">def</span> <span class="nf">get_stdT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+        <span class="n">stdT</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">N</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">stdT</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">288.15</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">stdT</span><span class="p">)):</span>
+            <span class="n">dZ</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">z</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">stdT</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">stdT</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">dZ</span> <span class="o">*</span> <span class="mf">0.0065</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">stdT</span></div>
+
+<div class="viewcode-block" id="Profile.get_stdP"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.get_stdP">[docs]</a>    <span class="k">def</span> <span class="nf">get_stdP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+        <span class="n">stdT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stdT</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">stdP</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">N</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">stdP</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">101325</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">stdP</span><span class="p">)):</span>
+            <span class="n">dZ</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">mT</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">stdT</span><span class="p">[:</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">mP</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">stdT</span><span class="p">[:</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">stdP</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">stdP</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">((</span><span class="n">dZ</span><span class="o">*</span><span class="n">mP</span><span class="o">*</span><span class="n">mc</span><span class="o">.</span><span class="n">g</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">R</span><span class="o">*</span><span class="n">mT</span><span class="p">))</span>
+        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">stdP</span></div>
+
+<div class="viewcode-block" id="Profile.PPP"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile.PPP">[docs]</a>    <span class="k">def</span> <span class="nf">PPP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Z</span><span class="p">):</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="mf">1013.25</span> <span class="o">*</span> <span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">Z</span><span class="o">/</span><span class="p">(</span><span class="mf">0.3048</span><span class="o">*</span><span class="mf">145366.45</span><span class="p">)))</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mf">0.19</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">P</span><span class="o">*</span><span class="mi">100</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
