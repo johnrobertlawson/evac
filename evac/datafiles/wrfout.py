@@ -4,7 +4,9 @@ Dimensions of 4D variable X are X.dimensions:
 (Time,bottom_top,south_north,west_east_stag)
 Time, levels, latitude, longitude
 
-TODO: move computation of derived variables to derive/ folder!
+Todos:
+    * Move computation of derived variables to derive/ folder!
+    * Make method assign the returns to instance instead of returning.
 """
 
 from netCDF4 import Dataset
@@ -48,7 +50,7 @@ class WRFOut(NC):
         self.fmt = fmt
         self.fpath = fpath
         self.ncks = ncks
-        
+
         self.dx = self.nc.DX
         self.dy = self.nc.DY
         self.get_dimensions(fmt)
@@ -105,12 +107,12 @@ class WRFOut(NC):
     def em_real_init(self):
         """
         Grab the 2D arrays of the wrfout file.
-        
+
         self.lats and self.lons represent the 2D arrays.
-        
+
         self.lats1D and self.lons1D represent the 1D arrays intersecting
         the middle of the domain. They shouldn't be used for plotting.
-        
+
         """
         self.lats = self.nc.variables['XLAT'][0,...] # Might fail if only one time?
         self.lons = self.nc.variables['XLONG'][0,...]
@@ -156,7 +158,7 @@ class WRFOut(NC):
     def get_time_idx(self,utcs):
         """
         Get closest index to desired time
-        
+
         Args:
             utcs (list,tuple, int)    :    times
         Returns:
@@ -176,9 +178,10 @@ class WRFOut(NC):
         """This method returns the required variables
         that need to be loaded from the netCDF file.
 
-        :param vrbl:    WRF variable desired
-        :type vrbl:     str
-        :returns:       bool -- True if variable exists in wrfout file.
+        Args:
+            vrbl    :   WRF variable desired
+        Returns:
+            bool: True if variable exists in wrfout file.
                         False if the variable needs computing.
         """
 
@@ -206,13 +209,6 @@ class WRFOut(NC):
         Will interpolate onto pressure, height coordinates if needed.
         Will smooth if needed.
 
-        :param vrbl:        WRF or computed variable required
-        :type vrbl:         str
-        :param utc:         indices (<500): integer/N.ndarray of integers.
-                            time tuple: 6-item tuple or list/tuple of these.
-                            datenum: integer >500 or list of them.
-
-
         Level:
         * indices: integer or N.ndarray of integers
         * pressure: string ending in 'hPa'
@@ -226,6 +222,12 @@ class WRFOut(NC):
         Lons:
         * indices: integer or N.ndarray of integers
         * lons: float or N.ndarray of floats
+
+        Args:
+        vrbl    :        WRF or computed variable required
+        utc     :        indices (<500): integer/N.ndarray of integers.
+                            time tuple: 6-item tuple or list/tuple of these.
+                            datenum: integer >500 or list of them.
         """
         # import pdb; pdb.set_trace()
         # Time
@@ -329,15 +331,14 @@ class WRFOut(NC):
         Fetch netCDF data for a given variable, for given time, level,
         latitude, and longitude indices.
 
-        :param vrbl:        WRF variable
-        :type vrbl:         str
-        :param tidx:        time index. False fetches all.
-        :type tidx:         bool,int,numpy.ndarray
-        :param lvidx:       level index. False fetches all
-        :type lvidx:        boot, int, numpy.ndarray
+        Args:
+            vrbl        :   WRF variable
+            tidx        :   time index. False fetches all.
+            lvidx       :   level index. False fetches all
 
-        TODO: Get rid of integer arguments earlier in the method chain, and
-        make them single-element numpy arrays.
+        Todos:
+            * Get rid of integer arguments earlier in the method chain, and
+                make them single-element numpy arrays.
         """
         # import pdb; pdb.set_trace()
         # First, check dimension that is staggered (if any)
@@ -426,14 +427,16 @@ class WRFOut(NC):
     def destagger(self,data,ax):
         """ Destagger data which needs it doing.
 
-        data    :   numpy array of data requiring destaggering
-        ax      :   axis requiring destaggering
-
         Theta always has unstaggered points in all three spatial dimensions (axes=1,2,3).
 
         Data should be 4D but just the slice required to reduce unnecessary computation time.
 
         Don't destagger in x/y for columns
+
+        Args:
+            data    :   numpy array of data requiring destaggering
+            ax      :   axis requiring destaggering
+
 
         """
         # Check for dimensions of 1.
@@ -468,7 +471,8 @@ class WRFOut(NC):
     def return_tbl(self):
         """
         Returns a dictionary to look up method for computing a variable
-        TODO: merge with derived/derived.py
+        Todos:
+            * merge with derived/derived.py
         """
         tbl = {}
         tbl['shear'] = self.compute_shear
@@ -517,12 +521,11 @@ class WRFOut(NC):
         Keyword arguments include settings for computation
         e.g. top and bottom of shear computation
 
-        :param vrbl:    variable name
-        :type vrbl:     str
-        :param tidx:    time index/indices
-        :type tidx:     int,list,tuple,numpy.ndarray
-        lookup      :   enables a check to see if something can be
-                        computed. Returns true or false.
+        Args:
+            vrbl        :   variable name
+            tidx        :   time index/indices
+            lookup      :   enables a check to see if something can be
+                                computed. Returns true or false.
         """
         tbl = self.return_tbl()
         if lookup:
@@ -536,15 +539,18 @@ class WRFOut(NC):
 
     def compute_ave(self,va,z1,z2):
         """
-        Compute average values for variable in layer
+        Compute average values for variable in layer.
 
-        Inputs:
-        va      :   variable
-        z1      :   height at bottom
-        z2      :   height at top
+        Args:
+            va      :   variable
+            z1      :   height at bottom
+            z2      :   height at top
 
-        Output:
-        data    :   the averaged variable
+        Returns:
+            data    :   the averaged variable
+
+        Todos:
+            * Move or remove?
         """
 
         # Get coordinate system
@@ -632,10 +638,11 @@ class WRFOut(NC):
         Return smaller array of lats, lons depending on
         input dictionary of N, E, S, W limits.
 
-        skip            :   for creating thinned domains
-        return_type     :   if idx, return array of idx
-                            if slice, return slice only
-                            if latlon, return lat/lon values
+        Args:
+            skip            :   for creating thinned domains
+            return_type     :   if idx, return array of idx
+                                    if slice, return slice only
+                                    if latlon, return lat/lon values
         """
 
         if isinstance(da,dict):
@@ -692,7 +699,8 @@ class WRFOut(NC):
         Dimensions returns as (height,lat,lon)
         Or is it (height,lon, lat!?)
 
-        TODO: Need to include limited domain functionality
+        Todos:
+            * Need to include limited domain functionality
 
         if vrbl=='pressure',create constant grid.
         """
@@ -739,14 +747,14 @@ class WRFOut(NC):
         """ Uses p_interp fortran code to put data onto a pressure
         level specified.
 
-        Input:
-        config  :   contains directory of p_interp files
-        nc_path :   path to original netCDF file data
-        var     :   variable(s) to compute
-        lv      :   pressure level(s) to compute
+        Args:
+            config  :   contains directory of p_interp files
+            nc_path :   path to original netCDF file data
+            var     :   variable(s) to compute
+            lv      :   pressure level(s) to compute
 
         Returns:
-        fpath   :   path to new netCDF file with p co-ords
+            fpath   :   path to new netCDF file with p co-ords
         """
         # Fetch paths
         p_interp_path = os.path.join(
@@ -781,7 +789,8 @@ class WRFOut(NC):
 
     def __edit_namelist(self,fpath,old,new,incolumn=1,col=23):
         """col=23 is default for wps namelists.
-        TODO: remove and put into lazy/
+        Todos:
+            * remove and put into lazy/
         """
         flines = open(fpath,'r').readlines()
         for idx, line in enumerate(flines):

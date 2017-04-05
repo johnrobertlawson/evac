@@ -1,5 +1,7 @@
 """ NWS storm events from <this website>...
 
+Todos:
+    * Move or remove redundant plotting method
 """
 
 from .csvfile import CSVFile

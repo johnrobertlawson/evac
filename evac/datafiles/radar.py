@@ -3,7 +3,10 @@
 This uses composite reflectivity data stored on Iowa State Univ.
 servers.
 
-TODO: Allow different inheritance depending on the data format.
+Todos:
+    * Allow different inheritance depending on the data format.
+        Probably using the __next__ built-in.
+    * Remove redundant basemap generation method.
 """
 
 from .pngfile import PNGFile
@@ -13,12 +16,10 @@ class Radar(PNGFile):
         """
         Composite radar archive data from mesonet.agron.iastate.edu.
 
-        :param datapath:        Absolute path to folder or .png file
-        :type datapath:         str
-        :param wldpath:         Absolute path to .wld file
-        :type wldpath:          str
-        :param fmt:             format of data - N0Q or N0R
-        :type fmt:              str
+        Args:
+            datapath (str)      :   Absolute path to folder or .png file
+            wldpath (str)       :   Absolute path to .wld file
+            fmt (str)           :   format of data - N0Q or N0R
         """
         self.utc = utc
         fname_root = self.get_radar_fname()
@@ -108,8 +109,6 @@ class Radar(PNGFile):
         """
         Generate basemap.
 
-        :param ax:      The axis on which to create the basemap
-        :type ax:       matplotlib.basemap?
         """
         self.fig = fig
         self.ax = ax

@@ -9,7 +9,7 @@ class MRMS(BinaryFile):
         """A helper function to automatically generate file name
         to load needs to be written.
 
-        Arguments:
+        Args:
             fpath (str, optional): file path to data. If False, other
                 information must be presented to search for data (below).
             rootdir (str, optional): if fpath is False, this is required

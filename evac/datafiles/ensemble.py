@@ -1,7 +1,8 @@
 """ Ensemble of forecasts.
 
-TODO: Change from ensemble of WRFOut files to any sort of datafile.
-TODO: consistency with method names (e.g., get() )
+Todos:
+    * Change from ensemble of WRFOut files to any sort of datafile.
+    * Consistency with method names (e.g., get() )
 """
 
 import os
@@ -12,16 +13,6 @@ import numpy as N
 
 import WEM.utils as utils
 from .wrfout import WRFOut
-
-"""This module contains the Ensemble class only.
-
-Example:
-    Usage here.
-
-Todo:
-    * One
-    * Two
-"""
 
 # Dummy variable in place of proper subclass of WRFOut
 AuxWRFOut = object
@@ -36,13 +27,9 @@ class Ensemble:
             as the ensemble member's name), but different domains can be
             within a single member's folder.
 
-        TODO: Option to point only to file paths rather than load
-        WRFOut, due to processing time for massive ensembles.
-
         Args:
             rootdir (str):  Directory at root of datafiles
             initutc (datetime.datetime): Initialization time
-
             doms (int, optional): Number of domains
             ctrl (bool, optional): Whether ensemble has control member
             aux (bool, dict, optional): Dictionary lists, per domain, data
@@ -118,9 +105,9 @@ class Ensemble:
         Format is:
         members[member][domain][time][data]
 
-        Returns:
-            members (dict): Dictionary of ensemble members
-            fdt (int): Seconds between output files.
+        Returns members (dict): Dictionary of ensemble members
+
+        Also returns fdt (int): Seconds between output files.
         """
         members = {}
         fdt = None
@@ -243,7 +230,7 @@ class Ensemble:
         """
         Return probability of exceeding or reaching a threshold.
 
-        Arguments:
+        Args:
             vrbl (str,N.array)      : variable. If N.array, use provided data
                                         (i.e. override the loading).
                                         Must be 5D.
@@ -251,8 +238,6 @@ class Ensemble:
             overunder (str)         : threshold evaluation
                                         'over', 'overeq','under','undereq','equal'
             threshold (float,int)   : the threshold in same (SI) units as data
-
-        Optional:
             itime (datetime.datetime)   : initial time
             ftime (datetime.datetime)   : final time
             fcsttime (datetime.datetime): single time (must be present if itime
@@ -323,13 +308,13 @@ class Ensemble:
         Ordered in descending order on pert. members
         First dimension is ensemble members.
 
-        Arguments:
+        Args:
             inclusive (bool, optional): if True, included time specified
                 at ftime in the time range. Default is False (like Python).
 
-        TODO: lat/lon box is in the correct projection?
-        TODO: Implement bounding lat/lon box.
-        TODO: rename to "get()" or "ensemble_get()"?
+        Todos:
+            * lat/lon box is in the correct projection?
+            * Implement bounding lat/lon box.
         """
 
         ens_no = 0
@@ -389,8 +374,8 @@ class Ensemble:
         """Accumulate, for every ensemble member, at each grid point,
         the variable specified. Usually precipitation.
 
-        TODO:
-            Logic to work out if values are for each history output
+        Todos:
+            * Logic to work out if values are for each history output
                 timestep, from the start of the simulation, from the
                 start of the data file...
 
@@ -447,7 +432,7 @@ class Ensemble:
     def arbitrary_pick(self,dataobj=False,give_keys=False,give_path=False):
         """Arbitrary pick of a datafile entry in the members dictionary.
 
-        Arguments:
+        Args:
             dataobj (bool, optional): if True, return the DataFile subclass.
                 Otherwise, return filepath.
             give_keys (bool, optional): if True, return a list of
@@ -473,7 +458,7 @@ class Ensemble:
         """Return list of times for each data file's first time entry,
         for a member and domain.
 
-        Arguments:
+        Args:
             arb (bool, optional): If true, arbitrarily pick a
                 member and domain to build the time list, i.e.,
                 assuming all members/domains have same list
@@ -512,7 +497,7 @@ class Ensemble:
 
         Raises exception if history time doesn't exist.
 
-        Arguments:
+        Args:
             utc (datetime.datetime): Desired time
             member (str): Name of member to look up. If "arb", pick
                 a member arbitrarily (this assumes members have
@@ -520,11 +505,11 @@ class Ensemble:
             dom (int, optional): Domain number to look up
 
         Returns:
-            t (datetime.datetime): members dictionary key for right file.
+            t (datetime.datetime): members dictionary key for right file,
             index (int): Index in that file.
 
-        TODO:
-            Give nearest time (and/or file object) if time doesn't exist.
+        Todos:
+            * Give nearest time (and/or file object) if time doesn't exist.
         """
         if member == 'arb':
             member = self.member_names[0]

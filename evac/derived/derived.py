@@ -4,18 +4,15 @@ TODO: steal a lot of these from WRFOut.
 TODO: there might be some overlap from stats.
 """
 
-def compute_something():
-    pass
-    return
-
 def cold_pool_strength(self,X,time,swath_width=100,env=0,dz=0):
     """
     Returns array the same shape as WRF domain.
 
-    X   :   cross-section object with given path
-            This path goes front-to-back through a bow
-    km  :   width in the line-normal direction
-    env :   (x,y) for location to sample environmental dpt
+    Args:
+        X   :   cross-section object with given path
+                    This path goes front-to-back through a bow
+        km  :   width in the line-normal direction
+        env :   (x,y) for location to sample environmental dpt
     """
 
     # Set up slices
@@ -91,11 +88,12 @@ def compute_cpdz(self,x,y,dpt,heights,dpt_env):
     """
     Cold pool depth
 
-    x       :   x location in domain
-    y       :   y location in domain
-    dpt     :   density potential temperature slice
-    heights :   height AGL slice
-    dpt_env :   environmental dpt, column
+    Args:
+        x       :   x location in domain
+        y       :   y location in domain
+        dpt     :   density potential temperature slice
+        heights :   height AGL slice
+        dpt_env :   environmental dpt, column
     """
 
     dz, zidx = self.cold_pool_depth(dpt,heights,dpt_env)
@@ -106,11 +104,12 @@ def compute_C2(self,x,y,dpt,heights,dpt_env):
     """
     C^2 as found in James et al. 2006 MWR
 
-    x       :   x location in domain
-    y       :   y location in domain
-    dpt     :   density potential temperature slice
-    heights :   height AGL slice
-    dpt_env :   environmental dpt, column
+    Args:
+        x       :   x location in domain
+        y       :   y location in domain
+        dpt     :   density potential temperature slice
+        heights :   height AGL slice
+        dpt_env :   environmental dpt, column
     """
 
     dz, zidx = self.cold_pool_depth(dpt,heights,dpt_env)
@@ -140,10 +139,11 @@ def find_gust_front(self,wind_slice,T2_slice,angle,method=3):
     Find location of maximum shear in the horizontal wind along a
     1D slice.
 
-    wind_slice      :   1D numpy array
-    T2_slice        :   temp 2m slice
-    angle           :   angle of slice cross-section
-    method          :   way to locate gust front
+    Args:
+        wind_slice      :   1D numpy array
+        T2_slice        :   temp 2m slice
+        angle           :   angle of slice cross-section
+        method          :   way to locate gust front
     """
 
     shp = wind_slice.shape
@@ -201,8 +201,8 @@ def compute_frontogenesis(self,time,level):
     Note that all variables fetched with self.get have been
     destaggered and are at the same location.
 
-    Output:
-    Front       :   Frontgenesis in Kelvin per second.
+    Returns:
+        Front       :   Frontgenesis in Kelvin per second.
     """
     # import pdb; pdb.set_trace()
     #ds = 1 # Number of grid point to compute horizontal gradient over
@@ -684,10 +684,11 @@ def compute_wind(self,tidx,lvidx,lonidx,latidx,other):
 
 def compute_shear(self,tidx,lvidx,lonidx,latidx,other=False):
     """
-    :params other:      dictionary of 'top' and 'bottom' levels, km
-    :type other:        dict
+    Args:
+        other   :      dictionary of 'top' and 'bottom' levels, km
 
-    Could make this faster with numpy.digitize()?
+    Todos:
+        * Could make this faster with numpy.digitize()?
     """
     if not other:
         print("No shear heights specified. Using 0-6 km by default.")

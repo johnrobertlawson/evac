@@ -7,10 +7,14 @@ from .gribfile import GribFile
 class StageIV(GribFile):
     def __init__(self,dir_or_file,load_1h=True,load_6h=False,load_24h=False,
                     loadobj=False):
-        """"Check for 9999s (missing) or negative. Other codes
+        """"
+        Args:
+            dir_or_file         :   if directory, it scans for all files
+                                        If file, it loads that one file.
+        Todos:
+            * Check for 9999s (missing) or negative. Other codes
+            * Consistency: are we loading one or a group of files?
 
-        dir_or_file -   if directory, it scans for all files
-                        if file, it loads that one file.
         """
 
         try:

@@ -32,11 +32,10 @@ debug_get = 0
 class RUC(WRFOut):
     def __init__(self,fpath,wrfdir=False):
         """
-        config  :   configuration settings
-        t       :   time, datenum format
-
-        optional key-word arguments:
-        wrfdir  :   if picked, domain is cut down
+        Args:
+            config  :   configuration settings
+            t       :   time, datenum format
+            wrfdir  :   if picked, domain is cut down
         """
         self.fpath = fpath
         # import pdb; pdb.set_trace()

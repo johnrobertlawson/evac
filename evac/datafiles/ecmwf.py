@@ -1,6 +1,8 @@
 """ ECMWF data in NetCDF format.
 
-TODO: make this work!
+Todos:
+    * Remove redundant plotting (but keep logic)
+    * Create key table for looking up variables
 """
 
 import calendar
