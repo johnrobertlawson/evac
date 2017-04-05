@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.datafiles.spclsr &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.datafiles.spclsr</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Local storm reports from SPC site.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.csvfile</span> <span class="k">import</span> <span class="n">CSVFile</span>
+
+<div class="viewcode-block" id="SPCLSR"><a class="viewcode-back" href="../../../evac.datafiles.spclsr.html#evac.datafiles.spclsr.SPCLSR">[docs]</a><span class="k">class</span> <span class="nc">SPCLSR</span><span class="p">(</span><span class="n">CSVFile</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utc</span><span class="p">,</span><span class="n">datadir</span><span class="p">,</span><span class="n">wind</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">hail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">torn</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">utc</span> <span class="o">=</span> <span class="n">utc</span>
+        <span class="n">tt</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">ensure_timetuple</span><span class="p">(</span><span class="n">utc</span><span class="p">)</span>
+        <span class="n">yr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="n">mth</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">day</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="n">threats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">wind</span><span class="p">:</span>
+            <span class="n">threats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;wind&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">hail</span><span class="p">:</span>
+            <span class="n">threats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;hail&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">torn</span><span class="p">:</span>
+            <span class="n">threats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;torn&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reports</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">threat</span> <span class="ow">in</span> <span class="n">threats</span><span class="p">:</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}{1}{2}</span><span class="s1">_rpts_</span><span class="si">{3}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">yr</span><span class="p">,</span><span class="n">mth</span><span class="p">,</span><span class="n">day</span><span class="p">,</span><span class="n">threat</span><span class="p">)</span>
+            <span class="c1"># Check to see if file exists</span>
+            <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datadir</span><span class="p">,</span><span class="n">fname</span><span class="p">)</span>
+            <span class="n">scan</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scan</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://www.spc.noaa.gov/climo/reports/&#39;</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="s1">&#39;wget </span><span class="si">{0}{1}</span><span class="s1"> -P </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">url</span><span class="p">,</span><span class="n">fname</span><span class="p">,</span><span class="n">datadir</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">threat</span><span class="o">==</span><span class="s1">&#39;wind&#39;</span><span class="p">:</span>
+                <span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span><span class="s1">&#39;speed&#39;</span><span class="p">,</span><span class="s1">&#39;location&#39;</span><span class="p">,</span><span class="s1">&#39;county&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;state&#39;</span><span class="p">,</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span><span class="s1">&#39;lon&#39;</span><span class="p">)</span>
+                <span class="n">formats</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;f4&#39;</span><span class="p">,</span><span class="s1">&#39;f4&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">threat</span><span class="o">==</span><span class="s1">&#39;hail&#39;</span><span class="p">:</span>
+                <span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span><span class="s1">&#39;size&#39;</span><span class="p">,</span><span class="s1">&#39;location&#39;</span><span class="p">,</span><span class="s1">&#39;county&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;state&#39;</span><span class="p">,</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span><span class="s1">&#39;lon&#39;</span><span class="p">)</span>
+                <span class="n">formats</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;f4&#39;</span><span class="p">,</span><span class="s1">&#39;f4&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">threat</span><span class="o">==</span><span class="s1">&#39;torn&#39;</span><span class="p">:</span>
+                <span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span><span class="s1">&#39;fscale&#39;</span><span class="p">,</span><span class="s1">&#39;location&#39;</span><span class="p">,</span><span class="s1">&#39;county&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;state&#39;</span><span class="p">,</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span><span class="s1">&#39;lon&#39;</span><span class="p">)</span>
+                <span class="n">formats</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;S4&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;S4&#39;</span><span class="p">,</span><span class="s1">&#39;f4&#39;</span><span class="p">,</span><span class="s1">&#39;f4&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reports</span><span class="p">[</span><span class="n">threat</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;names&#39;</span><span class="p">:</span><span class="n">names</span><span class="p">,</span><span class="s1">&#39;formats&#39;</span><span class="p">:</span><span class="n">formats</span><span class="p">},</span>
+                                        <span class="n">skiprows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span><span class="n">usecols</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span>
+            <span class="c1">#times = reports[&#39;time&#39;]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">threats</span> <span class="o">=</span> <span class="n">threats</span>
+
+<div class="viewcode-block" id="SPCLSR.report_datenum"><a class="viewcode-back" href="../../../evac.datafiles.spclsr.html#evac.datafiles.spclsr.SPCLSR.report_datenum">[docs]</a>    <span class="k">def</span> <span class="nf">report_datenum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">timestamp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convert timestamp to datenum format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tt</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">ensure_timetuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+        <span class="n">itime_dn</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">tt</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">tt</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="mi">12</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">hr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">timestamp</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">mn</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">timestamp</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+
+        <span class="k">if</span> <span class="n">hr</span><span class="o">&lt;</span><span class="mi">11</span><span class="p">:</span>
+            <span class="c1"># After midnight UTC</span>
+            <span class="n">hr</span> <span class="o">=</span> <span class="n">hr</span><span class="o">+</span><span class="mi">24</span>
+
+        <span class="n">tdelta</span> <span class="o">=</span> <span class="p">((</span><span class="n">hr</span><span class="o">-</span><span class="mi">12</span><span class="p">)</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">mn</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">itime_dn</span> <span class="o">+</span> <span class="n">tdelta</span></div>
+
+<div class="viewcode-block" id="SPCLSR.plot_reports"><a class="viewcode-back" href="../../../evac.datafiles.spclsr.html#evac.datafiles.spclsr.SPCLSR.plot_reports">[docs]</a>    <span class="k">def</span> <span class="nf">plot_reports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">plot_all</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">threat</span> <span class="ow">in</span> <span class="n">threats</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">plot_all</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reports</span><span class="p">[</span><span class="n">threat</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]:</span>
+                    <span class="n">utc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_datenum</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

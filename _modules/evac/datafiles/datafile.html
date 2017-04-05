@@ -6,14 +6,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datafiles.ruc &#8212; evac 0.1.0 documentation</title>
+    <title>evac.datafiles.datafile &#8212; evac 0.1.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '../../../',
         VERSION:     '0.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -21,15 +21,13 @@
         SOURCELINK_SUFFIX: '.txt'
       };
     </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="datafiles.spclsr" href="evac.datafiles.spclsr.html" />
-    <link rel="prev" title="datafiles.radar" href="evac.datafiles.radar.html" />
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -43,10 +41,17 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="datafiles-ruc">
-<h1><cite>datafiles.ruc</cite><a class="headerlink" href="#datafiles-ruc" title="Permalink to this headline">¶</a></h1>
-</div>
+  <h1>Source code for evac.datafiles.datafile</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Generic superclass for data file. Could be netCDF, grib1,</span>
+<span class="sd">grib2...</span>
 
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DataFile"><a class="viewcode-back" href="../../../evac.datafiles.datafile.html#evac.datafiles.datafile.DataFile">[docs]</a><span class="k">class</span> <span class="nc">DataFile</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fpath</span> <span class="o">=</span> <span class="n">fpath</span></div>
+</pre></div>
 
           </div>
         </div>
@@ -55,26 +60,15 @@
         <div class="sphinxsidebarwrapper"><div class="relations">
 <h3>Related Topics</h3>
 <ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  <li><a href="evac.html">evac package</a><ul>
-  <li><a href="evac.datafiles.html"><cite>datafiles</cite></a><ul>
-      <li>Previous: <a href="evac.datafiles.radar.html" title="previous chapter"><cite>datafiles.radar</cite></a></li>
-      <li>Next: <a href="evac.datafiles.spclsr.html" title="next chapter"><cite>datafiles.spclsr</cite></a></li>
-  </ul></li>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
   </ul></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/evac.datafiles.ruc.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
+    <form class="search" action="../../../search.html" method="get">
       <div><input type="text" name="q" /></div>
       <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
@@ -93,9 +87,6 @@
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
-      |
-      <a href="_sources/evac.datafiles.ruc.rst.txt"
-          rel="nofollow">Page source</a>
     </div>
 
     

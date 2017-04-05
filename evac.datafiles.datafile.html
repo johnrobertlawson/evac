@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datafiles.spclsr &#8212; evac 0.1.0 documentation</title>
+    <title>datafiles.datafile &#8212; evac 0.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,8 +26,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="datafiles.stageiv" href="evac.datafiles.stageiv.html" />
-    <link rel="prev" title="datafiles.ruc" href="evac.datafiles.ruc.html" />
+    <link rel="next" title="datafiles.ecmwf" href="evac.datafiles.ecmwf.html" />
+    <link rel="prev" title="datafiles.csvfile" href="evac.datafiles.csvfile.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -43,24 +43,14 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-evac.datafiles.spclsr">
-<span id="datafiles-spclsr"></span><h1><cite>datafiles.spclsr</cite><a class="headerlink" href="#module-evac.datafiles.spclsr" title="Permalink to this headline">¶</a></h1>
-<p>Local storm reports from SPC site.</p>
+  <div class="section" id="module-evac.datafiles.datafile">
+<span id="datafiles-datafile"></span><h1><cite>datafiles.datafile</cite><a class="headerlink" href="#module-evac.datafiles.datafile" title="Permalink to this headline">¶</a></h1>
+<p>Generic superclass for data file. Could be netCDF, grib1,
+grib2...</p>
 <dl class="class">
-<dt id="evac.datafiles.spclsr.SPCLSR">
-<em class="property">class </em><code class="descclassname">evac.datafiles.spclsr.</code><code class="descname">SPCLSR</code><span class="sig-paren">(</span><em>utc</em>, <em>datadir</em>, <em>wind=True</em>, <em>hail=True</em>, <em>torn=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/spclsr.html#SPCLSR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.spclsr.SPCLSR" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="evac.datafiles.csvfile.html#evac.datafiles.csvfile.CSVFile" title="evac.datafiles.csvfile.CSVFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.csvfile.CSVFile</span></code></a></p>
-<dl class="method">
-<dt id="evac.datafiles.spclsr.SPCLSR.plot_reports">
-<code class="descname">plot_reports</code><span class="sig-paren">(</span><em>fig=False</em>, <em>ax=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/spclsr.html#SPCLSR.plot_reports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.spclsr.SPCLSR.plot_reports" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="evac.datafiles.spclsr.SPCLSR.report_datenum">
-<code class="descname">report_datenum</code><span class="sig-paren">(</span><em>timestamp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/spclsr.html#SPCLSR.report_datenum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.spclsr.SPCLSR.report_datenum" title="Permalink to this definition">¶</a></dt>
-<dd><p>convert timestamp to datenum format.</p>
-</dd></dl>
-
+<dt id="evac.datafiles.datafile.DataFile">
+<em class="property">class </em><code class="descclassname">evac.datafiles.datafile.</code><code class="descname">DataFile</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/datafile.html#DataFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.datafile.DataFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 </dd></dl>
 
 </div>
@@ -76,8 +66,8 @@
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="evac.html">evac package</a><ul>
   <li><a href="evac.datafiles.html"><cite>datafiles</cite></a><ul>
-      <li>Previous: <a href="evac.datafiles.ruc.html" title="previous chapter"><cite>datafiles.ruc</cite></a></li>
-      <li>Next: <a href="evac.datafiles.stageiv.html" title="next chapter"><cite>datafiles.stageiv</cite></a></li>
+      <li>Previous: <a href="evac.datafiles.csvfile.html" title="previous chapter"><cite>datafiles.csvfile</cite></a></li>
+      <li>Next: <a href="evac.datafiles.ecmwf.html" title="next chapter"><cite>datafiles.ecmwf</cite></a></li>
   </ul></li>
   </ul></li>
   </ul></li>
@@ -86,7 +76,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/evac.datafiles.spclsr.rst.txt"
+      <li><a href="_sources/evac.datafiles.datafile.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -112,7 +102,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
-      <a href="_sources/evac.datafiles.spclsr.rst.txt"
+      <a href="_sources/evac.datafiles.datafile.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
