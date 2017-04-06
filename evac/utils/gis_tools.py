@@ -1335,3 +1335,16 @@ def make_subplot_label(ax,label):
     ax.text(0.1,0.15,label,transform=ax.transAxes,
         bbox={'facecolor':'white'},fontsize=13,zorder=1000)
     return ax
+
+def check_same_dimensions(*args):
+    """
+    Args:
+        ``*args``       :   A number of N.ndarray types
+
+    Returns:
+        True if all arrays have the same size.
+    """
+    arr = []
+    for arr in args: 
+        shps.append(arr.shape)
+    return all([a == arr[0] for a in arr])

@@ -342,8 +342,11 @@ def compute_total_deformation(self,U,V):
     return E
 
 def compute_vorticity(self,U,V):
-    # Axis = 1 for vertical vorticity, if there's no time selected?
-    dudx, dudy, dvdx, dvdy = self.compute_derivatives(U,V,)#axis=1)
+    """
+    Returns vertical vorticity. In future, change to allow all thre
+    components to be be returned.
+    """
+    dudx, dudy, dvdx, dvdy = self.compute_derivatives(U,V,)
     zeta = dvdx - dudy
     return zeta
 

@@ -9,7 +9,7 @@ try:
 except ImportError:
     print("Module paramiko unavailable.")
 import base64 
-import evac.utils.gis_tools as utils
+import evac.utils as utils
 
 def dir_from_naming(root,*args):
     """
