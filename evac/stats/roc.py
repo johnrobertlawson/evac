@@ -48,11 +48,17 @@ class ROC(DetScores,ProbScores):
             c[thidx] = N.sum(X[:thidx+1])
             d[thidx] = N.sum(Y[:thidx+1])
 
+        self.thresholds = thresholds
+        return a,b,c,d
+
     def compute_roca(self):
         """Area under ROC curve.
 
         TODO."""
-        pass
+        FAR = self.compute_falsealarm()
+        HR = self.compute_hitrate() 
+        ROCA = N.trapz(HR,x=FAR)
+        return ROCA
 
     def compute_rocas(self):
         """ROC area skill score.

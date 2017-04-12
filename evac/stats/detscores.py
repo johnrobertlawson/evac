@@ -37,6 +37,10 @@ class DetScores:
         HR = (self.a + self.d)/self.n
         return HR
 
+    def compute_falsealarm(self):
+        FAR = self.b / (self.a + self.b)
+        return FAR
+
     def compute_threat(self):
         """ Accuracy.
         
