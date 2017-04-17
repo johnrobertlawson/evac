@@ -12,7 +12,7 @@ import os
 
 import evac.utils.gis_tools as utils
 
-from .wrfout import WRFOut
+from evac.datafiles.wrfout import WRFOut
 
 def compute_bool_thresh(arr,overunder,threshold):
     """
