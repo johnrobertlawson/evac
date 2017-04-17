@@ -9,6 +9,7 @@ import scipy.signal
 import itertools
 import time
 import os
+import operator
 
 import evac.utils.gis_tools as utils
 
@@ -22,8 +23,8 @@ def compute_bool_thresh(arr,overunder,threshold):
                                 'over','under','overeq','undereq','equal'
     """
     # Cover over/under request to operator
-    OU = {'over':__gt__,'under':__lt__,'overeq':__ge__,'undereq':__le__,
-            'equal':__eq__}
+    OU = {'over':operator.gt,'under':operator.lt,'overeq':operator.ge,
+            'undereq':operator.le,'equal':operator.eq}
     if not overunder in OU.keys():
         raise Exception("Pick over or under for threshold comparison.")
 
