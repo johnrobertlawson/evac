@@ -37,7 +37,7 @@ class DetScores:
                 assert x is not None
 
         # Number of total events
-        self.n = sum(a,b,c,d)
+        self.n = sum((a,b,c,d))
 
         self.a = a
         self.b = b
