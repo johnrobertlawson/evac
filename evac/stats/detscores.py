@@ -168,7 +168,13 @@ class DetScores:
                     'KSS':self.compute_bias,
                     'CSI',self.compute_csi,
                     'PCLI':self.compute_pcli,
-                    'F':self.compute_falsealarmrate}
+                    'F':self.compute_falsealarmrate,
+                    'PC':self.compute_propcorrect,
+                    'HSS':self.compute_heidke,
+                    'PSS':self.compute_peirce,
+                    'GSS':self.compute_gilbert,
+                    'Q':self.compute_yuleq,
+                    }
 
         if score in scores.keys():
             return scores[score]()
