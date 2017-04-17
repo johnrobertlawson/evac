@@ -52,6 +52,7 @@ class DetScores:
 
     def compute_pcli(self):
         """Observed frequency of event under consideration.
+        Also known as base rate.
         """
         pcli = (self.a + self.c)/self.n
         return pcli
@@ -60,12 +61,63 @@ class DetScores:
         """ Accuracy.
 
         Eq. 6 in B01."""
-        HR = (self.a + self.d)/self.n
+        # This is Buizza version?
+        #HR = (self.a + self.d)/self.n
+        # This is Jolliffe and Stephenson
+        HR = self.a / (self.a + self.c)
         return HR
 
-    def compute_falsealarm(self):
+    def compute_falsealarmratio(self):
+        F = self.b / (self.b + self.d)
+        return F
+
+    def compute_falsealarmrate(self):
         FAR = self.b / (self.a + self.b)
         return FAR
+
+    def compute_propcorrect(self):
+        PC = (self.a + self.d)/self.n
+        return PC
+
+    def compute_E(self):
+        # 3.17 in Jolliffe and Stephenson
+        E = ( ((self.a+self.c)/self.n)*
+                ((self.a+self.b)/self.n)) +
+            ( ((self.b+self.d)/self.n)*
+                ((self.c+self.d)/self.n))
+
+        return E
+
+    def compute_heidke(self):
+        E = self.compute_E()
+        HSS = (self.compute_propcorrect() - E)/(1-E)
+        return HSS
+
+    def compute_peirce(self):
+        PSS = ( (self.a*self.d)-(self.b*self.c)/
+                    ((self.b+self.d)*(self.a+self.c)) )
+        return PSS
+
+    def compute_csi(self):
+        CSI = self.a / (self.a+self.b+self.c)
+        return CSI
+
+    def compute_ar(self):
+        """Number of hits expected by pure chance
+        """
+        ar = ( (self.a+self.b)*(self.a + self.c))/self.n
+        return ar
+
+    def compute_gilbert(self):
+        ar = self.compute_ar()
+        GSS = (self.a - ar) /
+                (self.a - ar + self.b + self.c)
+        return GSS
+
+    def compute_yuleq(self):
+        Q = ( (self.a*self.d) - (self.b*self.c) )/
+            ( (self.a*self.d) + (self.b*self.c) )
+        return Q
 
     def compute_threat(self):
         """ Accuracy.
@@ -103,3 +155,22 @@ class DetScores:
         """
         KSS = self.compute_pod() - self.compute_pfd()
         return KSS
+
+    def get(self,score):
+        """ Getter method for obtaining a score via string.
+        """
+        scores = {'HR':self.compute_hitrate,
+                    'FAR':self.compute_falsealarmratio,
+                    'TS':self.compute_threat,
+                    'POD':self.compute_pod,
+                    'PFD':self.compute_pfd,
+                    'BIAS':self.compute_bias,
+                    'KSS':self.compute_bias,
+                    'CSI',self.compute_csi,
+                    'PCLI':self.compute_pcli,
+                    'F':self.compute_falsealarmrate}
+
+        if score in scores.keys():
+            return scores[score]()
+        else:
+            raise Exception("Specify from the following: \n{}".format(scores.keys()))
