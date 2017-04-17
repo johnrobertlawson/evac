@@ -28,7 +28,7 @@ def compute_bool_thresh(arr,overunder,threshold):
     if not overunder in OU.keys():
         raise Exception("Pick over or under for threshold comparison.")
 
-    bool_arr = N.where(all_ens_data.OU[overunder](threshold),1,0)
+    bool_arr = N.where(OU[overunder](arr,threshold),1,0)
     return bool_arr
 
 def compute_contingency(fcst_arr,obs_arr,thresh,overunder,fmt='tuple'):
