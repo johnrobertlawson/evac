@@ -24,7 +24,7 @@ def compute_bool_thresh(arr,overunder,threshold):
     # Cover over/under request to operator
     OU = {'over':__gt__,'under':__lt__,'overeq':__ge__,'undereq':__le__,
             'equal':__eq__}
-    if not overunder in OU.keys()
+    if not overunder in OU.keys():
         raise Exception("Pick over or under for threshold comparison.")
 
     bool_arr = N.where(all_ens_data.OU[overunder](threshold),1,0)
