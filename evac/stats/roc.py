@@ -1,6 +1,7 @@
 """Relative Operative Statistics.
 
-Mixin of deterministic and probabilistic scores.
+Mixin of deterministic and probabilistic scores. Can be used to generate a
+2x2 contingency table for ensembles.
 """
 import pdb
 
@@ -10,16 +11,27 @@ from .detscores import DetScores
 from .probscores import ProbScores
 
 class ROC(DetScores,ProbScores):
-    def __init__(self,nens,pf,ob):
+    def __init__(self,nens=None,pf=None,ob=None,ensemble=None,):
         """
-        nens        :   number of ensemble members
-        pf          :   probability of an event (1d array)
-        ob (bool)   :   whether it happened (1d array)
-        thresh      :   probability threshold(s)
-                        These must be 1/nens, 2/nens... nens/nens.
-                        Turned off for now.
-                        Default is all thresholds.
+        Args:
+            nens        :   number of ensemble members
+            pf          :   probability of an event (1d array)
+            ob (bool)   :   whether it happened (1d array)
+            thresh      :   probability threshold(s)
+                                These must be 1/nens, 2/nens... nens/nens.
+                                Turned off for now.
+                                Default is all thresholds.
+            ensemble    :   Ensemble instance.
+
+            obs_array   :   2D array (lats,lons) for verification
         """
+        if nens is None and pf is None and ob is None:
+            # Logic here to compute the arrays
+            pass
+        #5D array (members, times, lvs, lats, lons)
+        #Should be (nens,1,1,nlats,nlons) in shape
+
+
         self.nens = nens
         self.pf = pf
         self.ob = ob
@@ -56,7 +68,7 @@ class ROC(DetScores,ProbScores):
 
         TODO."""
         FAR = self.compute_falsealarm()
-        HR = self.compute_hitrate() 
+        HR = self.compute_hitrate()
         ROCA = N.trapz(HR,x=FAR)
         return ROCA
 
@@ -64,5 +76,3 @@ class ROC(DetScores,ProbScores):
         """ROC area skill score.
         """
         pass
-
-
