@@ -12,7 +12,7 @@ class QCError(Exception):
     def __init__(self,error='Quality Control error.',pass_idx=False):
         """
         Optional:
-        Error (str) -   Message to send to user   
+        Error (str) -   Message to send to user
         pass_idx (tuple, list, N.ndarray)   -   Location in data of bad vals.
         """
         print(error)
@@ -23,4 +23,8 @@ class QCError(Exception):
             else:
                 print(pass_idx)
 
-
+class NonsenseError(Exception):
+    """ Data or argument doesn't make any sense.
+    """
+    def __init__(self,error="Nonsense Error"):
+        print(error)

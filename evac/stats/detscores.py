@@ -9,10 +9,34 @@ d = neither observed nor forecast
 """
 
 class DetScores:
-    def __init__(self,a,b,c,d):
+    def __init__(self,arr2x2=None,a=None,b=None,c=None,d=None,
+                    fcst_arr=None,obs_arr=None,thresh=None,overunder=None):
+        """
+        Users must supply the forecast and observation array (with threshold
+        and over/under operation), or either arr or (a,b,c,d).
+
+        Args:
+            fcst_arr,obs_arr (N.ndarray)    :   Forecast and verification arrays,
+                                                    the same dimensions.
+            thresh (float)  :   threshold
+            overunder (str) :   over, under, overeq, undereq, equal
+            arr2x2 (N.ndarray) :   Array representing 2x2 matrix.
+                                    Must be arranged so flatten array is
+                                    equal to a tuple of (a,b,c,d).
+            a,b,c,d (int)   :   Number of elements in 2x2 matrix.
+        """
+        if arr2x2 is not None:
+            a,b,c,d = arr.flatten()
+        elif fcst_arr is not None:
+            a,b,c,d = compute_contingency(fcst_arr,obs_arr,thresh,overunder,
+                                            fmt='tuple')
+        else:
+            for x in (a,b,c,d):
+                assert x is not None
+
         # Number of total events
         self.n = sum(a,b,c,d)
-        
+
         self.a = a
         self.b = b
         self.c = c
@@ -32,7 +56,7 @@ class DetScores:
 
     def compute_hitrate(self):
         """ Accuracy.
-        
+
         Eq. 6 in B01."""
         HR = (self.a + self.d)/self.n
         return HR
@@ -43,7 +67,7 @@ class DetScores:
 
     def compute_threat(self):
         """ Accuracy.
-        
+
         Eq. 7 in B01."""
         TS = self.a/(self.a+self.b+self.c)
         return TS
@@ -77,4 +101,3 @@ class DetScores:
         """
         KSS = self.compute_pod() - self.compute_pfd()
         return KSS
-

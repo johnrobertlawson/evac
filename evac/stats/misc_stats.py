@@ -14,6 +14,52 @@ import evac.utils as utils
 
 from .wrfout import WRFOut
 
+def compute_bool_thresh(arr,overunder,threshold):
+    """
+    Args:
+        arr (N.ndarray) :   field of data
+        overunder (str) :   One of the following:
+                                'over','under','overeq','undereq','equal'
+    """
+    # Cover over/under request to operator
+    OU = {'over':__gt__,'under':__lt__,'overeq':__ge__,'undereq':__le__,
+            'equal':__eq__}
+    if not overunder in OU.keys()
+        raise Exception("Pick over or under for threshold comparison.")
+
+    bool_arr = N.where(all_ens_data.OU[overunder](threshold),1,0)
+    return bool_arr
+
+def compute_contingency(fcst_arr,obs_arr,thresh,overunder,fmt='tuple'):
+    """
+    a = observed and forecast
+    b = forecast but not observed
+    c = observed but not forecast
+    d = neither observed nor forecast
+
+    Args:
+        fcst_arr (N.ndarray)    :   forecast array
+        obs_arr (N.ndarray)     :   verification array, same 2D dimensions as fcst_arr
+        thresh (float)          :   threshold
+        overunder (str)         :   One of the following:
+                                        'over','under','overeq','undereq','equal'
+        fmt (str,optional)      :   If tuple, the output is a,b,c,d.
+                                        If 'array', the output is a numpy
+                                        array - not implemented yet.
+    """
+    fcst_bool = compute_bool_thresh(fcst_arr,overunder,thresh)
+    obs_bool = compute_bool_thresh(obs_arr,overunder,thresh)
+
+    a = len(N.argwhere((fcst_bool == True) & (obs_bool == True)))
+    b = len(N.argwhere((fcst_bool == True) & (obs_bool == False)))
+    c = len(N.argwhere((fcst_bool == False) & (obs_bool == True)))
+    d = len(N.argwhere((fcst_bool == False) & (obs_bool == False)))
+
+    if fmt == 'tuple':
+        return a,b,c,d
+    else:
+        return NotImplementedError
+
 def std(ncfiles,vrbl,utc=False,level=False,other=False,axis=0):
     """
     Find standard deviation in along axis of ensemble
@@ -61,7 +107,7 @@ def std_ttest(ncfiles1,ncfiles2,vrbl,utc=False,level=False,other=False,th=0):
         sample=all_members
         std.append(N.std(sample,axis=0)[0,0,:,:])
         std_ave.append(N.std(all_members, axis=None))
-        
+
     # N.random.shuffle(std[0])
     # N.random.shuffle(std[1])
 
@@ -389,7 +435,7 @@ def DE_z(nc0,nc1,t,energy,lower,upper):
 
 def DKE_power_spectrum(data,dx):
     """
-    Return power spectrum of DKE/DTE at time(s) for wavelengths. 
+    Return power spectrum of DKE/DTE at time(s) for wavelengths.
     """
 
     powspec = N.abs(N.fft.fft2(data))**2
@@ -426,4 +472,3 @@ def rank_hist(obdata,ensdata):
 
     # x = number of bins; y = % for each bin
     return bins, freq_pct
-
