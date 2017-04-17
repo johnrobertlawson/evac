@@ -10,7 +10,7 @@ import itertools
 import time
 import os
 
-import evac.utils as utils
+import evac.utils.gis_tools as utils
 
 from .wrfout import WRFOut
 
