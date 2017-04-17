@@ -8,6 +8,8 @@ c = observed but not forecast
 d = neither observed nor forecast
 """
 
+from evac.stats.misc_stats import compute_contingency
+
 class DetScores:
     def __init__(self,arr2x2=None,a=None,b=None,c=None,d=None,
                     fcst_arr=None,obs_arr=None,thresh=None,overunder=None):
