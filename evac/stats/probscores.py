@@ -11,7 +11,7 @@ class ProbScores:
         self.pfg = pfg
         assert self.og.size == self.pfg.size
 
-    def compute_briar(self,self.og,self.pfg):
+    def compute_briar(self,):
         Ng = self.og.size
         self.og = self.og.flatten()
         self.pfg = self.pfg.flatten()
@@ -20,7 +20,8 @@ class ProbScores:
     
     def compute_bss(self):
         """TODO
-        """BS = self.compute_briar(self.og,self.pfg)
+        """
+        BS = self.compute_briar()
         BSS = 0
         return
 

@@ -1,10 +1,10 @@
-import numpy
+import numpy as N
 import pdb
 
 from evac.utils.exceptions import FormatError, NonsenseError
-from evac.stats.detstats import DetStats
+from evac.stats.detscores import DetScores
 
-class ForecastValue(DetStats):
+class ForecastValue(DetScores):
     def __init__(self,CLs=None,*args,**kwargs):
         """ Compute FV, forecast value, as Buizza 2001.
 
@@ -27,11 +27,12 @@ class ForecastValue(DetStats):
 
 
         """
-        super(DetStats,self).__init__(*args,**kwargs)
-        self.pod = self.compute_pod
-        self.pfd = self.compute_pfd
-        self.pcli = self.compute_pcli
-        self.kss = self.compute_kss
+        super().__init__(*args,**kwargs)
+        # super(DetScores,self).__init__(*args,**kwargs)
+        self.pod = self.compute_pod()
+        self.pfd = self.compute_pfd()
+        self.pcli = self.compute_pcli()
+        self.kss = self.compute_kss()
 
         if CLs is None:
             CLs = N.arange(0.01,1.01,0.01)
@@ -42,9 +43,9 @@ class ForecastValue(DetStats):
                               "int, float, N.ndarray, tuple, list.")
         self.CLs = CLs
 
-        self.FV = []
+        self.FVs = []
         for cl in self.CLs:
-            self.FV.append(self.compute_FV)
+            self.FVs.append(self.compute_FV(cl))
 
     def compute_FV(self,cl):
         """ Compute FV.
@@ -66,9 +67,14 @@ class ForecastValue(DetStats):
             (x - (self.pcli*cl))
         )
 
+        FV2 = self.kss - ( (1-self.pod)*(
+                        (self.pcli-cl)/
+                        (cl*(1-self.pcli))) )
+
+        pdb.set_trace()
         return FV
 
-    def get(self,cl):
+    def get_FV(self,cl):
         """ Return the FV for a given cost/loss ratio, otherwise None.
         """
         clidx = N.where(self.CLs == cl)

@@ -7,6 +7,10 @@ b = forecast but not observed
 c = observed but not forecast
 d = neither observed nor forecast
 """
+import math
+import pdb
+
+import numpy as N
 
 from evac.stats.misc_stats import compute_contingency
 
@@ -39,6 +43,9 @@ class DetScores:
         # Number of total events
         self.n = sum((a,b,c,d))
 
+        # Now add a tiny amount to zeros to avoid division error
+        a,b,c,d = [N.finfo(N.float).eps if x == 0 else x for x in (a,b,c,d)]
+
         self.a = a
         self.b = b
         self.c = c
@@ -50,6 +57,10 @@ class DetScores:
         self.cn = self.c/self.n
         self.dn = self.d/self.n
 
+    def check_approx(self,x,y):
+        if not math.isclose(x,y,rel_tol=0.0001):
+            raise Exception("Values are not close.")
+
     def compute_pcli(self):
         """Observed frequency of event under consideration.
         Also known as base rate.
@@ -57,14 +68,16 @@ class DetScores:
         pcli = (self.a + self.c)/self.n
         return pcli
 
-    def compute_hitrate(self):
+    def compute_hitrate(self,method=2):
         """ Accuracy.
 
         Eq. 6 in B01."""
-        # This is Buizza version?
-        #HR = (self.a + self.d)/self.n
-        # This is Jolliffe and Stephenson
-        HR = self.a / (self.a + self.c)
+        if method == 1:
+            # This is Buizza version - same as POD
+            HR = (self.a + self.d)/self.n
+        else:
+            # This is Jolliffe and Stephenson
+            HR = self.a / (self.a + self.c)
         return HR
 
     def compute_falsealarmratio(self):
@@ -72,6 +85,7 @@ class DetScores:
         return F
 
     def compute_falsealarmrate(self):
+        """ Same as PFD"""
         FAR = self.b / (self.a + self.b)
         return FAR
 
@@ -81,10 +95,10 @@ class DetScores:
 
     def compute_E(self):
         # 3.17 in Jolliffe and Stephenson
-        E = ( ((self.a+self.c)/self.n)*
+        E = ( ( ((self.a+self.c)/self.n)*
                 ((self.a+self.b)/self.n)) +
             ( ((self.b+self.d)/self.n)*
-                ((self.c+self.d)/self.n))
+                ((self.c+self.d)/self.n)) )
 
         return E
 
@@ -110,13 +124,13 @@ class DetScores:
 
     def compute_gilbert(self):
         ar = self.compute_ar()
-        GSS = (self.a - ar) /
-                (self.a - ar + self.b + self.c)
+        GSS = (self.a - ar) /(
+                (self.a - ar + self.b + self.c))
         return GSS
 
     def compute_yuleq(self):
-        Q = ( (self.a*self.d) - (self.b*self.c) )/
-            ( (self.a*self.d) + (self.b*self.c) )
+        Q = (( (self.a*self.d) - (self.b*self.c) )/
+             ( (self.a*self.d) + (self.b*self.c) ))
         return Q
 
     def compute_threat(self):
@@ -132,7 +146,7 @@ class DetScores:
         Eq. 8 in B01."""
         POD1 = self.a/(self.a+self.c)
         POD2 = (self.a/self.n) * (1/self.compute_pcli())
-        assert POD1 == POD2
+        self.check_approx(POD1,POD2)
         return POD1
 
     def compute_pfd(self):
@@ -141,7 +155,7 @@ class DetScores:
         Eq. 9 in B01."""
         PFD1 = self.b/(self.b+self.d)
         PFD2 = (self.b/self.n) * (1/(1-self.compute_pcli()))
-        assert PFD1 == PFD2
+        self.check_approx(PFD1,PFD2)
         return PFD1
 
     def compute_bias(self):
@@ -153,8 +167,11 @@ class DetScores:
     def compute_kss(self):
         """ Eq. 13 in B01.
         """
-        KSS = self.compute_pod() - self.compute_pfd()
-        return KSS
+        KSS1 = self.compute_pod() - self.compute_pfd()
+        KSS2 = ( (self.a*self.d) - (self.b*self.c))/(
+                 (self.a+self.c) * (self.b+self.d))
+        self.check_approx(KSS1,KSS2)
+        return KSS1
 
     def get(self,score):
         """ Getter method for obtaining a score via string.
@@ -165,8 +182,8 @@ class DetScores:
                     'POD':self.compute_pod,
                     'PFD':self.compute_pfd,
                     'BIAS':self.compute_bias,
-                    'KSS':self.compute_bias,
-                    'CSI',self.compute_csi,
+                    'KSS':self.compute_kss,
+                    'CSI':self.compute_csi,
                     'PCLI':self.compute_pcli,
                     'F':self.compute_falsealarmrate,
                     'PC':self.compute_propcorrect,
@@ -177,6 +194,7 @@ class DetScores:
                     }
 
         if score in scores.keys():
-            return scores[score]()
+            val = scores[score]()
+            return val
         else:
             raise Exception("Specify from the following: \n{}".format(scores.keys()))
