@@ -71,7 +71,6 @@ class ForecastValue(DetScores):
                         (self.pcli-cl)/
                         (cl*(1-self.pcli))) )
 
-        pdb.set_trace()
         return FV
 
     def get_FV(self,cl):
