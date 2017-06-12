@@ -89,7 +89,13 @@ class Figure:
         self.mx,self.my = N.meshgrid(self.xx,self.yy)
         return
 
-    def save(self,outpath,fname,tight=True):
+    def save(self,outpath=None,fname=None,tight=True):
+        if (outpath is None) and (fname is None):
+            try:
+                outpath = self.outpath
+                fname = self.fname
+            except:
+                raise Exception("Provide both output directory and filename.")
         fname = self.enforce_png_ext(fname)
         utils.trycreate(outpath)
         fpath = os.path.join(outpath,fname)

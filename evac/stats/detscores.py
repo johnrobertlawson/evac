@@ -173,6 +173,12 @@ class DetScores:
         self.check_approx(KSS1,KSS2)
         return KSS1
 
+    def compute_successrate(self):
+        """ Inverse of FAR.
+        """
+        SR = (self.a+self.b)/self.b
+        return SR
+
     def get(self,score):
         """ Getter method for obtaining a score via string.
         """
@@ -191,6 +197,7 @@ class DetScores:
                     'PSS':self.compute_peirce,
                     'GSS':self.compute_gilbert,
                     'Q':self.compute_yuleq,
+                    'SR':self.compute_successrate,
                     }
 
         if score in scores.keys():

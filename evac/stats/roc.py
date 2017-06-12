@@ -56,7 +56,7 @@ class ROC(DetScores,ProbScores):
         w is the probability threshold list.
         """
         w = []
-        X = N.zeros([self.nens])
+        X = N.zeros([self.nens]) 
         Y = N.zeros([self.nens])
         for nidx,n in enumerate(range(1,self.nens+1)):
             w.append(n/self.nens)
