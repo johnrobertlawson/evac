@@ -53,8 +53,24 @@ c = observed but not forecast
 d = neither observed nor forecast</p>
 <dl class="class">
 <dt id="evac.stats.detscores.DetScores">
-<em class="property">class </em><code class="descclassname">evac.stats.detscores.</code><code class="descname">DetScores</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>c</em>, <em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">evac.stats.detscores.</code><code class="descname">DetScores</code><span class="sig-paren">(</span><em>arr2x2=None</em>, <em>a=None</em>, <em>b=None</em>, <em>c=None</em>, <em>d=None</em>, <em>fcst_arr=None</em>, <em>obs_arr=None</em>, <em>thresh=None</em>, <em>overunder=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.check_approx">
+<code class="descname">check_approx</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.check_approx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.check_approx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_E">
+<code class="descname">compute_E</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_E"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_E" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_ar">
+<code class="descname">compute_ar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_ar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_ar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of hits expected by pure chance</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="evac.stats.detscores.DetScores.compute_bias">
 <code class="descname">compute_bias</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_bias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_bias" title="Permalink to this definition">¶</a></dt>
@@ -62,8 +78,34 @@ d = neither observed nor forecast</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_csi">
+<code class="descname">compute_csi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_csi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_csi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_falsealarmrate">
+<code class="descname">compute_falsealarmrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_falsealarmrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_falsealarmrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as PFD</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_falsealarmratio">
+<code class="descname">compute_falsealarmratio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_falsealarmratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_falsealarmratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_gilbert">
+<code class="descname">compute_gilbert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_gilbert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_gilbert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_heidke">
+<code class="descname">compute_heidke</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_heidke"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_heidke" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="evac.stats.detscores.DetScores.compute_hitrate">
-<code class="descname">compute_hitrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_hitrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_hitrate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_hitrate</code><span class="sig-paren">(</span><em>method=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_hitrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_hitrate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accuracy.</p>
 <p>Eq. 6 in B01.</p>
 </dd></dl>
@@ -77,8 +119,14 @@ d = neither observed nor forecast</p>
 <dl class="method">
 <dt id="evac.stats.detscores.DetScores.compute_pcli">
 <code class="descname">compute_pcli</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_pcli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_pcli" title="Permalink to this definition">¶</a></dt>
-<dd><p>Observed frequency of event under consideration.</p>
+<dd><p>Observed frequency of event under consideration.
+Also known as base rate.</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_peirce">
+<code class="descname">compute_peirce</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_peirce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_peirce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="evac.stats.detscores.DetScores.compute_pfd">
@@ -95,10 +143,26 @@ d = neither observed nor forecast</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_propcorrect">
+<code class="descname">compute_propcorrect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_propcorrect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_propcorrect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="evac.stats.detscores.DetScores.compute_threat">
 <code class="descname">compute_threat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_threat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_threat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accuracy.</p>
 <p>Eq. 7 in B01.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_yuleq">
+<code class="descname">compute_yuleq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_yuleq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_yuleq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>score</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter method for obtaining a score via string.</p>
 </dd></dl>
 
 </dd></dl>

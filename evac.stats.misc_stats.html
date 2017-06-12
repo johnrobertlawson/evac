@@ -45,6 +45,190 @@
             
   <div class="section" id="stats-misc-stats">
 <h1><cite>stats.misc_stats</cite><a class="headerlink" href="#stats-misc-stats" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-evac.stats.misc_stats"></span><p>Scripts involving statistics or data manipulation here.</p>
+<dl class="function">
+<dt id="evac.stats.misc_stats.DE_xyz">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">DE_xyz</code><span class="sig-paren">(</span><em>nc0</em>, <em>nc1</em>, <em>t_idx</em>, <em>energy</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#DE_xyz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.DE_xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computation for difference kinetic energy (DKE).
+Sums DKE over the 3D space, returns a time series.</p>
+<p>Destaggering is not enabled as it introduces
+computational cost that is of miniscule value considering
+the magnitudes of output values.</p>
+<p>Inputs:</p>
+<p>nc0     :   netCDF file
+nc1     :   netCDF file
+t_idx   :   times indices to difference
+energy  :   kinetic or total
+<a href="#id1"><span class="problematic" id="id2">*</span></a>args   :   to catch lower/upper boundary which isn&#8217;t relevant here</p>
+<p>Outputs:</p>
+<p>data    :   time series.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.DE_z">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">DE_z</code><span class="sig-paren">(</span><em>nc0</em>, <em>nc1</em>, <em>t</em>, <em>energy</em>, <em>lower</em>, <em>upper</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#DE_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.DE_z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computation for difference kinetic energy (DKE).
+Sums DKE over all levels between lower and upper,
+for each grid point, and returns a 2D array.</p>
+<p>Destaggering is not enabled as it introduces
+computational cost that is of miniscule value considering
+the magnitudes of output values.</p>
+<p>Method finds levels nearest lower/upper hPa and sums between
+them inclusively.</p>
+<p>Inputs:</p>
+<p>nc0     :   netCDF file
+nc1     :   netCDF file
+t       :   times index to difference
+energy  :   kinetic or total
+lower   :   lowest level, hPa
+upper   :   highest level, hPa</p>
+<p>Outputs:</p>
+<p>data    :   2D array.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.DKE_power_spectrum">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">DKE_power_spectrum</code><span class="sig-paren">(</span><em>data</em>, <em>dx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#DKE_power_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.DKE_power_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return power spectrum of DKE/DTE at time(s) for wavelengths.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.compute_bool_thresh">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">compute_bool_thresh</code><span class="sig-paren">(</span><em>arr</em>, <em>overunder</em>, <em>threshold</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#compute_bool_thresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.compute_bool_thresh" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>arr</strong> (<em>N.ndarray</em>) &#8211; field of data</li>
+<li><strong>overunder</strong> (<em>str</em>) &#8211; One of the following:
+&#8216;over&#8217;,&#8217;under&#8217;,&#8217;overeq&#8217;,&#8217;undereq&#8217;,&#8217;equal&#8217;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.compute_contingency">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">compute_contingency</code><span class="sig-paren">(</span><em>fcst_arr</em>, <em>obs_arr</em>, <em>thresh</em>, <em>overunder</em>, <em>fmt='tuple'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#compute_contingency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.compute_contingency" title="Permalink to this definition">¶</a></dt>
+<dd><p>a = observed and forecast
+b = forecast but not observed
+c = observed but not forecast
+d = neither observed nor forecast</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fcst_arr</strong> (<em>N.ndarray</em>) &#8211; forecast array</li>
+<li><strong>obs_arr</strong> (<em>N.ndarray</em>) &#8211; verification array, same 2D dimensions as fcst_arr</li>
+<li><strong>thresh</strong> (<em>float</em>) &#8211; threshold</li>
+<li><strong>overunder</strong> (<em>str</em>) &#8211; One of the following:
+&#8216;over&#8217;,&#8217;under&#8217;,&#8217;overeq&#8217;,&#8217;undereq&#8217;,&#8217;equal&#8217;</li>
+<li><strong>fmt</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; If tuple, the output is a,b,c,d.
+If &#8216;array&#8217;, the output is a numpy
+array - not implemented yet.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.compute_diff_energy">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">compute_diff_energy</code><span class="sig-paren">(</span><em>ptype</em>, <em>energy</em>, <em>files</em>, <em>times</em>, <em>upper=None</em>, <em>lower=None</em>, <em>d_save=True</em>, <em>d_return=True</em>, <em>d_fname='diff_energy_data'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#compute_diff_energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.compute_diff_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method computes difference kinetic energy (DKE)
+or different total energy (DTE, including temp)
+between WRFout files for a given depth of the
+atmosphere, at given time intervals</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ptype</strong> &#8211; &#8216;2D&#8217; or &#8216;3D&#8217;.
+&#8216;2D&#8217; integrates vertically between lower and
+upper hPa and creates a time series.
+&#8216;3D&#8217; integrates over the 3D space (again between
+the upper and lower bounds) and creates 2D arrays.</li>
+<li><strong>energy</strong> &#8211; &#8216;DKE&#8217; or &#8216;DTE&#8217;</li>
+<li><strong>upper</strong> &#8211; upper limit of vertical integration</li>
+<li><strong>lower</strong> &#8211; lower limit of vertical integration</li>
+<li><strong>files</strong> &#8211; abs paths to all wrfout files</li>
+<li><strong>times</strong> &#8211; times for computations - tuple format</li>
+<li><strong>d_save</strong> &#8211; save dictionary to folder (path to folder)</li>
+<li><strong>d_return</strong> &#8211; return dictionary (True or False)</li>
+<li><strong>d_fname</strong> &#8211; custom filename</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">N.ndarray &#8211; time series or list of 2D arrays</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.gauss_kern">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">gauss_kern</code><span class="sig-paren">(</span><em>size</em>, <em>sizey=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#gauss_kern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.gauss_kern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Taken from scipy cookbook online.
+Returns a normalized 2D gauss kernel array for convolutions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.gauss_smooth">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">gauss_smooth</code><span class="sig-paren">(</span><em>data</em>, <em>n</em>, <em>ny=None</em>, <em>pad=1</em>, <em>pad_values=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#gauss_smooth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.gauss_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Taken from scipy cookbook online.
+Blur the data by convolving with a gaussian kernel of typical
+size n. The optional keyword argument ny allows for a different
+size in the y direction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>N.ndarray</em>) &#8211; data (2D only?)</li>
+<li><strong>pad</strong> (<em>bool</em>) &#8211; put zeros on edge of length n so that output
+array equals input array size.</li>
+<li><strong>pad_values</strong> (<em>int</em><em>,</em><em>float</em>) &#8211; if pad, then use this value to fill edges.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.max_filter">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">max_filter</code><span class="sig-paren">(</span><em>data</em>, <em>size=11</em>, <em>shape='circle'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#max_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.max_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>blah</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.rank_hist">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">rank_hist</code><span class="sig-paren">(</span><em>obdata</em>, <em>ensdata</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#rank_hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.rank_hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>obdata  :   (N.ndarray) - T x surface observations (T = no. of times)
+ensdata :   (N.ndarray) - T x N x float, ensemble analyses for N members</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.std">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">std</code><span class="sig-paren">(</span><em>ncfiles</em>, <em>vrbl</em>, <em>utc=False</em>, <em>level=False</em>, <em>other=False</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find standard deviation in along axis of ensemble
+members. Returns matrix x-y for plotting</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.std_ttest">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">std_ttest</code><span class="sig-paren">(</span><em>ncfiles1</em>, <em>ncfiles2</em>, <em>vrbl</em>, <em>utc=False</em>, <em>level=False</em>, <em>other=False</em>, <em>th=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#std_ttest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.std_ttest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find standard deviation in along axis of ensemble
+members. Returns matrix x-y for plotting. Returns sig test</p>
+</dd></dl>
+
 </div>
 
 

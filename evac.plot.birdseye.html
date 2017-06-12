@@ -45,6 +45,83 @@
             
   <div class="section" id="plot-birdseye">
 <h1><cite>plot.birdseye</cite><a class="headerlink" href="#plot-birdseye" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-evac.plot.birdseye"></span><p>Top-down 2D plots, which are so common in meteorology
+that they get their own file here.</p>
+<p>Subclass of Figure.</p>
+<p>TODO: multiple plots on same figure - like a &#8216;hold&#8217; - maybe by
+using set and get decorators. Or stopping save/close.</p>
+<dl class="class">
+<dt id="evac.plot.birdseye.BirdsEye">
+<em class="property">class </em><code class="descclassname">evac.plot.birdseye.</code><code class="descname">BirdsEye</code><span class="sig-paren">(</span><em>ax=None</em>, <em>fig=None</em>, <em>ideal=False</em>, <em>mplargs=[]</em>, <em>mplkwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/birdseye.html#BirdsEye"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.birdseye.BirdsEye" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="evac.plot.figure.html#evac.plot.figure.Figure" title="evac.plot.figure.Figure"><code class="xref py py-class docutils literal"><span class="pre">evac.plot.figure.Figure</span></code></a></p>
+<dl class="method">
+<dt id="evac.plot.birdseye.BirdsEye.do_contour_plot">
+<code class="descname">do_contour_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/birdseye.html#BirdsEye.do_contour_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.birdseye.BirdsEye.do_contour_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.birdseye.BirdsEye.do_contourf_plot">
+<code class="descname">do_contourf_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/birdseye.html#BirdsEye.do_contourf_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.birdseye.BirdsEye.do_contourf_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.birdseye.BirdsEye.do_pcolormesh_plot">
+<code class="descname">do_pcolormesh_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/birdseye.html#BirdsEye.do_pcolormesh_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.birdseye.BirdsEye.do_pcolormesh_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.birdseye.BirdsEye.make_subplot_label">
+<code class="descname">make_subplot_label</code><span class="sig-paren">(</span><em>ax</em>, <em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/birdseye.html#BirdsEye.make_subplot_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.birdseye.BirdsEye.make_subplot_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.birdseye.BirdsEye.plot2D">
+<code class="descname">plot2D</code><span class="sig-paren">(</span><em>data</em>, <em>fname</em>, <em>outdir</em>, <em>plottype='contourf'</em>, <em>save=True</em>, <em>smooth=1</em>, <em>lats=False</em>, <em>lons=False</em>, <em>clvs=False</em>, <em>cmap=False</em>, <em>title=False</em>, <em>cb=True</em>, <em>locations=False</em>, <em>m=False</em>, <em>x=False</em>, <em>y=False</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em>, <em>color='k'</em>, <em>inline=False</em>, <em>cblabel=False</em>, <em>ideal=False</em>, <em>drawcounties=False</em>, <em>mplargs=[]</em>, <em>mplkwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/birdseye.html#BirdsEye.plot2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.birdseye.BirdsEye.plot2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic method that plots any matrix of data on a map</p>
+<p>Inputs:
+data        :   2D matrix of data
+outdir      :   path to plots
+outf        :   filename for output (with or without .png)</p>
+<p>Optional:
+plottype    :   matplotlib function for plotting
+smooth      :   Gaussian smooth by this many grid spaces
+clvs        :   scale for contours
+title       :   title on plot
+save        :   whether to save to file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>locations</strong> (<em>dict</em>) &#8211; Locations to plot on the basemap.
+Format: locations = {&#8216;label&#8217;:(lat,lon),etc}</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.birdseye.BirdsEye.plot_locations">
+<code class="descname">plot_locations</code><span class="sig-paren">(</span><em>locations</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/birdseye.html#BirdsEye.plot_locations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.birdseye.BirdsEye.plot_locations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.birdseye.BirdsEye.plot_streamlines">
+<code class="descname">plot_streamlines</code><span class="sig-paren">(</span><em>U</em>, <em>V</em>, <em>outdir</em>, <em>fname</em>, <em>lats=False</em>, <em>lons=False</em>, <em>smooth=1</em>, <em>title=False</em>, <em>lw_speed=False</em>, <em>density=1.8</em>, <em>ideal=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/birdseye.html#BirdsEye.plot_streamlines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.birdseye.BirdsEye.plot_streamlines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot streamlines.</p>
+<p>U       :   U-component of wind (nx x ny)
+V       :   V-component of wind (same dimensions)</p>
+<p>lw_speed    :   linewidth is proportional to wind speed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.birdseye.BirdsEye.spaghetti">
+<code class="descname">spaghetti</code><span class="sig-paren">(</span><em>t</em>, <em>lv</em>, <em>va</em>, <em>contour</em>, <em>wrfouts</em>, <em>outpath</em>, <em>da=0</em>, <em>dom=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/birdseye.html#BirdsEye.spaghetti"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.birdseye.BirdsEye.spaghetti" title="Permalink to this definition">¶</a></dt>
+<dd><p>wrfouts     :   list of wrfout files</p>
+<p>Only change dom if there are multiple domains.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

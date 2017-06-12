@@ -45,6 +45,163 @@
             
   <div class="section" id="lazy-lazywrf">
 <h1><cite>lazy.lazywrf</cite><a class="headerlink" href="#lazy-lazywrf" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-evac.lazy.lazywrf"></span><dl class="class">
+<dt id="evac.lazy.lazywrf.LazyWRF">
+<em class="property">class </em><code class="descclassname">evac.lazy.lazywrf.</code><code class="descname">LazyWRF</code><span class="sig-paren">(</span><em>sched</em>, <em>path_to_WRF</em>, <em>path_to_wrfout</em>, <em>submit_fname</em>, <em>submit_ideal_fname=False</em>, <em>path_to_storage=False</em>, <em>submit_real_fname=False</em>, <em>path_to_WPS=False</em>, <em>path_to_atmos=False</em>, <em>path_to_soil=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.add_new_namelist">
+<code class="descname">add_new_namelist</code><span class="sig-paren">(</span><em>suffix</em>, <em>section</em>, <em>sett</em>, <em>newval</em>, <em>quoted</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.add_new_namelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.add_new_namelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds new namelist setting at end of section, before
+the backslash.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.copy_files">
+<code class="descname">copy_files</code><span class="sig-paren">(</span><em>fromfolder</em>, <em>tofolder</em>, <em>matchfs=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.copy_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.copy_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move wrfout files to folder.
+Create folder if it doesn&#8217;t exist</p>
+<p>Move .TS files if they exist
+Copy namelist.input to that folder.
+Copy rsl.error.0000 to the folder.</p>
+<p>Input(s):
+args = names of folder tree, in order of depth.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.copy_namelist">
+<code class="descname">copy_namelist</code><span class="sig-paren">(</span><em>suffix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.copy_namelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.copy_namelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends current time to namelist to create backup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.edit_namelist">
+<code class="descname">edit_namelist</code><span class="sig-paren">(</span><em>suffix</em>, <em>sett</em>, <em>newval</em>, <em>maxdom=1</em>, <em>quoted=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.edit_namelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.edit_namelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method edits namelist.wps or namelist.input.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>suffix</strong> &#8211; which namelist needs changing</li>
+<li><strong>sett</strong> &#8211; setting that needs changing</li>
+<li><strong>newval</strong> &#8211; its new value -&gt; currently replaces whole line</li>
+<li><strong>maxdom</strong> &#8211; number of domains to edit
+(this is relevant for multiple columns?)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.generate_date">
+<code class="descname">generate_date</code><span class="sig-paren">(</span><em>date</em>, <em>outstyle='wps'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.generate_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.generate_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates date string for namelist files.</p>
+<p>Input:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.go">
+<code class="descname">go</code><span class="sig-paren">(</span><em>casestr</em>, <em>IC</em>, <em>experiment</em>, <em>ensnames</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.go"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.go" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inputs: (all folder names)
+casestr     :   string of case study initialisation date/time
+IC          :   initial condition model
+experiment  :   dictionary. Key: ensemble type (ICBC,STCH,MXMP)</p>
+<blockquote>
+<div><blockquote>
+<div>-initial condition/boundary condition
+-stochastic kinetic energy backscatter
+-mixed model parameterisations</div></blockquote>
+<dl class="docutils">
+<dt>Value...</dt>
+<dd>-model configuration (CTRL) for ICBC
+-initial condition model/ens member for others</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>ensnames</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list of ensemble member names</span><dd><ul class="first last simple">
+<li>e.g. c00,p01,p02</li>
+</ul>
+</dd>
+</dl>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs include:
+WPS_only    :   stop after linking met_em files to WRF folder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.go_GEFSR2">
+<code class="descname">go_GEFSR2</code><span class="sig-paren">(</span><em>ensns</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.go_GEFSR2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.go_GEFSR2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs WPS, WRF for one set of initial conditions
+and settings based on the GEFSR2 model.</p>
+<p>Inputs:
+ensns   :   names of ensemble member</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.init_WPS">
+<code class="descname">init_WPS</code><span class="sig-paren">(</span><em>soilVtable_fname='Vtable.GFS_soilonly'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.init_WPS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.init_WPS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.link_to_IC_Vtable">
+<code class="descname">link_to_IC_Vtable</code><span class="sig-paren">(</span><em>IC</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.link_to_IC_Vtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.link_to_IC_Vtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.link_to_IC_data">
+<code class="descname">link_to_IC_data</code><span class="sig-paren">(</span><em>IC</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.link_to_IC_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.link_to_IC_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inputs:
+<a href="#id3"><span class="problematic" id="id4">*</span></a>args   :   e.g. ensemble member</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.link_to_met_em">
+<code class="descname">link_to_met_em</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.link_to_met_em"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.link_to_met_em" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.link_to_soil_Vtable">
+<code class="descname">link_to_soil_Vtable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.link_to_soil_Vtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.link_to_soil_Vtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.link_to_soil_data">
+<code class="descname">link_to_soil_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.link_to_soil_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.link_to_soil_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.remove_namelist_line">
+<code class="descname">remove_namelist_line</code><span class="sig-paren">(</span><em>suffix</em>, <em>sett</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.remove_namelist_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.remove_namelist_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.return_namelist_path">
+<code class="descname">return_namelist_path</code><span class="sig-paren">(</span><em>suffix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.return_namelist_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.return_namelist_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives path to namelist depending on suffix argument.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.run_exe">
+<code class="descname">run_exe</code><span class="sig-paren">(</span><em>exe</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.run_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.run_exe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run WPS executables, then check to see if it failed.
+If not, return True to proceed.</p>
+<p>Input:
+exe     :   .exe file name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.submit_job">
+<code class="descname">submit_job</code><span class="sig-paren">(</span><em>waitmin=10</em>, <em>sleepmin=5</em>, <em>wrf_only=False</em>, <em>first_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.submit_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.submit_job" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 
 

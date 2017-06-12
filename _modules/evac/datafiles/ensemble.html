@@ -1,0 +1,624 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.datafiles.ensemble &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.datafiles.ensemble</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Ensemble of forecasts.</span>
+
+<span class="sd">Todos:</span>
+<span class="sd">    * Change from ensemble of WRFOut files to any sort of datafile.</span>
+<span class="sd">    * Consistency with method names (e.g., get() )</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+
+<span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
+
+<span class="c1"># Dummy variable in place of proper subclass of WRFOut</span>
+<span class="n">AuxWRFOut</span> <span class="o">=</span> <span class="nb">object</span>
+
+<div class="viewcode-block" id="Ensemble"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble">[docs]</a><span class="k">class</span> <span class="nc">Ensemble</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rootdir</span><span class="p">,</span><span class="n">initutc</span><span class="p">,</span><span class="n">doms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">ctrl</span><span class="o">=</span><span class="s1">&#39;ctrl&#39;</span><span class="p">,</span><span class="n">aux</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="s1">&#39;wrf&#39;</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;em_real&#39;</span><span class="p">,</span><span class="n">f_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">ncf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Class containing all ensemble members. Default is a</span>
+<span class="sd">            deterministic forecast (i.e. ensemble of one control member).</span>
+<span class="sd">            Each ensemble member needs to have a separate folder (named</span>
+<span class="sd">            as the ensemble member&#39;s name), but different domains can be</span>
+<span class="sd">            within a single member&#39;s folder.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rootdir (str):  Directory at root of datafiles</span>
+<span class="sd">            initutc (datetime.datetime): Initialization time</span>
+<span class="sd">            doms (int, optional): Number of domains</span>
+<span class="sd">            ctrl (bool, optional): Whether ensemble has control member</span>
+<span class="sd">            aux (bool, dict, optional): Dictionary lists, per domain, data</span>
+<span class="sd">                files that contain additional variables and each</span>
+<span class="sd">                file&#39;s prefix. Default is False (no auxiliary files).</span>
+<span class="sd">                Not implemented yet.</span>
+<span class="sd">            enstype (str, optional): Type of ensemble. Default is for</span>
+<span class="sd">                Weather Research and Forecast (WRF) model.</span>
+<span class="sd">            fmt (str, optional): The type of simulations. Default is</span>
+<span class="sd">                real-world simulations (em_real from WRF).</span>
+<span class="sd">            f_prefix (tuple, optional): Tuple of prefixes for each</span>
+<span class="sd">                ensemble member&#39;s main data files. Must be length /doms/.</span>
+<span class="sd">                Default is None, which then uses a method to determine</span>
+<span class="sd">                the file name using default outputs from e.g. WRF.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;wrf&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File type is wrfout.&quot;</span><span class="p">)</span>
+            <span class="n">loadfunc</span> <span class="o">=</span> <span class="n">WRFOut</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span> <span class="o">=</span> <span class="n">ctrl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span> <span class="o">=</span> <span class="n">rootdir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span> <span class="o">=</span> <span class="n">initutc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doms</span> <span class="o">=</span> <span class="n">doms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">=</span> <span class="n">fmt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loadobj</span> <span class="o">=</span> <span class="n">loadobj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aux</span> <span class="o">=</span> <span class="n">aux</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ncf</span> <span class="o">=</span> <span class="n">ncf</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">isaux</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aux</span><span class="p">,</span><span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">f_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">f_prefix</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">doms</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Length of main datafile prefixes must &quot;</span>
+                                <span class="s2">&quot;match number of domains.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isctrl</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">ctrl</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="c1"># self.ndoms = len(self.doms)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_members</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nmems</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">member_names</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nperts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmems</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">isctrl</span>
+
+        <span class="c1"># Get start and end of whole dataset (inclusive)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_filetimes</span><span class="p">(</span><span class="n">arb</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nt_per_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_nt_per_file</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">itime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_history_dt</span><span class="p">()</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fdt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># self.ftime = self.filetimes[-1] + datetime.timedelta(seconds=self.hdt)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timespan_sec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdt</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nt_per_file</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ftime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itime</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timespan_sec</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ftime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nt_per_file</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fdt</span><span class="p">))</span>
+
+        <span class="c1"># Difference in output times across whole dataset</span>
+        <span class="c1"># Might be split between history files</span>
+
+
+<div class="viewcode-block" id="Ensemble.compute_fdt"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.compute_fdt">[docs]</a>    <span class="k">def</span> <span class="nf">compute_fdt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the difference in time between each data file&#39;s first entry.</span>
+
+<span class="sd">        Returns the difference in seconds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">f_diff</span><span class="o">.</span><span class="n">seconds</span></div>
+
+<div class="viewcode-block" id="Ensemble.get_members"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_members">[docs]</a>    <span class="k">def</span> <span class="nf">get_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot;Create a dictionary with all data.</span>
+
+<span class="sd">        Format is:</span>
+<span class="sd">        members[member][domain][time][data]</span>
+
+<span class="sd">        Returns members (dict): Dictionary of ensemble members</span>
+
+<span class="sd">        Also returns fdt (int): Seconds between output files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">fdt</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">dom</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">doms</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># Get file name for initialisation time and domain</span>
+            <span class="c1"># main_fname = self.get_data_fname(dom=dom,prod=&#39;main&#39;)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncf</span><span class="p">:</span>
+                <span class="n">main_fname</span>  <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_netcdf_naming</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="p">,</span><span class="n">dom</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">main_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncf</span>
+            <span class="c1"># if dom in self.aux:</span>
+                <span class="c1"># aux_fname = self.get_data_fname(dom=dom,prod=&#39;aux&#39;)</span>
+            <span class="c1"># Each ensemble member has a domain</span>
+            <span class="k">for</span> <span class="n">dirname</span><span class="p">,</span><span class="n">subdirs</span><span class="p">,</span><span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span><span class="p">):</span>
+                <span class="c1"># If ensemble size = 1, there will be no subdirs.</span>
+                <span class="c1"># pdb.set_trace()</span>
+                <span class="k">if</span> <span class="n">main_fname</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="c1"># pdb.set_trace()</span>
+                    <span class="n">dsp</span> <span class="o">=</span>  <span class="n">dirname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+                    <span class="n">rsp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># The following logic merges subdir names</span>
+                    <span class="c1"># e.g. ensemble grouped twice by perturbation type?</span>
+                    <span class="k">if</span> <span class="n">dsp</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">rsp</span><span class="p">:</span>
+                        <span class="n">member</span> <span class="o">=</span> <span class="n">dirname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="n">dsp</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">rsp</span><span class="p">:</span>
+                        <span class="n">member</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># pdb.set_trace()</span>
+                        <span class="c1"># raise Exception(&quot;What is this folder structure?&quot;, dsp, rsp, dirname)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Skipping file in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dirname</span><span class="p">))</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Looking at member </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">member</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">member</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
+                        <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">dom</span><span class="p">:{}}</span>
+                    <span class="k">if</span> <span class="n">dom</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+                    <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span>
+                    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncf</span><span class="p">:</span>
+                            <span class="n">t_fname</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_netcdf_naming</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">dom</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">t_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncf</span>
+                        <span class="c1"># Check for history output time</span>
+                        <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span><span class="p">,</span><span class="n">dirname</span><span class="p">,</span><span class="n">t_fname</span><span class="p">)</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">dataobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datafile_object</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loadobj</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                            <span class="c1"># All wrfout files have been found</span>
+                            <span class="k">break</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># print(&quot;Assigning file path and maybe object.&quot;)</span>
+                            <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dataobj&#39;</span><span class="p">:</span><span class="n">dataobj</span><span class="p">,</span>
+                                                <span class="s1">&#39;fpath&#39;</span><span class="p">:</span><span class="n">fpath</span><span class="p">,</span>
+                                                <span class="s1">&#39;control&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">member</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="p">)}</span>
+                            <span class="c1"># print(&quot;Done.&quot;)</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aux</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux</span><span class="p">):</span>
+                            <span class="c1"># TODO: implement</span>
+                            <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span><span class="p">,</span><span class="n">dirname</span><span class="p">,</span><span class="n">aux_fname</span><span class="p">)</span>
+                            <span class="n">dataobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datafile_object</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loadobj</span><span class="p">)</span>
+                            <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">][</span><span class="s1">&#39;auxdataobj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataobj</span>
+                            <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">][</span><span class="s1">&#39;auxfpath&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fpath</span>
+                            <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">][</span><span class="s1">&#39;control&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">member</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span>
+                        <span class="c1"># Move to next time</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncf</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">fdt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">files</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+                                <span class="n">fdt</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dt_from_fnames</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span><span class="n">f2</span><span class="p">,</span><span class="s1">&#39;wrf&#39;</span><span class="p">)</span>
+
+                                <span class="c1"># Loop through files and estimate dt based on fname</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">fdt</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">members</span><span class="p">,</span> <span class="n">fdt</span></div>
+
+<div class="viewcode-block" id="Ensemble.datafile_object"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.datafile_object">[docs]</a>    <span class="k">def</span> <span class="nf">datafile_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">#Extend to include other files (GEFS, RUC etc)</span>
+        <span class="c1">#TODO: Implement auxiliary wrfout files</span>
+        <span class="c1"># print(fpath)</span>
+        <span class="k">if</span> <span class="n">loadobj</span><span class="p">:</span>
+            <span class="n">ops</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;wrf&#39;</span><span class="p">:</span><span class="n">WRFOut</span><span class="p">,</span><span class="s1">&#39;aux&#39;</span><span class="p">:</span><span class="n">AuxWRFOut</span><span class="p">}</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="n">ops</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">](</span><span class="n">fpath</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">answer</span></div>
+
+<div class="viewcode-block" id="Ensemble.get_gefs_ensemble"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_gefs_ensemble">[docs]</a>    <span class="k">def</span> <span class="nf">get_gefs_ensemble</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        All gefs data files should be in the same folder.</span>
+<span class="sd">        Each forecast time is a different file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># This will break with subset of members, times, a/b grib files...</span>
+        <span class="n">allmembers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c00&#39;</span><span class="p">,]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;p</span><span class="si">{0:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">21</span><span class="p">)]</span>
+        <span class="n">allfiles</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ncroot</span><span class="p">,</span><span class="s1">&#39;ge*&#39;</span><span class="p">))</span>
+        <span class="n">alltimes</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">390</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ens</span> <span class="ow">in</span> <span class="n">allmembers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ens</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">alltimes</span><span class="p">:</span>
+                <span class="n">utc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initt</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+                <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;ge</span><span class="si">{0}</span><span class="s1">.t</span><span class="si">{1:02d}</span><span class="s1">z.pgrb2f</span><span class="si">{2:02d}</span><span class="s1">.nc&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">ens</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">initt</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span><span class="p">,</span><span class="n">fname</span><span class="p">)</span> <span class="ow">in</span> <span class="n">allfiles</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ens</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">members</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">members</span><span class="p">[</span><span class="n">ens</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">members</span><span class="p">[</span><span class="n">ens</span><span class="p">][</span><span class="n">utc</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span><span class="n">GEFS</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span><span class="p">,</span>
+                                <span class="n">fname</span><span class="p">)),</span><span class="s1">&#39;control&#39;</span><span class="p">:</span><span class="n">ens</span> <span class="ow">is</span> <span class="s1">&#39;c00&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">members</span></div>
+
+<div class="viewcode-block" id="Ensemble.get_exceedance_probs"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_exceedance_probs">[docs]</a>    <span class="k">def</span> <span class="nf">get_exceedance_probs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">overunder</span><span class="p">,</span><span class="n">threshold</span><span class="p">,</span>
+                            <span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">ftime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fcsttime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Nlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">Elim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Slim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return probability of exceeding or reaching a threshold.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vrbl (str,N.array)      : variable. If N.array, use provided data</span>
+<span class="sd">                                        (i.e. override the loading).</span>
+<span class="sd">                                        Must be 5D.</span>
+<span class="sd">                                        [ensemble_member,time,level,lat,lon]</span>
+<span class="sd">            overunder (str)         : threshold evaluation</span>
+<span class="sd">                                        &#39;over&#39;, &#39;overeq&#39;,&#39;under&#39;,&#39;undereq&#39;,&#39;equal&#39;</span>
+<span class="sd">            threshold (float,int)   : the threshold in same (SI) units as data</span>
+<span class="sd">            itime (datetime.datetime)   : initial time</span>
+<span class="sd">            ftime (datetime.datetime)   : final time</span>
+<span class="sd">            fcsttime (datetime.datetime): single time (must be present if itime</span>
+<span class="sd">                                            and ftime are None.)</span>
+<span class="sd">            Nlim, Elim, Slim, Wlim (float,optional) : bounding box of lats/lons</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">overunder</span> <span class="ow">in</span> <span class="n">OU</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Pick over or under for threshold comparison.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">vrbl</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span>
+            <span class="n">all_ens_data</span> <span class="o">=</span> <span class="n">vrbl</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">all_ens_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="n">itime</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="n">ftime</span><span class="p">,</span>
+                            <span class="n">fcsttime</span><span class="o">=</span><span class="n">fcsttime</span><span class="p">,</span><span class="n">Nlim</span><span class="o">=</span><span class="n">Nlim</span><span class="p">,</span><span class="n">Elim</span><span class="o">=</span><span class="n">Elim</span><span class="p">,</span>
+                            <span class="n">Slim</span><span class="o">=</span><span class="n">Slim</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="n">Wlim</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="n">dom</span><span class="p">)</span>
+
+        <span class="n">OU</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;over&#39;</span><span class="p">:</span><span class="n">__gt__</span><span class="p">,</span><span class="s1">&#39;under&#39;</span><span class="p">:</span><span class="n">__lt__</span><span class="p">,</span><span class="s1">&#39;overeq&#39;</span><span class="p">:</span><span class="n">__ge__</span><span class="p">,</span><span class="s1">&#39;undereq&#39;</span><span class="p">:</span><span class="n">__le__</span><span class="p">,</span>
+                <span class="s1">&#39;equal&#39;</span><span class="p">:</span><span class="n">__eq__</span><span class="p">}</span>
+
+        <span class="c1"># True/False if member meets condition (5D)</span>
+        <span class="n">bool_arr</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">all_ens_data</span><span class="o">.</span><span class="n">OU</span><span class="p">[</span><span class="n">overunder</span><span class="p">](</span><span class="n">threshold</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Count members that exceed the threshold (4D)</span>
+        <span class="n">count_arr</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bool_arr</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># And convert to percentage (4D) for each time</span>
+        <span class="n">percent_arr</span> <span class="o">=</span> <span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">count_arr</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">nmems</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">percent_arr</span> <span class="c1"># [times,levels,lats,lons]</span></div>
+
+
+<div class="viewcode-block" id="Ensemble.closest_to_mean"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.closest_to_mean">[docs]</a>    <span class="k">def</span> <span class="nf">closest_to_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">level</span><span class="p">,</span><span class="n">fcsttime</span><span class="p">,</span><span class="n">Nlim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Elim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">Slim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="kc">False</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find closest member to the mean for given variable</span>
+<span class="sd">        Passing latlon/box allows calculation over given area</span>
+<span class="sd">        (Box is in grid spaces)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_ens_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span><span class="n">fcsttime</span><span class="o">=</span><span class="n">fcsttime</span><span class="p">,</span>
+                                          <span class="n">Nlim</span><span class="o">=</span><span class="n">Nlim</span><span class="p">,</span><span class="n">Elim</span><span class="o">=</span><span class="n">Elim</span><span class="p">,</span>
+                                          <span class="n">Slim</span><span class="o">=</span><span class="n">Slim</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="n">Wlim</span><span class="p">)</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">all_ens_data</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">all_ens_data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]</span><span class="o">-</span><span class="n">mean</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="n">ensidx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">members_names</span><span class="p">[</span><span class="n">ensidx</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Ensemble.return_DF_for_t"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.return_DF_for_t">[docs]</a>    <span class="k">def</span> <span class="nf">return_DF_for_t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utc</span><span class="p">,</span><span class="n">member</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">tidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_file_for_t</span><span class="p">(</span><span class="n">utc</span><span class="p">,</span><span class="n">member</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="n">dom</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading data for time </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">utc</span><span class="p">))</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="n">fpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">][</span><span class="s1">&#39;fpath&#39;</span><span class="p">]</span>
+        <span class="n">DF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datafile_object</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">DF</span></div>
+
+<div class="viewcode-block" id="Ensemble.get"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">fcsttime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Nlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Elim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">Slim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">lats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">members</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns 5D array of data for ranges.</span>
+
+<span class="sd">        Needs to load WRFOut files if self.loadobj is False.</span>
+
+<span class="sd">        Ordered in descending order on pert. members</span>
+<span class="sd">        First dimension is ensemble members.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inclusive (bool, optional): if True, included time specified</span>
+<span class="sd">                at ftime in the time range. Default is False (like Python).</span>
+
+<span class="sd">        Todos:</span>
+<span class="sd">            * lat/lon box is in the correct projection?</span>
+<span class="sd">            * Implement bounding lat/lon box.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">ens_no</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">if</span> <span class="n">vrbl</span> <span class="ow">is</span> <span class="s1">&#39;accum_precip&#39;</span><span class="p">:</span>
+            <span class="n">qpf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accumulated</span><span class="p">(</span><span class="n">vrbl</span><span class="o">=</span><span class="s1">&#39;RAINNC&#39;</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="n">itime</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="n">ftime</span><span class="p">,</span>
+                            <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span><span class="n">Nlim</span><span class="o">=</span><span class="n">Nlim</span><span class="p">,</span><span class="n">Elim</span><span class="o">=</span><span class="n">Elim</span><span class="p">,</span>
+                            <span class="n">Slim</span><span class="o">=</span><span class="n">Slim</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="n">Wlim</span><span class="p">,</span><span class="n">inclusive</span><span class="o">=</span><span class="n">inclusive</span><span class="p">,</span>
+                            <span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">qpf</span>
+        <span class="k">if</span> <span class="n">members</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">members</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">members</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="n">members</span> <span class="o">=</span> <span class="p">(</span><span class="n">members</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+
+        <span class="k">for</span> <span class="n">nm</span><span class="p">,</span><span class="n">mem</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">members</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Working on member </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mem</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">mem</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Skipping control member.&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ens_no</span> <span class="o">+=</span> <span class="mi">1</span>
+
+               <span class="c1"># if itime and ftime:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">itime</span><span class="p">,</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+                            <span class="n">ftime</span><span class="p">,</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+                    <span class="c1"># fts = N.arange(itime,ftime,self.hdt)</span>
+                    <span class="n">fts</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_times</span><span class="p">(</span><span class="n">itime</span><span class="p">,</span><span class="n">ftime</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">hdt</span><span class="p">,</span>
+                                <span class="n">inclusive</span><span class="o">=</span><span class="n">inclusive</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fts</span> <span class="o">=</span> <span class="p">[</span><span class="n">fcsttime</span><span class="p">,]</span>
+
+                <span class="k">for</span> <span class="n">tn</span><span class="p">,</span> <span class="n">ft</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fts</span><span class="p">):</span>
+                    <span class="n">t</span><span class="p">,</span> <span class="n">tidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_file_for_t</span><span class="p">(</span><span class="n">ft</span><span class="p">,</span><span class="n">mem</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="n">dom</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading data for time </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ft</span><span class="p">))</span>
+                    <span class="n">fpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">mem</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">][</span><span class="s1">&#39;fpath&#39;</span><span class="p">]</span>
+                    <span class="n">DF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datafile_object</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">m_t_data</span> <span class="o">=</span> <span class="n">DF</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="n">tidx</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">ens_no</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">nz</span><span class="p">,</span><span class="n">nlats</span><span class="p">,</span><span class="n">nlons</span> <span class="o">=</span> <span class="n">m_t_data</span><span class="o">.</span><span class="n">shape</span>
+                    <span class="n">nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fts</span><span class="p">)</span>
+                    <span class="n">all_ens_data</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nperts</span><span class="p">,</span><span class="n">nt</span><span class="p">,</span><span class="n">nz</span><span class="p">,</span><span class="n">nlats</span><span class="p">,</span><span class="n">nlons</span><span class="p">))</span>
+
+                <span class="n">all_ens_data</span><span class="p">[</span><span class="n">ens_no</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">tn</span><span class="p">,:,:,:]</span> <span class="o">=</span> <span class="n">m_t_data</span>
+
+            <span class="k">return</span> <span class="n">all_ens_data</span></div>
+
+<div class="viewcode-block" id="Ensemble.accumulated"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.accumulated">[docs]</a>    <span class="k">def</span> <span class="nf">accumulated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="o">=</span><span class="s1">&#39;RAINNC&#39;</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ftime</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Nlim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">Elim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Slim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">lons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Accumulate, for every ensemble member, at each grid point,</span>
+<span class="sd">        the variable specified. Usually precipitation.</span>
+
+<span class="sd">        Todos:</span>
+<span class="sd">            * Logic to work out if values are for each history output</span>
+<span class="sd">                timestep, from the start of the simulation, from the</span>
+<span class="sd">                start of the data file...</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">itime</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">itime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itime</span>
+        <span class="k">if</span> <span class="n">ftime</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">ftime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ftime</span>
+
+        <span class="k">if</span> <span class="n">vrbl</span> <span class="ow">is</span> <span class="s1">&#39;RAINNC&#39;</span><span class="p">:</span>
+            <span class="n">itime_rainnc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RAINNC&#39;</span><span class="p">,</span><span class="n">fcsttime</span><span class="o">=</span><span class="n">itime</span><span class="p">,</span>
+                    <span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">)</span>
+            <span class="n">ftime_rainnc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RAINNC&#39;</span><span class="p">,</span><span class="n">fcsttime</span><span class="o">=</span><span class="n">ftime</span><span class="p">,</span>
+                    <span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">)</span>
+            <span class="n">accum</span> <span class="o">=</span> <span class="n">ftime_rainnc</span> <span class="o">-</span> <span class="n">itime_rainnc</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">all_ens_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="n">itime</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="n">ftime</span><span class="p">,</span>
+                                        <span class="n">inclusive</span><span class="o">=</span><span class="n">inclusive</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">)</span>
+            <span class="c1"># time axis is 1</span>
+            <span class="n">accum</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">all_ens_data</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Resulting matrix is size (nperts,1,nz,nlats,nlons).</span>
+        <span class="k">return</span> <span class="n">accum</span></div>
+
+<div class="viewcode-block" id="Ensemble.mean"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.mean">[docs]</a>    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">fcsttime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Nlim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Elim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">Slim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns mean.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_ens_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span><span class="n">fcsttime</span><span class="o">=</span><span class="n">fcsttime</span><span class="p">,</span>
+                                    <span class="n">Nlim</span><span class="o">=</span><span class="n">Nlim</span><span class="p">,</span><span class="n">Elim</span><span class="o">=</span><span class="n">Elim</span><span class="p">,</span><span class="n">Slim</span><span class="o">=</span><span class="n">Slim</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="n">Wlim</span><span class="p">,</span>
+                                    <span class="n">itime</span><span class="o">=</span><span class="n">itime</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="n">ftime</span><span class="p">)</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">all_ens_data</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">Nlim</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mean</span></div>
+
+<div class="viewcode-block" id="Ensemble.std"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.std">[docs]</a>    <span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">fcsttime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">Nlim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Elim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Slim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return standard devation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_ens_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span><span class="n">fcsttime</span><span class="o">=</span><span class="n">fcsttime</span><span class="p">,</span>
+                                    <span class="n">Nlim</span><span class="o">=</span><span class="n">Nlim</span><span class="p">,</span><span class="n">Elim</span><span class="o">=</span><span class="n">Elim</span><span class="p">,</span><span class="n">Slim</span><span class="o">=</span><span class="n">Slim</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="n">Wlim</span><span class="p">,</span>
+                                    <span class="n">itime</span><span class="o">=</span><span class="n">itime</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="n">ftime</span><span class="p">)</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">all_ens_data</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">Nlim</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">std</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">std</span></div>
+
+<div class="viewcode-block" id="Ensemble.arbitrary_pick"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.arbitrary_pick">[docs]</a>    <span class="k">def</span> <span class="nf">arbitrary_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dataobj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">give_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">give_path</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Arbitrary pick of a datafile entry in the members dictionary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dataobj (bool, optional): if True, return the DataFile subclass.</span>
+<span class="sd">                Otherwise, return filepath.</span>
+<span class="sd">            give_keys (bool, optional): if True, return a list of</span>
+<span class="sd">                member, domain, time keys to enter into a dictionary.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dom</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span>
+        <span class="n">arb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">mem</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">dataobj</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">give_keys</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Pick only one of give_keys and dataobj.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datafile_object</span><span class="p">(</span><span class="n">arb</span><span class="p">[</span><span class="s1">&#39;fpath&#39;</span><span class="p">],</span><span class="n">loadobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">give_keys</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mem</span><span class="p">,</span> <span class="n">dom</span><span class="p">,</span> <span class="n">t</span>
+        <span class="k">elif</span> <span class="n">give_path</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">arb</span><span class="p">[</span><span class="s1">&#39;fpath&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">arb</span></div>
+
+<div class="viewcode-block" id="Ensemble.list_of_filetimes"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.list_of_filetimes">[docs]</a>    <span class="k">def</span> <span class="nf">list_of_filetimes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arb</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">member</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return list of times for each data file&#39;s first time entry,</span>
+<span class="sd">        for a member and domain.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            arb (bool, optional): If true, arbitrarily pick a</span>
+<span class="sd">                member and domain to build the time list, i.e.,</span>
+<span class="sd">                assuming all members/domains have same list</span>
+<span class="sd">            member (str, optional): Name of member to build times</span>
+<span class="sd">                from. Needed if arb is False.</span>
+<span class="sd">            dom (int, optional): Number of domain to build times</span>
+<span class="sd">                from. Default is 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">arb</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">member</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Specify member name if not picking arbitrarily.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">arb</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">member</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">alltimes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="n">dom</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="n">alltimes</span></div>
+
+<div class="viewcode-block" id="Ensemble.compute_nt_per_file"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.compute_nt_per_file">[docs]</a>    <span class="k">def</span> <span class="nf">compute_nt_per_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">DF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arbitrary_pick</span><span class="p">(</span><span class="n">dataobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">DF</span><span class="o">.</span><span class="n">t_dim</span></div>
+
+<div class="viewcode-block" id="Ensemble.compute_history_dt"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.compute_history_dt">[docs]</a>    <span class="k">def</span> <span class="nf">compute_history_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate time difference between each history output</span>
+<span class="sd">        time. This could be across multiple files or in one.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nt_per_file</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">hdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fdt</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># arbitrarily pick data file</span>
+            <span class="n">DF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arbitrary_pick</span><span class="p">(</span><span class="n">dataobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">hdt</span> <span class="o">=</span> <span class="n">DF</span><span class="o">.</span><span class="n">dt</span>
+        <span class="k">return</span> <span class="n">hdt</span></div>
+
+
+<div class="viewcode-block" id="Ensemble.find_file_for_t"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.find_file_for_t">[docs]</a>    <span class="k">def</span> <span class="nf">find_file_for_t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">simutc</span><span class="p">,</span><span class="n">member</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine file to load given required time.</span>
+
+<span class="sd">        Raises exception if history time doesn&#39;t exist.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            utc (datetime.datetime): Desired time</span>
+<span class="sd">            member (str): Name of member to look up. If &quot;arb&quot;, pick</span>
+<span class="sd">                a member arbitrarily (this assumes members have</span>
+<span class="sd">                identical structure of times in the data).</span>
+<span class="sd">            dom (int, optional): Domain number to look up</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            t (datetime.datetime): members dictionary key for right file,</span>
+<span class="sd">            index (int): Index in that file.</span>
+
+<span class="sd">        Todos:</span>
+<span class="sd">            * Give nearest time (and/or file object) if time doesn&#39;t exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">member</span> <span class="o">==</span> <span class="s1">&#39;arb&#39;</span><span class="p">:</span>
+            <span class="n">member</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">simutc</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ftime</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">simutc</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itime</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Time outside range of data times.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Returns index of file containing data</span>
+        <span class="n">ftidx</span><span class="p">,</span> <span class="n">tdiff</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">closest_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span><span class="p">,</span><span class="n">simutc</span><span class="p">,</span><span class="nb">round</span><span class="o">=</span><span class="s1">&#39;beforeinc&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Make positive</span>
+        <span class="n">tdiff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">tdiff</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tdiff</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span><span class="p">[</span><span class="n">ftidx</span><span class="p">]</span> <span class="o">==</span> <span class="n">simutc</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">simutc</span>
+            <span class="n">tidx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span><span class="p">[</span><span class="n">ftidx</span><span class="p">]</span>
+            <span class="c1"># tidx = int(self.hdt/(self.hdt + tdiff))</span>
+            <span class="n">tidx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tdiff</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">hdt</span><span class="p">)</span>
+
+        <span class="c1"># pdb.set_trace()</span>
+
+        <span class="k">return</span> <span class="n">t</span><span class="p">,</span> <span class="n">tidx</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,487 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.lazy.lazywrf &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.lazy.lazywrf</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+<div class="viewcode-block" id="LazyWRF"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF">[docs]</a><span class="k">class</span> <span class="nc">LazyWRF</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sched</span><span class="p">,</span><span class="n">path_to_WRF</span><span class="p">,</span><span class="n">path_to_wrfout</span><span class="p">,</span><span class="n">submit_fname</span><span class="p">,</span>
+                    <span class="n">submit_ideal_fname</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">path_to_storage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">submit_real_fname</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">path_to_WPS</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">path_to_atmos</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">path_to_soil</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sched</span> <span class="o">=</span> <span class="n">sched</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_WRF</span> <span class="o">=</span> <span class="n">path_to_WRF</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_wrfout</span> <span class="o">=</span> <span class="n">path_to_wrfout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_WPS</span> <span class="o">=</span> <span class="n">path_to_WPS</span>
+        <span class="k">if</span> <span class="n">path_to_WPS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">doWPS</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_WPS</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">doWPS</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_storage</span> <span class="o">=</span> <span class="n">path_to_storage</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_atmos</span> <span class="o">=</span> <span class="n">path_to_atmos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_soil</span> <span class="o">=</span> <span class="n">path_to_soil</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">submit_fname</span> <span class="o">=</span> <span class="n">submit_fname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">submit_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_WRF</span><span class="p">,</span><span class="n">submit_fname</span><span class="p">)</span>
+        <span class="n">do_firstsubmit</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">submit_ideal_fname</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dofirst</span> <span class="o">=</span> <span class="s1">&#39;ideal&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">submit_first_fname</span> <span class="o">=</span> <span class="n">submit_ideal_fname</span>
+        <span class="k">elif</span> <span class="n">submit_real_fname</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dofirst</span> <span class="o">=</span> <span class="s1">&#39;real&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">submit_first_fname</span> <span class="o">=</span> <span class="n">submit_real_fname</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">do_firstsubmit</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">do_firstsubmit</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">submit_first_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_WRF</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_first_fname</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LazyWRF.init_WPS"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.init_WPS">[docs]</a>    <span class="k">def</span> <span class="nf">init_WPS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">soilVtable_fname</span><span class="o">=</span><span class="s1">&#39;Vtable.GFS_soilonly&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_soilVtable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">path_to_WPS</span><span class="p">,</span><span class="s1">&#39;ungrib/Variable_tables&#39;</span><span class="p">,</span><span class="n">soilVtable_fname</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LazyWRF.go"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.go">[docs]</a>    <span class="k">def</span> <span class="nf">go</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">casestr</span><span class="p">,</span><span class="n">IC</span><span class="p">,</span><span class="n">experiment</span><span class="p">,</span><span class="n">ensnames</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inputs: (all folder names)</span>
+<span class="sd">        casestr     :   string of case study initialisation date/time</span>
+<span class="sd">        IC          :   initial condition model</span>
+<span class="sd">        experiment  :   dictionary. Key: ensemble type (ICBC,STCH,MXMP)</span>
+<span class="sd">                            -initial condition/boundary condition</span>
+<span class="sd">                            -stochastic kinetic energy backscatter</span>
+<span class="sd">                            -mixed model parameterisations</span>
+<span class="sd">                        Value...</span>
+<span class="sd">                            -model configuration (CTRL) for ICBC</span>
+<span class="sd">                            -initial condition model/ens member for others</span>
+<span class="sd">        ensnames    :   list of ensemble member names</span>
+<span class="sd">                            - e.g. c00,p01,p02</span>
+
+<span class="sd">        **kwargs include:</span>
+<span class="sd">        WPS_only    :   stop after linking met_em files to WRF folder</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">casestr</span> <span class="o">=</span> <span class="n">casestr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">IC</span> <span class="o">=</span> <span class="n">IC</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ensnames</span> <span class="o">=</span> <span class="n">ensnames</span>
+
+        <span class="c1"># self.GO = {&#39;GEFSR2&#39;:go_GEFSR2,&#39;NAMANL&#39;:go_NAMANL,</span>
+                <span class="c1">#   &#39;NAMFCST&#39;:go_NAMFCST, &#39;GFSANL&#39;:go_GFSANL,</span>
+                <span class="c1">#   &#39;GFSFCST&#39;:go_GFSFCST}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">GO</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;GEFSR2&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">go_GEFSR2</span><span class="p">,</span>
+                    <span class="s1">&#39;em_quarter_ss&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">go_quarter_ss</span><span class="p">,}</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        self.enstype is a list of ensemble models or types.</span>
+<span class="sd">        self.enslist is a list of each model&#39;s member names.</span>
+<span class="sd">        Both are used to name runs, and folders for output etc</span>
+
+<span class="sd">        Lookup table GO contains the methods to run for each</span>
+<span class="sd">        ensemble type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">GO</span><span class="p">[</span><span class="n">IC</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">ensnames</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LazyWRF.go_GEFSR2"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.go_GEFSR2">[docs]</a>    <span class="k">def</span> <span class="nf">go_GEFSR2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ensns</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs WPS, WRF for one set of initial conditions</span>
+<span class="sd">        and settings based on the GEFSR2 model.</span>
+
+<span class="sd">        Inputs:</span>
+<span class="sd">        ensns   :   names of ensemble member</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Creating backup!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copy_namelist</span><span class="p">(</span><span class="s1">&#39;wps&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Warning: deleting old data files first.</span>
+        <span class="c1"># Back these up if important</span>
+
+        <span class="n">files</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;met_em*&#39;</span><span class="p">,</span><span class="s1">&#39;GEFSR2*&#39;</span><span class="p">,</span><span class="s1">&#39;geo_em.d*&#39;</span><span class="p">,</span><span class="s1">&#39;SOIL*&#39;</span><span class="p">,</span><span class="s1">&#39;GRIB*&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">f</span><span class="p">)):</span>
+                <span class="c1">#command = &#39;rm -f {0}&#39;.format(f)</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;rm -f </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="n">f</span> <span class="c1"># &lt; 2.6 edit</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+        <span class="c1"># Starting loop</span>
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensns</span><span class="p">):</span>
+            <span class="c1"># e is the next ensemble member to run</span>
+
+            <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># First time, generate soil data from GFS analyses</span>
+                <span class="c1"># and set up geogrid.</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">run_exe</span><span class="p">(</span><span class="s1">&#39;geogrid.exe&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Create soil data intermediate files</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">edit_namelist</span><span class="p">(</span><span class="s1">&#39;wps&#39;</span><span class="p">,</span><span class="s2">&quot;prefix&quot;</span><span class="p">,</span><span class="s2">&quot; prefix = &#39;SOIL&#39;&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">link_to_soil_data</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">link_to_soil_Vtable</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">run_exe</span><span class="p">(</span><span class="s1">&#39;ungrib.exe&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Soil data already exists</span>
+                <span class="c1"># Remove old met_em files and links</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm GRIB* GEFSR2* met_em*&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Create atmos intermediate files</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edit_namelist</span><span class="p">(</span><span class="s1">&#39;wps&#39;</span><span class="p">,</span><span class="s2">&quot;prefix&quot;</span><span class="p">,</span><span class="s2">&quot; prefix = &#39;GEFSR2&#39;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">link_to_IC_data</span><span class="p">(</span><span class="s1">&#39;GEFSR2&#39;</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">link_to_IC_Vtable</span><span class="p">(</span><span class="s1">&#39;GEFSR2&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">run_exe</span><span class="p">(</span><span class="s1">&#39;ungrib.exe&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Combine both intermediate files</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edit_namelist</span><span class="p">(</span><span class="s1">&#39;wps&#39;</span><span class="p">,</span><span class="s2">&quot;fg_name&quot;</span><span class="p">,</span><span class="s2">&quot; fg_name = &#39;GEFSR2&#39;,&#39;SOIL&#39; &quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">run_exe</span><span class="p">(</span><span class="s1">&#39;metgrid.exe&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s1">&#39;WPS_only&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># This is where the magic happens etc etc</span>
+            <span class="c1">#self.submit_job()[0] &lt;--- why was this [0] here?</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">submit_job</span><span class="p">()</span>
+
+            <span class="c1"># Move files to storage before looping back</span>
+            <span class="n">to_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">casestr</span><span class="p">,</span><span class="s1">&#39;GEFSR2&#39;</span><span class="p">,</span><span class="n">e</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copy_files</span><span class="p">(</span><span class="n">to_folder</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;rm -f rsl.error* rsl.out*&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LazyWRF.copy_files"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.copy_files">[docs]</a>    <span class="k">def</span> <span class="nf">copy_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fromfolder</span><span class="p">,</span><span class="n">tofolder</span><span class="p">,</span><span class="n">matchfs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Move wrfout files to folder.</span>
+<span class="sd">        Create folder if it doesn&#39;t exist</span>
+
+<span class="sd">        Move .TS files if they exist</span>
+<span class="sd">        Copy namelist.input to that folder.</span>
+<span class="sd">        Copy rsl.error.0000 to the folder.</span>
+
+<span class="sd">        Input(s):</span>
+<span class="sd">        args = names of folder tree, in order of depth.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_to_storage</span>
+        <span class="c1"># topath = os.path.join(root,tofolder)</span>
+
+        <span class="n">utils</span><span class="o">.</span><span class="n">trycreate</span><span class="p">(</span><span class="n">tofolder</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">matchfs</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;wrfout_d0*&#39;</span><span class="p">:</span><span class="s1">&#39;mv&#39;</span><span class="p">,</span><span class="s1">&#39;namelist.input&#39;</span><span class="p">:</span><span class="s1">&#39;cp&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;rsl.error.0000&#39;</span><span class="p">:</span><span class="s1">&#39;cp&#39;</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="n">matchfs</span>
+
+        <span class="c1"># if len(glob.glob(&#39;*.TS&#39;)):</span>
+            <span class="c1"># files[&#39;*.TS&#39;] = &#39;mv&#39;</span>
+            <span class="c1"># files[&#39;tslist&#39;] = &#39;cp&#39;</span>
+
+        <span class="k">for</span> <span class="n">f</span><span class="p">,</span><span class="n">transfer</span> <span class="ow">in</span> <span class="n">files</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fromfolder</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">fout</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tofolder</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">transfer</span><span class="p">,</span><span class="n">fs</span><span class="p">,</span><span class="n">fout</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">command</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">doWPS</span><span class="p">:</span>
+            <span class="c1"># Finally the namelist.wps.</span>
+            <span class="n">path_to_namelistwps</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WPS</span><span class="p">,</span><span class="s1">&#39;namelist.wps&#39;</span><span class="p">)</span>
+            <span class="n">fout</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tofolder</span><span class="p">,</span><span class="s1">&#39;namelist.wps&#39;</span><span class="p">)</span>
+            <span class="s1">&#39;cp </span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path_to_namelistwps</span><span class="p">,</span><span class="n">fout</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LazyWRF.submit_job"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.submit_job">[docs]</a>    <span class="k">def</span> <span class="nf">submit_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">waitmin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">sleepmin</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">wrf_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">first_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">doWPS</span><span class="p">:</span>
+            <span class="c1"># Soft link data netCDFs files from WPS to WRF</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">link_to_met_em</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">wrf_only</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dofirst</span> <span class="ow">is</span> <span class="s1">&#39;real&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Submitting real.exe.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Submitting ideal.exe.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sched</span> <span class="ow">is</span> <span class="s1">&#39;rocks&#39;</span><span class="p">:</span>
+                <span class="n">scmd</span> <span class="o">=</span> <span class="s1">&#39;qsub -d </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WRF</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sched</span> <span class="ow">is</span> <span class="s1">&#39;slurm&#39;</span><span class="p">:</span>
+                <span class="n">scmd</span> <span class="o">=</span> <span class="s1">&#39;sbatch&#39;</span>
+                <span class="n">real_cmd</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scmd</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_first_fpath</span><span class="p">)</span>
+            <span class="n">p_real</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">real_cmd</span><span class="p">,</span><span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WRF</span><span class="p">,</span><span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+            <span class="n">p_real</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="n">jobid</span> <span class="o">=</span> <span class="n">p_real</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">()[:</span><span class="mi">5</span><span class="p">]</span> <span class="c1"># Assuming first five digits = job ID.</span>
+        <span class="c1"># pdb.set_trace()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">first_only</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Submitting wrf.exe&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">wrf_only</span><span class="p">:</span>
+                <span class="n">aftercmd</span> <span class="o">=</span> <span class="s1">&#39;depend=afterok:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">jobid</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">aftercmd</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+            <span class="c1"># Run WRF but wait until real.exe has finished without errors</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sched</span> <span class="ow">is</span> <span class="s1">&#39;rocks&#39;</span><span class="p">:</span>
+                <span class="n">wrf_cmd</span> <span class="o">=</span> <span class="s1">&#39;qsub -d </span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1"> -W </span><span class="si">{2}</span><span class="s1">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WRF</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">submit_fpath</span><span class="p">,</span><span class="n">aftercmd</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">wrf_cmd</span> <span class="o">=</span> <span class="s1">&#39;sbatch </span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_fpath</span><span class="p">,</span><span class="n">aftercmd</span><span class="p">)</span>
+
+            <span class="n">p_wrf</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">wrf_cmd</span><span class="p">,</span><span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WRF</span><span class="p">,</span><span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">p_wrf</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">waitmin</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span> <span class="c1"># Wait specified mins</span>
+
+            <span class="c1"># Makes sure real.exe has finished and wrf.exe is writing to rsl files</span>
+            <span class="n">finished</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">finished</span><span class="p">:</span>
+                <span class="n">path_to_rsl</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WRF</span><span class="p">,</span><span class="s1">&#39;rsl.error.0000&#39;</span><span class="p">)</span>
+                <span class="n">tail_cmd</span> <span class="o">=</span> <span class="s1">&#39;tail </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path_to_rsl</span><span class="p">)</span>
+                <span class="n">tailrsl</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">tail_cmd</span><span class="p">,</span><span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+                <span class="n">tailoutput</span> <span class="o">=</span> <span class="n">tailrsl</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">b</span><span class="s2">&quot;SUCCESS COMPLETE WRF&quot;</span> <span class="ow">in</span> <span class="n">tailoutput</span><span class="p">:</span>
+                    <span class="n">finished</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WRF has finished; moving to next case.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Need to check if job has died! If so, kill script, warn user</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleepmin</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span> <span class="c1"># Try again in x min</span></div>
+
+<div class="viewcode-block" id="LazyWRF.link_to_met_em"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.link_to_met_em">[docs]</a>    <span class="k">def</span> <span class="nf">link_to_met_em</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path_to_met_em</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WPS</span><span class="p">,</span><span class="s1">&#39;met_em*&#39;</span><span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;ln -sf </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">path_to_met_em</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WRF</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LazyWRF.link_to_IC_data"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.link_to_IC_data">[docs]</a>    <span class="k">def</span> <span class="nf">link_to_IC_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">IC</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inputs:</span>
+<span class="sd">        *args   :   e.g. ensemble member</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">IC</span> <span class="o">==</span> <span class="s1">&#39;GEFSR2&#39;</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Assumes files are within a folder named casestr (YYYYMMDD)</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">csh</span> <span class="o">=</span> <span class="s1">&#39;./link_grib.csh&#39;</span>
+            <span class="n">nextens</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">gribfiles</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">casestr</span><span class="p">,</span><span class="n">nextens</span><span class="p">,</span><span class="s1">&#39;f*&#39;</span><span class="p">))</span>
+            <span class="n">gribpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_GEFSR2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">casestr</span><span class="p">,</span><span class="n">gribfiles</span><span class="p">)</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">csh</span><span class="p">,</span><span class="n">gribpath</span><span class="p">))</span>
+
+        <span class="c1">#pdb.set_trace()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LazyWRF.link_to_IC_Vtable"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.link_to_IC_Vtable">[docs]</a>    <span class="k">def</span> <span class="nf">link_to_IC_Vtable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">IC</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">IC</span> <span class="o">==</span> <span class="s1">&#39;GEFSR2&#39;</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WPS</span><span class="p">,</span><span class="s1">&#39;ungrib/Variable_Tables&#39;</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">GEFSR2_Vtable</span><span class="p">)</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;ln -sf </span><span class="si">%s</span><span class="s1"> Vtable&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LazyWRF.link_to_soil_data"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.link_to_soil_data">[docs]</a>    <span class="k">def</span> <span class="nf">link_to_soil_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">csh</span> <span class="o">=</span> <span class="s1">&#39;./link_grib.csh&#39;</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">csh</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_soil</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LazyWRF.link_to_soil_Vtable"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.link_to_soil_Vtable">[docs]</a>    <span class="k">def</span> <span class="nf">link_to_soil_Vtable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WPS</span><span class="p">,</span><span class="s1">&#39;ungrib/Variable_Tables&#39;</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">soil_Vtable</span><span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;ln -sf </span><span class="si">%s</span><span class="s1"> Vtable&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LazyWRF.add_new_namelist"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.add_new_namelist">[docs]</a>    <span class="k">def</span> <span class="nf">add_new_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">suffix</span><span class="p">,</span><span class="n">section</span><span class="p">,</span><span class="n">sett</span><span class="p">,</span><span class="n">newval</span><span class="p">,</span><span class="n">quoted</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds new namelist setting at end of section, before</span>
+<span class="sd">        the backslash.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">quoted</span><span class="p">:</span>
+            <span class="n">newval</span> <span class="o">=</span> <span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newval</span><span class="p">)</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_namelist_path</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
+
+        <span class="n">flines</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="n">sidx</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flines</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">sidx</span> <span class="o">=</span> <span class="n">idx</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sidx</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[:</span><span class="mi">4</span><span class="p">]:</span>
+                <span class="n">spaces</span> <span class="o">=</span> <span class="mi">36</span>
+                <span class="n">flines</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; {0: &lt;</span><span class="si">{sp}</span><span class="s2">}= </span><span class="si">{1}</span><span class="s2">, </span><span class="se">\n</span><span class="s2"> / </span><span class="se">\n</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sett</span><span class="p">,</span><span class="n">newval</span><span class="p">,</span><span class="n">sp</span><span class="o">=</span><span class="n">spaces</span><span class="p">)</span>
+                <span class="n">nameout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+                <span class="n">nameout</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">flines</span><span class="p">)</span>
+                <span class="n">nameout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">break</span></div>
+
+<div class="viewcode-block" id="LazyWRF.remove_namelist_line"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.remove_namelist_line">[docs]</a>    <span class="k">def</span> <span class="nf">remove_namelist_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">suffix</span><span class="p">,</span><span class="n">sett</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_namelist_path</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="n">flines</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flines</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">sett</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">flines</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="n">nameout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+                <span class="n">nameout</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">flines</span><span class="p">)</span>
+                <span class="n">nameout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">break</span></div>
+
+
+<div class="viewcode-block" id="LazyWRF.return_namelist_path"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.return_namelist_path">[docs]</a>    <span class="k">def</span> <span class="nf">return_namelist_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">suffix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gives path to namelist depending on suffix argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;wps&#39;</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WPS</span><span class="p">,</span><span class="s1">&#39;namelist.wps&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;input&#39;</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WRF</span><span class="p">,</span><span class="s1">&#39;namelist.input&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span></div>
+
+
+<div class="viewcode-block" id="LazyWRF.edit_namelist"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.edit_namelist">[docs]</a>    <span class="k">def</span> <span class="nf">edit_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">suffix</span><span class="p">,</span><span class="n">sett</span><span class="p">,</span><span class="n">newval</span><span class="p">,</span><span class="n">maxdom</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">quoted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method edits namelist.wps or namelist.input.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            suffix : which namelist needs changing</span>
+<span class="sd">            sett : setting that needs changing</span>
+<span class="sd">            newval : its new value -&gt; currently replaces whole line</span>
+<span class="sd">            maxdom : number of domains to edit</span>
+<span class="sd">                (this is relevant for multiple columns?)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">quoted</span><span class="p">:</span>
+            <span class="n">newval</span> <span class="o">=</span> <span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newval</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_namelist_path</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">edit_namelist</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">sett</span><span class="p">,</span><span class="n">newval</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="LazyWRF.run_exe"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.run_exe">[docs]</a>    <span class="k">def</span> <span class="nf">run_exe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">exe</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run WPS executables, then check to see if it failed.</span>
+<span class="sd">        If not, return True to proceed.</span>
+
+<span class="sd">        Input:</span>
+<span class="sd">        exe     :   .exe file name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#if not exe.endswith(&#39;.exe&#39;):</span>
+        <span class="c1">#    f,suffix = exe.split(&#39;.&#39;)</span>
+
+        <span class="n">command</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WPS</span><span class="p">,</span><span class="n">exe</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+        <span class="c1"># Wait until complete, then check tail file</span>
+        <span class="n">name</span><span class="p">,</span><span class="n">suffix</span> <span class="o">=</span> <span class="n">exe</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WPS</span><span class="p">,</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.log&#39;</span><span class="p">)</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="n">lastline</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;Successful completion&#39;</span> <span class="ow">in</span> <span class="n">lastline</span><span class="p">:</span>
+            <span class="k">pass</span>
+            <span class="c1">#return True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;Running </span><span class="si">%s</span><span class="s1"> has failed. Check </span><span class="si">%s</span><span class="s1">.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">exe</span><span class="p">,</span><span class="n">log</span><span class="p">)))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span></div>
+
+<div class="viewcode-block" id="LazyWRF.generate_date"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.generate_date">[docs]</a>    <span class="k">def</span> <span class="nf">generate_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">date</span><span class="p">,</span><span class="n">outstyle</span><span class="o">=</span><span class="s1">&#39;wps&#39;</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; Creates date string for namelist files.</span>
+
+<span class="sd">            Input:</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="LazyWRF.copy_namelist"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.copy_namelist">[docs]</a>    <span class="k">def</span> <span class="nf">copy_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">suffix</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Appends current time to namelist to create backup.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;wps&#39;</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WPS</span><span class="p">,</span><span class="s1">&#39;namelist.wps&#39;</span><span class="p">)</span> <span class="c1"># Original</span>
+            <span class="k">elif</span> <span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;input&#39;</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_WRF</span><span class="p">,</span><span class="s1">&#39;namelist.input&#39;</span><span class="p">)</span> <span class="c1"># Original</span>
+
+            <span class="n">f2</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">f</span><span class="p">,</span><span class="n">t</span><span class="p">))</span> <span class="c1"># Backup file</span>
+            <span class="c1"># pdb.set_trace()</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;cp </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">f2</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Backed up namelist.</span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">suffix</span><span class="p">)))</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

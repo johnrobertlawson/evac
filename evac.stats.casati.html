@@ -45,6 +45,108 @@
             
   <div class="section" id="stats-casati">
 <h1><cite>stats.casati</cite><a class="headerlink" href="#stats-casati" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-evac.stats.casati"></span><dl class="class">
+<dt id="evac.stats.casati.Casati">
+<em class="property">class </em><code class="descclassname">evac.stats.casati.</code><code class="descname">Casati</code><span class="sig-paren">(</span><em>fcstdata</em>, <em>verifdata</em>, <em>thresholds=(0.5</em>, <em>1</em>, <em>4</em>, <em>16</em>, <em>64)</em>, <em>store_all_arrays=True</em>, <em>recalibration=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.stats.casati.Casati.BED">
+<code class="descname">BED</code><span class="sig-paren">(</span><em>pixel</em>, <em>thresh</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.BED"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.BED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.Haar">
+<code class="descname">Haar</code><span class="sig-paren">(</span><em>Z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.Haar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.Haar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Z14 is Eq 14 from paper.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.calc_ecdf">
+<code class="descname">calc_ecdf</code><span class="sig-paren">(</span><em>arr</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.calc_ecdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.calc_ecdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do empirical cumulative distribution of an array.</p>
+<p>arr -   N.ndarray
+val -   threshold</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_BED">
+<code class="descname">do_BED</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_BED"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_BED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binary error decomposition.</p>
+<p>Yr = Recalibrated forecast
+X = Normalized analysis/verif
+Z3 = Binary error (Eq. 3 in paper)
+IYr = Binary image for recal. fcst (Eq.2 in paper)
+Ix = Binary image for norm. verif (Eq.2 in paper)
+Zf, Zm = Father and mother wavelets from Eq. 4 / Appendix in paper
+Z = binary error image, post-Haar</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_MSE">
+<code class="descname">do_MSE</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_MSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_MSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_QC">
+<code class="descname">do_QC</code><span class="sig-paren">(</span><em>print_location=True</em>, <em>min_thresh=0.0</em>, <em>max_thresh=500</em>, <em>fatal_exception=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_QC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_QC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for stupid values in data.</p>
+<p>Optional:
+print_location (bool) - if True, print the array location where</p>
+<blockquote>
+<div>the nonsensical values exist</div></blockquote>
+<dl class="docutils">
+<dt>min_thresh, max_thresh (float,int) - min and max values of allowable</dt>
+<dd>range, to raise Exception</dd>
+</dl>
+<p>fatal_exception     -   if True, kill script if there are out-of-range vals.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_SS">
+<code class="descname">do_SS</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_SS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_SS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_dithering">
+<code class="descname">do_dithering</code><span class="sig-paren">(</span><em>dithrange=0.015625</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_dithering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_dithering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply dithering to non-zero precipitation values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_normalize">
+<code class="descname">do_normalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalise data by base 2 where it isn&#8217;t -6.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_recalibration">
+<code class="descname">do_recalibration</code><span class="sig-paren">(</span><em>method='faster'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_recalibration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_recalibration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yr = (1/Fx) * Fy</p>
+<p>Yr = recalibrated forecast
+Fx = Empirical cum. dist. of verif
+Fy = Empirical cum. dist. of fcst</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_square_check">
+<code class="descname">do_square_check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_square_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_square_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that the grid is a power of 2.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.enforce_2D">
+<code class="descname">enforce_2D</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.enforce_2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.enforce_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure the grid is 2-D.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.norm_func">
+<code class="descname">norm_func</code><span class="sig-paren">(</span><em>orig</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.norm_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.norm_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>More QC here with negative values?</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

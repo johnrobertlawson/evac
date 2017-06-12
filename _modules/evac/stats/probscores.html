@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.stats.probscores &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.stats.probscores</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+
+<span class="sd">&quot;&quot;&quot;Probabilistic scores, using Buizza 2001, MWR.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ProbScores"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores">[docs]</a><span class="k">class</span> <span class="nc">ProbScores</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">og</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pfg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">xa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">xfs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pick from:</span>
+<span class="sd">        self.og         :   True/False field (1D)</span>
+<span class="sd">        self.pfg        :   Prob. forecast of event (0.0-1.0)</span>
+<span class="sd">        --- or ---</span>
+<span class="sd">        self.xa         :   observation field (2D)</span>
+<span class="sd">        self.xfs        :   forecast fields (3D)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">og</span> <span class="o">=</span> <span class="n">og</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pfg</span> <span class="o">=</span> <span class="n">pfg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xa</span> <span class="o">=</span> <span class="n">xa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xfs</span> <span class="o">=</span> <span class="n">xfs</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">og</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pfg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">og</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">pfg</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">xa</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">xfs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">xfs</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:]</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+
+<div class="viewcode-block" id="ProbScores.compute_briar"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_briar">[docs]</a>    <span class="k">def</span> <span class="nf">compute_briar</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="n">Ng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">og</span><span class="o">.</span><span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">og</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">og</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pfg</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">BS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">Ng</span><span class="p">)</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">pfg</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">og</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">BS</span></div>
+    
+<div class="viewcode-block" id="ProbScores.compute_bss"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_bss">[docs]</a>    <span class="k">def</span> <span class="nf">compute_bss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;TODO</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">BS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_briar</span><span class="p">()</span>
+        <span class="n">BSS</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="ProbScores.compute_rps"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_rps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_rps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">thresholds</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            thresholds  : 1D list/array, and in same order</span>
+<span class="sd">                            of first dimension of pfg.</span>
+<span class="sd">            self.pfg    : 3D array: [probability index,lat,lon]</span>
+<span class="sd">                    </span>
+<span class="sd">        Note:</span>
+<span class="sd">        RPSg is the grid-point RPS.</span>
+<span class="sd">        RPS is the area-average (ranked probability score)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">og</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+        <span class="n">Ng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">og</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:]</span><span class="o">.</span><span class="n">size</span>
+        <span class="c1"># evs = N.array((sorted(thresholds) )</span>
+        <span class="n">Jev</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span>
+        <span class="n">RPSgs</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">og</span><span class="p">)</span>
+
+        <span class="c1"># RPS for every grid point, for each threshold</span>
+        <span class="k">for</span> <span class="n">thidx</span><span class="p">,</span><span class="n">th</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">thresholds</span><span class="p">):</span>
+            <span class="n">RPSgs</span><span class="p">[</span><span class="n">thidx</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pfg</span><span class="p">[:</span><span class="n">th</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">-</span>
+                                <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">og</span><span class="p">[:</span><span class="n">th</span><span class="o">+</span><span class="mi">1</span><span class="p">,:,:],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="c1"># Sum up over all thresholds for RPS at each point</span>
+        <span class="n">RPSg</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">RPSgs</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Average over all grid points for RPS.</span>
+        <span class="n">RPS1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">Ng</span><span class="p">)</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">RPSg</span><span class="p">)</span>
+        <span class="n">RPS2</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">RPSg</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">RPS1</span> <span class="o">==</span> <span class="n">RPS2</span>
+        <span class="k">return</span> <span class="n">RPS2</span></div>
+
+
+<div class="viewcode-block" id="ProbScores.compute_poutl"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_poutl">[docs]</a>    <span class="k">def</span> <span class="nf">compute_poutl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">E</span><span class="p">,</span><span class="n">obs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Percentage of outliers.</span>
+
+<span class="sd">        E       :   Ensemble class instance</span>
+<span class="sd">        obs     :   observation array the same 2D size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="c1"># def compute_crps(self,xfs,xa):</span>
+<div class="viewcode-block" id="ProbScores.compute_crps"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_crps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Some inspiration from:</span>
+<span class="sd">        https://github.com/TheClimateCorporation/properscoring.git</span>
+<span class="sd">        CRPS (Continuous Ranked Probability Score)</span>
+<span class="sd">        Measures distance between prob forecast and truth.</span>
+<span class="sd">        </span>
+
+<span class="sd">        Needs observation array (m x n)</span>
+<span class="sd">        Needs ensemble forecast array (e x m x n) where</span>
+<span class="sd">                e = number of ensemble members</span>
+
+<span class="sd">        xa     :   observation </span>
+<span class="sd">        xfs    :   forecasts for N ensemble members</span>
+<span class="sd">        rho    :   PDF forecast</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">norm</span>
+
+        <span class="c1"># from scipy.integrate import quad,trapz</span>
+
+        <span class="c1"># To do: get rid of NaNs or stupid numbers?</span>
+
+        <span class="c1"># x is x-axis (spacings for integration)</span>
+        <span class="c1"># x = N.linspace(self.xfs.min(),xfs.max(),50)</span>
+
+        <span class="n">s1</span><span class="p">,</span><span class="n">s2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">ss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">crps</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting CRPS calculation over the whole grid.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">s1</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="n">s2</span><span class="p">)):</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">count</span> <span class="o">%</span> <span class="mi">1000</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="n">ss</span><span class="p">))</span>
+
+            <span class="c1"># Px is the % that self.xa will be smaller than x.</span>
+            <span class="c1"># Sort ensemble forecasts </span>
+            <span class="n">xs</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xfs</span><span class="p">[:,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">])</span>
+            <span class="c1"># Generate CDF</span>
+            <span class="c1"># Px = scipy.stats.norm.pdf(x)</span>
+            <span class="n">Px</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+           
+            <span class="c1"># CDF of observation (0 or 1)</span>
+            <span class="n">Pax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">xs</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">])</span>
+
+
+            <span class="c1"># dx = N.zeros(len(xs)+1)</span>
+            <span class="n">dx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">))</span>
+
+            <span class="c1"># WHICH:   ???</span>
+            <span class="c1"># dx[1:-1] = N.diff(xs)</span>
+            <span class="c1"># dx[:-1] = N.diff(xs)</span>
+            <span class="n">dx</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+
+            <span class="c1"># Px[0] should be 0</span>
+            <span class="c1"># Px[-1] should be 1.</span>
+
+            <span class="n">integrand</span> <span class="o">=</span> <span class="n">dx</span><span class="o">*</span><span class="p">(</span><span class="n">Px</span><span class="o">-</span><span class="n">Pax</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+            <span class="n">crps</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">integrand</span><span class="p">)</span>
+            <span class="c1"># if N.any(xs &gt; 0.0):</span>
+                <span class="c1"># pdb.set_trace()</span>
+
+        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">crps</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">crps</span>
+        <span class="c1"># def integrand(Px0,Pax0):</span>
+            <span class="c1"># return (Px0 - Pax0)**2</span>
+        <span class="c1"># def crps(Px0,Pax0):</span>
+            <span class="c1"># return quad(integrand,-N.inf,N.inf,args=(Px0,Pax0))</span>
+        <span class="c1"># crps_vec = N.vectorize(crps)</span>
+        <span class="c1"># CRPS = (Px(x) - Pax)**2</span>
+        <span class="c1"># CRPS = crps_vec(Px,Pax)</span>
+        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span></div>
+         
+<div class="viewcode-block" id="ProbScores.heaviside"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.heaviside">[docs]</a>    <span class="k">def</span> <span class="nf">heaviside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+        <span class="c1"># if x &lt; 0:</span>
+            <span class="c1"># return 0</span>
+        <span class="c1"># else:</span>
+            <span class="c1"># return 1</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="ProbScores.cdf_"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.cdf_">[docs]</a>    <span class="k">def</span> <span class="nf">cdf_</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

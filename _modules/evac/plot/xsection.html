@@ -1,0 +1,596 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.plot.xsection &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.plot.xsection</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Create cross-sections through WRF data.</span>
+
+<span class="sd">This can be time-height or distance-height.</span>
+<span class="sd">The height can be pressure, model, geometric, or geopotential</span>
+
+<span class="sd">The output can be saved to a pickle file.</span>
+<span class="sd">This can be useful for creating composites</span>
+
+<span class="sd">Input lat/lon can be either specified or from x,y co-ords</span>
+<span class="sd">calculated from manually clicking on a map with overlaid</span>
+<span class="sd">data (reflectivity, etc).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Imports</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">from</span> <span class="nn">.figure</span> <span class="k">import</span> <span class="n">Figure</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">WEM.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">WEM.utils</span> <span class="k">import</span> <span class="n">metconstants</span> <span class="k">as</span> <span class="n">mc</span>
+<span class="kn">from</span> <span class="nn">.scales</span> <span class="k">import</span> <span class="n">Scales</span>
+<span class="kn">from</span> <span class="nn">.birdseye</span> <span class="k">import</span> <span class="n">BirdsEye</span>
+<span class="c1"># from defaults import Defaults</span>
+
+<div class="viewcode-block" id="CrossSection"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection">[docs]</a><span class="k">class</span> <span class="nc">CrossSection</span><span class="p">(</span><span class="n">Figure</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wrfout</span><span class="p">,</span><span class="n">latA</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">lonA</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">latB</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">lonB</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CrossSection</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">wrfout</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">latA</span> <span class="ow">and</span> <span class="n">lonA</span> <span class="ow">and</span> <span class="n">latB</span> <span class="ow">and</span> <span class="n">lonB</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using user-defined lat/lon transects.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">latA</span> <span class="o">=</span> <span class="n">latA</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lonA</span> <span class="o">=</span> <span class="n">lonA</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">latB</span> <span class="o">=</span> <span class="n">latB</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lonB</span> <span class="o">=</span> <span class="n">lonB</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_xy_from_latlon</span><span class="p">(</span><span class="n">latA</span><span class="p">,</span><span class="n">lonA</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yB</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_xy_from_latlon</span><span class="p">(</span><span class="n">latB</span><span class="p">,</span><span class="n">lonB</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Please click start and end points.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">popup_transect</span><span class="p">()</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_xs_slice</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CrossSection.translate_xs"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.translate_xs">[docs]</a>    <span class="k">def</span> <span class="nf">translate_xs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sh</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Translate the cross-section up or down a certain number of</span>
+<span class="sd">        points.</span>
+<span class="sd">        For simplicity with grid spacing, the logic allows for</span>
+<span class="sd">        45 degree translation only.</span>
+<span class="sd">        </span>
+<span class="sd">        sh  :   number of points to shift</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span> 
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&lt;</span> <span class="mf">22.5</span><span class="p">):</span>
+            <span class="n">shxa</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span><span class="p">;</span> <span class="n">shxb</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span><span class="p">;</span> <span class="n">shya</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="n">shyb</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&gt;</span> <span class="mf">22.5</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&lt;</span> <span class="mf">67.5</span><span class="p">):</span>
+            <span class="n">shxa</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span><span class="p">;</span> <span class="n">shxb</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span><span class="p">;</span> <span class="n">shya</span> <span class="o">=</span> <span class="n">sh</span><span class="p">;</span>  <span class="n">shyb</span> <span class="o">=</span> <span class="n">sh</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&gt;</span> <span class="mf">67.5</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&lt;</span> <span class="mf">112.5</span><span class="p">):</span>
+            <span class="n">shxa</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">shxb</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">shya</span> <span class="o">=</span> <span class="n">sh</span><span class="p">;</span>  <span class="n">shyb</span> <span class="o">=</span> <span class="n">sh</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&gt;</span> <span class="mf">112.5</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&lt;</span> <span class="mf">157.5</span><span class="p">):</span>
+            <span class="n">shxa</span> <span class="o">=</span> <span class="n">sh</span><span class="p">;</span> <span class="n">shxb</span> <span class="o">=</span> <span class="n">sh</span><span class="p">;</span> <span class="n">shya</span> <span class="o">=</span> <span class="n">sh</span><span class="p">;</span>  <span class="n">shyb</span> <span class="o">=</span> <span class="n">sh</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&gt;</span> <span class="mf">157.5</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&lt;</span> <span class="mf">202.5</span><span class="p">):</span>
+            <span class="n">shxa</span> <span class="o">=</span> <span class="n">sh</span><span class="p">;</span> <span class="n">shxb</span> <span class="o">=</span> <span class="n">sh</span><span class="p">;</span> <span class="n">shya</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="n">shyb</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&gt;</span> <span class="mf">202.5</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&lt;</span> <span class="mf">247.5</span><span class="p">):</span>
+            <span class="n">shxa</span> <span class="o">=</span> <span class="n">sh</span><span class="p">;</span> <span class="n">shxb</span> <span class="o">=</span> <span class="n">sh</span><span class="p">;</span> <span class="n">shya</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span><span class="p">;</span>  <span class="n">shyb</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&gt;</span> <span class="mf">247.5</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&lt;</span> <span class="mf">292.5</span><span class="p">):</span>
+            <span class="n">shxa</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">shxb</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">shya</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span><span class="p">;</span>  <span class="n">shyb</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&gt;</span> <span class="mf">292.5</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&lt;</span> <span class="mf">337.5</span><span class="p">):</span>
+            <span class="n">shxa</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span><span class="p">;</span> <span class="n">shxb</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span><span class="p">;</span> <span class="n">shya</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span><span class="p">;</span>  <span class="n">shyb</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&gt;</span> <span class="mf">337.5</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">&lt;</span> <span class="mf">360.0</span><span class="p">):</span>
+            <span class="n">shxa</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span><span class="p">;</span> <span class="n">shxb</span> <span class="o">=</span> <span class="o">-</span><span class="n">sh</span><span class="p">;</span> <span class="n">shya</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="n">shyb</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Angle </span><span class="si">{0}</span><span class="s2"> is weird.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+            
+        <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Old coordinates:&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xB</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">yA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">yB</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xA</span> <span class="o">+=</span> <span class="n">shxa</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xB</span> <span class="o">+=</span> <span class="n">shxb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yA</span> <span class="o">+=</span> <span class="n">shya</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yB</span> <span class="o">+=</span> <span class="n">shyb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xB</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yy</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">yB</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;New coordinates:&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xB</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">yA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">yB</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span> </div>
+
+<div class="viewcode-block" id="CrossSection.get_xs_slice"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.get_xs_slice">[docs]</a>    <span class="k">def</span> <span class="nf">get_xs_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_xy_from_latlon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">lonA</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yB</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_xy_from_latlon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latB</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">lonB</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xB</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">xA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">yB</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">yA</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xB</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yy</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">yB</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="p">)</span>
+        <span class="c1"># self.angle = N.radians(90.0) + N.arctan((self.yy[0]-self.yy[-1])/(self.xx[-1]-self.xx[0]))</span>
+        <span class="c1"># self.angle = N.math.atan2((self.yy[-1]-self.yy[0]),(self.xx[-1]-self.xx[0])) + N.pi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">yy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">yy</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),(</span><span class="bp">self</span><span class="o">.</span><span class="n">xx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">xx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">pi</span>
+        <span class="c1"># print(&#39;angle = &#39;,self.angle)</span>
+        <span class="c1"># self.angle = N.math.atan2((self.yy[0]-self.yy[-1]),(self.xx[0]-self.xx[-1])) + N.pi</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span></div>
+    
+<div class="viewcode-block" id="CrossSection.popup_transect"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.popup_transect">[docs]</a>    <span class="k">def</span> <span class="nf">popup_transect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pops up window for user to select start and</span>
+<span class="sd">        end point for the cross-section.</span>
+
+<span class="sd">        Optional: this map can be overlaid with data</span>
+<span class="sd">        to better guide the decision.</span>
+
+<span class="sd">        Optional: the transect can be saved as an image</span>
+<span class="sd">        with/without the overlaid data, useful for publication.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span><span class="s1">&#39;pick_event&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mouseclick</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xN</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yN</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span><span class="s1">&#39;pick_event&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mouseclick</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xB</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xN</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yB</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yN</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">latA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lonA</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_latlon_from_xy</span><span class="p">(</span><span class="n">xA</span><span class="p">,</span><span class="n">yA</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">latB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lonB</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_latlon_from_xy</span><span class="p">(</span><span class="n">xB</span><span class="p">,</span><span class="n">yB</span><span class="p">)</span>
+        
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="CrossSection.get_latlon_from_xy"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.get_latlon_from_xy">[docs]</a>    <span class="k">def</span> <span class="nf">get_latlon_from_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Look up lat/lon in wrfout file from x and</span>
+<span class="sd">        y coordinates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">lat1D</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">lon1D</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span></div>
+
+<div class="viewcode-block" id="CrossSection.mouseclick"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.mouseclick">[docs]</a>    <span class="k">def</span> <span class="nf">mouseclick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xN</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">mouseevent</span><span class="o">.</span><span class="n">xdata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yN</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">mouseevent</span><span class="o">.</span><span class="n">ydata</span></div>
+
+<div class="viewcode-block" id="CrossSection.get_xy_from_latlon"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.get_xy_from_latlon">[docs]</a>    <span class="k">def</span> <span class="nf">get_xy_from_latlon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return x and y coordinates for given lat/lon.</span>
+
+<span class="sd">        exactlat, exactlon      :   exact coordinates of closest x/y</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">exactlat</span><span class="p">,</span><span class="n">exactlon</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">getXY</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">lats1D</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">lons1D</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span></div>
+
+<div class="viewcode-block" id="CrossSection.get_wrfout_slice"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.get_wrfout_slice">[docs]</a>    <span class="k">def</span> <span class="nf">get_wrfout_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="n">utc</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+        <span class="n">sliced</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,:,</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">sliced</span></div>
+
+<div class="viewcode-block" id="CrossSection.get_height"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.get_height">[docs]</a>    <span class="k">def</span> <span class="nf">get_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">pts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return terrain heights along cross-section</span>
+<span class="sd">        </span>
+<span class="sd">        TODO: What&#39;s the diff between the outputs?</span>
+
+<span class="sd">        Inputs:</span>
+<span class="sd">        t       :   time index as int</span>
+<span class="sd">        x       :   x indices, as int</span>
+<span class="sd">        y       :   y imdices, as int</span>
+<span class="sd">        z       :   number of levels, as int</span>
+<span class="sd">        pts     :   number of points along the x-sec</span>
+
+<span class="sd">        Outputs:</span>
+<span class="sd">        terrain_z   :   ter0,rain height</span>
+<span class="sd">        heighthalf  :   who knows?</span>
+
+<span class="sd">        Assuming t=0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: change API of W.get()</span>
+        <span class="c1"># geopot = self.W.get(&#39;geopot&#39;,utc=t,lats=y,lons=x)</span>
+        <span class="n">geopot</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="s1">&#39;geopot&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">,:,:],</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># 2D</span>
+        
+        <span class="c1"># dryairmass = self.W.get(&#39;dryairmass&#39;,utc=t,lats=y,lons=x)</span>
+        <span class="n">dryairmass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="s1">&#39;dryairmass&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span> <span class="c1">#1D</span>
+        <span class="n">znu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ZNU&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="n">t</span><span class="p">)[</span><span class="mi">0</span><span class="p">,:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># 1D</span>
+        <span class="n">znw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ZNW&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="n">t</span><span class="p">)[</span><span class="mi">0</span><span class="p">,:,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># 1D</span>
+
+        <span class="n">heighthalf</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">pts</span><span class="p">,</span><span class="n">z</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pts</span><span class="p">):</span>
+            <span class="n">pfull</span> <span class="o">=</span> <span class="n">dryairmass</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">znw</span><span class="p">[:]</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">P_top</span>
+            <span class="n">phalf</span> <span class="o">=</span> <span class="n">dryairmass</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">znu</span><span class="p">[:]</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">P_top</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+                <span class="c1"># import pdb; pdb.set_trace()</span>
+                <span class="n">heighthalf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">geopot</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="n">pfull</span><span class="p">[:],</span><span class="n">phalf</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">/</span><span class="n">mc</span><span class="o">.</span><span class="n">g</span>
+
+        <span class="n">terrain_z</span> <span class="o">=</span> <span class="n">geopot</span><span class="p">[:]</span><span class="o">/</span><span class="n">mc</span><span class="o">.</span><span class="n">g</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="c1"># TODO: import metconstants as mc</span>
+        <span class="c1"># return heighthalf, terrain_z</span>
+        <span class="k">return</span> <span class="n">terrain_z</span><span class="p">,</span><span class="n">heighthalf</span></div>
+
+<div class="viewcode-block" id="CrossSection.interp"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.interp">[docs]</a>    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">geopot</span><span class="p">,</span> <span class="n">pres</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the interpolated geopotential at p using the values in pres.</span>
+<span class="sd">        The geopotential for an element in pres must be given by the corresponding</span>
+<span class="sd">        element in geopot. The length of the geopot and pres arrays must be the same.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">geopot</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pres</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Arrays geopot and pres must have same length&quot;</span><span class="p">)</span>
+    
+        <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pres</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">pres</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">p</span><span class="p">):</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">-</span><span class="mi">1</span>
+    
+        <span class="k">if</span> <span class="p">(</span><span class="n">pres</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">):</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">pres</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">p</span><span class="p">):</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="n">pres</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">pres</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">pres</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+    
+        <span class="k">return</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">w</span><span class="p">)</span><span class="o">*</span><span class="n">geopot</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="n">w</span><span class="o">*</span><span class="n">geopot</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="CrossSection.plot_average"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.plot_average">[docs]</a>    <span class="k">def</span> <span class="nf">plot_average</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">avepts</span><span class="p">,</span><span class="n">ttime</span><span class="p">,</span><span class="n">outpath</span><span class="p">,</span><span class="n">clvs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ztop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">f_suffix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span><span class="n">contour_vrbl</span><span class="o">=</span><span class="s1">&#39;skip&#39;</span><span class="p">,</span><span class="n">contour_clvs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">cflabel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">cftix</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">get_time_idx</span><span class="p">(</span><span class="n">ttime</span><span class="p">)</span>
+        <span class="n">AVEDATA</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;cf_vrbl&#39;</span><span class="p">:{},</span><span class="s1">&#39;ct_vrbl&#39;</span><span class="p">:{}}</span>
+        <span class="k">for</span> <span class="n">shn</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">avepts</span><span class="p">,</span><span class="n">avepts</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">shn</span> <span class="o">==</span> <span class="o">-</span><span class="n">avepts</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">translate_xs</span><span class="p">(</span><span class="n">shn</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">translate_xs</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">xint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xx</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">yint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+            <span class="c1"># Get terrain heights</span>
+            <span class="n">terrain_z</span><span class="p">,</span> <span class="n">heighthalf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_height</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">xint</span><span class="p">,</span><span class="n">yint</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">z_dim</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="p">)</span>
+            
+            <span class="c1"># Set up plot</span>
+            <span class="c1"># Length of x-section in km</span>
+            <span class="n">xs_len</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="o">-</span><span class="mf">1.0</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">dy</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+                                        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">dy</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            
+            <span class="c1"># Generate ticks along cross-section</span>
+            <span class="n">xticks</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">xs_len</span><span class="p">,</span><span class="n">xs_len</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="p">)</span>
+            <span class="n">xlabels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">r&quot;</span><span class="si">%3.0f</span><span class="s2">&quot;</span> <span class="o">%</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">xticks</span><span class="p">]</span>
+            <span class="n">grid</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xticks</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">z_dim</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Plotting</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">dx</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">dy</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Square domains only here&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># TODO: allow easier change of defaults?</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">dx</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_zmin</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_zmax</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_dz</span><span class="p">])</span>
+           
+            <span class="k">for</span> <span class="n">nn</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">vrbl</span><span class="p">,</span><span class="n">contour_vrbl</span><span class="p">]):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="s1">&#39;skip&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">elif</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">available_vrbls</span><span class="p">:</span>
+                    <span class="c1"># data = self.W.get(vrbl,**ps)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">yint</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">xint</span><span class="p">)</span>
+                    
+                <span class="k">elif</span> <span class="n">v</span> <span class="ow">is</span> <span class="s1">&#39;parawind&#39;</span><span class="p">:</span>
+                    <span class="c1"># u = self.W.get(&#39;U&#39;,**ps)</span>
+                    <span class="c1"># v = self.W.get(&#39;V&#39;,**ps)</span>
+                    <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="s1">&#39;U&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">yint</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">xint</span><span class="p">)</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">yint</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">xint</span><span class="p">)</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">u</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">v</span>
+                    <span class="c1"># data = N.cos(self.angle)*u - N.sin(self.angle)*v</span>
+                    <span class="c1"># import pdb; pdb.set_trace()</span>
+                    <span class="c1"># clvs = u_wind_levels</span>
+                    <span class="n">extends</span> <span class="o">=</span> <span class="s1">&#39;both&#39;</span>
+                    <span class="n">CBlabel</span> <span class="o">=</span> <span class="s1">r&#39;Wind Speed (ms$^{-1}$)&#39;</span>
+
+                <span class="k">elif</span> <span class="n">v</span> <span class="ow">is</span> <span class="s1">&#39;perpwind&#39;</span><span class="p">:</span>
+                    <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="s1">&#39;U&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">yint</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">xint</span><span class="p">)</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">yint</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">xint</span><span class="p">)</span>
+                    <span class="c1"># u = self.W.get(&#39;U&#39;,ps)</span>
+                    <span class="c1"># v = self.W.get(&#39;V&#39;,ps)</span>
+                    <span class="c1"># Note the negative here. I think it&#39;s alright? TODO</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="o">-</span><span class="n">N</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">v</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">u</span>
+                    <span class="c1"># clvs = u_wind_levels</span>
+                    <span class="n">extends</span> <span class="o">=</span> <span class="s1">&#39;both&#39;</span>
+                    <span class="n">CBlabel</span> <span class="o">=</span> <span class="s1">r&#39;Wind Speed (ms$^{-1}$)&#39;</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Unsupported variable&quot;</span><span class="p">,</span><span class="n">v</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span>
+
+                <span class="k">if</span> <span class="n">nn</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:],</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>    
+                    <span class="n">AVEDATA</span><span class="p">[</span><span class="s1">&#39;cf_vrbl&#39;</span><span class="p">][</span><span class="n">shn</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:],</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>    
+                    <span class="n">AVEDATA</span><span class="p">[</span><span class="s1">&#39;ct_vrbl&#39;</span><span class="p">][</span><span class="n">shn</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+
+        <span class="k">for</span> <span class="n">nn</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">vrbl</span><span class="p">,</span><span class="n">contour_vrbl</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">nn</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;extend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;both&#39;</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clvs</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;levels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clvs</span>
+               
+                <span class="n">alldata</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">(((</span><span class="mi">2</span><span class="o">*</span><span class="n">avepts</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">nn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">AVEDATA</span><span class="p">[</span><span class="s1">&#39;cf_vrbl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="n">alldata</span><span class="p">[</span><span class="n">n</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">AVEDATA</span><span class="p">[</span><span class="s1">&#39;cf_vrbl&#39;</span><span class="p">][</span><span class="n">nn</span><span class="p">]</span>
+                <span class="n">avedata</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">alldata</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">cf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="n">heighthalf</span><span class="p">,</span><span class="n">avedata</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="c1">#,</span>
+            <span class="k">elif</span> <span class="n">contour_vrbl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s1">&#39;skip&#39;</span><span class="p">:</span>
+                <span class="n">alldata</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">(((</span><span class="mi">2</span><span class="o">*</span><span class="n">avepts</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">nn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">AVEDATA</span><span class="p">[</span><span class="s1">&#39;ct_vrbl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="n">alldata</span><span class="p">[</span><span class="n">n</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">AVEDATA</span><span class="p">[</span><span class="s1">&#39;ct_vrbl&#39;</span><span class="p">][</span><span class="n">nn</span><span class="p">]</span>
+                <span class="n">avedata</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">alldata</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">ct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="n">heighthalf</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">,],</span><span class="n">levels</span><span class="o">=</span><span class="n">contour_clvs</span><span class="p">,</span><span class="n">linewidths</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">clabel</span><span class="p">(</span><span class="n">ct</span><span class="p">,</span><span class="n">inline</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">xticks</span><span class="p">,</span><span class="n">terrain_z</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;lightgrey&#39;</span><span class="p">)</span>
+        <span class="n">labeldelta</span> <span class="o">=</span> <span class="mi">15</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_zmin</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_zmax</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_dz</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_dz</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Distance along cross-section (km)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Height above sea level (m)&quot;</span><span class="p">)</span>
+        
+        <span class="n">datestr</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">string_from_time</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">,</span><span class="n">ttime</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ztop</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">ztop</span><span class="o">*</span><span class="mi">1000</span><span class="p">])</span>
+        <span class="n">naming</span> <span class="o">=</span> <span class="p">[</span><span class="n">vrbl</span><span class="p">,</span><span class="s1">&#39;xs_ave&#39;</span><span class="p">,</span><span class="n">datestr</span><span class="p">,</span><span class="n">f_suffix</span><span class="p">]</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_fname</span><span class="p">(</span><span class="o">*</span><span class="n">naming</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span><span class="n">fname</span><span class="p">)</span>
+        <span class="c1">#self.close()</span>
+        
+        <span class="n">CBlabel</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">vrbl</span><span class="p">)</span>
+        
+        <span class="c1"># Save a colorbar</span>
+        <span class="c1"># Only if one doesn&#39;t exist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">just_one_colorbar</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;CB&#39;</span><span class="p">,</span><span class="n">cf</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">cflabel</span><span class="p">,</span><span class="n">tix</span><span class="o">=</span><span class="n">cftix</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_transect</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;Tsct&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="CrossSection.plot_xs"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.plot_xs">[docs]</a>    <span class="k">def</span> <span class="nf">plot_xs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">ttime</span><span class="p">,</span><span class="n">outpath</span><span class="p">,</span><span class="n">clvs</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ztop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">f_suffix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span><span class="p">,</span><span class="n">contour_vrbl</span><span class="o">=</span><span class="s1">&#39;skip&#39;</span><span class="p">,</span><span class="n">contour_clvs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inputs:</span>
+<span class="sd">        vrbl        :   variable to plot, from this list:</span>
+<span class="sd">                        parawind,perpwind,wind,U,V,W,T,RH,</span>
+<span class="sd">        ttime       :   time in ... format</span>
+<span class="sd">        outpath     :   absolute path to directory to save output</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">get_time_idx</span><span class="p">(</span><span class="n">ttime</span><span class="p">)</span>
+
+        <span class="n">xint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xx</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">yint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="c1"># Get terrain heights</span>
+        <span class="n">terrain_z</span><span class="p">,</span> <span class="n">heighthalf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_height</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">xint</span><span class="p">,</span><span class="n">yint</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">z_dim</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="p">)</span>
+        
+        <span class="c1"># Set up plot</span>
+        <span class="c1"># Length of x-section in km</span>
+        <span class="n">xs_len</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="o">-</span><span class="mf">1.0</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">dy</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+                                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">dy</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="c1"># Generate ticks along cross-section</span>
+        <span class="n">xticks</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">xs_len</span><span class="p">,</span><span class="n">xs_len</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="p">)</span>
+        <span class="n">xlabels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">r&quot;</span><span class="si">%3.0f</span><span class="s2">&quot;</span> <span class="o">%</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">xticks</span><span class="p">]</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xticks</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">z_dim</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1">#########</span>
+        <span class="c1">#### ADD SELF BELOW HERE</span>
+        <span class="c1">#########</span>
+
+        <span class="c1"># Plotting</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">dx</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">dy</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Square domains only here&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># TODO: allow easier change of defaults?</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">dx</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_zmin</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_zmax</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_dz</span><span class="p">])</span>
+
+        <span class="c1"># Logic time</span>
+        <span class="c1"># First, check to see if v is in the list of computable or default</span>
+        <span class="c1"># variables within WRFOut (self.W)</span>
+        <span class="c1"># If not, maybe it can be computed here.</span>
+        <span class="c1"># If not, raise Exception.</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="c1"># TODO: vailable_vars in WRFOut to check this</span>
+        <span class="c1"># ps = {&#39;utc&#39;:self.tidx, &#39;lats&#39;:yint, &#39;lons&#39;:xint}</span>
+       
+        <span class="k">for</span> <span class="n">nn</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">vrbl</span><span class="p">,</span><span class="n">contour_vrbl</span><span class="p">]):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="s1">&#39;skip&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">available_vrbls</span><span class="p">:</span>
+                <span class="c1"># data = self.W.get(vrbl,**ps)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">yint</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">xint</span><span class="p">)</span>
+                
+            <span class="k">elif</span> <span class="n">v</span> <span class="ow">is</span> <span class="s1">&#39;parawind&#39;</span><span class="p">:</span>
+                <span class="c1"># u = self.W.get(&#39;U&#39;,**ps)</span>
+                <span class="c1"># v = self.W.get(&#39;V&#39;,**ps)</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="s1">&#39;U&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">yint</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">xint</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">yint</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">xint</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">u</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">v</span>
+                <span class="c1"># data = N.cos(self.angle)*u - N.sin(self.angle)*v</span>
+                <span class="c1"># import pdb; pdb.set_trace()</span>
+                <span class="c1"># clvs = u_wind_levels</span>
+                <span class="n">extends</span> <span class="o">=</span> <span class="s1">&#39;both&#39;</span>
+                <span class="n">CBlabel</span> <span class="o">=</span> <span class="s1">r&#39;Wind Speed (ms$^{-1}$)&#39;</span>
+
+            <span class="k">elif</span> <span class="n">v</span> <span class="ow">is</span> <span class="s1">&#39;perpwind&#39;</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="s1">&#39;U&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">yint</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">xint</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrfout_slice</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">yint</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">xint</span><span class="p">)</span>
+                <span class="c1"># u = self.W.get(&#39;U&#39;,ps)</span>
+                <span class="c1"># v = self.W.get(&#39;V&#39;,ps)</span>
+                <span class="c1"># Note the negative here. I think it&#39;s alright? TODO</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="o">-</span><span class="n">N</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">v</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">u</span>
+                <span class="c1"># clvs = u_wind_levels</span>
+                <span class="n">extends</span> <span class="o">=</span> <span class="s1">&#39;both&#39;</span>
+                <span class="n">CBlabel</span> <span class="o">=</span> <span class="s1">r&#39;Wind Speed (ms$^{-1}$)&#39;</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Unsupported variable&quot;</span><span class="p">,</span><span class="n">v</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">Exception</span>
+
+            <span class="k">if</span> <span class="n">nn</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;extend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;both&#39;</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clvs</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;levels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clvs</span>
+                
+                <span class="n">data</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:],</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>    
+                <span class="n">cf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="n">heighthalf</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="c1">#,</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># import pdb; pdb.set_trace()       </span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:],</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>    
+                <span class="n">ct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="n">heighthalf</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">,],</span><span class="n">levels</span><span class="o">=</span><span class="n">contour_clvs</span><span class="p">,</span><span class="n">linewidths</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">clabel</span><span class="p">(</span><span class="n">ct</span><span class="p">,</span><span class="n">inline</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">xticks</span><span class="p">,</span><span class="n">terrain_z</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;lightgrey&#39;</span><span class="p">)</span>
+        <span class="n">labeldelta</span> <span class="o">=</span> <span class="mi">15</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_zmin</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_zmax</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_dz</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">plot_dz</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Distance along cross-section (km)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Height above sea level (m)&quot;</span><span class="p">)</span>
+        
+        <span class="n">datestr</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">string_from_time</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">,</span><span class="n">ttime</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ztop</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">ztop</span><span class="o">*</span><span class="mi">1000</span><span class="p">])</span>
+        <span class="n">naming</span> <span class="o">=</span> <span class="p">[</span><span class="n">vrbl</span><span class="p">,</span><span class="s1">&#39;xs&#39;</span><span class="p">,</span><span class="n">datestr</span><span class="p">,</span><span class="n">f_suffix</span><span class="p">]</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_fname</span><span class="p">(</span><span class="o">*</span><span class="n">naming</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span><span class="n">fname</span><span class="p">)</span>
+        <span class="c1">#self.close()</span>
+        
+        <span class="n">CBlabel</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">vrbl</span><span class="p">)</span>
+        
+        <span class="c1"># Save a colorbar</span>
+        <span class="c1"># Only if one doesn&#39;t exist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">just_one_colorbar</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;CB&#39;</span><span class="p">,</span><span class="n">cf</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">CBlabel</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_transect</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span><span class="n">fname</span><span class="o">+</span><span class="s1">&#39;Tsct&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">)</span></div>
+
+    <span class="c1"># def just_one_colorbar(self,fpath,fname,cf,label):</span>
+        <span class="c1"># &quot;&quot;&quot;docstring for just_one_colorbar&quot;&quot;&quot;</span>
+        <span class="c1"># try:</span>
+            <span class="c1"># with open(fpath): pass</span>
+        <span class="c1"># except IOError:</span>
+            <span class="c1"># self.create_colorbar(fpath,fname,cf,label=label)</span>
+
+    
+<div class="viewcode-block" id="CrossSection.draw_transect"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.draw_transect">[docs]</a>    <span class="k">def</span> <span class="nf">draw_transect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">outpath</span><span class="p">,</span><span class="n">fname</span><span class="p">,</span><span class="n">radar</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">BirdsEye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">)</span>
+        <span class="n">m</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">basemap_setup</span><span class="p">()</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">drawgreatcircle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lonA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">latA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">lonB</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">latB</span><span class="p">)</span>
+        <span class="c1"># tv = &#39;Q_pert&#39;</span>
+        <span class="n">tv</span> <span class="o">=</span> <span class="s1">&#39;cref&#39;</span><span class="p">;</span><span class="n">lv</span><span class="o">=</span><span class="kc">False</span>
+        <span class="c1"># lv = 800</span>
+        <span class="c1"># clvs = N.arange(-0.005,0.0052,0.0002)</span>
+        <span class="c1"># cmap=&#39;BrBG&#39;</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">Scales</span><span class="p">(</span><span class="s1">&#39;cref&#39;</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">clvs</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">clvs</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">cm</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tv</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tidx</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">lv</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:],</span><span class="n">levels</span><span class="o">=</span><span class="n">clvs</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
+        <span class="n">B</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span><span class="n">fname</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">fig</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="CrossSection.create_linenormal_xs"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection.create_linenormal_xs">[docs]</a>    <span class="k">def</span> <span class="nf">create_linenormal_xs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">length_pts</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a cross-section that runs normal to the</span>
+<span class="sd">        existing cross-section contained in self.</span>
+<span class="sd">        </span>
+<span class="sd">        x,y         :   coordinates of intersection</span>
+<span class="sd">        length_pts  :   length of normal line in grid points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp_pts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_xs_slice</span><span class="p">()</span>
+
+        <span class="n">xint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xx</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">yint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arctan</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">yy</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">yy</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">xx</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="c1"># In radians</span>
+        
+        <span class="n">normal_angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+        <span class="c1"># pdb.set_trace()</span>
+        
+        
+        <span class="c1">#return norm_xx, norm_yy</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

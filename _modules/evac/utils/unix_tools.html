@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.utils.unix_tools &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.utils.unix_tools</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utility scripts to help with directory, file, etc issues</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">paramiko</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Module paramiko unavailable.&quot;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+
+<div class="viewcode-block" id="dir_from_naming"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.dir_from_naming">[docs]</a><span class="k">def</span> <span class="nf">dir_from_naming</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate file path from arguments</span>
+
+<span class="sd">    Inputs:</span>
+<span class="sd">    root    :    file path base</span>
+<span class="sd">    args     :    list of arguments to join as separate folders</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="o">*</span><span class="n">l</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span></div>
+
+<div class="viewcode-block" id="ssh_client"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.ssh_client">[docs]</a><span class="k">def</span> <span class="nf">ssh_client</span><span class="p">(</span><span class="n">ky</span><span class="p">,</span><span class="n">domain</span><span class="p">,</span><span class="n">username</span><span class="p">,</span><span class="n">password</span><span class="p">):</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">RSAKey</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">base64</span><span class="o">.</span><span class="n">decodestring</span><span class="p">(</span><span class="n">ky</span><span class="p">))</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHClient</span><span class="p">()</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">get_host_keys</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="s1">&#39;ssh-rsa&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">client</span>
+    <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s1">&#39;ls&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stdout</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;... &#39;</span> <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="edit_namelist"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.edit_namelist">[docs]</a><span class="k">def</span> <span class="nf">edit_namelist</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">sett</span><span class="p">,</span><span class="n">newval</span><span class="p">,</span><span class="n">absolute</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">doms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">samealldoms</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">doms</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="c1"># with open(f,&#39;r&#39;) as fopen:</span>
+    <span class="c1"># flines = open(f,&#39;r&#39;).readlines()</span>
+    <span class="n">flines</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="c1"># pdb.set_trace()</span>
+    <span class="n">done</span><span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flines</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sett</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="c1"># print(&quot;Setting {0} is in line.&quot;.format(sett))</span>
+            <span class="n">fs</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="c1"># spaces = 38 - len(sett)</span>
+            <span class="n">spaces</span> <span class="o">=</span> <span class="mi">36</span>
+            <span class="c1"># print(sett,spaces)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">newval</span><span class="p">,(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">)):</span>
+                <span class="n">newval</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,     &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newval</span><span class="p">)</span><span class="o">*</span><span class="n">doms</span>
+            <span class="k">elif</span> <span class="n">doms</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">newval</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,     </span><span class="si">{1}</span><span class="s1">,&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newval</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">newval</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">doms</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">newval</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,     </span><span class="si">{1}</span><span class="s1">,     </span><span class="si">{2}</span><span class="s1">,&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newval</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">newval</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">newval</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+            <span class="n">flines</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; {0: &lt;</span><span class="si">{sp}</span><span class="s2">}= </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sett</span><span class="p">,</span><span class="n">newval</span><span class="p">,</span><span class="n">sp</span><span class="o">=</span><span class="n">spaces</span><span class="p">)</span>
+            <span class="n">nameout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">nameout</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">flines</span><span class="p">)</span>
+            <span class="n">nameout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+    <span class="n">fs</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">absolute</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">done</span><span class="p">):</span>
+            <span class="c1"># import pdb;pdb.set_trace()</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Setting&quot;</span><span class="p">,</span><span class="n">sett</span><span class="p">,</span><span class="s2">&quot;not found in namelist.&quot;</span><span class="p">)</span>
+    <span class="k">return</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

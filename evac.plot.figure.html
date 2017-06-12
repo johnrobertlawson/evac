@@ -45,6 +45,81 @@
             
   <div class="section" id="plot-figure">
 <h1><cite>plot.figure</cite><a class="headerlink" href="#plot-figure" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-evac.plot.figure"></span><p>All figures are subclasses of Figure.</p>
+<dl class="class">
+<dt id="evac.plot.figure.Figure">
+<em class="property">class </em><code class="descclassname">evac.plot.figure.</code><code class="descname">Figure</code><span class="sig-paren">(</span><em>ax=None</em>, <em>fig=None</em>, <em>layout='normal'</em>, <em>mplargs=[]</em>, <em>mplkwargs={}</em>, <em>use_defaults=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.plot.figure.Figure.basemap_from_newgrid">
+<code class="descname">basemap_from_newgrid</code><span class="sig-paren">(</span><em>Nlim=None</em>, <em>Elim=None</em>, <em>Slim=None</em>, <em>Wlim=None</em>, <em>proj='merc'</em>, <em>lat_ts=None</em>, <em>resolution='i'</em>, <em>nx=None</em>, <em>ny=None</em>, <em>tlat1=30.0</em>, <em>tlat2=60.0</em>, <em>cen_lat=None</em>, <em>cen_lon=None</em>, <em>lllon=None</em>, <em>lllat=None</em>, <em>urlat=None</em>, <em>urlon=None</em>, <em>drawcounties=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure.basemap_from_newgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure.basemap_from_newgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for utility method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.figure.Figure.basemap_setup">
+<code class="descname">basemap_setup</code><span class="sig-paren">(</span><em>smooth=1</em>, <em>lats=False</em>, <em>lons=False</em>, <em>proj='merc'</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em>, <em>drawcounties=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure.basemap_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure.basemap_setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO:
+Merge with above method.
+Needs rewriting to include limited domains based on lats/lons.
+Currently, assuming whole domain is plotted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.figure.Figure.create_colorbar">
+<code class="descname">create_colorbar</code><span class="sig-paren">(</span><em>fpath</em>, <em>fname</em>, <em>cf</em>, <em>label=''</em>, <em>tix=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure.create_colorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure.create_colorbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create colorbar.</p>
+<p>Inputs:
+fpath   :   path to file
+fname   :   filename
+cf      :   contour filling for legend
+label   :   colorbar label</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.figure.Figure.create_fname">
+<code class="descname">create_fname</code><span class="sig-paren">(</span><em>*naming</em>, <em>joiner='_'</em>, <em>append_ext=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure.create_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure.create_fname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates file name from list of arguments.</p>
+<dl class="docutils">
+<dt>Optional:</dt>
+<dd>append_ext (bool)   :   If True, add .png extension</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.figure.Figure.enforce_png_ext">
+<code class="descname">enforce_png_ext</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure.enforce_png_ext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure.enforce_png_ext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure file name or path ends with png.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.figure.Figure.get_meshgrid_coords">
+<code class="descname">get_meshgrid_coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure.get_meshgrid_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure.get_meshgrid_coords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.figure.Figure.get_title_time">
+<code class="descname">get_title_time</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure.get_title_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure.get_title_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create pretty formatted date/time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.figure.Figure.just_one_colorbar">
+<code class="descname">just_one_colorbar</code><span class="sig-paren">(</span><em>fpath</em>, <em>fname</em>, <em>cf</em>, <em>label=False</em>, <em>tix=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure.just_one_colorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure.just_one_colorbar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.figure.Figure.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>outpath</em>, <em>fname</em>, <em>tight=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.plot.figure.Figure.set_figsize">
+<code class="descname">set_figsize</code><span class="sig-paren">(</span><em>width</em>, <em>height</em>, <em>fig</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure.set_figsize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure.set_figsize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 
 

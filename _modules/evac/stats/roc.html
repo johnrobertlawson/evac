@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.stats.roc &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.stats.roc</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Relative Operative Statistics.</span>
+
+<span class="sd">Mixin of deterministic and probabilistic scores. Can be used to generate a</span>
+<span class="sd">2x2 contingency table for ensembles.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+
+<span class="kn">from</span> <span class="nn">.detscores</span> <span class="k">import</span> <span class="n">DetScores</span>
+<span class="kn">from</span> <span class="nn">.probscores</span> <span class="k">import</span> <span class="n">ProbScores</span>
+<span class="kn">from</span> <span class="nn">evac.stats.misc_stats</span> <span class="k">import</span> <span class="n">compute_contingency</span>
+
+<div class="viewcode-block" id="ROC"><a class="viewcode-back" href="../../../evac.stats.roc.html#evac.stats.roc.ROC">[docs]</a><span class="k">class</span> <span class="nc">ROC</span><span class="p">(</span><span class="n">DetScores</span><span class="p">,</span><span class="n">ProbScores</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ob</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ensemble</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">obs_array</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">thresholds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overunder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            nens        :   number of ensemble members</span>
+<span class="sd">            pf          :   probability of an event (1d array)</span>
+<span class="sd">            ob (bool)   :   whether it happened (1d array)</span>
+<span class="sd">            ensemble    :   Ensemble instance.</span>
+<span class="sd">            obs_array   :   2D array (lats,lons) for verification</span>
+<span class="sd">            threshold   :   float to create binary condition</span>
+<span class="sd">            overunder   :   operator for threshold.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">nens</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pf</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ob</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Logic here to compute the arrays</span>
+            <span class="k">pass</span>
+        <span class="c1">#5D array (members, times, lvs, lats, lons)</span>
+        <span class="c1">#Should be (nens,1,1,nlats,nlons) in shape</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nens</span> <span class="o">=</span> <span class="n">nens</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pf</span> <span class="o">=</span> <span class="n">pf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ob</span> <span class="o">=</span> <span class="n">ob</span>
+
+        <span class="c1"># self.a,self.b,self.c,self.d = self.compute_roc()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_roc_contingency</span><span class="p">()</span>
+        <span class="c1"># self.a,self.b,self.c,self.d = compute_contingency(forecast,obs,thresh,overunder)</span>
+
+<div class="viewcode-block" id="ROC.compute_roc_contingency"><a class="viewcode-back" href="../../../evac.stats.roc.html#evac.stats.roc.ROC.compute_roc_contingency">[docs]</a>    <span class="k">def</span> <span class="nf">compute_roc_contingency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># ws contains all prob thresholds</span>
+        <span class="n">ws</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nens</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">ws</span><span class="p">)])</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ws</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_contingency</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pf</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">ob</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="s1">&#39;over&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span></div>
+
+    <span class="k">def</span> <span class="nf">_compute_roc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        w is the probability threshold list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">nens</span><span class="p">])</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">nens</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">nidx</span><span class="p">,</span><span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nens</span><span class="o">+</span><span class="mi">1</span><span class="p">)):</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">nens</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pf</span><span class="p">[</span><span class="n">nidx</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ob</span><span class="p">[</span><span class="n">nidx</span><span class="p">]:</span>
+                    <span class="n">X</span><span class="p">[</span><span class="n">nidx</span><span class="p">]</span> <span class="o">=+</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">Y</span><span class="p">[</span><span class="n">nidx</span><span class="p">]</span> <span class="o">=+</span> <span class="mi">1</span>
+
+        <span class="n">a</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)])</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">thidx</span><span class="p">,</span><span class="n">th</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">thidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">thidx</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="n">b</span><span class="p">[</span><span class="n">thidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">thidx</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="n">c</span><span class="p">[</span><span class="n">thidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="n">thidx</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">thidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Y</span><span class="p">[:</span><span class="n">thidx</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="k">return</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span>
+
+<div class="viewcode-block" id="ROC.compute_roca"><a class="viewcode-back" href="../../../evac.stats.roc.html#evac.stats.roc.ROC.compute_roca">[docs]</a>    <span class="k">def</span> <span class="nf">compute_roca</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Area under ROC curve.</span>
+
+<span class="sd">        TODO.&quot;&quot;&quot;</span>
+        <span class="n">FAR</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_falsealarm</span><span class="p">()</span>
+        <span class="n">HR</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_hitrate</span><span class="p">()</span>
+        <span class="n">ROCA</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">HR</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">FAR</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ROCA</span></div>
+
+<div class="viewcode-block" id="ROC.compute_rocas"><a class="viewcode-back" href="../../../evac.stats.roc.html#evac.stats.roc.ROC.compute_rocas">[docs]</a>    <span class="k">def</span> <span class="nf">compute_rocas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ROC area skill score.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

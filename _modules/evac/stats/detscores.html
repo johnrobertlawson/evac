@@ -51,12 +51,45 @@
 <span class="sd">c = observed but not forecast</span>
 <span class="sd">d = neither observed nor forecast</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+
+<span class="kn">from</span> <span class="nn">evac.stats.misc_stats</span> <span class="k">import</span> <span class="n">compute_contingency</span>
 
 <div class="viewcode-block" id="DetScores"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores">[docs]</a><span class="k">class</span> <span class="nc">DetScores</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr2x2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">fcst_arr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">obs_arr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overunder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Users must supply the forecast and observation array (with threshold</span>
+<span class="sd">        and over/under operation), or either arr or (a,b,c,d).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fcst_arr,obs_arr (N.ndarray)    :   Forecast and verification arrays,</span>
+<span class="sd">                                                    the same dimensions.</span>
+<span class="sd">            thresh (float)  :   threshold</span>
+<span class="sd">            overunder (str) :   over, under, overeq, undereq, equal</span>
+<span class="sd">            arr2x2 (N.ndarray) :   Array representing 2x2 matrix.</span>
+<span class="sd">                                    Must be arranged so flatten array is</span>
+<span class="sd">                                    equal to a tuple of (a,b,c,d).</span>
+<span class="sd">            a,b,c,d (int)   :   Number of elements in 2x2 matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">arr2x2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">fcst_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">compute_contingency</span><span class="p">(</span><span class="n">fcst_arr</span><span class="p">,</span><span class="n">obs_arr</span><span class="p">,</span><span class="n">thresh</span><span class="p">,</span><span class="n">overunder</span><span class="p">,</span>
+                                            <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;tuple&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+                <span class="k">assert</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
         <span class="c1"># Number of total events</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
-        
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">))</span>
+
+        <span class="c1"># Now add a tiny amount to zeros to avoid division error</span>
+        <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="p">[</span><span class="n">N</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">)]</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
@@ -68,22 +101,85 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
 
+<div class="viewcode-block" id="DetScores.check_approx"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.check_approx">[docs]</a>    <span class="k">def</span> <span class="nf">check_approx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">rel_tol</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Values are not close.&quot;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="DetScores.compute_pcli"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_pcli">[docs]</a>    <span class="k">def</span> <span class="nf">compute_pcli</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Observed frequency of event under consideration.</span>
+<span class="sd">        Also known as base rate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pcli</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
         <span class="k">return</span> <span class="n">pcli</span></div>
 
-<div class="viewcode-block" id="DetScores.compute_hitrate"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_hitrate">[docs]</a>    <span class="k">def</span> <span class="nf">compute_hitrate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DetScores.compute_hitrate"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_hitrate">[docs]</a>    <span class="k">def</span> <span class="nf">compute_hitrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Accuracy.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Eq. 6 in B01.&quot;&quot;&quot;</span>
-        <span class="n">HR</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># This is Buizza version - same as POD</span>
+            <span class="n">HR</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># This is Jolliffe and Stephenson</span>
+            <span class="n">HR</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">HR</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_falsealarmratio"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_falsealarmratio">[docs]</a>    <span class="k">def</span> <span class="nf">compute_falsealarmratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">F</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_falsealarmrate"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_falsealarmrate">[docs]</a>    <span class="k">def</span> <span class="nf">compute_falsealarmrate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Same as PFD&quot;&quot;&quot;</span>
+        <span class="n">FAR</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">FAR</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_propcorrect"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_propcorrect">[docs]</a>    <span class="k">def</span> <span class="nf">compute_propcorrect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">PC</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">return</span> <span class="n">PC</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_E"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_E">[docs]</a>    <span class="k">def</span> <span class="nf">compute_E</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># 3.17 in Jolliffe and Stephenson</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="o">*</span>
+                <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span> <span class="o">+</span>
+            <span class="p">(</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="o">*</span>
+                <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span> <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">E</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_heidke"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_heidke">[docs]</a>    <span class="k">def</span> <span class="nf">compute_heidke</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_E</span><span class="p">()</span>
+        <span class="n">HSS</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_propcorrect</span><span class="p">()</span> <span class="o">-</span> <span class="n">E</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">E</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">HSS</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_peirce"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_peirce">[docs]</a>    <span class="k">def</span> <span class="nf">compute_peirce</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">PSS</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="o">/</span>
+                    <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">))</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">PSS</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_csi"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_csi">[docs]</a>    <span class="k">def</span> <span class="nf">compute_csi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">CSI</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CSI</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_ar"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_ar">[docs]</a>    <span class="k">def</span> <span class="nf">compute_ar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of hits expected by pure chance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ar</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">))</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">return</span> <span class="n">ar</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_gilbert"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_gilbert">[docs]</a>    <span class="k">def</span> <span class="nf">compute_gilbert</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_ar</span><span class="p">()</span>
+        <span class="n">GSS</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">-</span> <span class="n">ar</span><span class="p">)</span> <span class="o">/</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">-</span> <span class="n">ar</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">GSS</span></div>
+
+<div class="viewcode-block" id="DetScores.compute_yuleq"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_yuleq">[docs]</a>    <span class="k">def</span> <span class="nf">compute_yuleq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="p">((</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="p">)</span><span class="o">/</span>
+             <span class="p">(</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="p">))</span>
+        <span class="k">return</span> <span class="n">Q</span></div>
 
 <div class="viewcode-block" id="DetScores.compute_threat"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_threat">[docs]</a>    <span class="k">def</span> <span class="nf">compute_threat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Accuracy.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Eq. 7 in B01.&quot;&quot;&quot;</span>
         <span class="n">TS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">TS</span></div>
@@ -94,7 +190,7 @@
 <span class="sd">        Eq. 8 in B01.&quot;&quot;&quot;</span>
         <span class="n">POD1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
         <span class="n">POD2</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_pcli</span><span class="p">())</span>
-        <span class="k">assert</span> <span class="n">POD1</span> <span class="o">==</span> <span class="n">POD2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_approx</span><span class="p">(</span><span class="n">POD1</span><span class="p">,</span><span class="n">POD2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">POD1</span></div>
 
 <div class="viewcode-block" id="DetScores.compute_pfd"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_pfd">[docs]</a>    <span class="k">def</span> <span class="nf">compute_pfd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -103,7 +199,7 @@
 <span class="sd">        Eq. 9 in B01.&quot;&quot;&quot;</span>
         <span class="n">PFD1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
         <span class="n">PFD2</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_pcli</span><span class="p">()))</span>
-        <span class="k">assert</span> <span class="n">PFD1</span> <span class="o">==</span> <span class="n">PFD2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_approx</span><span class="p">(</span><span class="n">PFD1</span><span class="p">,</span><span class="n">PFD2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">PFD1</span></div>
 
 <div class="viewcode-block" id="DetScores.compute_bias"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_bias">[docs]</a>    <span class="k">def</span> <span class="nf">compute_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -115,9 +211,37 @@
 <div class="viewcode-block" id="DetScores.compute_kss"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_kss">[docs]</a>    <span class="k">def</span> <span class="nf">compute_kss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Eq. 13 in B01.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">KSS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pod</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pfd</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">KSS</span></div></div>
+        <span class="n">KSS1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pod</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pfd</span><span class="p">()</span>
+        <span class="n">KSS2</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">))</span><span class="o">/</span><span class="p">(</span>
+                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_approx</span><span class="p">(</span><span class="n">KSS1</span><span class="p">,</span><span class="n">KSS2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">KSS1</span></div>
 
+<div class="viewcode-block" id="DetScores.get"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">score</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Getter method for obtaining a score via string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;HR&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_hitrate</span><span class="p">,</span>
+                    <span class="s1">&#39;FAR&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_falsealarmratio</span><span class="p">,</span>
+                    <span class="s1">&#39;TS&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_threat</span><span class="p">,</span>
+                    <span class="s1">&#39;POD&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_pod</span><span class="p">,</span>
+                    <span class="s1">&#39;PFD&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_pfd</span><span class="p">,</span>
+                    <span class="s1">&#39;BIAS&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_bias</span><span class="p">,</span>
+                    <span class="s1">&#39;KSS&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_kss</span><span class="p">,</span>
+                    <span class="s1">&#39;CSI&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_csi</span><span class="p">,</span>
+                    <span class="s1">&#39;PCLI&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_pcli</span><span class="p">,</span>
+                    <span class="s1">&#39;F&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_falsealarmrate</span><span class="p">,</span>
+                    <span class="s1">&#39;PC&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_propcorrect</span><span class="p">,</span>
+                    <span class="s1">&#39;HSS&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_heidke</span><span class="p">,</span>
+                    <span class="s1">&#39;PSS&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_peirce</span><span class="p">,</span>
+                    <span class="s1">&#39;GSS&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_gilbert</span><span class="p">,</span>
+                    <span class="s1">&#39;Q&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_yuleq</span><span class="p">,</span>
+                    <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="n">score</span><span class="p">]()</span>
+            <span class="k">return</span> <span class="n">val</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Specify from the following: </span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span></div></div>
 </pre></div>
 
           </div>

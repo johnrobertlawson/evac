@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.plot.heatmap &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.plot.heatmap</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">M</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">astropy.convolution</span>
+
+<span class="kn">from</span> <span class="nn">.figure</span> <span class="k">import</span> <span class="n">Figure</span>
+
+<div class="viewcode-block" id="HeatMap"><a class="viewcode-back" href="../../../evac.plot.heatmap.html#evac.plot.heatmap.HeatMap">[docs]</a><span class="k">class</span> <span class="nc">HeatMap</span><span class="p">(</span><span class="n">Figure</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">)):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HeatMap</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HeatMap.interpolate_nans"><a class="viewcode-back" href="../../../evac.plot.heatmap.html#evac.plot.heatmap.HeatMap.interpolate_nans">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate_nans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr1d</span><span class="p">):</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="o">-</span><span class="n">N</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">arr1d</span><span class="p">)</span>
+        <span class="n">xp</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">arr1d</span><span class="p">[</span><span class="o">-</span><span class="n">N</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">arr1d</span><span class="p">)]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">arr1d</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">arr1d</span><span class="p">[</span><span class="n">N</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">arr1d</span><span class="p">)]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">xp</span><span class="p">,</span><span class="n">fp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">arr1d</span></div>
+
+<div class="viewcode-block" id="HeatMap.plot"><a class="viewcode-back" href="../../../evac.plot.heatmap.html#evac.plot.heatmap.HeatMap.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">outdir</span><span class="p">,</span><span class="n">flipsign</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Reds</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
+                <span class="n">xlabels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ylabels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">x2labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">fname</span><span class="o">=</span><span class="s1">&#39;heatmap.png&#39;</span><span class="p">,</span><span class="n">blank_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">tickx_top</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">invert_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">local_std</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plot heatmap.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            outdir (str): absolute path to output directory</span>
+<span class="sd">            flipsign (bool): multiplies data by -1.</span>
+<span class="sd">            cmap (matplotlib.colormap object): colour scheme</span>
+<span class="sd">            alpha (float): transparency of heatmap</span>
+<span class="sd">            xlabels, ylabels (list,tuple): strings for labelling axes</span>
+<span class="sd">            x2labels (list,tuple): enables second x axis for labelling</span>
+<span class="sd">            fname (str): file name for output image</span>
+<span class="sd">            local_std (int): if zero, do not overlay local standard deviation.</span>
+<span class="sd">                             if positive integer, this is the kernel size</span>
+<span class="sd">                             to compute local std.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (None)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">blank_nan</span><span class="p">:</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate_nans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+            <span class="n">matrix_norm</span> <span class="o">=</span> <span class="p">((</span><span class="n">matrix</span><span class="o">-</span><span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">matrix</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">matrix</span><span class="o">.</span><span class="n">min</span><span class="p">()))</span>
+            <span class="c1"># +matrix.min()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span>
+            <span class="n">matrix_norm</span> <span class="o">=</span> <span class="p">((</span><span class="n">matrix</span><span class="o">-</span><span class="n">N</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">matrix</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span><span class="o">-</span><span class="n">N</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">matrix</span><span class="p">)))</span>
+            <span class="n">matrix_norm</span> <span class="o">+=</span> <span class="o">-</span><span class="n">N</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">matrix_norm</span><span class="p">)</span>
+
+        <span class="c1"># Normalise to 0 to 1 across whole climatology</span>
+
+        <span class="k">if</span> <span class="n">flipsign</span><span class="p">:</span>
+            <span class="n">matrix_norm</span> <span class="o">=</span> <span class="n">matrix_norm</span><span class="o">*-</span><span class="mi">1</span>
+
+        <span class="c1"># Now plot</span>
+        <span class="c1"># fig, ax = plt.subplots(dpi=500)</span>
+        
+        <span class="c1"># heatmap = self.ax.pcolor(matrix_norm, cmap=cmap, alpha=alpha)</span>
+
+        <span class="c1"># if blank_nan:</span>
+        <span class="c1"># marr = N.ma.array (matrix_norm, mask=N.isnan(matrix_norm))</span>
+        <span class="n">marr</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">matrix_norm</span><span class="p">)</span>
+        <span class="n">cmap2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>
+        <span class="n">cmap2</span><span class="o">.</span><span class="n">set_bad</span><span class="p">(</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+        <span class="n">heatmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">marr</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap2</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+        
+        <span class="c1"># Put ticks into centre of each row/column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">matrix_norm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">matrix_norm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">invert_y</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">tickx_top</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">tick_top</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">xlabels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># if isinstance(xlabels[0],str):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xlabels</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ylabels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">ylabels</span><span class="p">,</span><span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Make grid prettier</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">tk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">get_major_ticks</span><span class="p">():</span>
+            <span class="n">tk</span><span class="o">.</span><span class="n">tick10n</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tk</span><span class="o">.</span><span class="n">tick20n</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">get_major_ticks</span><span class="p">():</span>
+            <span class="n">tk</span><span class="o">.</span><span class="n">tick10n</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tk</span><span class="o">.</span><span class="n">tick20n</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+        <span class="k">if</span> <span class="n">x2labels</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax2</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax2</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">matrix_norm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax2</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">matrix_norm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax2</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">casetypes</span><span class="p">],</span><span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax2</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span><span class="n">bottom</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">,</span>
+                    <span class="n">top</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">,</span><span class="n">left</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">,</span><span class="n">right</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="c1"># plt.gca().set_axis_direction(left=&#39;right&#39;)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span><span class="n">bottom</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">,</span>
+                    <span class="n">top</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">,</span><span class="n">left</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">,</span><span class="n">right</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+
+
+        <span class="c1"># self.ax.set_xlim(0,19)</span>
+        <span class="c1"># self.ax2.set_ylim(14,0)</span>
+        <span class="k">if</span> <span class="n">local_std</span><span class="p">:</span>
+            <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_convoluted</span><span class="p">(</span><span class="n">matrix_norm</span><span class="p">,</span><span class="n">local_std</span><span class="p">)</span>
+            <span class="n">xx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">matrix_norm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="c1">#[7:]</span>
+            <span class="n">yy</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">matrix_norm</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="c1">#[:-2]</span>
+            <span class="c1"># ct = self.ax.contourf(xx,yy,conv,levels=N.arange(0,1.02,0.02),alpha=0.5)</span>
+            <span class="n">ct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span><span class="n">yy</span><span class="p">,</span><span class="n">conv</span><span class="p">,</span><span class="n">levels</span><span class="o">=</span><span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">1.02</span><span class="p">,</span><span class="mf">0.02</span><span class="p">),</span><span class="n">colors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">clabel</span><span class="p">(</span><span class="n">ct</span><span class="p">,</span><span class="n">inline</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span><span class="n">fname</span><span class="p">)</span>
+        <span class="c1"># outfpath = os.path.join(outdir,fname)</span>
+
+
+        <span class="c1"># self.fig.tight_layout()</span>
+        <span class="c1"># self.fig.savefig(outfpath)</span>
+        <span class="c1"># print((&quot;Saved figure to {0}&quot;.format(outfpath)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix_norm</span> <span class="o">=</span> <span class="n">matrix_norm</span></div>
+
+<div class="viewcode-block" id="HeatMap.std_convoluted"><a class="viewcode-back" href="../../../evac.plot.heatmap.html#evac.plot.heatmap.HeatMap.std_convoluted">[docs]</a>    <span class="k">def</span> <span class="nf">std_convoluted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">nsq</span><span class="p">):</span>
+        <span class="c1"># hack!</span>
+        <span class="c1"># image = image[:-2,7:]</span>
+
+        <span class="n">im</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">im2</span> <span class="o">=</span> <span class="n">im</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">ones</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">nsq</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">nsq</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="c1"># s = scipy.signal.convolve2d(im, kernel, mode=&quot;same&quot;)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">astropy</span><span class="o">.</span><span class="n">convolution</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
+        <span class="c1"># s2 = scipy.signal.convolve2d(im2, kernel, mode=&quot;same&quot;)</span>
+        <span class="n">s2</span> <span class="o">=</span> <span class="n">astropy</span><span class="o">.</span><span class="n">convolution</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
+        <span class="c1"># ns = scipy.signal.convolve2d(ones, kernel, mode=&quot;same&quot;)</span>
+        <span class="n">ns</span> <span class="o">=</span> <span class="n">astropy</span><span class="o">.</span><span class="n">convolution</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">ones</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
+
+        <span class="n">outarr</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">s2</span> <span class="o">-</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">ns</span><span class="p">)</span> <span class="o">/</span> <span class="n">ns</span><span class="p">)</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span> <span class="n">outarr</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

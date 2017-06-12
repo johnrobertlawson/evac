@@ -56,7 +56,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">error</span><span class="o">=</span><span class="s1">&#39;Quality Control error.&#39;</span><span class="p">,</span><span class="n">pass_idx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Optional:</span>
-<span class="sd">        Error (str) -   Message to send to user   </span>
+<span class="sd">        Error (str) -   Message to send to user</span>
 <span class="sd">        pass_idx (tuple, list, N.ndarray)   -   Location in data of bad vals.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
@@ -67,7 +67,11 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">pass_idx</span><span class="p">)</span></div>
 
-
+<div class="viewcode-block" id="NonsenseError"><a class="viewcode-back" href="../../../evac.utils.exceptions.html#evac.utils.exceptions.NonsenseError">[docs]</a><span class="k">class</span> <span class="nc">NonsenseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Data or argument doesn&#39;t make any sense.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">error</span><span class="o">=</span><span class="s2">&quot;Nonsense Error&quot;</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

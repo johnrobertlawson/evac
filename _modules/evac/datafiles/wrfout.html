@@ -1,0 +1,899 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.datafiles.wrfout &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.datafiles.wrfout</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Compute or load data from netCDF file.</span>
+
+<span class="sd">Dimensions of 4D variable X are X.dimensions:</span>
+<span class="sd">(Time,bottom_top,south_north,west_east_stag)</span>
+<span class="sd">Time, levels, latitude, longitude</span>
+
+<span class="sd">Todos:</span>
+<span class="sd">    * Move computation of derived variables to derive/ folder!</span>
+<span class="sd">    * Make method assign the returns to instance instead of returning.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">scipy.interpolate</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">evac.utils.met_constants</span> <span class="k">as</span> <span class="nn">mc</span>
+<span class="kn">from</span> <span class="nn">WEM.postWRF.postWRF.ncfile</span> <span class="k">import</span> <span class="n">NC</span>
+
+<span class="n">debug_get</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="WRFOut"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut">[docs]</a><span class="k">class</span> <span class="nc">WRFOut</span><span class="p">(</span><span class="n">NC</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An instance of WRFOut contains all the methods that are used to</span>
+<span class="sd">    access and process netCDF data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;em_real&#39;</span><span class="p">,</span><span class="n">ncks</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialisation fetches and computes basic user-friendly</span>
+<span class="sd">        variables that are most often accessed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fpath    :    absolute path to netCDF4 (wrfout) file</span>
+<span class="sd">            fmt (str,optional)      : em_real or ideal or met_em</span>
+<span class="sd">            ncks (bool,optional)    : whether WRFOut file has been stripped to a few variables.</span>
+<span class="sd">                                        Hence check for KeyErrors for variables</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">=</span> <span class="n">fmt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fpath</span> <span class="o">=</span> <span class="n">fpath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ncks</span> <span class="o">=</span> <span class="n">ncks</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">DX</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">DY</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_dimensions</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
+
+        <span class="c1"># if ncks:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrf_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;Times&#39;</span><span class="p">][:]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wrf_times</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t_dim</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Get times in nicer format</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">utcs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrftime_to_datenum</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">utcs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">utcs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">utcs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="c1"># Assuming constant time steps!</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">ncks</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fmt</span> <span class="ow">is</span> <span class="s1">&#39;em_real&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">P_top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;P_TOP&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Loads variable lists</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">computed_fields</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">return_tbl</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">available_vrbls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">computed_fields</span>
+
+        <span class="c1"># Now do specific loads for idealised or real runs</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">is</span> <span class="s2">&quot;em_real&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">em_real_init</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">is</span> <span class="s2">&quot;ideal&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ideal_init</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">is</span> <span class="s2">&quot;met_em&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ideal_init</span><span class="p">()</span>
+
+<div class="viewcode-block" id="WRFOut.get_dimensions"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">get_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;em_real&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;west_east&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;south_north&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timekey</span> <span class="o">=</span> <span class="s1">&#39;Time&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lonkey</span> <span class="o">=</span> <span class="s1">&#39;west&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">latkey</span> <span class="o">=</span> <span class="s1">&#39;north&#39;</span>
+
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s1">&#39;met_em&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;num_metgrid_levels&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lvkey</span> <span class="o">=</span> <span class="s1">&#39;num_metgrid&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;bottom_top&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lvkey</span> <span class="o">=</span> <span class="s1">&#39;bottom&#39;</span>
+
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="WRFOut.em_real_init"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.em_real_init">[docs]</a>    <span class="k">def</span> <span class="nf">em_real_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Grab the 2D arrays of the wrfout file.</span>
+
+<span class="sd">        self.lats and self.lons represent the 2D arrays.</span>
+
+<span class="sd">        self.lats1D and self.lons1D represent the 1D arrays intersecting</span>
+<span class="sd">        the middle of the domain. They shouldn&#39;t be used for plotting.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;XLAT&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="o">...</span><span class="p">]</span> <span class="c1"># Might fail if only one time?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;XLONG&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lats1D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">[:,</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lons1D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">),:]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cen_lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">CEN_LAT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cen_lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">CEN_LON</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">truelat1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">TRUELAT1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">truelat2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">TRUELAT2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WRFOut.ideal_init"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.ideal_init">[docs]</a>    <span class="k">def</span> <span class="nf">ideal_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="WRFOut.wrftime_to_datenum"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.wrftime_to_datenum">[docs]</a>    <span class="k">def</span> <span class="nf">wrftime_to_datenum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;timegm&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert wrf&#39;s weird Times variable to datenum or datetime.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrf_times</span>
+        <span class="n">wrf_times_epoch</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">times</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
+            <span class="n">tstr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+
+            <span class="n">yr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tstr</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+            <span class="n">mth</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tstr</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">])</span>
+            <span class="n">day</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tstr</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>
+            <span class="n">hr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tstr</span><span class="p">[</span><span class="mi">11</span><span class="p">:</span><span class="mi">13</span><span class="p">])</span>
+            <span class="n">mins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tstr</span><span class="p">[</span><span class="mi">14</span><span class="p">:</span><span class="mi">16</span><span class="p">])</span>
+            <span class="n">sec</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tstr</span><span class="p">[</span><span class="mi">17</span><span class="p">:</span><span class="mi">19</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s1">&#39;timegm&#39;</span><span class="p">:</span>
+                <span class="n">wrf_times_epoch</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">([</span><span class="n">yr</span><span class="p">,</span><span class="n">mth</span><span class="p">,</span><span class="n">day</span><span class="p">,</span><span class="n">hr</span><span class="p">,</span><span class="n">mins</span><span class="p">,</span><span class="n">sec</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s1">&#39;datetime&#39;</span><span class="p">:</span>
+                <span class="n">wrf_time_epoch</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">yr</span><span class="p">,</span><span class="n">mth</span><span class="p">,</span><span class="n">day</span><span class="p">,</span><span class="n">hr</span><span class="p">,</span><span class="n">mins</span><span class="p">,</span><span class="n">sec</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrf_times_epoch</span></div>
+
+
+<div class="viewcode-block" id="WRFOut.get_time_idx"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_time_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_time_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utcs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get closest index to desired time</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            utcs (list,tuple, int)    :    times</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tidx (int): closest index to desired time</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="n">dn</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">ensure_datenum</span><span class="p">(</span><span class="n">utc</span><span class="p">)</span>
+        <span class="n">dns</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_sequence</span><span class="p">(</span><span class="n">dn</span><span class="p">)</span>
+        <span class="n">tidx</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">dns</span><span class="p">:</span>
+            <span class="n">tidx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">utc</span><span class="p">,</span><span class="n">t</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">N</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tidx</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WRFOut.check_compute"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.check_compute">[docs]</a>    <span class="k">def</span> <span class="nf">check_compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This method returns the required variables</span>
+<span class="sd">        that need to be loaded from the netCDF file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vrbl    :   WRF variable desired</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if variable exists in wrfout file.</span>
+<span class="sd">                        False if the variable needs computing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">vrbl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="WRFOut.return_tidx_range"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.return_tidx_range">[docs]</a>    <span class="k">def</span> <span class="nf">return_tidx_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utc0</span><span class="p">,</span><span class="n">utc1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give a start and end time. Returns an array of</span>
+<span class="sd">        all indices. Useful for self.get() to return an</span>
+<span class="sd">        array of data with all times between utc0 and utc1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idx0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_time_idx</span><span class="p">(</span><span class="n">utc0</span><span class="p">)</span>
+        <span class="n">idx1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_time_idx</span><span class="p">(</span><span class="n">utc1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">idx0</span><span class="p">,</span><span class="n">idx1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WRFOut.get"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">smooth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">other</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get data.</span>
+
+<span class="sd">        Will interpolate onto pressure, height coordinates if needed.</span>
+<span class="sd">        Will smooth if needed.</span>
+
+<span class="sd">        Level:</span>
+<span class="sd">        * indices: integer or N.ndarray of integers</span>
+<span class="sd">        * pressure: string ending in &#39;hPa&#39;</span>
+<span class="sd">        * height: string ending in &#39;m&#39; or &#39;km&#39;</span>
+<span class="sd">        * isentropic: string ending in &#39;K&#39;</span>
+
+<span class="sd">        Lats:</span>
+<span class="sd">        * indices: integer or N.ndarray of integers</span>
+<span class="sd">        * lats: float or N.ndarray of floats</span>
+
+<span class="sd">        Lons:</span>
+<span class="sd">        * indices: integer or N.ndarray of integers</span>
+<span class="sd">        * lons: float or N.ndarray of floats</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">        vrbl    :        WRF or computed variable required</span>
+<span class="sd">        utc     :        indices (&lt;500): integer/N.ndarray of integers.</span>
+<span class="sd">                            time tuple: 6-item tuple or list/tuple of these.</span>
+<span class="sd">                            datenum: integer &gt;500 or list of them.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="c1"># Time</span>
+
+        <span class="k">if</span> <span class="n">utc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tidx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">utc</span><span class="p">,</span><span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">utc</span><span class="o">&lt;</span><span class="mi">500</span><span class="p">):</span>
+        <span class="c1"># elif isinstance(utc,(int,N.int64)) and utc&lt;500:</span>
+            <span class="k">if</span> <span class="n">utc</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Logic to allow negative indices</span>
+                <span class="n">tidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_dim</span> <span class="o">+</span> <span class="n">utc</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tidx</span> <span class="o">=</span> <span class="n">utc</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">utc</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">int</span><span class="p">,</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)):</span> <span class="c1"># and len(utc[0])==6:</span>
+            <span class="n">tidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_time_idx</span><span class="p">(</span><span class="n">utc</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">utc</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span> <span class="c1">#and isinstance(utc[0],int):</span>
+            <span class="n">tidx</span> <span class="o">=</span> <span class="n">utc</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid time selection.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+
+        <span class="c1"># Level</span>
+        <span class="c1"># if not level:</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_vertical_coordinate</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">coords</span> <span class="ow">is</span> <span class="s1">&#39;eta&#39;</span><span class="p">):</span>
+            <span class="n">lvidx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">coords</span> <span class="o">==</span> <span class="s1">&#39;index&#39;</span><span class="p">:</span>
+            <span class="n">lvidx</span> <span class="o">=</span> <span class="n">level</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">coords</span> <span class="o">==</span> <span class="s1">&#39;surface&#39;</span><span class="p">:</span>
+                <span class="n">lvidx</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lvidx</span> <span class="o">=</span> <span class="n">coords</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid level selection.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+
+        <span class="c1"># Lat/lon</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">lats</span><span class="p">)</span><span class="o">==</span><span class="nb">type</span><span class="p">(</span><span class="n">lons</span><span class="p">):</span>
+            <span class="c1"># What about case where all lats with one lon?</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+        <span class="k">if</span> <span class="n">lats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lonidx</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">latidx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lons</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lons</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">int</span><span class="p">):</span>
+                <span class="n">lonidx</span> <span class="o">=</span> <span class="n">lons</span>
+                <span class="n">latidx</span> <span class="o">=</span> <span class="n">lats</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lons</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">float</span><span class="p">):</span>
+                <span class="c1"># Interpolate to lat/lon</span>
+                <span class="n">lonidx</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">latidx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lons</span><span class="p">,(</span><span class="nb">int</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">int64</span><span class="p">)):</span>
+            <span class="n">lonidx</span> <span class="o">=</span> <span class="n">lons</span>
+            <span class="n">latidx</span> <span class="o">=</span> <span class="n">lats</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lons</span><span class="p">,</span><span class="nb">float</span><span class="p">):</span>
+            <span class="c1"># Interpolate to lat/lon</span>
+            <span class="n">lonidx</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons1D</span><span class="p">,</span><span class="n">lons</span><span class="p">)</span>
+            <span class="n">latidx</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats1D</span><span class="p">,</span><span class="n">lats</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid lat/lon selection.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+        <span class="c1"># Check if computing required</span>
+        <span class="c1"># When data is loaded from nc, it is destaggered</span>
+
+        <span class="k">if</span> <span class="n">debug_get</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Computing </span><span class="si">{0}</span><span class="s2"> for level </span><span class="si">{1}</span><span class="s2"> of index </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">level</span><span class="p">,</span><span class="n">lvidx</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_compute</span><span class="p">(</span><span class="n">vrbl</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">debug_get</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Variable </span><span class="si">{0}</span><span class="s2"> exists in dataset.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vrbl</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">lvidx</span> <span class="ow">is</span> <span class="s1">&#39;isobaric&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_p</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">level</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lvidx</span><span class="p">,(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="nb">int</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">debug_get</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Variable </span><span class="si">{0}</span><span class="s2"> needs to be computed.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vrbl</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">lvidx</span> <span class="ow">is</span> <span class="s1">&#39;isobaric&#39;</span><span class="p">:</span>
+                <span class="c1"># data = self.get_p(vrbl,tidx,level,lonidx, latidx)[N.newaxis,N.newaxis,:,:]</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">level</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+
+        <span class="c1"># if len(data.shape) == 2:</span>
+            <span class="c1"># data = data[N.newaxis,N.newaxis,:,:]</span>
+        <span class="c1"># elif len(data.shape) == 3:</span>
+            <span class="c1"># data = data[N.newaxis,:,:,:]</span>
+        <span class="c1"># if len(data.shape) == 3:</span>
+            <span class="c1"># data = N.expand_dims(data,axis=0)</span>
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_4D</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">vrbl</span><span class="o">=</span><span class="n">vrbl</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="WRFOut.load"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetch netCDF data for a given variable, for given time, level,</span>
+<span class="sd">        latitude, and longitude indices.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vrbl        :   WRF variable</span>
+<span class="sd">            tidx        :   time index. False fetches all.</span>
+<span class="sd">            lvidx       :   level index. False fetches all</span>
+
+<span class="sd">        Todos:</span>
+<span class="sd">            * Get rid of integer arguments earlier in the method chain, and</span>
+<span class="sd">                make them single-element numpy arrays.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="c1"># First, check dimension that is staggered (if any)</span>
+        <span class="n">destag_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_destagger</span><span class="p">(</span><span class="n">vrbl</span><span class="p">)</span>
+
+        <span class="c1"># Next, fetch dimension names</span>
+        <span class="n">dim_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dims</span><span class="p">(</span><span class="n">vrbl</span><span class="p">)</span>
+
+        <span class="n">vrbldata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">vrbl</span><span class="p">]</span>
+        <span class="n">sl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_slice</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">dim_names</span><span class="p">)</span>
+        <span class="c1"># If that dimension has a slice of indices, it doesn&#39;t need staggering.</span>
+        <span class="k">if</span> <span class="n">destag_dim</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sl</span><span class="p">[</span><span class="n">destag_dim</span><span class="p">],</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">destag_dim</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">destagger</span><span class="p">(</span><span class="n">vrbldata</span><span class="p">[</span><span class="n">sl</span><span class="p">],</span><span class="n">destag_dim</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="WRFOut.create_slice"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.create_slice">[docs]</a>    <span class="k">def</span> <span class="nf">create_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">dim_names</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create slices from indices of level, time, lat, lon.</span>
+<span class="sd">        False mean pick all indices.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># See which dimensions are present in netCDF file variable</span>
+        <span class="n">sl</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># if vrbl.startswith(&#39;RAINNC&#39;):</span>
+            <span class="c1"># pdb.set_trace()</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timekey</span> <span class="ow">in</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">dim_names</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">tidx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tidx</span><span class="p">,</span><span class="nb">slice</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tidx</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tidx</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">tidx</span><span class="p">,</span><span class="n">tidx</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lvkey</span> <span class="ow">in</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">dim_names</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">lvidx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lvidx</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lvidx</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lvidx</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lvidx</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lonkey</span> <span class="ow">in</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">dim_names</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">lonidx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lonidx</span><span class="p">,</span><span class="nb">slice</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lonidx</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lonidx</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lonidx</span><span class="p">,(</span><span class="nb">int</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">int64</span><span class="p">)):</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">lonidx</span><span class="p">,</span><span class="n">lonidx</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latkey</span> <span class="ow">in</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">dim_names</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">latidx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">latidx</span><span class="p">,</span><span class="nb">slice</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">latidx</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">latidx</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">latidx</span><span class="p">,(</span><span class="nb">int</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">int64</span><span class="p">)):</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">latidx</span><span class="p">,</span><span class="n">latidx</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">sl</span></div>
+
+<div class="viewcode-block" id="WRFOut.check_destagger"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.check_destagger">[docs]</a>    <span class="k">def</span> <span class="nf">check_destagger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Looks up dimensions of netCDF file without loading data.</span>
+
+<span class="sd">        Returns dimension number that requires destaggering</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stag_dim</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">dname</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">dimensions</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;stag&#39;</span> <span class="ow">in</span> <span class="n">dname</span><span class="p">:</span>
+                <span class="n">stag_dim</span> <span class="o">=</span> <span class="n">n</span>
+
+        <span class="k">return</span> <span class="n">stag_dim</span></div>
+
+<div class="viewcode-block" id="WRFOut.get_dims"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_dims">[docs]</a>    <span class="k">def</span> <span class="nf">get_dims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var</span><span class="p">):</span>
+        <span class="n">dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">dimensions</span>
+        <span class="k">return</span> <span class="n">dims</span></div>
+
+<div class="viewcode-block" id="WRFOut.destagger"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.destagger">[docs]</a>    <span class="k">def</span> <span class="nf">destagger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">ax</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Destagger data which needs it doing.</span>
+
+<span class="sd">        Theta always has unstaggered points in all three spatial dimensions (axes=1,2,3).</span>
+
+<span class="sd">        Data should be 4D but just the slice required to reduce unnecessary computation time.</span>
+
+<span class="sd">        Don&#39;t destagger in x/y for columns</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data    :   numpy array of data requiring destaggering</span>
+<span class="sd">            ax      :   axis requiring destaggering</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check for dimensions of 1.</span>
+        <span class="c1"># If it exists, don&#39;t destagger it.</span>
+
+        <span class="n">shp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">size</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shp</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">size</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="n">ax</span><span class="p">):</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">break</span>
+
+        <span class="c1">#pdb.set_trace()</span>
+
+        <span class="k">if</span> <span class="n">ax</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nd</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span>
+            <span class="n">sl0</span> <span class="o">=</span> <span class="p">[]</span>     <span class="c1"># Slices to take place on staggered axis</span>
+            <span class="n">sl1</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nd</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">ax</span><span class="p">:</span>
+                    <span class="n">sl0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+                    <span class="n">sl1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sl0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="n">sl1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+
+            <span class="n">data_unstag</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">sl0</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="n">sl1</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">data_unstag</span></div>
+
+<div class="viewcode-block" id="WRFOut.return_tbl"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.return_tbl">[docs]</a>    <span class="k">def</span> <span class="nf">return_tbl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dictionary to look up method for computing a variable</span>
+<span class="sd">        Todos:</span>
+<span class="sd">            * merge with derived/derived.py</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tbl</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;shear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_shear</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;thetae&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_thetae</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;cref&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_comp_ref</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;wind10&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_wind10</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;wind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_wind</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;CAPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_CAPE</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;Td&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Td</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;pressure&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pressure</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;drybulb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_drybulb</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_theta</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;geopot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_geopotential</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_geopotential_height</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;dptp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dptp</span> <span class="c1">#density potential temperature pert.</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;T2p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_T2_pertub</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;dpt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dpt</span> <span class="c1">#density potential temperature .</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;buoyancy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_buoyancy</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;strongestwind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_strongest_wind</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;PMSL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pmsl</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;RH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_RH</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;dryairmass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dryairmass</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;QTOTAL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_qtotal</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;olr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_olr</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;es&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_satvappres</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;e&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_vappres</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_spechum</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;fluidtrapping&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_fluid_trapping_diagnostic</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;lyapunov&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_instantaneous_local_Lyapunov</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;REFL_comp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_REFL_comp</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;temp_advection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_temp_advection</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;omega&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_omega</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_density</span>
+        <span class="c1"># tbl[&#39;accum_precip&#39;] = self.compute_accum_rain</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;PMSL_gradient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_PMSL_gradient</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;T2_gradient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_T2_gradient</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;Q_pert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Q_pert</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;vorticity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_vorticity</span>
+
+        <span class="k">return</span> <span class="n">tbl</span></div>
+
+<div class="viewcode-block" id="WRFOut.compute"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="p">,</span><span class="n">lookup</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Look up method needed to return array of data</span>
+<span class="sd">        for required variable.</span>
+
+<span class="sd">        Keyword arguments include settings for computation</span>
+<span class="sd">        e.g. top and bottom of shear computation</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vrbl        :   variable name</span>
+<span class="sd">            tidx        :   time index/indices</span>
+<span class="sd">            lookup      :   enables a check to see if something can be</span>
+<span class="sd">                                computed. Returns true or false.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tbl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_tbl</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">lookup</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">lookup</span> <span class="ow">in</span> <span class="n">tbl</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">tbl</span><span class="p">[</span><span class="n">vrbl</span><span class="p">](</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span></div>
+
+
+
+
+<div class="viewcode-block" id="WRFOut.compute_ave"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.compute_ave">[docs]</a>    <span class="k">def</span> <span class="nf">compute_ave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">,</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute average values for variable in layer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            va      :   variable</span>
+<span class="sd">            z1      :   height at bottom</span>
+<span class="sd">            z2      :   height at top</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            data    :   the averaged variable</span>
+
+<span class="sd">        Todos:</span>
+<span class="sd">            * Move or remove?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get coordinate system</span>
+        <span class="n">vc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_vcs</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WRFOut.compute_strongest_wind"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.compute_strongest_wind">[docs]</a>    <span class="k">def</span> <span class="nf">compute_strongest_wind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pass the array of time indices and it will find the max</span>
+<span class="sd">        along that axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;WSPD10MAX&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="n">ww</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;WSPD10MAX&#39;</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ww</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">0.1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using WSPD10MAX data&quot;</span><span class="p">)</span>
+                <span class="n">wind</span> <span class="o">=</span> <span class="n">ww</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using wind10 data&quot;</span><span class="p">)</span>
+                <span class="n">wind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wind10&#39;</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using wind10 data&quot;</span><span class="p">)</span>
+            <span class="n">wind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wind10&#39;</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">)</span>
+        <span class="n">wind_max</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">wind</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># wind_max_smooth = self.test_smooth(wind_max)</span>
+        <span class="c1"># return wind_max_smooth</span>
+
+        <span class="k">return</span> <span class="n">wind_max</span></div>
+
+<div class="viewcode-block" id="WRFOut.make_4D"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.make_4D">[docs]</a>    <span class="k">def</span> <span class="nf">make_4D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">datain</span><span class="p">,</span><span class="n">vrbl</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">missing_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If vrbl, look up the wrfout file&#39;s variable dimensions and</span>
+<span class="sd">        adjust accordingly to get into 4D structure. If not vrbl,</span>
+<span class="sd">        for instance a computed variable, the user needs to specify</span>
+<span class="sd">        which axes are missing in a tuple.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataout</span> <span class="o">=</span> <span class="n">datain</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">datain</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">4</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">vrbl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                <span class="n">dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">vrbl</span><span class="p">]</span><span class="o">.</span><span class="n">dimensions</span>
+                <span class="n">missing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_missing_axes</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
+                    <span class="n">dataout</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">dataout</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataout</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">4</span><span class="p">:</span>
+                    <span class="n">dataout</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">dataout</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="k">return</span> <span class="n">dataout</span></div>
+
+<div class="viewcode-block" id="WRFOut.get_missing_axes"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_missing_axes">[docs]</a>    <span class="k">def</span> <span class="nf">get_missing_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dims</span><span class="p">):</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="s2">&quot;Time&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span><span class="mi">2</span><span class="p">:</span><span class="s2">&quot;south&quot;</span><span class="p">,</span><span class="mi">3</span><span class="p">:</span><span class="s2">&quot;west&quot;</span><span class="p">}</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">axname</span> <span class="ow">in</span> <span class="n">axes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">present</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">([</span><span class="kc">True</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dims</span> <span class="k">if</span> <span class="n">axname</span> <span class="ow">in</span> <span class="n">d</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">present</span><span class="p">:</span>
+                <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">missing</span></div>
+
+<div class="viewcode-block" id="WRFOut.check_vcs"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.check_vcs">[docs]</a>    <span class="k">def</span> <span class="nf">check_vcs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">,</span><span class="n">exception</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check the vertical coordinate systems</span>
+
+<span class="sd">        If identical, return the system</span>
+<span class="sd">        If not, raise an exception.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">vc</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">level_type</span><span class="p">(</span><span class="n">z1</span><span class="p">)</span>
+        <span class="n">vc</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">level_type</span><span class="p">(</span><span class="n">z2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">vc1</span> <span class="o">!=</span> <span class="n">vc2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Vertical coordinate systems not identical.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">vc1</span></div>
+
+<div class="viewcode-block" id="WRFOut.get_XY"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_XY">[docs]</a>    <span class="k">def</span> <span class="nf">get_XY</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return grid indices for lat/lon pair.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="WRFOut.get_limited_domain"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_limited_domain">[docs]</a>    <span class="k">def</span> <span class="nf">get_limited_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">da</span><span class="p">,</span><span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">return_array</span><span class="o">=</span><span class="s1">&#39;idx&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return smaller array of lats, lons depending on</span>
+<span class="sd">        input dictionary of N, E, S, W limits.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            skip            :   for creating thinned domains</span>
+<span class="sd">            return_type     :   if idx, return array of idx</span>
+<span class="sd">                                    if slice, return slice only</span>
+<span class="sd">                                    if latlon, return lat/lon values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">da</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+            <span class="n">N_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_lat_idx</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;Nlim&#39;</span><span class="p">])</span>
+            <span class="n">E_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_lon_idx</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;Elim&#39;</span><span class="p">])</span>
+            <span class="n">S_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_lat_idx</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;Slim&#39;</span><span class="p">])</span>
+            <span class="n">W_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_lon_idx</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;Wlim&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">N_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats1D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">E_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons1D</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">S_idx</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">W_idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">return_array</span><span class="o">==</span><span class="s1">&#39;latlon&#39;</span> <span class="ow">or</span> <span class="n">return_array</span><span class="o">==</span><span class="s1">&#39;slice&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">da</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+                <span class="n">lat_sl</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">S_idx</span><span class="p">,</span><span class="n">N_idx</span><span class="p">,</span><span class="n">skip</span><span class="p">)</span>
+                <span class="n">lon_sl</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">W_idx</span><span class="p">,</span><span class="n">E_idx</span><span class="p">,</span><span class="n">skip</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lat_sl</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">skip</span><span class="p">)</span>
+                <span class="n">lon_sl</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">skip</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">return_array</span> <span class="o">==</span> <span class="s1">&#39;latlon&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats1D</span><span class="p">[</span><span class="n">lat_sl</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons1D</span><span class="p">[</span><span class="n">lon_sl</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">lat_sl</span><span class="p">,</span> <span class="n">lon_sl</span>
+        <span class="k">elif</span> <span class="n">return_array</span><span class="o">==</span><span class="s1">&#39;idx&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">S_idx</span><span class="p">,</span><span class="n">N_idx</span><span class="p">,</span><span class="n">skip</span><span class="p">),</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">W_idx</span><span class="p">,</span><span class="n">E_idx</span><span class="p">,</span><span class="n">skip</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid selection for return_array.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span></div>
+
+<div class="viewcode-block" id="WRFOut.get_latlon_idx"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_latlon_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_latlon_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+        <span class="n">latidx</span><span class="p">,</span> <span class="n">lonidx</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_latlon_idx</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">,</span>
+                                    <span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span>
+        <span class="c1"># coords = N.unravel_index(N.argmin((lat-self.lats)**2+</span>
+                    <span class="c1"># (lon-self.lons)**2),self.lons.shape)</span>
+        <span class="c1"># lon, lat</span>
+        <span class="c1"># return [int(c) for c in coords]</span>
+        <span class="k">return</span> <span class="n">latidx</span><span class="p">,</span> <span class="n">lonidx</span></div>
+
+<div class="viewcode-block" id="WRFOut.get_lat_idx"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_lat_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_lat_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">):</span>
+        <span class="n">lat_idx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="o">-</span><span class="n">lat</span><span class="p">)</span> <span class="o">==</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="o">-</span><span class="n">lat</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">())[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">lat_idx</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WRFOut.get_lon_idx"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_lon_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_lon_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+        <span class="n">lon_idx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="o">-</span><span class="n">lon</span><span class="p">)</span> <span class="o">==</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="o">-</span><span class="n">lon</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">())[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">lon_idx</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WRFOut.get_p"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_p">[docs]</a>    <span class="k">def</span> <span class="nf">get_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lonidx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">latidx</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return an pressure level isosurface of given variable.</span>
+<span class="sd">        Interpolation is linear so watch out.</span>
+
+<span class="sd">        Dimensions returns as (height,lat,lon)</span>
+<span class="sd">        Or is it (height,lon, lat!?)</span>
+
+<span class="sd">        Todos:</span>
+<span class="sd">            * Need to include limited domain functionality</span>
+
+<span class="sd">        if vrbl==&#39;pressure&#39;,create constant grid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># print(&#39;GET_P:&#39;,vrbl,tidx,level)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span><span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">level</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;hPa&#39;</span><span class="p">):</span>
+            <span class="n">hPa</span> <span class="o">=</span> <span class="mf">100.0</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">level</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">nlv</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,(</span><span class="nb">float</span><span class="p">,</span><span class="nb">int</span><span class="p">)):</span>
+            <span class="n">hPa</span> <span class="o">=</span> <span class="n">level</span><span class="o">*</span><span class="mf">100.0</span>
+            <span class="n">nlv</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">)):</span>
+            <span class="n">hPa</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">*</span><span class="mf">100.0</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">level</span><span class="p">]</span>
+            <span class="n">nlv</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hPa</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Use XXXhPa, an integer, or list of integers for level.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+
+        <span class="c1"># If this breaks, user is requesting non-4D data</span>
+        <span class="c1"># Duck-typing for the win</span>
+
+        <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pressure&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="n">tidx</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="n">lonidx</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">latidx</span><span class="p">)[</span><span class="o">...</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">vrbl</span><span class="o">==</span><span class="s1">&#39;pressure&#39;</span><span class="p">:</span>
+            <span class="n">dataout</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">nlv</span><span class="p">,</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span><span class="o">*</span><span class="n">hPa</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">datain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="n">tidx</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="n">lonidx</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">latidx</span><span class="p">)[</span><span class="o">...</span><span class="p">]</span>
+            <span class="c1"># import pdb; pdb.set_trace()</span>
+            <span class="c1"># What about RUC, pressure coords</span>
+            <span class="c1"># dataout = N.zeros([nlv,P.shape[-1],P.shape[-2]])</span>
+            <span class="n">dataout</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">nlv</span><span class="p">,</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="c1"># pdb.set_trace()</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">),</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">N</span><span class="o">.</span><span class="n">ndenumerate</span><span class="p">(</span><span class="n">dataout</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]):</span>
+                    <span class="n">dataout</span><span class="p">[</span><span class="n">t</span><span class="p">,:,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">hPa</span><span class="p">,</span><span class="n">P</span><span class="p">[</span><span class="n">t</span><span class="p">,:,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">datain</span><span class="p">[</span><span class="n">t</span><span class="p">,:,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="c1"># dataout = scipy.interpolate.griddata(P.flatten(),datain.flatten(),hPa)</span>
+        <span class="c1"># if nlv == 1:</span>
+            <span class="c1"># Return 2D if only one level requested</span>
+            <span class="c1"># return self.make_4D(dataout[:,0,:,:])</span>
+        <span class="c1"># else:</span>
+            <span class="c1"># return self.make_4D(dataout)</span>
+        <span class="k">return</span> <span class="n">dataout</span></div>
+
+<div class="viewcode-block" id="WRFOut.interp_to_p_fortran"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.interp_to_p_fortran">[docs]</a>    <span class="k">def</span> <span class="nf">interp_to_p_fortran</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">config</span><span class="p">,</span><span class="n">nc_path</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">lv</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Uses p_interp fortran code to put data onto a pressure</span>
+<span class="sd">        level specified.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config  :   contains directory of p_interp files</span>
+<span class="sd">            nc_path :   path to original netCDF file data</span>
+<span class="sd">            var     :   variable(s) to compute</span>
+<span class="sd">            lv      :   pressure level(s) to compute</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            fpath   :   path to new netCDF file with p co-ords</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Fetch paths</span>
+        <span class="n">p_interp_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                            <span class="n">config</span><span class="o">.</span><span class="n">p_interp_root</span><span class="p">,</span><span class="s1">&#39;p_interp&#39;</span><span class="p">)</span>
+        <span class="n">namelist_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                            <span class="n">config</span><span class="o">.</span><span class="n">p_interp_root</span><span class="p">,</span><span class="s1">&#39;namelist.pinterp&#39;</span><span class="p">)</span>
+        <span class="n">nc_root</span><span class="p">,</span> <span class="n">nc_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">nc_path</span><span class="p">)</span><span class="c1"># Root directory of wrfout file</span>
+        <span class="n">output_root</span> <span class="o">=</span> <span class="n">nc_root</span> <span class="c1"># Directory to dump output file (same)</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Can we add a suffix to the new netCDF file?</span>
+<span class="sd">        Check to see if file already exists</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Copy old p_interp for backup</span>
+        <span class="n">command1</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;cp&#39;</span><span class="p">,</span><span class="n">p_interp_path</span><span class="p">,</span><span class="n">p_interp_path</span><span class="o">+</span><span class="s1">&#39;.bkup&#39;</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command1</span><span class="p">)</span>
+
+        <span class="c1"># Edit p_interp&#39;s namelist settings</span>
+        <span class="n">edit_namelist</span><span class="p">(</span><span class="n">path_to_interp</span><span class="p">,</span><span class="s1">&#39;path_to_input&#39;</span><span class="p">,</span><span class="n">nc_root</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+        <span class="n">edit_namelist</span><span class="p">(</span><span class="n">path_to_interp</span><span class="p">,</span><span class="s1">&#39;input_name&#39;</span><span class="p">,</span><span class="n">nc_fname</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+        <span class="n">edit_namelist</span><span class="p">(</span><span class="n">path_to_interp</span><span class="p">,</span><span class="s1">&#39;path_to_output&#39;</span><span class="p">,</span><span class="n">output_root</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+        <span class="n">edit_namelist</span><span class="p">(</span><span class="n">path_to_interp</span><span class="p">,</span><span class="s1">&#39;process&#39;</span><span class="p">,</span><span class="s1">&#39;list&#39;</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+        <span class="n">edit_namelist</span><span class="p">(</span><span class="n">path_to_interp</span><span class="p">,</span><span class="s1">&#39;fields&#39;</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+        <span class="n">edit_namelist</span><span class="p">(</span><span class="n">path_to_interp</span><span class="p">,</span><span class="s1">&#39;met_em_output&#39;</span><span class="p">,</span><span class="s1">&#39;.FALSE.&#39;</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+        <span class="n">edit_namelist</span><span class="p">(</span><span class="n">path_to_interp</span><span class="p">,</span><span class="s1">&#39;fields&#39;</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+
+        <span class="n">command2</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">,</span><span class="n">p_interp_path</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command2</span><span class="p">)</span> <span class="c1"># This should execute the script</span>
+
+        <span class="k">return</span> <span class="n">fpath</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__edit_namelist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">,</span><span class="n">old</span><span class="p">,</span><span class="n">new</span><span class="p">,</span><span class="n">incolumn</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="mi">23</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;col=23 is default for wps namelists.</span>
+<span class="sd">        Todos:</span>
+<span class="sd">            * remove and put into lazy/</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flines</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flines</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">old</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="c1"># Prefix for soil intermediate data filename</span>
+                <span class="k">if</span> <span class="n">incolumn</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">flines</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">flines</span><span class="p">[</span><span class="n">idx</span><span class="p">][:</span><span class="n">col</span><span class="p">]</span> <span class="o">+</span> <span class="n">new</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">flines</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">old</span> <span class="o">+</span> <span class="s1">&#39; = &#39;</span> <span class="o">+</span> <span class="n">new</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="n">nameout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+                <span class="n">nameout</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">flines</span><span class="p">)</span>
+                <span class="n">nameout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">break</span>
+
+<div class="viewcode-block" id="WRFOut.get_limits"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_limits">[docs]</a>    <span class="k">def</span> <span class="nf">get_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Nlim</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats1D</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">Elim</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons1D</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">Slim</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats1D</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">Wlim</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons1D</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">Nlim</span><span class="p">,</span> <span class="n">Elim</span><span class="p">,</span> <span class="n">Slim</span><span class="p">,</span> <span class="n">Wlim</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
