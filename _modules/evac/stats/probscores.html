@@ -126,7 +126,7 @@
         <span class="k">pass</span></div>
 
     <span class="c1"># def compute_crps(self,xfs,xa):</span>
-<div class="viewcode-block" id="ProbScores.compute_crps"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_crps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbScores.compute_crps"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_crps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Some inspiration from:</span>
 <span class="sd">        https://github.com/TheClimateCorporation/properscoring.git</span>
@@ -158,7 +158,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting CRPS calculation over the whole grid.&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">s1</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="n">s2</span><span class="p">)):</span>
             <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">count</span> <span class="o">%</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">count</span> <span class="o">%</span> <span class="mi">1000</span><span class="p">)</span> <span class="ow">and</span> <span class="n">debug</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="n">ss</span><span class="p">))</span>
 
             <span class="c1"># Px is the % that self.xa will be smaller than x.</span>
@@ -169,7 +169,7 @@
             <span class="n">Px</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
            
             <span class="c1"># CDF of observation (0 or 1)</span>
-            <span class="n">Pax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">xs</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">])</span>
+            <span class="n">Hv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">xs</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">])</span>
 
 
             <span class="c1"># dx = N.zeros(len(xs)+1)</span>
@@ -183,24 +183,73 @@
             <span class="c1"># Px[0] should be 0</span>
             <span class="c1"># Px[-1] should be 1.</span>
 
-            <span class="n">integrand</span> <span class="o">=</span> <span class="n">dx</span><span class="o">*</span><span class="p">(</span><span class="n">Px</span><span class="o">-</span><span class="n">Pax</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">method</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># METHOD 1</span>
+                <span class="n">integrand</span> <span class="o">=</span> <span class="n">dx</span><span class="o">*</span><span class="p">((</span><span class="n">Px</span><span class="o">-</span><span class="n">Hv</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">crps</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">integrand</span><span class="p">)</span>
 
-            <span class="n">crps</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">integrand</span><span class="p">)</span>
-            <span class="c1"># if N.any(xs &gt; 0.0):</span>
-                <span class="c1"># pdb.set_trace()</span>
+            <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="c1"># METHOD 2</span>
+                <span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="k">import</span> <span class="n">quad</span>
+                <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">argin</span><span class="p">):</span>
+                <span class="c1"># def integrand(Px0,Hv0):</span>
+                    <span class="n">Px0</span><span class="p">,</span> <span class="n">Hv0</span> <span class="o">=</span> <span class="n">argin</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="n">Px0</span> <span class="o">-</span> <span class="n">Hv0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+                <span class="c1"># def get_crps(Px0,Hv0):</span>
+                    <span class="c1"># return quad(integrand,-N.inf,N.inf,args=(Px0,Hv0))</span>
+                <span class="c1"># get_crps_vec = N.vectorize(get_crps)</span>
+                <span class="c1"># crps[x,y] = get_crps_vec(Px,Hv)</span>
+                <span class="n">crps</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span><span class="o">-</span><span class="n">N</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">Px</span><span class="p">,</span><span class="n">Hv</span><span class="p">))</span>
+
+
+            <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="c1">#https://www.mathworks.com/matlabcentral/fileexchange/47807-continuous-rank-probability-score?requestedDomain=www.mathworks.com</span>
+                <span class="n">problist</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+                <span class="n">problist2</span> <span class="o">=</span> <span class="n">problist</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="n">problistm2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">problist</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+                <span class="n">ob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span>
+                <span class="n">fcst</span> <span class="o">=</span> <span class="n">xs</span>
+                <span class="n">idxs</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fcst</span> <span class="o">&lt;=</span> <span class="n">ob</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idxs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># when obs &gt; fcst</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">idxs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">crps_left</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> 
+                        <span class="n">fcst_left</span> <span class="o">=</span> <span class="n">fcst</span><span class="p">[:</span><span class="n">idx</span><span class="p">]</span>
+                        <span class="n">dx_left</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">fcst_left</span><span class="p">)</span>
+                        <span class="n">p_left</span> <span class="o">=</span> <span class="n">problist2</span><span class="p">[:</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="c1"># crps_left = p_left * dx_left</span>
+                        <span class="n">crps_left</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p_left</span><span class="p">,</span><span class="n">dx_left</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">ob</span> <span class="o">&lt;</span> <span class="n">fcst</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> 
+                        <span class="n">fcst_right</span> <span class="o">=</span> <span class="n">fcst</span><span class="p">[</span><span class="n">idx</span><span class="p">:]</span>
+                        <span class="n">dx_right</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">fcst_right</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dx_right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">crps_right</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">p_right</span> <span class="o">=</span> <span class="n">problistm2</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="c1"># crps_right = p_right * dx_right</span>
+                            <span class="n">crps_right</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p_right</span><span class="p">,</span> <span class="n">dx_right</span><span class="p">)</span>
+                        <span class="c1"># CDF crossing obs</span>
+                        <span class="n">crps_centreleft</span> <span class="o">=</span> <span class="n">problist2</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">**</span><span class="p">(</span><span class="n">ob</span><span class="o">-</span><span class="n">fcst</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                        <span class="n">crps_centreright</span> <span class="o">=</span> <span class="n">problistm2</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">**</span><span class="p">(</span><span class="n">fcst</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">ob</span><span class="p">)</span>
+                        <span class="n">crps_vals</span> <span class="o">=</span> <span class="n">crps_left</span> <span class="o">+</span> <span class="n">crps_right</span> <span class="o">+</span> <span class="n">crps_centreleft</span> <span class="o">+</span> <span class="n">crps_centreright</span>
+                    <span class="k">else</span><span class="p">:</span> <span class="c1"># if obs are &gt; all fcst</span>
+                        <span class="n">crps_right_outside</span> <span class="o">=</span> <span class="mi">1</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">ob</span><span class="o">-</span><span class="n">fcst</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+                        <span class="n">crps_vals</span> <span class="o">=</span> <span class="n">crps_right_outside</span> <span class="o">+</span> <span class="n">crps_left</span>
+                <span class="k">else</span><span class="p">:</span> <span class="c1"># obs is &lt; all fcst</span>
+                    <span class="n">dx_right</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">fcst</span><span class="p">)</span>
+                    <span class="n">p_right</span> <span class="o">=</span> <span class="n">problistm2</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">crps_right</span> <span class="o">=</span><span class="n">N</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p_right</span><span class="p">,</span><span class="n">dx_right</span><span class="p">)</span>
+                    <span class="c1"># crps_right = p_right*dx_right</span>
+                    <span class="n">crps_left_outside</span> <span class="o">=</span> <span class="mi">1</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">fcst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">ob</span><span class="p">))</span>
+                    <span class="n">crps_vals</span> <span class="o">=</span> <span class="n">crps_left_outside</span> <span class="o">+</span> <span class="n">crps_right</span> 
+                <span class="n">crps</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">crps_vals</span>
 
         <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">crps</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">crps</span>
-        <span class="c1"># def integrand(Px0,Pax0):</span>
-            <span class="c1"># return (Px0 - Pax0)**2</span>
-        <span class="c1"># def crps(Px0,Pax0):</span>
-            <span class="c1"># return quad(integrand,-N.inf,N.inf,args=(Px0,Pax0))</span>
-        <span class="c1"># crps_vec = N.vectorize(crps)</span>
-        <span class="c1"># CRPS = (Px(x) - Pax)**2</span>
-        <span class="c1"># CRPS = crps_vec(Px,Pax)</span>
-        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span></div>
+            <span class="k">return</span> <span class="n">crps</span></div>
          
 <div class="viewcode-block" id="ProbScores.heaviside"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.heaviside">[docs]</a>    <span class="k">def</span> <span class="nf">heaviside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
         <span class="c1"># if x &lt; 0:</span>

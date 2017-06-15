@@ -124,11 +124,12 @@
             <span class="n">HR</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">HR</span></div>
 
-<div class="viewcode-block" id="DetScores.compute_falsealarmratio"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_falsealarmratio">[docs]</a>    <span class="k">def</span> <span class="nf">compute_falsealarmratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DetScores.compute_falsealarmrate"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_falsealarmrate">[docs]</a>    <span class="k">def</span> <span class="nf">compute_falsealarmrate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This was wrong was round with below!</span>
         <span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">F</span></div>
 
-<div class="viewcode-block" id="DetScores.compute_falsealarmrate"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_falsealarmrate">[docs]</a>    <span class="k">def</span> <span class="nf">compute_falsealarmrate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DetScores.compute_falsealarmratio"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_falsealarmratio">[docs]</a>    <span class="k">def</span> <span class="nf">compute_falsealarmratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Same as PFD&quot;&quot;&quot;</span>
         <span class="n">FAR</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">FAR</span></div>
@@ -217,6 +218,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">check_approx</span><span class="p">(</span><span class="n">KSS1</span><span class="p">,</span><span class="n">KSS2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">KSS1</span></div>
 
+<div class="viewcode-block" id="DetScores.compute_successrate"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.compute_successrate">[docs]</a>    <span class="k">def</span> <span class="nf">compute_successrate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; 1-FAR.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">SR</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_falsealarmratio</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">SR</span></div>
+
 <div class="viewcode-block" id="DetScores.get"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">score</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Getter method for obtaining a score via string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -235,6 +242,7 @@
                     <span class="s1">&#39;PSS&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_peirce</span><span class="p">,</span>
                     <span class="s1">&#39;GSS&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_gilbert</span><span class="p">,</span>
                     <span class="s1">&#39;Q&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_yuleq</span><span class="p">,</span>
+                    <span class="s1">&#39;SR&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_successrate</span><span class="p">,</span>
                     <span class="p">}</span>
 
         <span class="k">if</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
