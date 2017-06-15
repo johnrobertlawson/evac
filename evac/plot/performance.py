@@ -5,10 +5,11 @@ import numpy as N
 import matplotlib as M
 import matplotlib.pyplot as plt
 
-from evac.numbers import is_number, has_integers, is_integer, is_array
+from evac.utils.evac_numbers import is_number, has_integers, is_integer, is_array
+from evac.plot.figure import Figure
 
 class Performance(Figure):
-    def __init__(self,outpath,fname):
+    def __init__(self,outpath,fname,ncol=1):
         """ Performance diagram, from Roebber 2009 WAF.
 
         Some checking with WFRT's verif package (Github)
@@ -25,9 +26,8 @@ class Performance(Figure):
         FAR     =   B/A+B
         BIAS    =   (A+B)/(A+C)
         CSI     =   A/(A+B+C)
-        SR      =   1/FAR ...
-                =   (A+B)/B
-
+        SR      =   1- FAR
+               
         Some plotting settings, like bias contours, can be accessed:
 
         Performance.contours['bias'] = [0.5,1,1.5]
@@ -35,18 +35,20 @@ class Performance(Figure):
         Args:
             outpath     :   directory for saving figure
             fname       :   file name
+            ncol        :   number of columns for legend.
         """
         self.outpath = outpath
         self.fname = fname
+        self.ncol = ncol
 
         # Plotting settings
         self.contours = {}
         self.contours['bias'] = N.array([0.25,0.5,0.75,1.0,1.25,1.5,2.5,5,10])
         self.contours['csi'] = N.arange(0.1,1.1,0.1)
-        self.xticks = 100
+        self.xticks = 201
         self.yticks = self.xticks
-        self.sr_x = N.arange(0,(1+1/self.xticks),self.xticks)
-        self.pod_y = N.arange(0,(1+1/self.yticks),self.yticks)
+        self.sr_x = N.linspace(0,1,self.xticks)
+        self.pod_y = N.linspace(0,1,self.yticks)
 
         self.create_axis()
         self.plot_bias_lines()
@@ -59,7 +61,7 @@ class Performance(Figure):
         self.ax.grid(False)
 
         self.ax.set_xlim([0,1])
-        xlab = N.arange(0,1.05,0.05)
+        xlab = N.arange(0,1.1,0.1)
         self.ax.set_xticks(xlab)
         self.ax.set_xticklabels(xlab)
         self.ax.set_xlabel("Success Ratio")
@@ -70,38 +72,69 @@ class Performance(Figure):
         self.ax.set_yticklabels(ylab)
         self.ax.set_ylabel("Probability of Detection")
 
+        self.ax.set_aspect('equal')
+
     def plot_bias_lines(self):
         bias_arr = self.compute_bias_lines()
-        self.ax.plot(bias_arr,color='red',lw=1,linestyle='--')
         for bn, b in enumerate(self.contours['bias']):
+            # self.ax.plot(bias_arr[:,0,bn],bias_arr[:,1,bn],
+            self.ax.plot(bias_arr[:,1,bn],self.pod_y,
+                            color='red',lw=1,linestyle='--')
             bstr = '{:1.1f}'.format(b)
-            self.fig.text(bias_arr[-1,0,bn],bias_arr[-1,1,bn],bstr)
+            # pdb.set_trace()
+            if b < 1:
+                xpos = 1.0
+                ypos = b
+            else:
+                xpos = 1/b
+                ypos = 1
+            self.ax.annotate(bstr,xy=(xpos,ypos),xycoords='data',color='red')
 
     def plot_csi_lines(self):
         csi_arr = self.compute_csi_lines()
-        csi_c = self.ax.plot(csi_arr,color='blue',lw=1,)
-        self.fig.clabel(csi_c,fontsize=8,inline=True,fmt='%1.1f')
+        # mid = N.floor(csi_arr.shape[0]/2)
+        mid = N.int(csi_arr.shape[0] * 0.975)
+        nc = len(self.contours['csi'])
+        for cn, c in enumerate(self.contours['csi']):
+            # csi_c = self.ax.plot(csi_arr[:,0,cn],csi_arr[:,1,cn],
+            self.ax.plot(self.sr_x,csi_arr[:,1,cn],
+                                color='blue',lw=1,)
+            cstr = '{:1.1f}'.format(c)
+            # self.ax.clabel(csi_c[1],fontsize=8,inline=True,fmt='%1.1f')
+            # pdb.set_trace()
+            if not N.isnan(csi_arr[mid,1,cn]):
+                # self.fig.text(N.ones(nc)*0.93,csi_arr[mid,1,cn],
+                                # cstr,color='blue',)#facecolor='white')
+                self.ax.annotate(cstr,xy=(0.93,csi_arr[mid,1,cn]),
+                                    xycoords='data',color='blue')
+            # pdb.set_trace()
+
 
     def compute_bias_lines(self):
-        bias_arr = N.zeros(self.sr_x.size,2,self.contours['bias'].size)
+        bias_arr = N.zeros([self.sr_x.size,2,self.contours['bias'].size])
         for bn, b in enumerate(self.contours['bias']):
             bias_arr[:,0,bn] = self.pod_y/b
             bias_arr[:,1,bn] = self.sr_x/b
+        bias_arr[bias_arr>1.0] = 1.0
+        # pdb.set_trace()
         return bias_arr
 
     def compute_csi_lines(self):
         # might need to switch around the axes
-        csi_arr = N.zeros(self.sr_x.size,2,self.contours['csi'].size)
+        csi_arr = N.zeros([self.sr_x.size,2,self.contours['csi'].size])
         for cn, c in enumerate(self.contours['csi']):
             # x coordinates for this CSI contour
-            sr_x_c = 1/((1/c) + 1 + (1/self.pod_y))
+            sr_x_c = 1/((1/c) + 1 - (1/self.pod_y))
             # and y coordinates
-            pod_y_c = 1/((1/c) + 1 + (1/self.sr_x))
+            pod_y_c = 1/((1/c) + 1 - (1/self.sr_x))
 
             # assign to array
             csi_arr[:,0,cn] = sr_x_c
             csi_arr[:,1,cn] = pod_y_c
 
+        # pdb.set_trace()
+        csi_arr[csi_arr < 0] = N.nan
+        csi_arr[csi_arr > 1] = N.nan
         return csi_arr
 
     def plot_data(self,pod=None,far=None,sr=None,abcd=None,a=None,
@@ -141,6 +174,8 @@ class Performance(Figure):
                 if not is_number(pod):
                     # y axis is not
                     raise Exception
+                if sr is None:
+                    sr = 1.0 - far
         else:
             for x in (a,b,c,d):
                 if not is_integer(x):
@@ -148,10 +183,10 @@ class Performance(Figure):
             pod,sr = get_scores(a,b,c,d)
 
         self.ax.scatter(sr,pod,label=label,**plotkwargs)
-        print("Ready to save via save(), or plot more with plot_data().")
+        # print("Ready to save via save(), or plot more with plot_data().")
 
     def save(self,):
         """ Extends Figure.save() by completing tasks before saving.
         """
-        self.ax.legend()
+        self.ax.legend(ncol=self.ncol)
         super(Performance,self).save()

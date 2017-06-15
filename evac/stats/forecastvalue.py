@@ -67,9 +67,9 @@ class ForecastValue(DetScores):
             (x - (self.pcli*cl))
         )
 
-        FV2 = self.kss - ( (1-self.pod)*(
-                        (self.pcli-cl)/
-                        (cl*(1-self.pcli))) )
+        # FV2 = self.kss - ( (1-self.pod)*(
+                        # (self.pcli-cl)/
+                        # (cl*(1-self.pcli))) )
 
         return FV
 

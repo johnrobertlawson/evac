@@ -80,11 +80,12 @@ class DetScores:
             HR = self.a / (self.a + self.c)
         return HR
 
-    def compute_falsealarmratio(self):
+    def compute_falsealarmrate(self):
+        # This was wrong was round with below!
         F = self.b / (self.b + self.d)
         return F
 
-    def compute_falsealarmrate(self):
+    def compute_falsealarmratio(self):
         """ Same as PFD"""
         FAR = self.b / (self.a + self.b)
         return FAR
@@ -174,9 +175,9 @@ class DetScores:
         return KSS1
 
     def compute_successrate(self):
-        """ Inverse of FAR.
+        """ 1-FAR.
         """
-        SR = (self.a+self.b)/self.b
+        SR = 1.0 - self.compute_falsealarmratio()
         return SR
 
     def get(self,score):

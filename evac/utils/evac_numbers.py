@@ -18,11 +18,10 @@ def check_type(n,typ,allow_array=True):
     """
     if is_array(N.ndarray) and allow_array:
         ntyp = arr.dtype
-    else:
-        if not allow_array:
+    elif is_array(N.ndarray) and not allow_array:
             return False
-        else:
-            ntyp = type(n)
+    else:
+        ntyp = type(n)
 
     if typ == 'int':
         return N.issubdtype(ntyp,N.int)
@@ -31,7 +30,10 @@ def check_type(n,typ,allow_array=True):
     elif typ == 'int_or_float':
         checkint = N.issubdtype(ntyp,N.int)
         checkfloat = N.issubdtype(ntyp,N.float)
+        # pdb.set_trace()
         return max(checkint,checkfloat)
+    else:
+        raise Exception
 
 def is_array(n):
     return isinstance(n,N.ndarray)

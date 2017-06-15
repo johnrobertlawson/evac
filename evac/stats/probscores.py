@@ -82,7 +82,7 @@ class ProbScores:
         pass
 
     # def compute_crps(self,xfs,xa):
-    def compute_crps(self,mean=True):
+    def compute_crps(self,mean=True,debug=False):
         """
         Some inspiration from:
         https://github.com/TheClimateCorporation/properscoring.git
@@ -114,7 +114,7 @@ class ProbScores:
         print("Starting CRPS calculation over the whole grid.")
         for x,y in itertools.product(range(s1),range(s2)):
             count += 1
-            if not count % 1000:
+            if (not count % 1000) and debug:
                 print("{} of {}".format(count,ss))
 
             # Px is the % that self.xa will be smaller than x.
@@ -125,7 +125,7 @@ class ProbScores:
             Px = norm.cdf(xs)
            
             # CDF of observation (0 or 1)
-            Pax = self.heaviside(xs-self.xa[x,y])
+            Hv = self.heaviside(xs-self.xa[x,y])
 
 
             # dx = N.zeros(len(xs)+1)
@@ -139,24 +139,73 @@ class ProbScores:
             # Px[0] should be 0
             # Px[-1] should be 1.
 
-            integrand = dx*(Px-Pax)**2
+            method = 3
+            if method == 1: # METHOD 1
+                integrand = dx*((Px-Hv)**2)
+                crps[x,y] = N.sum(integrand)
 
-            crps[x,y] = N.sum(integrand)
-            # if N.any(xs > 0.0):
-                # pdb.set_trace()
+            elif method == 2:
+                # METHOD 2
+                from scipy.integrate import quad
+                def integrand(argin):
+                # def integrand(Px0,Hv0):
+                    Px0, Hv0 = argin
+                    return (Px0 - Hv0)**2
+
+                # def get_crps(Px0,Hv0):
+                    # return quad(integrand,-N.inf,N.inf,args=(Px0,Hv0))
+                # get_crps_vec = N.vectorize(get_crps)
+                # crps[x,y] = get_crps_vec(Px,Hv)
+                crps[x,y] = quad(integrand,-N.inf,N.inf,args=(Px,Hv))
+
+
+            elif method == 3:
+                #https://www.mathworks.com/matlabcentral/fileexchange/47807-continuous-rank-probability-score?requestedDomain=www.mathworks.com
+                problist = N.arange(xs.size)/(xs.size)
+                problist2 = problist ** 2
+                problistm2 = (1-problist)**2
+
+                ob = self.xa[x,y]
+                fcst = xs
+                idxs = N.where(fcst <= ob)[0]
+                if len(idxs) > 0:  # when obs > fcst
+                    idx = idxs[-1]
+                    crps_left = 0
+                    if idx > 0: 
+                        fcst_left = fcst[:idx]
+                        dx_left = N.diff(fcst_left)
+                        p_left = problist2[:idx-1]
+                        # crps_left = p_left * dx_left
+                        crps_left = N.dot(p_left,dx_left)
+                    if ob < fcst[-1]: 
+                        fcst_right = fcst[idx:]
+                        dx_right = N.diff(fcst_right)
+                        if len(dx_right) == 0:
+                            crps_right = 0
+                        else:
+                            p_right = problistm2[idx:-1]
+                            # crps_right = p_right * dx_right
+                            crps_right = N.dot(p_right, dx_right)
+                        # CDF crossing obs
+                        crps_centreleft = problist2[idx]**(ob-fcst[idx])
+                        crps_centreright = problistm2[idx]**(fcst[idx+1]-ob)
+                        crps_vals = crps_left + crps_right + crps_centreleft + crps_centreright
+                    else: # if obs are > all fcst
+                        crps_right_outside = 1**(2*(ob-fcst[-1]))
+                        crps_vals = crps_right_outside + crps_left
+                else: # obs is < all fcst
+                    dx_right = N.diff(fcst)
+                    p_right = problistm2[:-1]
+                    crps_right =N.dot(p_right,dx_right)
+                    # crps_right = p_right*dx_right
+                    crps_left_outside = 1**(2*(fcst[0]-ob))
+                    crps_vals = crps_left_outside + crps_right 
+                crps[x,y] = crps_vals
 
         if mean:
             return crps.mean()
         else:
             return crps
-        # def integrand(Px0,Pax0):
-            # return (Px0 - Pax0)**2
-        # def crps(Px0,Pax0):
-            # return quad(integrand,-N.inf,N.inf,args=(Px0,Pax0))
-        # crps_vec = N.vectorize(crps)
-        # CRPS = (Px(x) - Pax)**2
-        # CRPS = crps_vec(Px,Pax)
-        pdb.set_trace()
          
     def heaviside(self,x):
         # if x < 0:
