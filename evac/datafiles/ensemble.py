@@ -13,6 +13,7 @@ import numpy as N
 
 import evac.utils as utils
 from .wrfout import WRFOut
+from .gefs import GEFS
 
 # Dummy variable in place of proper subclass of WRFOut
 AuxWRFOut = object
@@ -20,7 +21,8 @@ AuxWRFOut = object
 class Ensemble:
     def __init__(self,rootdir,initutc,doms=1,ctrl='ctrl',aux=False,
         model='wrf',fmt='em_real',f_prefix=None,loadobj=True,
-        ncf=False,debug=False):
+        ncf=False,debug=False,onefolder=False,fileformat='netcdf',
+        gefsformat=False):
         """Class containing all ensemble members. Default is a
             deterministic forecast (i.e. ensemble of one control member).
             Each ensemble member needs to have a separate folder (named
@@ -49,10 +51,15 @@ class Ensemble:
         if self.model == 'wrf':
             print("File type is wrfout.")
             loadfunc = WRFOut
+        elif self.model == 'gefs':
+            self.gefsformat = gefsformat
+            print("File type is GEFS.")
+            loadfunc = GEFS
         else:
             raise NotImplementedError()
 
         self.debug = debug
+        self.fileformat = fileformat
         self.ctrl = ctrl
         self.rootdir = rootdir
         self.initutc = initutc
@@ -99,6 +106,33 @@ class Ensemble:
         f_diff = self.filetimes[1] - self.filetimes[0]
         return f_diff.seconds
 
+    def get_gefs_members(self,):
+        """ Load GEFS grib files that are all in one folder."""
+        members = {}
+        self.member_names = ['gec00',] + ['gep{:02d}'.format(n)
+                                for n in range(1,21)]
+        ftimes = ['anl',] + ['f{:02d}'.format(n) for n in range(6,180,6)]
+        utcs = [self.initutc + datetime.timedelta(seconds=hr*3600) for
+                        hr in range(0,180,6)]
+        for member in self.member_names:
+            members[member] = {1:{}}
+            for t,ft in zip(utcs,ftimes):
+                suffx = '.'.join((self.gefsformat,ft))
+                try_fname = '{0}.t{1:02d}z.{2}'.format(
+                # try_fname = '{0}.t{1:02d}z.{2}{3}'.format(
+                                # member,self.initutc.hour,self.gefsformat,ft)
+                                member,self.initutc.hour,suffx)
+                try_fpath = os.path.join(self.rootdir,try_fname)
+                if os.path.isfile(try_fpath):
+                    dataobj = self.datafile_object(try_fpath,loadobj=self.loadobj)
+                    members[member][1][t] = {'dataobj':dataobj,
+                                            'fpath':try_fpath,
+                                            'control': (member is self.ctrl)}
+        fdt = 6 # fdt is 6 for gefs - at least for sensible ranges?
+        # pdb.set_trace()
+        return members, fdt
+            
+
     def get_members(self,):
         """Create a dictionary with all data.
 
@@ -109,6 +143,16 @@ class Ensemble:
 
         Also returns fdt (int): Seconds between output files.
         """
+        members = {}
+        if self.model == 'gefs':
+            members,fdt = self.get_gefs_members()
+        elif self.model == 'wrf':
+            members,fdt = self.get_wrf_members()
+        else:
+            raise NotImplementedError
+        return members, fdt
+
+    def get_wrf_members(self,):
         members = {}
         fdt = None
         for dom in range(1,self.doms+1):
@@ -191,7 +235,7 @@ class Ensemble:
         #TODO: Implement auxiliary wrfout files
         # print(fpath)
         if loadobj:
-            ops = {'wrf':WRFOut,'aux':AuxWRFOut}
+            ops = {'wrf':WRFOut,'aux':AuxWRFOut,'gefs':GEFS}
             answer = ops[self.model](fpath,**kwargs)
         else:
             os.stat(fpath)
@@ -296,7 +340,7 @@ class Ensemble:
         DF = self.datafile_object(fpath,loadobj=True)
         return DF
 
-    def get(self,vrbl,level=None,itime=False,ftime=False,
+    def get(self,vrbl,level=None,utc=None,itime=False,ftime=False,
                         fcsttime=False,Nlim=None,Elim=None,
                         Slim=None,Wlim=None,inclusive=False,
                         lats=None,lons=None,dom=1,members=None):
@@ -315,8 +359,13 @@ class Ensemble:
         Todos:
             * lat/lon box is in the correct projection?
             * Implement bounding lat/lon box.
+
+            * fcsttime and utc are the same to maintain compatibility
+            because get() APIs in different areas of evac/WEM
         """
 
+        if utc is not None:
+            fcsttime = utc
         ens_no = 0
         # pdb.set_trace()
         if vrbl is 'accum_precip':
@@ -442,6 +491,7 @@ class Ensemble:
         mem = self.member_names[0]
         dom = 1
         t = self.initutc
+        # pdb.set_trace()
         arb = self.members[mem][dom][t]
         if dataobj:
             if give_keys:
