@@ -9,7 +9,7 @@ from evac.utils.evac_numbers import is_number, has_integers, is_integer, is_arra
 from evac.plot.figure import Figure
 
 class Performance(Figure):
-    def __init__(self,outpath,fname,ncol=1):
+    def __init__(self,outpath,fname,legendkwargs=None):
         """ Performance diagram, from Roebber 2009 WAF.
 
         Some checking with WFRT's verif package (Github)
@@ -35,17 +35,19 @@ class Performance(Figure):
         Args:
             outpath     :   directory for saving figure
             fname       :   file name
-            ncol        :   number of columns for legend.
+            legendkwargs:   key-words for ax.legend().
         """
         self.outpath = outpath
         self.fname = fname
-        self.ncol = ncol
+        #self.ncol = ncol
+        self.lk = legendkwargs
 
         # Plotting settings
         self.contours = {}
         self.contours['bias'] = N.array([0.25,0.5,0.75,1.0,1.25,1.5,2.5,5,10])
         self.contours['csi'] = N.arange(0.1,1.1,0.1)
-        self.xticks = 201
+        # self.xticks = 201
+        self.xticks = 401
         self.yticks = self.xticks
         self.sr_x = N.linspace(0,1,self.xticks)
         self.pod_y = N.linspace(0,1,self.yticks)
@@ -83,17 +85,22 @@ class Performance(Figure):
             bstr = '{:1.1f}'.format(b)
             # pdb.set_trace()
             if b < 1:
-                xpos = 1.0
+                xpos = 1.00
                 ypos = b
             else:
-                xpos = 1/b
-                ypos = 1
-            self.ax.annotate(bstr,xy=(xpos,ypos),xycoords='data',color='red')
+                xpos = 1.00/b
+                ypos = 1.00
+            self.ax.annotate(bstr,xy=(xpos,ypos),xycoords='data',
+                            # bbox=dict(fc='red'),color='white',
+                            fontsize=7,color='red',
+                            xytext=(2,3),textcoords='offset points',
+                            )
 
     def plot_csi_lines(self):
+        xpos = 0.945
         csi_arr = self.compute_csi_lines()
         # mid = N.floor(csi_arr.shape[0]/2)
-        mid = N.int(csi_arr.shape[0] * 0.975)
+        # mid = N.int(csi_arr.shape[0] - (0.975*csi_arr.shape[0]))
         nc = len(self.contours['csi'])
         for cn, c in enumerate(self.contours['csi']):
             # csi_c = self.ax.plot(csi_arr[:,0,cn],csi_arr[:,1,cn],
@@ -102,12 +109,21 @@ class Performance(Figure):
             cstr = '{:1.1f}'.format(c)
             # self.ax.clabel(csi_c[1],fontsize=8,inline=True,fmt='%1.1f')
             # pdb.set_trace()
-            if not N.isnan(csi_arr[mid,1,cn]):
+            # if not N.isnan(csi_arr[mid,1,cn]):
+            if True:
+                # negx = int(negx_factor*self.xticks)
+                # yidx = N.abs(csi_arr[:,0,cn]-(1-negx_factor)).argmin()
+                ypos = 1/((1/c) + 1 - (1/xpos))
                 # self.fig.text(N.ones(nc)*0.93,csi_arr[mid,1,cn],
                                 # cstr,color='blue',)#facecolor='white')
-                self.ax.annotate(cstr,xy=(0.93,csi_arr[mid,1,cn]),
-                                    xycoords='data',color='blue')
-            # pdb.set_trace()
+                self.ax.annotate(cstr,xy=(xpos-0.01,ypos),
+                # self.ax.annotate(cstr,xy=(1-negx_factor,csi_arr[mid,1,cn]),
+                                    xycoords='data', fontsize=7, 
+                                    #color='white', bbox=dict(fc='blue'),
+                                    bbox=dict(fc='white',color='white',pad=0),
+                                    xytext=(3,3),textcoords='offset points',
+                                    color='blue')
+        # pdb.set_trace()
 
 
     def compute_bias_lines(self):
@@ -188,5 +204,8 @@ class Performance(Figure):
     def save(self,):
         """ Extends Figure.save() by completing tasks before saving.
         """
-        self.ax.legend(ncol=self.ncol)
+        self.ax.legend(**self.lk)
+        # self.fig.tight_layout()
+        # self.fig.subplots_adjust(top=0.95,right=0.95)
+        # super(Performance,self).save(tight=False)
         super(Performance,self).save()

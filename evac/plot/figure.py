@@ -101,7 +101,9 @@ class Figure:
         fpath = os.path.join(outpath,fname)
         if tight:
             self.fig.tight_layout()
-        self.fig.savefig(fpath,bbox_inches='tight')
+            self.fig.savefig(fpath,bbox_inches='tight')
+        else:
+            self.fig.savefig(fpath)#,bbox_inches='tight')
         print(("Saving figure {0}".format(fpath)))
         plt.close(self.fig)
 
