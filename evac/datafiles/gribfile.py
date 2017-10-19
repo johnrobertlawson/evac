@@ -30,7 +30,19 @@ class GribFile(DataFile):
         self.available_fields = N.delete(self.available_fields_unfiltered,delrows)
         self.projection()
 
-    def get_record(self,vrblkey,idx=0):
+        self.y_dim, self.x_dim = self.lats.shape
+        # Only one time per file, right?
+        self.t_dim = 1
+        self.get_units()
+
+    def get_units(self,):
+        """ The units used for variables within. 
+        This should be overridden in children.
+        """
+        self.UNITS = {'pressure':'Pa',}
+        return
+
+    def get_record(self,vrblkey,idx=None,level=None):
         self.G.seek(0)
         ngg = len(self.G.select(name=vrblkey))
         # print(vrbl)
@@ -39,17 +51,54 @@ class GribFile(DataFile):
         # Not sure why this is needed - random wrong indices popping up
         if ngg == 1:
             idx = 0
+        else:
+            idx = self.idx_from_lv(vrblkey,lv=level)
         gg = self.G.select(name=vrblkey)[idx]
         print("Picking index {0}.".format(idx))
         return gg
 
-    def get(self,vrbl,idx=0):
+    def idx_from_lv(self,vrblkey,lv=None):
+        """ Return the index to load a requested level (in hPa).
+        If level doesn't exist, throw an exception.
+        """
+        rows = N.where(self.available_fields_array == vrblkey)[0]
+        # idxs = self.available_fields_array[rows,5]
+        if len(rows) == 1 and lv == None:
+            # return idxs[0]
+            return 0
+        lv_choice = self.available_fields_array[rows,5]
+        # Just assume Pa
+        lv_str = '{:d}'.format(lv*100)
+        # pdb.set_trace()
+        for nl,l in enumerate(lv_choice):
+            if lv_str in l:
+                return nl
+        
+
+    def get(self,vrbl,idx=0,utc=None,level=None,lons=None,lats=None):
+        """
+        I don't think we need utc/lv - aren't all grib files one time? - but
+        it is here to enable compatibility with other get() APIs.
+        """
         # TODO: look up level in available fields array, return index
         vrblkey, idx = self.lookup_vrbl(vrbl)
-        print("Variable {0} has key {1} for HRRR data.".format(vrbl,vrblkey))
-        gg = self.get_record(vrblkey,idx=idx)
+        print("Variable {0} has key {1} in Grib data.".format(vrbl,vrblkey))
+        # gg = self.get_record(vrblkey,idx=idx)
+        # idx lookup should happen in get_record
+        gg = self.get_record(vrblkey,level=level)
         arr = gg.values
-        return arr
+        return self.enforce_4d(arr)
+        # pdb.set_trace()
+        # return arr
+
+    def enforce_4d(self,arr):
+        """TODO: move higher up to super-superclass?
+        """
+        if len(arr.shape) == 2:
+            arr4d = arr[N.newaxis,N.newaxis,:,:]
+        else:
+            raise Exception("Why is this data not 2d?")
+        return arr4d
 
     def lookup_vrbl(self,vrbl):
         LOOKUP = {}
@@ -92,4 +141,14 @@ class GribFile(DataFile):
         vidx = N.where(self.available_fields_array[:,1]==vrbl)[0]
         for idx in vidx:
             print(self.available_fields_array[idx,:])
+        return
+
+    def search_keyword(self,keyword):
+        """ Look for record entries based on a keyword.
+        """
+        for entry in self.available_fields_list:
+            for x in entry:
+                if keyword in x:
+                    print(entry)
+                    break
         return
