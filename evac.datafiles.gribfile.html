@@ -63,14 +63,36 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.enforce_4d">
+<code class="descname">enforce_4d</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.enforce_4d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.enforce_4d" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO: move higher up to super-superclass?</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="evac.datafiles.gribfile.GribFile.get">
-<code class="descname">get</code><span class="sig-paren">(</span><em>vrbl</em>, <em>idx=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">get</code><span class="sig-paren">(</span><em>vrbl</em>, <em>idx=0</em>, <em>utc=None</em>, <em>level=None</em>, <em>lons=None</em>, <em>lats=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>I don&#8217;t think we need utc/lv - aren&#8217;t all grib files one time? - but
+it is here to enable compatibility with other get() APIs.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="evac.datafiles.gribfile.GribFile.get_record">
-<code class="descname">get_record</code><span class="sig-paren">(</span><em>vrblkey</em>, <em>idx=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.get_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.get_record" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_record</code><span class="sig-paren">(</span><em>vrblkey</em>, <em>idx=None</em>, <em>level=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.get_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.get_record" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.get_units">
+<code class="descname">get_units</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.get_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.get_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>The units used for variables within.
+This should be overridden in children.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.idx_from_lv">
+<code class="descname">idx_from_lv</code><span class="sig-paren">(</span><em>vrblkey</em>, <em>lv=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.idx_from_lv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.idx_from_lv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index to load a requested level (in hPa).
+If level doesn&#8217;t exist, throw an exception.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="evac.datafiles.gribfile.GribFile.lookup_vrbl">
@@ -91,6 +113,12 @@
 <dt id="evac.datafiles.gribfile.GribFile.return_vrbl_records">
 <code class="descname">return_vrbl_records</code><span class="sig-paren">(</span><em>vrbl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.return_vrbl_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.return_vrbl_records" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.search_keyword">
+<code class="descname">search_keyword</code><span class="sig-paren">(</span><em>keyword</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.search_keyword"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.search_keyword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look for record entries based on a keyword.</p>
+</dd></dl>
 
 </dd></dl>
 

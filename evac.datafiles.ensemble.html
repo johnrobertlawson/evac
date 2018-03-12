@@ -56,7 +56,7 @@
 </dl>
 <dl class="class">
 <dt id="evac.datafiles.ensemble.Ensemble">
-<em class="property">class </em><code class="descclassname">evac.datafiles.ensemble.</code><code class="descname">Ensemble</code><span class="sig-paren">(</span><em>rootdir</em>, <em>initutc</em>, <em>doms=1</em>, <em>ctrl='ctrl'</em>, <em>aux=False</em>, <em>model='wrf'</em>, <em>fmt='em_real'</em>, <em>f_prefix=None</em>, <em>loadobj=True</em>, <em>ncf=False</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">evac.datafiles.ensemble.</code><code class="descname">Ensemble</code><span class="sig-paren">(</span><em>rootdir</em>, <em>initutc</em>, <em>doms=1</em>, <em>ctrl='ctrl'</em>, <em>aux=False</em>, <em>model='wrf'</em>, <em>fmt='em_real'</em>, <em>f_prefix=None</em>, <em>loadobj=True</em>, <em>ncf=False</em>, <em>debug=False</em>, <em>onefolder=False</em>, <em>fileformat='netcdf'</em>, <em>gefsformat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="evac.datafiles.ensemble.Ensemble.accumulated">
@@ -167,7 +167,7 @@ index (int): Index in that file.</p>
 
 <dl class="method">
 <dt id="evac.datafiles.ensemble.Ensemble.get">
-<code class="descname">get</code><span class="sig-paren">(</span><em>vrbl</em>, <em>level=None</em>, <em>itime=False</em>, <em>ftime=False</em>, <em>fcsttime=False</em>, <em>Nlim=None</em>, <em>Elim=None</em>, <em>Slim=None</em>, <em>Wlim=None</em>, <em>inclusive=False</em>, <em>lats=None</em>, <em>lons=None</em>, <em>dom=1</em>, <em>members=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get</code><span class="sig-paren">(</span><em>vrbl</em>, <em>level=None</em>, <em>utc=None</em>, <em>itime=False</em>, <em>ftime=False</em>, <em>fcsttime=False</em>, <em>Nlim=None</em>, <em>Elim=None</em>, <em>Slim=None</em>, <em>Wlim=None</em>, <em>inclusive=False</em>, <em>lats=None</em>, <em>lons=None</em>, <em>dom=1</em>, <em>members=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns 5D array of data for ranges.</p>
 <p>Needs to load WRFOut files if self.loadobj is False.</p>
 <p>Ordered in descending order on pert. members
@@ -183,10 +183,12 @@ at ftime in the time range. Default is False (like Python).</td>
 </table>
 <dl class="docutils">
 <dt>Todos:</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first simple">
 <li>lat/lon box is in the correct projection?</li>
 <li>Implement bounding lat/lon box.</li>
+<li>fcsttime and utc are the same to maintain compatibility</li>
 </ul>
+<p class="last">because get() APIs in different areas of evac/WEM</p>
 </dd>
 </dl>
 </dd></dl>
@@ -227,6 +229,12 @@ Each forecast time is a different file.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_gefs_members">
+<code class="descname">get_gefs_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_gefs_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_gefs_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load GEFS grib files that are all in one folder.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="evac.datafiles.ensemble.Ensemble.get_members">
 <code class="descname">get_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_members" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a dictionary with all data.</p>
@@ -235,6 +243,11 @@ members[member][domain][time][data]</p>
 <p>Returns members (dict): Dictionary of ensemble members</p>
 <p>Also returns fdt (int): Seconds between output files.</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_wrf_members">
+<code class="descname">get_wrf_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_wrf_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_wrf_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="evac.datafiles.ensemble.Ensemble.list_of_filetimes">

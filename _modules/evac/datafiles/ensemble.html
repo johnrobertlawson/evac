@@ -57,6 +57,7 @@
 
 <span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">from</span> <span class="nn">.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
+<span class="kn">from</span> <span class="nn">.gefs</span> <span class="k">import</span> <span class="n">GEFS</span>
 
 <span class="c1"># Dummy variable in place of proper subclass of WRFOut</span>
 <span class="n">AuxWRFOut</span> <span class="o">=</span> <span class="nb">object</span>
@@ -64,7 +65,8 @@
 <div class="viewcode-block" id="Ensemble"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble">[docs]</a><span class="k">class</span> <span class="nc">Ensemble</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rootdir</span><span class="p">,</span><span class="n">initutc</span><span class="p">,</span><span class="n">doms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">ctrl</span><span class="o">=</span><span class="s1">&#39;ctrl&#39;</span><span class="p">,</span><span class="n">aux</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">model</span><span class="o">=</span><span class="s1">&#39;wrf&#39;</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;em_real&#39;</span><span class="p">,</span><span class="n">f_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">ncf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">ncf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">onefolder</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fileformat</span><span class="o">=</span><span class="s1">&#39;netcdf&#39;</span><span class="p">,</span>
+        <span class="n">gefsformat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Class containing all ensemble members. Default is a</span>
 <span class="sd">            deterministic forecast (i.e. ensemble of one control member).</span>
 <span class="sd">            Each ensemble member needs to have a separate folder (named</span>
@@ -93,10 +95,15 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;wrf&#39;</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File type is wrfout.&quot;</span><span class="p">)</span>
             <span class="n">loadfunc</span> <span class="o">=</span> <span class="n">WRFOut</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;gefs&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gefsformat</span> <span class="o">=</span> <span class="n">gefsformat</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File type is GEFS.&quot;</span><span class="p">)</span>
+            <span class="n">loadfunc</span> <span class="o">=</span> <span class="n">GEFS</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fileformat</span> <span class="o">=</span> <span class="n">fileformat</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span> <span class="o">=</span> <span class="n">ctrl</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span> <span class="o">=</span> <span class="n">rootdir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span> <span class="o">=</span> <span class="n">initutc</span>
@@ -143,6 +150,33 @@
         <span class="n">f_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">f_diff</span><span class="o">.</span><span class="n">seconds</span></div>
 
+<div class="viewcode-block" id="Ensemble.get_gefs_members"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_gefs_members">[docs]</a>    <span class="k">def</span> <span class="nf">get_gefs_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot; Load GEFS grib files that are all in one folder.&quot;&quot;&quot;</span>
+        <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gec00&#39;</span><span class="p">,]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;gep</span><span class="si">{:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">21</span><span class="p">)]</span>
+        <span class="n">ftimes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;anl&#39;</span><span class="p">,]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;f</span><span class="si">{:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="mi">6</span><span class="p">)]</span>
+        <span class="n">utcs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">hr</span><span class="o">*</span><span class="mi">3600</span><span class="p">)</span> <span class="k">for</span>
+                        <span class="n">hr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="mi">6</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span><span class="p">:</span>
+            <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:{}}</span>
+            <span class="k">for</span> <span class="n">t</span><span class="p">,</span><span class="n">ft</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">utcs</span><span class="p">,</span><span class="n">ftimes</span><span class="p">):</span>
+                <span class="n">suffx</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">gefsformat</span><span class="p">,</span><span class="n">ft</span><span class="p">))</span>
+                <span class="n">try_fname</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.t</span><span class="si">{1:02d}</span><span class="s1">z.</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="c1"># try_fname = &#39;{0}.t{1:02d}z.{2}{3}&#39;.format(</span>
+                                <span class="c1"># member,self.initutc.hour,self.gefsformat,ft)</span>
+                                <span class="n">member</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span><span class="n">suffx</span><span class="p">)</span>
+                <span class="n">try_fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span><span class="p">,</span><span class="n">try_fname</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">try_fpath</span><span class="p">):</span>
+                    <span class="n">dataobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datafile_object</span><span class="p">(</span><span class="n">try_fpath</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loadobj</span><span class="p">)</span>
+                    <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dataobj&#39;</span><span class="p">:</span><span class="n">dataobj</span><span class="p">,</span>
+                                            <span class="s1">&#39;fpath&#39;</span><span class="p">:</span><span class="n">try_fpath</span><span class="p">,</span>
+                                            <span class="s1">&#39;control&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">member</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="p">)}</span>
+        <span class="n">fdt</span> <span class="o">=</span> <span class="mi">6</span> <span class="c1"># fdt is 6 for gefs - at least for sensible ranges?</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span> <span class="n">members</span><span class="p">,</span> <span class="n">fdt</span></div>
+            
+
 <div class="viewcode-block" id="Ensemble.get_members"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_members">[docs]</a>    <span class="k">def</span> <span class="nf">get_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot;Create a dictionary with all data.</span>
 
@@ -153,6 +187,16 @@
 
 <span class="sd">        Also returns fdt (int): Seconds between output files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;gefs&#39;</span><span class="p">:</span>
+            <span class="n">members</span><span class="p">,</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gefs_members</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;wrf&#39;</span><span class="p">:</span>
+            <span class="n">members</span><span class="p">,</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrf_members</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">return</span> <span class="n">members</span><span class="p">,</span> <span class="n">fdt</span></div>
+
+<div class="viewcode-block" id="Ensemble.get_wrf_members"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_wrf_members">[docs]</a>    <span class="k">def</span> <span class="nf">get_wrf_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">fdt</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">dom</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">doms</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
@@ -235,7 +279,7 @@
         <span class="c1">#TODO: Implement auxiliary wrfout files</span>
         <span class="c1"># print(fpath)</span>
         <span class="k">if</span> <span class="n">loadobj</span><span class="p">:</span>
-            <span class="n">ops</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;wrf&#39;</span><span class="p">:</span><span class="n">WRFOut</span><span class="p">,</span><span class="s1">&#39;aux&#39;</span><span class="p">:</span><span class="n">AuxWRFOut</span><span class="p">}</span>
+            <span class="n">ops</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;wrf&#39;</span><span class="p">:</span><span class="n">WRFOut</span><span class="p">,</span><span class="s1">&#39;aux&#39;</span><span class="p">:</span><span class="n">AuxWRFOut</span><span class="p">,</span><span class="s1">&#39;gefs&#39;</span><span class="p">:</span><span class="n">GEFS</span><span class="p">}</span>
             <span class="n">answer</span> <span class="o">=</span> <span class="n">ops</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">](</span><span class="n">fpath</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
@@ -340,7 +384,7 @@
         <span class="n">DF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datafile_object</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DF</span></div>
 
-<div class="viewcode-block" id="Ensemble.get"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="Ensemble.get"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                         <span class="n">fcsttime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Nlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Elim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">Slim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                         <span class="n">lats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">members</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -359,8 +403,13 @@
 <span class="sd">        Todos:</span>
 <span class="sd">            * lat/lon box is in the correct projection?</span>
 <span class="sd">            * Implement bounding lat/lon box.</span>
+
+<span class="sd">            * fcsttime and utc are the same to maintain compatibility</span>
+<span class="sd">            because get() APIs in different areas of evac/WEM</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="k">if</span> <span class="n">utc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fcsttime</span> <span class="o">=</span> <span class="n">utc</span>
         <span class="n">ens_no</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="c1"># pdb.set_trace()</span>
         <span class="k">if</span> <span class="n">vrbl</span> <span class="ow">is</span> <span class="s1">&#39;accum_precip&#39;</span><span class="p">:</span>
@@ -486,6 +535,7 @@
         <span class="n">mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">dom</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span>
+        <span class="c1"># pdb.set_trace()</span>
         <span class="n">arb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">mem</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">dataobj</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">give_keys</span><span class="p">:</span>
