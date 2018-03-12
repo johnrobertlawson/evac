@@ -3,7 +3,12 @@ import pdb
 
 import numpy as N
 
-import pygrib
+try:
+    import pygrib
+except ModuleNotFoundError:
+    print("Not using pygrib")
+    pygrib = None
+
 from .datafile import DataFile
 
 class GribFile(DataFile):
@@ -36,7 +41,7 @@ class GribFile(DataFile):
         self.get_units()
 
     def get_units(self,):
-        """ The units used for variables within. 
+        """ The units used for variables within.
         This should be overridden in children.
         """
         self.UNITS = {'pressure':'Pa',}
@@ -73,7 +78,7 @@ class GribFile(DataFile):
         for nl,l in enumerate(lv_choice):
             if lv_str in l:
                 return nl
-        
+
 
     def get(self,vrbl,idx=0,utc=None,level=None,lons=None,lats=None):
         """
