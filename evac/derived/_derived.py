@@ -855,3 +855,27 @@ def compute_Td(self,tidx,lvidx,lonidx,latidx,other):
     Td = N.divide(a,b)
     # pdb.set_trace()
     return Td
+
+
+
+def compute_strongest_wind(self,tidx,lvidx,lonidx,latidx,other):
+    """
+    Pass the array of time indices and it will find the max
+    along that axis.
+    """
+    if 'WSPD10MAX' in self.fields:
+        ww = self.get('WSPD10MAX',tidx,lvidx,lonidx,latidx)
+        if ww.max() > 0.1:
+            print("Using WSPD10MAX data")
+            wind = ww
+        else:
+            print("Using wind10 data")
+            wind = self.get('wind10',tidx,lvidx,lonidx,latidx)
+    else:
+        print("Using wind10 data")
+        wind = self.get('wind10',tidx,lvidx,lonidx,latidx)
+    wind_max = N.amax(wind,axis=0)
+    # wind_max_smooth = self.test_smooth(wind_max)
+    # return wind_max_smooth
+
+    return wind_max

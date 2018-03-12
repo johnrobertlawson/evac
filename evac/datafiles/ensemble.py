@@ -20,7 +20,7 @@ AuxWRFOut = object
 
 class Ensemble:
     def __init__(self,rootdir,initutc,doms=1,ctrl='ctrl',aux=False,
-        model='wrf',fmt='em_real',f_prefix=None,loadobj=True,
+        model='wrf',fmt='em_real',f_prefix='default',loadobj=True,
         ncf=False,debug=False,onefolder=False,fileformat='netcdf',
         gefsformat=False):
         """Class containing all ensemble members. Default is a
@@ -44,7 +44,8 @@ class Ensemble:
                 real-world simulations (em_real from WRF).
             f_prefix (tuple, optional): Tuple of prefixes for each
                 ensemble member's main data files. Must be length /doms/.
-                Default is None, which then uses a method to determine
+                The string 'default' will look for the wrfout_d0* string.
+                Set None for a method to determine
                 the file name using default outputs from e.g. WRF.
         """
         self.model = model.lower()
@@ -57,6 +58,9 @@ class Ensemble:
             loadfunc = GEFS
         else:
             raise NotImplementedError()
+
+        if f_prefix is 'default':
+            f_prefix = ['wrfout_d{0:02d}'.format(n+1) for n in range(doms)]
 
         self.debug = debug
         self.fileformat = fileformat
@@ -76,7 +80,7 @@ class Ensemble:
         self.isctrl = True if ctrl else False
         # self.ndoms = len(self.doms)
         self.member_names = []
-        self.members, self.fdt = self.get_members()
+        self.members, self.fdt = self.get_members(f_prefix=f_prefix)
         self.nmems = len(self.member_names)
         self.nperts = self.nmems - self.isctrl
 
@@ -133,7 +137,7 @@ class Ensemble:
         return members, fdt
             
 
-    def get_members(self,):
+    def get_members(self,f_prefix=None):
         """Create a dictionary with all data.
 
         Format is:
@@ -145,17 +149,18 @@ class Ensemble:
         """
         members = {}
         if self.model == 'gefs':
-            members,fdt = self.get_gefs_members()
+            members,fdt = self.get_gefs_members(f_prefix=f_prefix)
         elif self.model == 'wrf':
-            members,fdt = self.get_wrf_members()
+            members,fdt = self.get_wrf_members(f_prefix=f_prefix)
         else:
             raise NotImplementedError
         return members, fdt
 
-    def get_wrf_members(self,):
+    def get_wrf_members(self,f_prefix=None):
         members = {}
         fdt = None
-        for dom in range(1,self.doms+1):
+        doms = range(1,self.doms+1)
+        for domn, dom in enumerate(doms):
             # Get file name for initialisation time and domain
             # main_fname = self.get_data_fname(dom=dom,prod='main')
             if not self.ncf:
@@ -168,6 +173,10 @@ class Ensemble:
             for dirname,subdirs,files in os.walk(self.rootdir):
                 # If ensemble size = 1, there will be no subdirs.
                 # pdb.set_trace()
+                if isinstance(f_prefix,str):
+                    files = [f for f in files if f.startswith(f_prefix)]
+                elif isinstance(f_prefix,(list,tuple)):
+                    files = [f for f in files if f.startswith(f_prefix[domn])]
                 if main_fname in files:
                     # pdb.set_trace()
                     dsp =  dirname.split('/')
@@ -187,7 +196,7 @@ class Ensemble:
                     if self.debug:
                         print("Looking at member {0}".format(member))
                     if member not in members:
-                        members[member] = {dom:{}}
+                        members[member] = {d:{} for d in doms}
                     if dom==1:
                         self.member_names.append(member)
                     t = self.initutc
@@ -216,13 +225,16 @@ class Ensemble:
                             members[member][dom][t]['auxdataobj'] = dataobj
                             members[member][dom][t]['auxfpath'] = fpath
                             members[member][dom][t]['control'] = member is self.ctrl
+
                         # Move to next time
                         if not self.ncf:
                             if fdt is None:
-                                f1, f2 = sorted(files)[:2]
-                                fdt = utils.dt_from_fnames(f1,f2,'wrf')
-
-                                # Loop through files and estimate dt based on fname
+                                if len(files) == 1:
+                                    break
+                                else:
+                                    # Loop through files and estimate dt based on fname
+                                    f1, f2 = sorted(files)[:2]
+                                    fdt = utils.dt_from_fnames(f1,f2,'wrf')
                             else:
                                 t = t + datetime.timedelta(seconds=fdt)
                         else:
@@ -478,7 +490,7 @@ class Ensemble:
         else:
             return std
 
-    def arbitrary_pick(self,dataobj=False,give_keys=False,give_path=False):
+    def arbitrary_pick(self,dataobj=False,give_keys=False,give_path=False,dom=1):
         """Arbitrary pick of a datafile entry in the members dictionary.
 
         Args:
@@ -489,7 +501,6 @@ class Ensemble:
 
         """
         mem = self.member_names[0]
-        dom = 1
         t = self.initutc
         # pdb.set_trace()
         arb = self.members[mem][dom][t]

@@ -1,6 +1,12 @@
 """ STAGE IV precip data.
 """
 
+import os
+import glob
+import datetime
+
+import numpy as N
+from mpl_toolkits.basemap import Basemap
 
 from .gribfile import GribFile
 
@@ -28,13 +34,14 @@ class StageIV(GribFile):
         self.loadobj = loadobj
 
         # Determine whether to load one file or search in directory
-        try:
-            G = self.pygrib.open(dir_or_file)
-        except OSError:
-            ST4s = os.path.join(rootdir,'ST4*')
+        if os.path.isdir(dir_or_file):
+        # try:
+        # except OSError:
+            ST4s = os.path.join(dir_or_file,'ST4*')
             print("Loading files in {0}".format(ST4s))
             fps = glob.glob(ST4s)
         else:
+            G = self.pygrib.open(dir_or_file)
             fps = [dir_or_file,]
 
         self.DATA = {}

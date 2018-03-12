@@ -23,6 +23,7 @@ import datetime
 import evac.utils as utils
 import evac.utils.met_constants as mc
 from WEM.postWRF.postWRF.ncfile import NC
+import evac.derived._derived as derived
 
 debug_get = 0
 
@@ -471,45 +472,45 @@ class WRFOut(NC):
         """
         Returns a dictionary to look up method for computing a variable
         Todos:
-            * merge with derived/derived.py
+            * merge with derived/_derived.py
         """
         tbl = {}
-        tbl['shear'] = self.compute_shear
-        tbl['thetae'] = self.compute_thetae
-        tbl['cref'] = self.compute_comp_ref
-        tbl['wind10'] = self.compute_wind10
-        tbl['wind'] = self.compute_wind
-        tbl['CAPE'] = self.compute_CAPE
-        tbl['Td'] = self.compute_Td
-        tbl['pressure'] = self.compute_pressure
-        tbl['drybulb'] = self.compute_drybulb
-        tbl['theta'] = self.compute_theta
-        tbl['geopot'] = self.compute_geopotential
-        tbl['Z'] = self.compute_geopotential_height
-        tbl['dptp'] = self.compute_dptp #density potential temperature pert.
-        tbl['T2p'] = self.compute_T2_pertub
-        tbl['dpt'] = self.compute_dpt #density potential temperature .
-        tbl['buoyancy'] = self.compute_buoyancy
-        tbl['strongestwind'] = self.compute_strongest_wind
-        tbl['PMSL'] = self.compute_pmsl
-        tbl['RH'] = self.compute_RH
-        tbl['dryairmass'] = self.compute_dryairmass
-        tbl['QTOTAL'] = self.compute_qtotal
-        tbl['olr'] = self.compute_olr
-        tbl['es'] = self.compute_satvappres
-        tbl['e'] = self.compute_vappres
-        tbl['q'] = self.compute_spechum
-        tbl['fluidtrapping'] = self.compute_fluid_trapping_diagnostic
-        tbl['lyapunov'] = self.compute_instantaneous_local_Lyapunov
-        tbl['REFL_comp'] = self.compute_REFL_comp
-        tbl['temp_advection'] = self.compute_temp_advection
-        tbl['omega'] = self.compute_omega
-        tbl['density'] = self.compute_density
-        # tbl['accum_precip'] = self.compute_accum_rain
-        tbl['PMSL_gradient'] = self.compute_PMSL_gradient
-        tbl['T2_gradient'] = self.compute_T2_gradient
-        tbl['Q_pert'] = self.compute_Q_pert
-        tbl['vorticity'] = self.return_vorticity
+        tbl['shear'] = derived.compute_shear
+        tbl['thetae'] = derived.compute_thetae
+        tbl['cref'] = derived.compute_comp_ref
+        tbl['wind10'] = derived.compute_wind10
+        tbl['wind'] = derived.compute_wind
+        tbl['CAPE'] = derived.compute_CAPE
+        tbl['Td'] = derived.compute_Td
+        tbl['pressure'] = derived.compute_pressure
+        tbl['drybulb'] = derived.compute_drybulb
+        tbl['theta'] = derived.compute_theta
+        tbl['geopot'] = derived.compute_geopotential
+        tbl['Z'] = derived.compute_geopotential_height
+        tbl['dptp'] = derived.compute_dptp #density potential temperature pert.
+        tbl['T2p'] = derived.compute_T2_pertub
+        tbl['dpt'] = derived.compute_dpt #density potential temperature .
+        tbl['buoyancy'] = derived.compute_buoyancy
+        tbl['strongestwind'] = derived.compute_strongest_wind
+        tbl['PMSL'] = derived.compute_pmsl
+        tbl['RH'] = derived.compute_RH
+        tbl['dryairmass'] = derived.compute_dryairmass
+        tbl['QTOTAL'] = derived.compute_qtotal
+        tbl['olr'] = derived.compute_olr
+        tbl['es'] = derived.compute_satvappres
+        tbl['e'] = derived.compute_vappres
+        tbl['q'] = derived.compute_spechum
+        tbl['fluidtrapping'] = derived.compute_fluid_trapping_diagnostic
+        tbl['lyapunov'] = derived.compute_instantaneous_local_Lyapunov
+        tbl['REFL_comp'] = derived.compute_REFL_comp
+        tbl['temp_advection'] = derived.compute_temp_advection
+        tbl['omega'] = derived.compute_omega
+        tbl['density'] = derived.compute_density
+        # tbl['accum_precip'] = derived.compute_accum_rain
+        tbl['PMSL_gradient'] = derived.compute_PMSL_gradient
+        tbl['T2_gradient'] = derived.compute_T2_gradient
+        tbl['Q_pert'] = derived.compute_Q_pert
+        tbl['vorticity'] = derived.return_vorticity
 
         return tbl
 
@@ -555,27 +556,6 @@ class WRFOut(NC):
         # Get coordinate system
         vc = self.check_vcs(z1,z2)
 
-    def compute_strongest_wind(self,tidx,lvidx,lonidx,latidx,other):
-        """
-        Pass the array of time indices and it will find the max
-        along that axis.
-        """
-        if 'WSPD10MAX' in self.fields:
-            ww = self.get('WSPD10MAX',tidx,lvidx,lonidx,latidx)
-            if ww.max() > 0.1:
-                print("Using WSPD10MAX data")
-                wind = ww
-            else:
-                print("Using wind10 data")
-                wind = self.get('wind10',tidx,lvidx,lonidx,latidx)
-        else:
-            print("Using wind10 data")
-            wind = self.get('wind10',tidx,lvidx,lonidx,latidx)
-        wind_max = N.amax(wind,axis=0)
-        # wind_max_smooth = self.test_smooth(wind_max)
-        # return wind_max_smooth
-
-        return wind_max
 
     def make_4D(self,datain,vrbl=False,missing_axis=False):
         """
