@@ -33,7 +33,7 @@ class ProbScores:
         self.pfg = self.pfg.flatten()
         BS = (1/Ng) * N.sum((self.pfg-self.og.astype(float))**2)
         return BS
-    
+
     def compute_bss(self):
         """TODO
         """
@@ -47,7 +47,7 @@ class ProbScores:
             thresholds  : 1D list/array, and in same order
                             of first dimension of pfg.
             self.pfg    : 3D array: [probability index,lat,lon]
-                    
+
         Note:
         RPSg is the grid-point RPS.
         RPS is the area-average (ranked probability score)
@@ -81,20 +81,48 @@ class ProbScores:
         """
         pass
 
+    def compute_crps(self,mean=True):
+        """
+        Needs observation array (m x n)
+        Needs ensemble forecast array (e x m x n) where
+                e = number of ensemble members
+
+        xa     :   observation
+        xfs    :   forecasts for N ensemble members
+        Px is the probability that ob is less or equal to fcst
+                    - loop through all probs from 0 to 100 %
+        """
+        # Ensemble is ranked smallest to largest at each grid pt.
+        xfs_sort = N.sort(self.xfs,axis=0)
+        # the probability levels for each ensemble member
+        Probxx = N.ones_like(xfs_sort[0,:,:]) * N.arange(nens)/nens
+        # Px, the probability that xa is less than fcst:
+        Px = Probxx[N.where(self.xa < xfs_sort)]
+        Pax = int(self.heaviside(xfs_sort-self.xa))
+
+        # The difference between each ensemble member
+        dx = N.diff(xfs_sort,axis=0)
+        # Now the integration
+        integrand = (Px-Pax)**2 * dx
+        crps = N.sum(integrand)
+        return crps
+
+        # Decompose? What about uncertainty
+
     # def compute_crps(self,xfs,xa):
-    def compute_crps(self,mean=True,debug=False):
+    def compute_crps_old(self,mean=True,debug=False):
         """
         Some inspiration from:
         https://github.com/TheClimateCorporation/properscoring.git
         CRPS (Continuous Ranked Probability Score)
         Measures distance between prob forecast and truth.
-        
+
 
         Needs observation array (m x n)
         Needs ensemble forecast array (e x m x n) where
                 e = number of ensemble members
 
-        xa     :   observation 
+        xa     :   observation
         xfs    :   forecasts for N ensemble members
         rho    :   PDF forecast
         """
@@ -109,6 +137,7 @@ class ProbScores:
 
         s1,s2 = self.xa.shape
         ss = self.xa.size
+
         count = 0
         crps = N.zeros_like(self.xa)
         print("Starting CRPS calculation over the whole grid.")
@@ -118,12 +147,12 @@ class ProbScores:
                 print("{} of {}".format(count,ss))
 
             # Px is the % that self.xa will be smaller than x.
-            # Sort ensemble forecasts 
+            # Sort ensemble forecasts
             xs = N.sort(self.xfs[:,x,y])
             # Generate CDF
             # Px = scipy.stats.norm.pdf(x)
             Px = norm.cdf(xs)
-           
+
             # CDF of observation (0 or 1)
             Hv = self.heaviside(xs-self.xa[x,y])
 
@@ -159,6 +188,7 @@ class ProbScores:
                 crps[x,y] = quad(integrand,-N.inf,N.inf,args=(Px,Hv))
 
 
+
             elif method == 3:
                 #https://www.mathworks.com/matlabcentral/fileexchange/47807-continuous-rank-probability-score?requestedDomain=www.mathworks.com
                 problist = N.arange(xs.size)/(xs.size)
@@ -171,13 +201,13 @@ class ProbScores:
                 if len(idxs) > 0:  # when obs > fcst
                     idx = idxs[-1]
                     crps_left = 0
-                    if idx > 0: 
+                    if idx > 0:
                         fcst_left = fcst[:idx]
                         dx_left = N.diff(fcst_left)
                         p_left = problist2[:idx-1]
                         # crps_left = p_left * dx_left
                         crps_left = N.dot(p_left,dx_left)
-                    if ob < fcst[-1]: 
+                    if ob < fcst[-1]:
                         fcst_right = fcst[idx:]
                         dx_right = N.diff(fcst_right)
                         if len(dx_right) == 0:
@@ -199,14 +229,14 @@ class ProbScores:
                     crps_right =N.dot(p_right,dx_right)
                     # crps_right = p_right*dx_right
                     crps_left_outside = 1**(2*(fcst[0]-ob))
-                    crps_vals = crps_left_outside + crps_right 
+                    crps_vals = crps_left_outside + crps_right
                 crps[x,y] = crps_vals
 
         if mean:
             return crps.mean()
         else:
             return crps
-         
+
     def heaviside(self,x):
         # if x < 0:
             # return 0
