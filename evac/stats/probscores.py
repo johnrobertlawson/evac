@@ -2,6 +2,7 @@ import itertools
 import pdb
 
 import numpy as N
+import scipy as S
 
 """Probabilistic scores, using Buizza 2001, MWR.
 """
@@ -87,7 +88,7 @@ class ProbScores:
         """
         pass
 
-    def compute_crps(self,mean=True):
+    def compute_crps(self,threshs,mean=True,QC=True):
         """
         Needs observation array (m x n)
         Needs ensemble forecast array (e x m x n) where
@@ -97,25 +98,57 @@ class ProbScores:
         xfs    :   forecasts for N ensemble members
         Px is the probability that ob is less or equal to fcst
                     - loop through all probs from 0 to 100 %
+
+        threshs is a numpy array of the levels to apply to the data
+
+        Discretising using https://www.kaggle.com/c/how-much-did-it-rain#evaluation
         """
         # Number of ensemble members
         nens, ny, nx = self.xfs.shape
         # Ensemble is ranked smallest to largest at each grid pt.
         xfs_sort = N.sort(self.xfs,axis=0)
+
+        if QC:
+            xfs_sort[xfs_sort < 0] = 0
+            # xfs_sort[xfs_sort == N.nan] = 0
+
+        """
         # the probability levels for each ensemble member, tiled on grid
         # pclist = N.arange(nens)/nens
         # Probxx = N.swapaxes(N.tile(pclist,(ny,nx,1)),0,2)
         # Probxx = N.ones_like(xfs_sort[0,:,:]) * (N.arange(nens)/nens)
 
         # Px, the probability that xa is less than fcst:
-        Px = N.sum(N.greater(xfs_sort,self.xa),axis=0)/nens
-        Pax = (self.heaviside(xfs_sort-self.xa)).astype(int)
+        # Px = N.sum(N.greater(xfs_sort,self.xa),axis=0)/nens
+        # Pax = (self.heaviside(xfs_sort-self.xa)).astype(int)
 
         # The difference between each ensemble member
-        dx = N.diff(xfs_sort,axis=0)
+        # dx = N.diff(xfs_sort,axis=0)
         # Now the integration
-        integrand = (Px-Pax)**2 * dx
-        crps = N.sum(integrand)
+        # integrand = (Px-Pax)**2 * dx
+        # crps = N.sum(integrand)
+        
+        def integrand(a):
+            Px,Pax = a
+            return (Px-Pax)**2
+
+        crps,err = S.integrate.quad(integrand,-N.inf,N.inf,args=([Px,Pax]))
+        """
+        pdb.set_trace()
+        probarr = N.sum(N.less_equal(xfs_sort,threshs),axis=0)
+        obsarr = (self.heaviside(thresh-self.xa)).astype(int)
+        crps = N.sum( (probarr-obsarr)**2)
+
+        c = N.zeros_like(threshs)
+        for thidx,th in enumerate(threshs):
+            # Sum of 2D field of probs/heaviside
+            Px = 
+            c[thidx] = N.sum((Px - Hx) **2)
+        # Sum over all thresholds
+        crps = N.sum(c)
+
+            
+
         pdb.set_trace()
         return crps
 
