@@ -67,7 +67,7 @@
 
 <dl class="class">
 <dt id="evac.utils.reproject_tools.WRF_native_grid">
-<em class="property">class </em><code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">WRF_native_grid</code><span class="sig-paren">(</span><em>fpath</em>, <em>resolution='i'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#WRF_native_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.WRF_native_grid" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">WRF_native_grid</code><span class="sig-paren">(</span><em>fpath</em>, <em>resolution='i'</em>, <em>xy1D=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#WRF_native_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.WRF_native_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="evac.utils.reproject_tools.WRF_native_grid.generate_basemap">
@@ -100,7 +100,7 @@
 
 <dl class="function">
 <dt id="evac.utils.reproject_tools.create_new_grid">
-<code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">create_new_grid</code><span class="sig-paren">(</span><em>Nlim=None</em>, <em>Elim=None</em>, <em>Slim=None</em>, <em>Wlim=None</em>, <em>proj='merc'</em>, <em>lat_ts=None</em>, <em>resolution='i'</em>, <em>nx=None</em>, <em>ny=None</em>, <em>tlat1=30.0</em>, <em>tlat2=60.0</em>, <em>cen_lat=None</em>, <em>cen_lon=None</em>, <em>lllon=None</em>, <em>lllat=None</em>, <em>urlat=None</em>, <em>urlon=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#create_new_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.create_new_grid" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">create_new_grid</code><span class="sig-paren">(</span><em>Nlim=None</em>, <em>Elim=None</em>, <em>Slim=None</em>, <em>Wlim=None</em>, <em>proj='merc'</em>, <em>lat_ts=None</em>, <em>resolution='i'</em>, <em>nx=None</em>, <em>ny=None</em>, <em>tlat1=30.0</em>, <em>tlat2=60.0</em>, <em>cen_lat=None</em>, <em>cen_lon=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#create_new_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.create_new_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new domain for interpolating to, for instance.</p>
 <p>The following are mandatory arguments for mercator (&#8216;merc&#8217;):
 Nlim,Elim,Slim,Wlim = lat/lon/lat/lon limits for north/east/south/west respectively
@@ -110,9 +110,9 @@ nx,ny = number of points in the x/y direction respectively</p>
 
 <dl class="function">
 <dt id="evac.utils.reproject_tools.reproject">
-<code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">reproject</code><span class="sig-paren">(</span><em>data_orig</em>, <em>xx_orig=False</em>, <em>yy_orig=False</em>, <em>lats_orig=False</em>, <em>lons_orig=False</em>, <em>newgrid=False</em>, <em>xx_new=False</em>, <em>yy_new=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#reproject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.reproject" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">reproject</code><span class="sig-paren">(</span><em>data_orig</em>, <em>xx_orig=False</em>, <em>yy_orig=False</em>, <em>lats_orig=False</em>, <em>lons_orig=False</em>, <em>newgrid=False</em>, <em>xx_new=False</em>, <em>yy_new=False</em>, <em>method='linear'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#reproject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.reproject" title="Permalink to this definition">¶</a></dt>
 <dd><p>data_orig               -   N.ndarray of original data (2D?)
-xx_orig,yy_orig         -   x-/y-axis indices of original data (shape?)
+xx_orig,yy_orig         -   x-/y-axis indices of original data straight out a m(lons,lats)
 lats_orig,lons_orig     -   lats/lons of original data (shape?)
 newgrid                 -   basemap class classobject</p>
 </dd></dl>

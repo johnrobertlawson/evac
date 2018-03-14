@@ -47,7 +47,12 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 
-<span class="kn">import</span> <span class="nn">pygrib</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pygrib</span>
+<span class="k">except</span> <span class="n">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not using pygrib&quot;</span><span class="p">)</span>
+    <span class="n">pygrib</span> <span class="o">=</span> <span class="kc">None</span>
+
 <span class="kn">from</span> <span class="nn">.datafile</span> <span class="k">import</span> <span class="n">DataFile</span>
 
 <div class="viewcode-block" id="GribFile"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile">[docs]</a><span class="k">class</span> <span class="nc">GribFile</span><span class="p">(</span><span class="n">DataFile</span><span class="p">):</span>
@@ -80,7 +85,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">get_units</span><span class="p">()</span>
 
 <div class="viewcode-block" id="GribFile.get_units"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.get_units">[docs]</a>    <span class="k">def</span> <span class="nf">get_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
-        <span class="sd">&quot;&quot;&quot; The units used for variables within. </span>
+        <span class="sd">&quot;&quot;&quot; The units used for variables within.</span>
 <span class="sd">        This should be overridden in children.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">UNITS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pressure&#39;</span><span class="p">:</span><span class="s1">&#39;Pa&#39;</span><span class="p">,}</span>
@@ -117,7 +122,7 @@
         <span class="k">for</span> <span class="n">nl</span><span class="p">,</span><span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lv_choice</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">lv_str</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">nl</span></div>
-        
+
 
 <div class="viewcode-block" id="GribFile.get"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

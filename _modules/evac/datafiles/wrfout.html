@@ -67,6 +67,7 @@
 <span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">import</span> <span class="nn">evac.utils.met_constants</span> <span class="k">as</span> <span class="nn">mc</span>
 <span class="kn">from</span> <span class="nn">WEM.postWRF.postWRF.ncfile</span> <span class="k">import</span> <span class="n">NC</span>
+<span class="kn">import</span> <span class="nn">evac.derived._derived</span> <span class="k">as</span> <span class="nn">derived</span>
 
 <span class="n">debug_get</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -515,45 +516,45 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a dictionary to look up method for computing a variable</span>
 <span class="sd">        Todos:</span>
-<span class="sd">            * merge with derived/derived.py</span>
+<span class="sd">            * merge with derived/_derived.py</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tbl</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;shear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_shear</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;thetae&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_thetae</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;cref&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_comp_ref</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;wind10&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_wind10</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;wind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_wind</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;CAPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_CAPE</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;Td&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Td</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;pressure&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pressure</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;drybulb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_drybulb</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_theta</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;geopot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_geopotential</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_geopotential_height</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;dptp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dptp</span> <span class="c1">#density potential temperature pert.</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;T2p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_T2_pertub</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;dpt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dpt</span> <span class="c1">#density potential temperature .</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;buoyancy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_buoyancy</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;strongestwind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_strongest_wind</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;PMSL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pmsl</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;RH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_RH</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;dryairmass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_dryairmass</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;QTOTAL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_qtotal</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;olr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_olr</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;es&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_satvappres</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;e&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_vappres</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_spechum</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;fluidtrapping&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_fluid_trapping_diagnostic</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;lyapunov&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_instantaneous_local_Lyapunov</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;REFL_comp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_REFL_comp</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;temp_advection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_temp_advection</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;omega&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_omega</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_density</span>
-        <span class="c1"># tbl[&#39;accum_precip&#39;] = self.compute_accum_rain</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;PMSL_gradient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_PMSL_gradient</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;T2_gradient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_T2_gradient</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;Q_pert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_Q_pert</span>
-        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;vorticity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_vorticity</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;shear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_shear</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;thetae&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_thetae</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;cref&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_comp_ref</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;wind10&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_wind10</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;wind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_wind</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;CAPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_CAPE</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;Td&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_Td</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;pressure&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_pressure</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;drybulb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_drybulb</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_theta</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;geopot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_geopotential</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_geopotential_height</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;dptp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_dptp</span> <span class="c1">#density potential temperature pert.</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;T2p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_T2_pertub</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;dpt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_dpt</span> <span class="c1">#density potential temperature .</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;buoyancy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_buoyancy</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;strongestwind&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_strongest_wind</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;PMSL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_pmsl</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;RH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_RH</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;dryairmass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_dryairmass</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;QTOTAL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_qtotal</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;olr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_olr</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;es&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_satvappres</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;e&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_vappres</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_spechum</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;fluidtrapping&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_fluid_trapping_diagnostic</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;lyapunov&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_instantaneous_local_Lyapunov</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;REFL_comp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_REFL_comp</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;temp_advection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_temp_advection</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;omega&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_omega</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_density</span>
+        <span class="c1"># tbl[&#39;accum_precip&#39;] = derived.compute_accum_rain</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;PMSL_gradient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_PMSL_gradient</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;T2_gradient&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_T2_gradient</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;Q_pert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">compute_Q_pert</span>
+        <span class="n">tbl</span><span class="p">[</span><span class="s1">&#39;vorticity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">derived</span><span class="o">.</span><span class="n">return_vorticity</span>
 
         <span class="k">return</span> <span class="n">tbl</span></div>
 
@@ -599,27 +600,6 @@
         <span class="c1"># Get coordinate system</span>
         <span class="n">vc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_vcs</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WRFOut.compute_strongest_wind"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.compute_strongest_wind">[docs]</a>    <span class="k">def</span> <span class="nf">compute_strongest_wind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Pass the array of time indices and it will find the max</span>
-<span class="sd">        along that axis.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s1">&#39;WSPD10MAX&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
-            <span class="n">ww</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;WSPD10MAX&#39;</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">ww</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">0.1</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using WSPD10MAX data&quot;</span><span class="p">)</span>
-                <span class="n">wind</span> <span class="o">=</span> <span class="n">ww</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using wind10 data&quot;</span><span class="p">)</span>
-                <span class="n">wind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wind10&#39;</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using wind10 data&quot;</span><span class="p">)</span>
-            <span class="n">wind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wind10&#39;</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">)</span>
-        <span class="n">wind_max</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">wind</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="c1"># wind_max_smooth = self.test_smooth(wind_max)</span>
-        <span class="c1"># return wind_max_smooth</span>
-
-        <span class="k">return</span> <span class="n">wind_max</span></div>
 
 <div class="viewcode-block" id="WRFOut.make_4D"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.make_4D">[docs]</a>    <span class="k">def</span> <span class="nf">make_4D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">datain</span><span class="p">,</span><span class="n">vrbl</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">missing_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

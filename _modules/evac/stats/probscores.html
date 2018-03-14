@@ -42,8 +42,8 @@
           <div class="body" role="main">
             
   <h1>Source code for evac.stats.probscores</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pdb</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
+<span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 
@@ -77,7 +77,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pfg</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="n">BS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">Ng</span><span class="p">)</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">pfg</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">og</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">BS</span></div>
-    
+
 <div class="viewcode-block" id="ProbScores.compute_bss"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_bss">[docs]</a>    <span class="k">def</span> <span class="nf">compute_bss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;TODO</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -91,7 +91,7 @@
 <span class="sd">            thresholds  : 1D list/array, and in same order</span>
 <span class="sd">                            of first dimension of pfg.</span>
 <span class="sd">            self.pfg    : 3D array: [probability index,lat,lon]</span>
-<span class="sd">                    </span>
+
 <span class="sd">        Note:</span>
 <span class="sd">        RPSg is the grid-point RPS.</span>
 <span class="sd">        RPS is the area-average (ranked probability score)</span>
@@ -116,6 +116,12 @@
         <span class="k">assert</span> <span class="n">RPS1</span> <span class="o">==</span> <span class="n">RPS2</span>
         <span class="k">return</span> <span class="n">RPS2</span></div>
 
+<div class="viewcode-block" id="ProbScores.rank_hist"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.rank_hist">[docs]</a>    <span class="k">def</span> <span class="nf">rank_hist</span><span class="p">(</span><span class="n">obdata</span><span class="p">,</span><span class="n">ensdata</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper for rank histogram over 3D.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
 
 <div class="viewcode-block" id="ProbScores.compute_poutl"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_poutl">[docs]</a>    <span class="k">def</span> <span class="nf">compute_poutl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">E</span><span class="p">,</span><span class="n">obs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Percentage of outliers.</span>
@@ -125,20 +131,54 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
+<div class="viewcode-block" id="ProbScores.compute_crps"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_crps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Needs observation array (m x n)</span>
+<span class="sd">        Needs ensemble forecast array (e x m x n) where</span>
+<span class="sd">                e = number of ensemble members</span>
+
+<span class="sd">        xa     :   observation</span>
+<span class="sd">        xfs    :   forecasts for N ensemble members</span>
+<span class="sd">        Px is the probability that ob is less or equal to fcst</span>
+<span class="sd">                    - loop through all probs from 0 to 100 %</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Number of ensemble members</span>
+        <span class="n">nens</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xfs</span><span class="o">.</span><span class="n">shape</span>
+        <span class="c1"># Ensemble is ranked smallest to largest at each grid pt.</span>
+        <span class="n">xfs_sort</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xfs</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># the probability levels for each ensemble member, tiled on grid</span>
+        <span class="c1"># pclist = N.arange(nens)/nens</span>
+        <span class="c1"># Probxx = N.swapaxes(N.tile(pclist,(ny,nx,1)),0,2)</span>
+        <span class="c1"># Probxx = N.ones_like(xfs_sort[0,:,:]) * (N.arange(nens)/nens)</span>
+
+        <span class="c1"># Px, the probability that xa is less than fcst:</span>
+        <span class="n">Px</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">xfs_sort</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">nens</span>
+        <span class="n">Pax</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">xfs_sort</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="c1"># The difference between each ensemble member</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">xfs_sort</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Now the integration</span>
+        <span class="n">integrand</span> <span class="o">=</span> <span class="p">(</span><span class="n">Px</span><span class="o">-</span><span class="n">Pax</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dx</span>
+        <span class="n">crps</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">integrand</span><span class="p">)</span>
+        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">crps</span></div>
+
+        <span class="c1"># Decompose? What about uncertainty</span>
+
     <span class="c1"># def compute_crps(self,xfs,xa):</span>
-<div class="viewcode-block" id="ProbScores.compute_crps"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_crps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbScores.compute_crps_old"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_crps_old">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps_old</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Some inspiration from:</span>
 <span class="sd">        https://github.com/TheClimateCorporation/properscoring.git</span>
 <span class="sd">        CRPS (Continuous Ranked Probability Score)</span>
 <span class="sd">        Measures distance between prob forecast and truth.</span>
-<span class="sd">        </span>
+
 
 <span class="sd">        Needs observation array (m x n)</span>
 <span class="sd">        Needs ensemble forecast array (e x m x n) where</span>
 <span class="sd">                e = number of ensemble members</span>
 
-<span class="sd">        xa     :   observation </span>
+<span class="sd">        xa     :   observation</span>
 <span class="sd">        xfs    :   forecasts for N ensemble members</span>
 <span class="sd">        rho    :   PDF forecast</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -153,6 +193,7 @@
 
         <span class="n">s1</span><span class="p">,</span><span class="n">s2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">ss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="o">.</span><span class="n">size</span>
+
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">crps</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting CRPS calculation over the whole grid.&quot;</span><span class="p">)</span>
@@ -162,12 +203,12 @@
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="n">ss</span><span class="p">))</span>
 
             <span class="c1"># Px is the % that self.xa will be smaller than x.</span>
-            <span class="c1"># Sort ensemble forecasts </span>
+            <span class="c1"># Sort ensemble forecasts</span>
             <span class="n">xs</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xfs</span><span class="p">[:,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">])</span>
             <span class="c1"># Generate CDF</span>
             <span class="c1"># Px = scipy.stats.norm.pdf(x)</span>
             <span class="n">Px</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
-           
+
             <span class="c1"># CDF of observation (0 or 1)</span>
             <span class="n">Hv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">xs</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">])</span>
 
@@ -203,6 +244,7 @@
                 <span class="n">crps</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span><span class="o">-</span><span class="n">N</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">Px</span><span class="p">,</span><span class="n">Hv</span><span class="p">))</span>
 
 
+
             <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="c1">#https://www.mathworks.com/matlabcentral/fileexchange/47807-continuous-rank-probability-score?requestedDomain=www.mathworks.com</span>
                 <span class="n">problist</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
@@ -215,13 +257,13 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idxs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># when obs &gt; fcst</span>
                     <span class="n">idx</span> <span class="o">=</span> <span class="n">idxs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="n">crps_left</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> 
+                    <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">fcst_left</span> <span class="o">=</span> <span class="n">fcst</span><span class="p">[:</span><span class="n">idx</span><span class="p">]</span>
                         <span class="n">dx_left</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">fcst_left</span><span class="p">)</span>
                         <span class="n">p_left</span> <span class="o">=</span> <span class="n">problist2</span><span class="p">[:</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                         <span class="c1"># crps_left = p_left * dx_left</span>
                         <span class="n">crps_left</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p_left</span><span class="p">,</span><span class="n">dx_left</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">ob</span> <span class="o">&lt;</span> <span class="n">fcst</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> 
+                    <span class="k">if</span> <span class="n">ob</span> <span class="o">&lt;</span> <span class="n">fcst</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
                         <span class="n">fcst_right</span> <span class="o">=</span> <span class="n">fcst</span><span class="p">[</span><span class="n">idx</span><span class="p">:]</span>
                         <span class="n">dx_right</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">fcst_right</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dx_right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -243,14 +285,14 @@
                     <span class="n">crps_right</span> <span class="o">=</span><span class="n">N</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p_right</span><span class="p">,</span><span class="n">dx_right</span><span class="p">)</span>
                     <span class="c1"># crps_right = p_right*dx_right</span>
                     <span class="n">crps_left_outside</span> <span class="o">=</span> <span class="mi">1</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">fcst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">ob</span><span class="p">))</span>
-                    <span class="n">crps_vals</span> <span class="o">=</span> <span class="n">crps_left_outside</span> <span class="o">+</span> <span class="n">crps_right</span> 
+                    <span class="n">crps_vals</span> <span class="o">=</span> <span class="n">crps_left_outside</span> <span class="o">+</span> <span class="n">crps_right</span>
                 <span class="n">crps</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">crps_vals</span>
 
         <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">crps</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">crps</span></div>
-         
+
 <div class="viewcode-block" id="ProbScores.heaviside"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.heaviside">[docs]</a>    <span class="k">def</span> <span class="nf">heaviside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
         <span class="c1"># if x &lt; 0:</span>
             <span class="c1"># return 0</span>

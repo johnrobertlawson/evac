@@ -56,11 +56,11 @@
 </dl>
 <dl class="class">
 <dt id="evac.datafiles.ensemble.Ensemble">
-<em class="property">class </em><code class="descclassname">evac.datafiles.ensemble.</code><code class="descname">Ensemble</code><span class="sig-paren">(</span><em>rootdir</em>, <em>initutc</em>, <em>doms=1</em>, <em>ctrl='ctrl'</em>, <em>aux=False</em>, <em>model='wrf'</em>, <em>fmt='em_real'</em>, <em>f_prefix=None</em>, <em>loadobj=True</em>, <em>ncf=False</em>, <em>debug=False</em>, <em>onefolder=False</em>, <em>fileformat='netcdf'</em>, <em>gefsformat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">evac.datafiles.ensemble.</code><code class="descname">Ensemble</code><span class="sig-paren">(</span><em>rootdir</em>, <em>initutc</em>, <em>doms=1</em>, <em>ctrl='ctrl'</em>, <em>aux=False</em>, <em>model='wrf'</em>, <em>fmt='em_real'</em>, <em>f_prefix='default'</em>, <em>loadobj=True</em>, <em>ncf=False</em>, <em>debug=False</em>, <em>onefolder=False</em>, <em>fileformat='netcdf'</em>, <em>gefsformat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="evac.datafiles.ensemble.Ensemble.accumulated">
-<code class="descname">accumulated</code><span class="sig-paren">(</span><em>vrbl='RAINNC'</em>, <em>itime=0</em>, <em>ftime=-1</em>, <em>level=False</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em>, <em>inclusive=False</em>, <em>lons=None</em>, <em>lats=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.accumulated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.accumulated" title="Permalink to this definition">¶</a></dt>
+<code class="descname">accumulated</code><span class="sig-paren">(</span><em>vrbl='RAINNC'</em>, <em>itime=0</em>, <em>ftime=-1</em>, <em>level=False</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em>, <em>inclusive=False</em>, <em>lons=None</em>, <em>lats=None</em>, <em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.accumulated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.accumulated" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accumulate, for every ensemble member, at each grid point,
 the variable specified. Usually precipitation.</p>
 <dl class="docutils">
@@ -79,7 +79,7 @@ start of the data file...</dd>
 
 <dl class="method">
 <dt id="evac.datafiles.ensemble.Ensemble.arbitrary_pick">
-<code class="descname">arbitrary_pick</code><span class="sig-paren">(</span><em>dataobj=False</em>, <em>give_keys=False</em>, <em>give_path=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.arbitrary_pick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.arbitrary_pick" title="Permalink to this definition">¶</a></dt>
+<code class="descname">arbitrary_pick</code><span class="sig-paren">(</span><em>dataobj=False</em>, <em>give_keys=False</em>, <em>give_path=False</em>, <em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.arbitrary_pick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.arbitrary_pick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Arbitrary pick of a datafile entry in the members dictionary.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -236,7 +236,7 @@ Each forecast time is a different file.</p>
 
 <dl class="method">
 <dt id="evac.datafiles.ensemble.Ensemble.get_members">
-<code class="descname">get_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_members" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_members</code><span class="sig-paren">(</span><em>f_prefix=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_members" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a dictionary with all data.</p>
 <p>Format is:
 members[member][domain][time][data]</p>
@@ -246,7 +246,7 @@ members[member][domain][time][data]</p>
 
 <dl class="method">
 <dt id="evac.datafiles.ensemble.Ensemble.get_wrf_members">
-<code class="descname">get_wrf_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_wrf_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_wrf_members" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_wrf_members</code><span class="sig-paren">(</span><em>f_prefix=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_wrf_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_wrf_members" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

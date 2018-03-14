@@ -64,7 +64,7 @@
 
 <div class="viewcode-block" id="Ensemble"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble">[docs]</a><span class="k">class</span> <span class="nc">Ensemble</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rootdir</span><span class="p">,</span><span class="n">initutc</span><span class="p">,</span><span class="n">doms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">ctrl</span><span class="o">=</span><span class="s1">&#39;ctrl&#39;</span><span class="p">,</span><span class="n">aux</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">model</span><span class="o">=</span><span class="s1">&#39;wrf&#39;</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;em_real&#39;</span><span class="p">,</span><span class="n">f_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="s1">&#39;wrf&#39;</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;em_real&#39;</span><span class="p">,</span><span class="n">f_prefix</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">ncf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">onefolder</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fileformat</span><span class="o">=</span><span class="s1">&#39;netcdf&#39;</span><span class="p">,</span>
         <span class="n">gefsformat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Class containing all ensemble members. Default is a</span>
@@ -88,7 +88,8 @@
 <span class="sd">                real-world simulations (em_real from WRF).</span>
 <span class="sd">            f_prefix (tuple, optional): Tuple of prefixes for each</span>
 <span class="sd">                ensemble member&#39;s main data files. Must be length /doms/.</span>
-<span class="sd">                Default is None, which then uses a method to determine</span>
+<span class="sd">                The string &#39;default&#39; will look for the wrfout_d0* string.</span>
+<span class="sd">                Set None for a method to determine</span>
 <span class="sd">                the file name using default outputs from e.g. WRF.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
@@ -101,6 +102,9 @@
             <span class="n">loadfunc</span> <span class="o">=</span> <span class="n">GEFS</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">f_prefix</span> <span class="ow">is</span> <span class="s1">&#39;default&#39;</span><span class="p">:</span>
+            <span class="n">f_prefix</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wrfout_d</span><span class="si">{0:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">doms</span><span class="p">)]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fileformat</span> <span class="o">=</span> <span class="n">fileformat</span>
@@ -120,7 +124,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">isctrl</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">ctrl</span> <span class="k">else</span> <span class="kc">False</span>
         <span class="c1"># self.ndoms = len(self.doms)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_members</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_members</span><span class="p">(</span><span class="n">f_prefix</span><span class="o">=</span><span class="n">f_prefix</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nmems</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">member_names</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nperts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmems</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">isctrl</span>
 
@@ -177,7 +181,7 @@
         <span class="k">return</span> <span class="n">members</span><span class="p">,</span> <span class="n">fdt</span></div>
             
 
-<div class="viewcode-block" id="Ensemble.get_members"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_members">[docs]</a>    <span class="k">def</span> <span class="nf">get_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="Ensemble.get_members"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_members">[docs]</a>    <span class="k">def</span> <span class="nf">get_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">f_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a dictionary with all data.</span>
 
 <span class="sd">        Format is:</span>
@@ -189,17 +193,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;gefs&#39;</span><span class="p">:</span>
-            <span class="n">members</span><span class="p">,</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gefs_members</span><span class="p">()</span>
+            <span class="n">members</span><span class="p">,</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gefs_members</span><span class="p">(</span><span class="n">f_prefix</span><span class="o">=</span><span class="n">f_prefix</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;wrf&#39;</span><span class="p">:</span>
-            <span class="n">members</span><span class="p">,</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrf_members</span><span class="p">()</span>
+            <span class="n">members</span><span class="p">,</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrf_members</span><span class="p">(</span><span class="n">f_prefix</span><span class="o">=</span><span class="n">f_prefix</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span>
         <span class="k">return</span> <span class="n">members</span><span class="p">,</span> <span class="n">fdt</span></div>
 
-<div class="viewcode-block" id="Ensemble.get_wrf_members"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_wrf_members">[docs]</a>    <span class="k">def</span> <span class="nf">get_wrf_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="Ensemble.get_wrf_members"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_wrf_members">[docs]</a>    <span class="k">def</span> <span class="nf">get_wrf_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">f_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">fdt</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">dom</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">doms</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">doms</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">doms</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">domn</span><span class="p">,</span> <span class="n">dom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">doms</span><span class="p">):</span>
             <span class="c1"># Get file name for initialisation time and domain</span>
             <span class="c1"># main_fname = self.get_data_fname(dom=dom,prod=&#39;main&#39;)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncf</span><span class="p">:</span>
@@ -212,6 +217,10 @@
             <span class="k">for</span> <span class="n">dirname</span><span class="p">,</span><span class="n">subdirs</span><span class="p">,</span><span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span><span class="p">):</span>
                 <span class="c1"># If ensemble size = 1, there will be no subdirs.</span>
                 <span class="c1"># pdb.set_trace()</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f_prefix</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+                    <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">f_prefix</span><span class="p">)]</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f_prefix</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">)):</span>
+                    <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">f_prefix</span><span class="p">[</span><span class="n">domn</span><span class="p">])]</span>
                 <span class="k">if</span> <span class="n">main_fname</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
                     <span class="c1"># pdb.set_trace()</span>
                     <span class="n">dsp</span> <span class="o">=</span>  <span class="n">dirname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
@@ -231,7 +240,7 @@
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
                         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Looking at member </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">member</span><span class="p">))</span>
                     <span class="k">if</span> <span class="n">member</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
-                        <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">dom</span><span class="p">:{}}</span>
+                        <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">d</span><span class="p">:{}</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">doms</span><span class="p">}</span>
                     <span class="k">if</span> <span class="n">dom</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
                     <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span>
@@ -260,13 +269,16 @@
                             <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">][</span><span class="s1">&#39;auxdataobj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataobj</span>
                             <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">][</span><span class="s1">&#39;auxfpath&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fpath</span>
                             <span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">][</span><span class="s1">&#39;control&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">member</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span>
+
                         <span class="c1"># Move to next time</span>
                         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncf</span><span class="p">:</span>
                             <span class="k">if</span> <span class="n">fdt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                                <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">files</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
-                                <span class="n">fdt</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dt_from_fnames</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span><span class="n">f2</span><span class="p">,</span><span class="s1">&#39;wrf&#39;</span><span class="p">)</span>
-
-                                <span class="c1"># Loop through files and estimate dt based on fname</span>
+                                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                                    <span class="k">break</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="c1"># Loop through files and estimate dt based on fname</span>
+                                    <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">files</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+                                    <span class="n">fdt</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dt_from_fnames</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span><span class="n">f2</span><span class="p">,</span><span class="s1">&#39;wrf&#39;</span><span class="p">)</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">fdt</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
@@ -416,7 +428,7 @@
             <span class="n">qpf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accumulated</span><span class="p">(</span><span class="n">vrbl</span><span class="o">=</span><span class="s1">&#39;RAINNC&#39;</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="n">itime</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="n">ftime</span><span class="p">,</span>
                             <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span><span class="n">Nlim</span><span class="o">=</span><span class="n">Nlim</span><span class="p">,</span><span class="n">Elim</span><span class="o">=</span><span class="n">Elim</span><span class="p">,</span>
                             <span class="n">Slim</span><span class="o">=</span><span class="n">Slim</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="n">Wlim</span><span class="p">,</span><span class="n">inclusive</span><span class="o">=</span><span class="n">inclusive</span><span class="p">,</span>
-                            <span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">)</span>
+                            <span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="n">dom</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">qpf</span>
         <span class="k">if</span> <span class="n">members</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">members</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span>
@@ -463,7 +475,7 @@
 
 <div class="viewcode-block" id="Ensemble.accumulated"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.accumulated">[docs]</a>    <span class="k">def</span> <span class="nf">accumulated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="o">=</span><span class="s1">&#39;RAINNC&#39;</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ftime</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Nlim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">Elim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Slim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">lons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                    <span class="n">lons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Accumulate, for every ensemble member, at each grid point,</span>
 <span class="sd">        the variable specified. Usually precipitation.</span>
 
@@ -480,13 +492,14 @@
 
         <span class="k">if</span> <span class="n">vrbl</span> <span class="ow">is</span> <span class="s1">&#39;RAINNC&#39;</span><span class="p">:</span>
             <span class="n">itime_rainnc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RAINNC&#39;</span><span class="p">,</span><span class="n">fcsttime</span><span class="o">=</span><span class="n">itime</span><span class="p">,</span>
-                    <span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">)</span>
+                    <span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="n">dom</span><span class="p">)</span>
             <span class="n">ftime_rainnc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;RAINNC&#39;</span><span class="p">,</span><span class="n">fcsttime</span><span class="o">=</span><span class="n">ftime</span><span class="p">,</span>
-                    <span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">)</span>
+                    <span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="n">dom</span><span class="p">)</span>
             <span class="n">accum</span> <span class="o">=</span> <span class="n">ftime_rainnc</span> <span class="o">-</span> <span class="n">itime_rainnc</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">all_ens_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="n">itime</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="n">ftime</span><span class="p">,</span>
-                                        <span class="n">inclusive</span><span class="o">=</span><span class="n">inclusive</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">)</span>
+                                        <span class="n">inclusive</span><span class="o">=</span><span class="n">inclusive</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span>
+                                        <span class="n">dom</span><span class="o">=</span><span class="n">dom</span><span class="p">)</span>
             <span class="c1"># time axis is 1</span>
             <span class="n">accum</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">all_ens_data</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
@@ -522,7 +535,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">std</span></div>
 
-<div class="viewcode-block" id="Ensemble.arbitrary_pick"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.arbitrary_pick">[docs]</a>    <span class="k">def</span> <span class="nf">arbitrary_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dataobj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">give_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">give_path</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Ensemble.arbitrary_pick"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.arbitrary_pick">[docs]</a>    <span class="k">def</span> <span class="nf">arbitrary_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dataobj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">give_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">give_path</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Arbitrary pick of a datafile entry in the members dictionary.</span>
 
 <span class="sd">        Args:</span>
@@ -533,7 +546,6 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">member_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">dom</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span>
         <span class="c1"># pdb.set_trace()</span>
         <span class="n">arb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">mem</span><span class="p">][</span><span class="n">dom</span><span class="p">][</span><span class="n">t</span><span class="p">]</span>
