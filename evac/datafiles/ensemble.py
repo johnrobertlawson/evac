@@ -384,7 +384,7 @@ class Ensemble:
             qpf = self.accumulated(vrbl='RAINNC',itime=itime,ftime=ftime,
                             level=level,Nlim=Nlim,Elim=Elim,
                             Slim=Slim,Wlim=Wlim,inclusive=inclusive,
-                            lons=lons,lats=lats)
+                            lons=lons,lats=lats,dom=dom)
             return qpf
         if members is None:
             members = self.member_names
@@ -431,7 +431,7 @@ class Ensemble:
 
     def accumulated(self,vrbl='RAINNC',itime=0,ftime=-1,level=False,Nlim=False,
                     Elim=False,Slim=False,Wlim=False,inclusive=False,
-                    lons=None,lats=None):
+                    lons=None,lats=None,dom=1):
         """Accumulate, for every ensemble member, at each grid point,
         the variable specified. Usually precipitation.
 
@@ -448,13 +448,14 @@ class Ensemble:
 
         if vrbl is 'RAINNC':
             itime_rainnc = self.get('RAINNC',fcsttime=itime,
-                    lons=lons,lats=lats)
+                    lons=lons,lats=lats,dom=dom)
             ftime_rainnc = self.get('RAINNC',fcsttime=ftime,
-                    lons=lons,lats=lats)
+                    lons=lons,lats=lats,dom=dom)
             accum = ftime_rainnc - itime_rainnc
         else:
             all_ens_data = self.get(vrbl,itime=itime,ftime=ftime,
-                                        inclusive=inclusive,lats=lats,lons=lons)
+                                        inclusive=inclusive,lats=lats,lons=lons,
+                                        dom=dom)
             # time axis is 1
             accum = N.sum(all_ens_data,axis=1)
 

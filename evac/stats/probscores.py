@@ -1,5 +1,5 @@
-import pdb
 import itertools
+import pdb
 
 import numpy as N
 
@@ -72,6 +72,12 @@ class ProbScores:
         assert RPS1 == RPS2
         return RPS2
 
+    def rank_hist(obdata,ensdata):
+        """
+        Wrapper for rank histogram over 3D.
+        """
+        pass
+
 
     def compute_poutl(self,E,obs):
         """Percentage of outliers.
@@ -92,19 +98,25 @@ class ProbScores:
         Px is the probability that ob is less or equal to fcst
                     - loop through all probs from 0 to 100 %
         """
+        # Number of ensemble members
+        nens, ny, nx = self.xfs.shape
         # Ensemble is ranked smallest to largest at each grid pt.
         xfs_sort = N.sort(self.xfs,axis=0)
-        # the probability levels for each ensemble member
-        Probxx = N.ones_like(xfs_sort[0,:,:]) * N.arange(nens)/nens
+        # the probability levels for each ensemble member, tiled on grid
+        # pclist = N.arange(nens)/nens
+        # Probxx = N.swapaxes(N.tile(pclist,(ny,nx,1)),0,2)
+        # Probxx = N.ones_like(xfs_sort[0,:,:]) * (N.arange(nens)/nens)
+
         # Px, the probability that xa is less than fcst:
-        Px = Probxx[N.where(self.xa < xfs_sort)]
-        Pax = int(self.heaviside(xfs_sort-self.xa))
+        Px = N.sum(N.greater(xfs_sort,self.xa),axis=0)/nens
+        Pax = (self.heaviside(xfs_sort-self.xa)).astype(int)
 
         # The difference between each ensemble member
         dx = N.diff(xfs_sort,axis=0)
         # Now the integration
         integrand = (Px-Pax)**2 * dx
         crps = N.sum(integrand)
+        pdb.set_trace()
         return crps
 
         # Decompose? What about uncertainty

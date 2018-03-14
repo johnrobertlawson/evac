@@ -1,4 +1,5 @@
 import os
+import pdb
 
 from scipy.interpolate import griddata
 from mpl_toolkits.basemap import Basemap
@@ -8,8 +9,9 @@ from WEM.postWRF.postWRF.wrfout import WRFOut
 from WEM.postWRF.postWRF.hrrr import HRRR
 
 class WRF_native_grid:
-    def __init__(self,fpath,resolution='i'):
+    def __init__(self,fpath,resolution='i',xy1D=True):
         """Generates a basemap object for a WRF file's domain.
+
         """
         # keyword arguments to basemap generation
         self.kwargs = {'resolution':resolution}
@@ -18,6 +20,10 @@ class WRF_native_grid:
         self.load_attrs()
         self.load_corners()
         self.generate_basemap()
+
+        if xy1D:
+            self.xx = self.xx[0,:]
+            self.yy = self.yy[:,0]
 
     def load_wrfout(self,fpath):
         self.W = WRFOut(fpath)
@@ -64,8 +70,8 @@ class HRRR_native_grid(WRF_native_grid):
 
 def create_new_grid(Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
                     lat_ts=None,resolution='i',nx=None,ny=None,
-                    tlat1=30.0,tlat2=60.0,cen_lat=None,cen_lon=None,
-                    lllon=None,lllat=None,urlat=None,urlon=None):
+                    tlat1=30.0,tlat2=60.0,cen_lat=None,cen_lon=None,):
+                    # lllon=None,lllat=None,urlat=None,urlon=None):
     """Create new domain for interpolating to, for instance.
 
     The following are mandatory arguments for mercator ('merc'):
@@ -80,12 +86,13 @@ def create_new_grid(Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
         m = Basemap(projection=proj,llcrnrlat=Slim,llcrnrlon=Wlim,
                     urcrnrlat=Nlim,urcrnrlon=Elim,lat_ts=lat_ts,resolution='h')
     elif proj == 'lcc':
-        if None in (tlat1,tlat2,cen_lat,cen_lon,lllon,lllat,urlon,urlat,nx,ny):
+        # if None in (tlat1,tlat2,cen_lat,cen_lon,lllon,lllat,urlon,urlat,nx,ny):
+        if None in (tlat1,tlat2,cen_lat,cen_lon,Nlim,Elim,Slim,Wlim,nx,ny):
             print("Check non-optional arguments.")
             raise Exception
         m = Basemap(projection='lcc',lat_1=tlat1,lat_2=tlat2,lat_0=cen_lat,
-                            lon_0=cen_lon,llcrnrlon=lllon,llcrnrlat=lllat,
-                            urcrnrlon=urlon,urcrnrlat=urlat,resolution='i')
+                            lon_0=cen_lon,llcrnrlon=Wlim,llcrnrlat=Slim,
+                            urcrnrlon=Elim,urcrnrlat=Nlim,resolution='h')
 
     lons, lats, xx, yy = m.makegrid(nx,ny,returnxy=True)
     return m, lons, lats, xx[0,:], yy[:,0]
@@ -104,19 +111,33 @@ def create_WRFgrid(f):
     return xx,yy,lats,lons,m
 
 def reproject(data_orig,xx_orig=False,yy_orig=False,lats_orig=False,lons_orig=False,newgrid=False,
-                    xx_new=False,yy_new=False):
+                    xx_new=False,yy_new=False,method='linear'):
     """
     data_orig               -   N.ndarray of original data (2D?)
-    xx_orig,yy_orig         -   x-/y-axis indices of original data (shape?)
+    xx_orig,yy_orig         -   x-/y-axis indices of original data straight out a m(lons,lats)
     lats_orig,lons_orig     -   lats/lons of original data (shape?)
     newgrid                 -   basemap class classobject
     """
     # xx_new,yy_new = newgrid(lons_orig,lats_orig)
-    xx_new_dim = len(xx_new)
-    yy_new_dim = len(yy_new)
-    mx,my = N.meshgrid(xx_new,yy_new)
+    assert len(xx_orig.shape) == 2
+    if len(xx_new.shape) == 1:
+        xx_new_dim = len(xx_new)
+        yy_new_dim = len(yy_new)
+        mx,my = N.meshgrid(xx_new,yy_new)
+    elif len(xx_new.shape)== 2:
+        xx_new_dim = len(xx_new[0,:])
+        yy_new_dim = len(yy_new[:,0])
+        mx,my = xx_new, yy_new
+    else:
+        raise Exception("Dimensions of xx_new and yy_new are too large.")
+
     # data_new = griddata((xx_orig.flat,yy_orig.flat),data_orig.flat,(xx_new.flat,
         # yy_new.flat)).reshape(xx_new_dim,yy_new_dim)
-    data_new = griddata((xx_orig.flatten(),yy_orig.flatten()),data_orig.flatten(),
-                        (mx.flatten(),my.flatten())).reshape(xx_new_dim,yy_new_dim)
+    # pdb.set_trace()
+    print("Starting reprojection...")
+    data_new = griddata((xx_orig.flat,yy_orig.flat),
+                            data_orig.flat,(mx.flat,my.flat),
+                            method=method).reshape(xx_new_dim,yy_new_dim)
+                        # (mx.flat,my.flat),method=method)
+    print("Completed reprojection.")
     return data_new
