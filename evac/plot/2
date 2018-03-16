@@ -1,0 +1,89 @@
+import collections
+
+from mpl_toolkits.basemap import Basemap
+
+from .figure import Figure
+
+class Map(Figure):
+    def __init__(self,):
+        pass
+
+    def make_domain_obj(self,input_objs):
+        """
+        Turn WRFOut files or grids into domains.
+        """
+        pdb.set_trace()
+
+        # for obj in input_objs:
+            # if isinstance(input_obj,)
+        return
+
+
+    def plot_domains(self,domains,labels,outdir,latlons='auto',fname='domains.png',
+                        colour=0,res='h',proj='auto',pad=0.2):
+        """
+        domains     :   list of WRFOut objects for each domain
+                        Largest domain should be index 0, if using auto settings
+        latlons     :   dictionary of Nlim,Elim,Slim,Wlim
+                        for plot
+        pad         :   multiply factor (0-1) for padding if latlons is 'auto'
+        """
+        # Generate domain objects
+        self.make_domain_obj(domains)
+
+        # largest domain
+        LD = domains[0]
+
+        if proj == 'auto':
+            proj = 'merc'
+            # proj = W.proj
+        elif proj is None:
+            proj = 'merc'
+
+        if latlons == 'auto':
+            Nlim = LD.Nlim + abs(LD.Nlim-LD.Slim)*pad
+            Elim = LD.Elim + abs(LD.Elim-LD.LD.im)*pad
+            Slim = LD.Slim - abs(LD.Nlim-LD.Slim)*pad
+            LD.im = LD.LD.im - abs(LD.Elim-LD.LD.im)*pad
+            lat_0 = LD.nc.CEN_LAT
+            lon_0 = LD.nc.CEN_LON
+
+        else:
+            Nlim = latlons['Nlim']
+            Elim = latlons['Elim']
+            Slim = latlons['Slim']
+            Wlim = latlons['Wlim']
+            lat_0 = latlons['lat_0']
+            lon_0 = latlons['lon_0']
+
+        m = Basemap(
+            projection=proj,
+            llcrnrlon=Wlim,llcrnrlat=Slim,
+            urcrnrlon=Elim,urcrnrlat=Nlim,
+            lat_0=lat_0,lon_0=lon_0,
+            resolution=res,area_thresh=500
+            )
+
+        m.drawcoastlines()
+        m.drawstates()
+        m.drawcountries()
+
+        if not isinstance(colour,collections.Sequence):
+            colours = ['k',] * len(wrfouts)
+        else:
+            colours = colour
+        # Get corners of each domain
+        for gridlabel,dom,colour in zip(labels,domains,colours):
+            print(("Plotting domain {0} for {1}".format(gridlabel,dom)))
+            x,y = m(dom.lons,dom.lats)
+            xl = len(x[0,:])
+            midpt = len(y[0,:])/2         
+            plt.annotate(gridlabel,color=colour,fontsize=10,xy=(x[0,-(0.12*xl)],y[0,midpt]),
+                         bbox=dict(fc='white'),alpha=1,va='center',ha='left')    
+            m.plot(x[0,:],y[0,:],colour,lw=2)
+            plt.plot(x[:,0],y[:,0],colour,lw=2) 
+            plt.plot(x[len(y)-1,:],y[len(y)-1,:],colour,lw=2)     
+            plt.plot(x[:,len(x)-1],y[:,len(x)-1],colour,lw=2)    
+
+        fpath = os.path.join(outdir,fname)
+        fig.savefig(fpath)

@@ -86,6 +86,8 @@ class WRFOut(NC):
         elif fmt is "met_em":
             self.ideal_init()
 
+        self.Nlim, self.Elim, self.Slim, self.Wlim = self.get_limits()
+
     def get_dimensions(self,fmt='em_real'):
         self.t_dim = len(self.nc.dimensions['Time'])
         self.x_dim = len(self.nc.dimensions['west_east'])

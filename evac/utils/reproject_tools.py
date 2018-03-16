@@ -8,6 +8,41 @@ import numpy as N
 from WEM.postWRF.postWRF.wrfout import WRFOut
 from WEM.postWRF.postWRF.hrrr import HRRR
 
+class VerifGrid:
+    """
+    The verification grid should be inside the 1 km domain.
+
+    Roughly 5 km res?
+
+    W is the 1 km WRFOut instance
+    """
+    def __init__(self,W,nx,ny,xy1D=True):
+        self.proj = 'lcc'
+        # These are urcrnrlon etc
+        self.Nlim = W.kwargs['urcrnrlat']
+        self.Elim = W.kwargs['urcrnrlon']
+        self.Slim = W.kwargs['llcrnrlat']
+        self.Wlim = W.kwargs['llcrnrlon']
+
+        self.nx = nx
+        self.ny = ny
+        self.cen_lat = W.kwargs['lat_0']
+        self.cen_lon = W.kwargs['lon_0']
+        self.tlat1 = W.kwargs['lat_1']
+        self.tlat2 = W.kwargs['lat_2']
+
+        self.m, self.lons, self.lats, self.xx, self.yy = create_new_grid(Nlim=self.Nlim,
+                        Elim=self.Elim,Slim=self.Slim,Wlim=self.Wlim,nx=self.nx,ny=self.ny,proj=self.proj,
+                        tlat1=self.tlat1,tlat2=self.tlat2,cen_lat=self.cen_lat,cen_lon=self.cen_lon)
+        # if xy1D:
+            # self.xx = self.xx[0,:]
+            # self.yy = self.yy[:,0]
+
+        # Aliases
+        self.lat_0 = self.cen_lat
+        self.lon_0 = self.cen_lon
+        return
+
 class WRF_native_grid:
     def __init__(self,fpath,resolution='i',xy1D=True):
         """Generates a basemap object for a WRF file's domain.
@@ -24,6 +59,8 @@ class WRF_native_grid:
         if xy1D:
             self.xx = self.xx[0,:]
             self.yy = self.yy[:,0]
+
+        self.combine_scopes()
 
     def load_wrfout(self,fpath):
         self.W = WRFOut(fpath)
@@ -45,6 +82,19 @@ class WRF_native_grid:
         self.m = Basemap(projection='lcc',**self.kwargs)
         self.lons, self.lats, self.xx, self.yy = self.m.makegrid(
                         self.W.lons.shape[1],self.W.lons.shape[0],returnxy=True)
+
+    def combine_scopes(self):
+        """
+        Put kwargs dictionary into self's namespace
+        """
+        self.__dict__ = dict(self.__dict__,**self.kwargs)
+
+        # Alias of domain limits
+        self.Wlim = self.llcrnrlon
+        self.Slim = self.llcrnrlat
+        self.Nlim = self.urcrnrlat
+        self.Elim = self.urcrnrlon
+
 
 class HRRR_native_grid(WRF_native_grid):
     """AS WRF_native_grid, but with some info about operational HRRR.

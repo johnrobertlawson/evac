@@ -134,22 +134,21 @@ class ProbScores:
 
         crps,err = S.integrate.quad(integrand,-N.inf,N.inf,args=([Px,Pax]))
         """
-        pdb.set_trace()
-        probarr = N.sum(N.less_equal(xfs_sort,threshs),axis=0)
-        obsarr = (self.heaviside(thresh-self.xa)).astype(int)
-        crps = N.sum( (probarr-obsarr)**2)
+        # pdb.set_trace()
+        # probarr = N.sum(N.less_equal(xfs_sort,threshs),axis=0)
+        # obsarr = (self.heaviside(thresh-self.xa)).astype(int)
+        # crps = N.sum( (probarr-obsarr)**2)
 
         c = N.zeros_like(threshs)
         for thidx,th in enumerate(threshs):
             # Sum of 2D field of probs/heaviside
-            Px = 
+            Px = N.sum(N.greater(xfs_sort,th),axis=0)/nens 
+            Hx = (self.heaviside(th-self.xa)).astype(int)
             c[thidx] = N.sum((Px - Hx) **2)
-        # Sum over all thresholds
-        crps = N.sum(c)
+        # Average over all thresholds and grid points
+        crps = (N.sum(c))/(nens*Px.size)
 
-            
-
-        pdb.set_trace()
+        # pdb.set_trace()
         return crps
 
         # Decompose? What about uncertainty

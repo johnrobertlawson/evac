@@ -34,8 +34,9 @@ class Figure:
                                     if e.g. using your own matplotlibrc.
         """
 
-        self.D = Defaults()
+        # self.D = Defaults()
         self.save_figure = True
+        self.use_defaults = use_defaults
 
         # Create main figure
         if ax is not None and fig is not None:
