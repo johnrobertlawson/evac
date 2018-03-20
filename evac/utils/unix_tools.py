@@ -1,16 +1,19 @@
-"""
+    """
 Utility scripts to help with directory, file, etc issues
 """
 
 import pdb
 import os
+import base64
+
+import utils
+
 try:
     import paramiko
 except ImportError:
-    print("Module paramiko unavailable.")
-import base64
+    print("Module paramiko unavailable. Ignoring import.")
 
-def bridge(D):
+def bridge_multi(D):
     """
     Soft-link, copy, or move items.
 
@@ -18,6 +21,15 @@ def bridge(D):
             '<'
     """
     pass
+
+def bridge(frompath,topath):
+    """
+    Soft-link, copy, or move item.
+    
+    Create folder if it doesn't exist
+    """
+    tofile, todir = os.path.split(topath)
+    utils.trycreate()
 
 def dir_from_naming(root,*args):
     """

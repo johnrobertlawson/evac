@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env pytho    n
 #
 # Create experiment directory and ensemble member directories, and copy/link executables and auxiliary files
 
@@ -26,10 +26,10 @@ debug      = True
 myhelp = """\n
             Setup script for WRF-LETKF
             Usage: srun python create_exp_monte.py -d /scratch/mflora/20160524_I0000_reduced_50 -n 36
-         """ 
+         """
 #--------------------------------------------------------------------------------------
 # FILE DICTIONARY
-#            name                location                  target                 copy 
+#            name                location                  target                 copy
 #                                                                          (0=no, 1=link, 2=cp)
 #--------------------------------------------------------------------------------------
 FILE_DICT= {'model':            [WRFDIR,       'wrf.exe' ,                  1 ],
@@ -38,9 +38,9 @@ FILE_DICT= {'model':            [WRFDIR,       'wrf.exe' ,                  1 ],
             'freezeH2O.bin':    [MICRODIR,     'freezeH2O.bin' ,            2 ],
             'qr_acr_qs.bin':    [MICRODIR,     'qr_acr_qs.bin' ,            2 ],
             'init_state':       [ICBCDIR,      'wrfinput_d01',              2 ],
-            'LANDUSE.TBL':      [DATADIR,       'LANDUSE.TBL',               1 ],            
+            'LANDUSE.TBL':      [DATADIR,       'LANDUSE.TBL',               1 ],
             'GENPARM.TBL':      [DATADIR,       'GENPARM.TBL',               1 ],
-            'SOILPARM.TBL':     [DATADIR,       'SOILPARM.TBL',              1 ],            
+            'SOILPARM.TBL':     [DATADIR,       'SOILPARM.TBL',              1 ],
             'ETAMPNEW_DATA':    [DATADIR,       'ETAMPNEW_DATA',             1 ],
             'gribmap.txt':      [DATADIR,       'gribmap.txt',               1 ],
             'RRTM_DATA':        [DATADIR,       'RRTM_DATA',                 1 ],
@@ -59,7 +59,7 @@ FILE_DICT= {'model':            [WRFDIR,       'wrf.exe' ,                  1 ],
 
 def linkit(current_dir,experiment_dir,program_dir,target,link_option):
 
-    makefile_dir = program_dir 
+    makefile_dir = program_dir
     if debug: print "Change directory to " + makefile_dir
 
     if link_option == 0:  return
@@ -69,11 +69,11 @@ def linkit(current_dir,experiment_dir,program_dir,target,link_option):
         LINK_CMD = 'ln -sf ' + os.path.join(makefile_dir,target) + ' ' + os.path.join(experiment_dir,target)
 
         if os.system(LINK_CMD) != 0:
-            print 
-            print "ERROR!!! " 
+            print
+            print "ERROR!!! "
             print "ERROR!!!  Failed to EXECUTE: " + LINK_CMD
-            print "ERROR!!! " 
-            print 
+            print "ERROR!!! "
+            print
             os.chdir(current_dir)
             sys.exit(1)
 
@@ -90,17 +90,17 @@ def linkit(current_dir,experiment_dir,program_dir,target,link_option):
 	else:
             CP_CMD = 'cp ' + os.path.join(makefile_dir,target) + ' ' + os.path.join(experiment_dir,"wrfinput_d01")
         if os.system(CP_CMD) != 0:
-            print 
-            print "ERROR!!! " 
+            print
+            print "ERROR!!! "
             print "ERROR!!!  Failed to EXECUTE: " + CP_CMD
             if not os.path.exists(os.path.join(makefile_dir,target)):
-                print "\nCOMMAND FAILED because %s does not exist\n " % os.path.join(makefile_dir,target) 
+                print "\nCOMMAND FAILED because %s does not exist\n " % os.path.join(makefile_dir,target)
             elif not os.path.join(experiment_dir,target):
-                print "\nCOMMAND FAILED because %s does not exist\n " % os.path.join(experiment_dir,target) 
+                print "\nCOMMAND FAILED because %s does not exist\n " % os.path.join(experiment_dir,target)
             else:
                 print "\nBOTH FILE AND DIRECTORY EXISTS....something else f__ked up here....\n"
-            print "ERROR!!! " 
-            print 
+            print "ERROR!!! "
+            print
             os.chdir(current_dir)
             sys.exit(1)
 
@@ -146,7 +146,7 @@ if options.force:
 
 # Create timestamp string to append to directory name (to move it over)
 
-        timestamp = datetime.datetime.fromtimestamp( os.path.getctime(link_directory) )     
+        timestamp = datetime.datetime.fromtimestamp( os.path.getctime(link_directory) )
         newdir   = link_directory + "_" + timestamp.isoformat().replace('T', '_')
         print "\nERROR:  EXPERIMENT DIRECTORY ALREADY EXISTS, MOVING IT TO: %s \n" % (newdir)
 
@@ -193,7 +193,7 @@ for n in N.arange(1,ne+1):
             targ=target[1]
             ret = linkit(cwd,member,os.path.join(cwd,target[0]),targ,target[2])
 	else:
-	    targ=target[1]+"*_%d" %(n) 
-            ret = linkit(cwd,member,os.path.join(cwd,target[0]),targ,target[2])   
+	    targ=target[1]+"*_%d" %(n)
+            ret = linkit(cwd,member,os.path.join(cwd,target[0]),targ,target[2])
     member_dir.append(member)
 
