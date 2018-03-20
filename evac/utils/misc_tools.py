@@ -22,3 +22,12 @@ def time_me(f):
         return result
 
     return timed
+
+def loop_me(*args):
+    """
+    TODO: a decorator function that loops an existing function
+    over all arguments passed.
+
+    args should be a list of 1D numpy arrays, tuples, or lists
+    """
+    pass

@@ -10,6 +10,15 @@ except ImportError:
     print("Module paramiko unavailable.")
 import base64
 
+def bridge(D):
+    """
+    Soft-link, copy, or move items.
+
+    D   :   dictionary with the following layout:
+            '<'
+    """
+    pass
+
 def dir_from_naming(root,*args):
     """
     Generate file path from arguments
