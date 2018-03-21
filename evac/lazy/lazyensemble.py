@@ -12,9 +12,12 @@ class LazyEnsemble:
     Efficiency improvements from Monte Flora.
     
     Will not work on Windows systems due to hardcoded PosixPath.
+
+    Parent script should be run via batch submission.
     """
-    def __init__(self,path_to_exedir,path_to_datadir,path_to_rundir=False,namelistdir,
-                    icbcdir,outdir,initutc,):
+    def __init__(self,path_to_exedir,path_to_datadir, path_to_namelistdir,
+                    path_to_icbcdir,path_to_outdir,path_to_batch,initutc,sched='slurm',
+                    path_to_rundir=False,):
         """
         Args:
         
@@ -30,20 +33,26 @@ class LazyEnsemble:
         icbcdir         :   directory with initial and boundary
                             condition files
         outdir          :   where to move wrfout files to
+        path_to_batch   :   absolute path to *.job script (for slurm)
         initutc         :   initialisation time (datetime.datetime)
         """
-        
-        self.wrfsrcdir = PosixPath(wrfsrcdir)
-        self.wrfrundir = wrfrundir
-        self.namelistdir = namelistdir
-        self.icbcdir = icbcdir
-        self.outdir = outdir
+        # PATH OBJECTS
+        self.exedir = PosixPath(path_to_exedir)
+        self.namelistdir = PosixPath(path_to_namelistdir)
+        self.icbcdir = PosixPath(path_to_icbcdir)
+        self.outdir = PosixPath(path_to_outdir)
+        self.batchscript = PosixPath(path_to_batch)
+
+        # By default, the run directory is where the data will end up
+        if not isinstance(path_to_rundir,str):
+            path_to_rundir = path_to_datadir
+        self.wrfrundir = PosixPath(path_to_rundir)
+
+        # Time of initialisation
         self.initutc = initutc
-        
-    def bridge(self,):
-        """ Wrapper for utils.unix_tools.bridge. This copies, moves, or links
-        files, depending on arguments.
-        """
+
+        # Lookup dictionary of all members
+        self.members = {}
         
     def copy(self,*args,**kwargs):
         """ Wrapper for self.bridge()
@@ -78,6 +87,24 @@ class LazyEnsemble:
         """
         pass
     
-    
-    
-        
+    @staticmethod
+    def edit_batchscript(fpath,linekey,newline):
+        """ Replace a line from the submission script
+        that matches a key (linekey) with newline.
+        """
+        fs = open(fpath,'r')
+        flines = fs.readlines()
+        for idx, line in enumerate(flines):
+            if linekey in line:
+                fs.close()
+                flines[idx] = "{}\n".format(newline)
+                nameout = open(f,'w',1)
+                nameout.writelines(flines)
+                nameout.close()
+                return
+        raise ValueError("Setting",linekey,"not found in script.")
+        return
+
+            
+            
+                

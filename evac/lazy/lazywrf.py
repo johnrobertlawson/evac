@@ -7,10 +7,15 @@ import subprocess
 import evac.utils as utils
 
 class LazyWRF:
-    def __init__(self,sched,path_to_WRF,path_to_wrfout,submit_fname,
+    """ Designed for running multiple runs from the same folder.
+
+    For parallel ensemble generation, use LazyEnsemble child class.
+    """
+    def __init__(self,path_to_WRF,path_to_wrfout,submit_fname,
                     submit_ideal_fname=False,path_to_storage=False,
                     submit_real_fname=False,
-                    path_to_WPS=False,path_to_atmos=False,path_to_soil=False):
+                    path_to_WPS=False,path_to_atmos=False,path_to_soil=False,
+                    sched='slurm'):
         self.sched = sched
         self.path_to_WRF = path_to_WRF
         self.path_to_wrfout = path_to_wrfout

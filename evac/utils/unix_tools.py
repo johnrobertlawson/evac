@@ -5,6 +5,7 @@ Utility scripts to help with directory, file, etc issues
 import pdb
 import os
 import base64
+from pathlib import Path, PosixPath
 
 import utils
 
@@ -30,6 +31,36 @@ def bridge(frompath,topath):
     """
     tofile, todir = os.path.split(topath)
     utils.trycreate()
+
+def softlink(frompath,todir,fname=False):
+    """ Arguments must be path objects or strings
+    """
+    
+    # Use path-like objects
+    frompath = enforce_pathobj(frompath)
+
+    # Check frompath is a file (or directory?)
+    frompath.isfile()?
+
+    if not fname:
+        # todir is a path to the new link
+        assert # Check this is file name and not directory
+        topath = todir
+    else:
+        topath = enforce_pathobj(topath) / fname
+
+    # Check topath
+    frompath.symlink_to(topath)
+    return
+
+def enforce_pathobj(obj,path_type='posix'):
+    objs = {'posix':PosixPath}
+    if isinstance(obj,str):
+        return objs[path_type](obj)
+    elif issubclass(obj,Path):
+        return obj
+    else:
+        raise Exception("Object is neither path nor path-like object.")
 
 def dir_from_naming(root,*args):
     """
