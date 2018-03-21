@@ -377,7 +377,8 @@ class LazyWRF:
             print(('Running %s has failed. Check %s.'%(exe,log)))
             raise Exception
 
-    def generate_date(self,date,outstyle='wps'):
+    @staticmethod
+    def generate_date(date,outstyle='wps'):
             """ Creates date string for namelist files.
 
             Input:
