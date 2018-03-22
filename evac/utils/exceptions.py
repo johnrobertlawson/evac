@@ -1,12 +1,21 @@
 """Custom exceptions.
 """
 
-class FormatError(Exception):
-    """Data is the wrong format or shape."""
-    def __init__(self,error='Format error.'):
-        print(error)
+class PrettyException(Exception):
+    """ Subclassed error that prints real pretty.
+    """
+    def __init__(self,message,color=False,bold=False,
+                    underline=False,formatargs=False):
+        wowmessage = utils.wowprint(message,color=color,bold=bold,
+                        underline=underline,formatargs=formatargs)
+        super().__init__(wowmessage)
 
-class QCError(Exception):
+class FormatError(PrettyException):
+    """Data is the wrong format or shape."""
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+
+class QCError(PrettyException):
     """Data has failed a quality control check.
     """
     def __init__(self,error='Quality Control error.',pass_idx=False):
@@ -23,8 +32,8 @@ class QCError(Exception):
             else:
                 print(pass_idx)
 
-class NonsenseError(Exception):
+class NonsenseError(PrettyException):
     """ Data or argument doesn't make any sense.
     """
-    def __init__(self,error="Nonsense Error"):
-        print(error)
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)

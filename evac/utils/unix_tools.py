@@ -46,31 +46,37 @@ def bridge(command,frompath,topath,catch_overwrite=True):
         raise Exception("{} already exists.".format(topath))
     
     if command is "copy":
-        # This replaces an existing 'topath' silently
+        # This is ridiculous, but that's what I get for using sodding pathlib
+        topath.write_bytes(frompath.read_bytes())
     elif command is "move":
+        # This replaces an existing 'topath' silently
         frompath.rename(topath)
     elif command is "softlink":
         frompath.symlink_to(topath)
     else:
-        raise Exception("The command variable **{}** is invalid".format(
-                        command))
+        raise NonsenseError("The command variable **{}** is invalid".format(
+                        command),color='red')
     return
     
-def wowprint(string,emph='red',bold=True,underline=False,formatargs=False):
-    """ Print with colour/bold emphasis on certain things!
+def wowprint(string,color='red',bold=True,underline=False,formatargs=False):
+    """ Print with colour/bold colorasis on certain things!
    
-    string      :   (str) - string with any emphasised
+    string      :   (str) - string with any colorasised
                     item surrounded by two asterisks on both
                     sides. These are replaced.
-    emph        :   (str,bool) - the colour of the emphasised
-                    text. If False, don't emphasise.
+    color        :   (str,bool) - the colour of the colorasised
+                    text. If False, don't colorasise.
     
     Usage:
     
-    wowprint("The program **prog** is broken",emph='red')
-    wowprint("The program {} is broken",formatargs=('prog',),emph='blue',
+    wowprint("The program **prog** is broken",color='red')
+    wowprint("The program {} is broken",formatargs=('prog',),color='blue',
                             underline=True)
     """
+    # If nothing is set, pass through without changes
+    if not all(color,bold,underline,formatargs):
+        return string
+
     def findindex(string, lookup = '**'):
         try:
             idx = string.index('**')
@@ -80,31 +86,31 @@ def wowprint(string,emph='red',bold=True,underline=False,formatargs=False):
         else:
             return idx
             
-    emphs = {}
-    emphs{'red'} = "\033[91m" # fail
-    emphs{'purple'} = "\033[95m" # header
-    emphs{'blue'} = "\033[94m" # OK
-    emphs{'yellow'} = "\033[93m" # warning
-    emphs{'green'} = "\033[92m" # OK
+    colors = {}
+    colors{'red'} = "\033[91m" # fail
+    colors{'purple'} = "\033[95m" # header
+    colors{'blue'} = "\033[94m" # OK
+    colors{'yellow'} = "\033[93m" # warning
+    colors{'green'} = "\033[92m" # OK
     
-    emphs['bold'] = "\033[1m" # bold
-    emphs['underline'] = "\033[4m" # underline
+    colors['bold'] = "\033[1m" # bold
+    colors['underline'] = "\033[4m" # underline
     
     endcode = "\033[0m" # use at the end, always
     
     codes = []
     if bold:
-        codes.append(emphs['bold'])
+        codes.append(colors['bold'])
     if underline:
-        codes.append(emphs['underline'])
-    if emph:
-        codes.append(emphs[emph])
+        codes.append(colors['underline'])
+    if color:
+        codes.append(colors[color])
     
-    emphcode = ''.join(*codes)
-    # CASE 1: asterisks round emphasised part
+    colorcode = ''.join(*codes)
+    # CASE 1: asterisks round colorasised part
     if not formatargs:
         idx0 = findindex(string)
-        string.replace('**',emphcode,maxreplace=1)
+        string.replace('**',colorcode,maxreplace=1)
         idx1 = findindex(string)
         string.replace('**',endcode,maxreplace=1)
         print(string)
