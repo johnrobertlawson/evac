@@ -18,7 +18,7 @@ class LazyEnsemble:
     def __init__(self,path_to_exedir,path_to_datadir, path_to_namelistdir,
                     path_to_icbcdir,path_to_outdir,path_to_batch,initutc,
                     sched='slurm',path_to_rundir=False,delete_exe_copy=False,
-                    ):
+                    ndoms=1,):
         """
         Args:
         
@@ -67,12 +67,17 @@ class LazyEnsemble:
 
         self.sched = sched
         
+        # Number of domains
+        self.ndoms = ndoms
+        
         # Options
         self.delete_exe_copy = delete_exe_copy
         
         # INIT PROCEDURE
         # Lookup dictionary of all members
         self.members = {}
+        
+        # TO DO - how to automate nests too
         
     def copy(self,*args,**kwargs):
         """ Wrapper for self.bridge()
@@ -111,6 +116,9 @@ class LazyEnsemble:
     def edit_batchscript(fpath,linekey,newline):
         """ Replace a line from the submission script
         that matches a key (linekey) with newline.
+        
+        linekey must be unambiguous, otherwise it will change the
+        first occurence in the file that matches.
         """
         fs = open(fpath,'r')
         flines = fs.readlines()
@@ -125,6 +133,71 @@ class LazyEnsemble:
         raise ValueError("Setting",linekey,"not found in script.")
         return
 
+    def batchscript_for_member(self,member):
+        """ Edit parts of the batch submission script.
+        """
+        # Number of member
+        memberno = 0
+        
+        jobname = 'crashy_mccrashface_{:02d}'.format(
+                        memberno)
+        path_to_err = (self.wrfrundir / jobname).with_suffix('.err')
+        path_to_out = (self.wrfrundir / jobname).with_suffix('.out')
+        command = ''.format()
+        
+        # Change required lines here
+        # TODO
+        for key,newline in zip(keys,newlines):
+            edit_batchscript(self,self.members[member]['path_to_batch'],
+                            key,newline)
+        return
+        
+    
+    def namelist_for_member(self,member):
+        """ Edit parts of the namelist
+        
+        start/end year, month, day, hour, minute, second
+        
+        Use multiplied notation by number of domains (self.ndoms)
+        """
+        
+    def run_all_members(self,cpus=0,nodes=1,):
+        """ Automatically submit all jobs to the scheduler.
+        """
+        self.cpus_per_job = cpus
+        self.nodes_per_job = nodes
+        for member in self.members:
+            self.run_wrf_member(member)
+        
+        # Generate README for each dir?
+        return
+
+    def run_wrf_member(self,member):
+        """ Submit a wrf run to batch scheduler.
+        """
+        
+        # Make sure run directory exists
+        
+        # Copy, link, move everything needed
+        
+        # Edit batch script
+        # use self.cpus_per_job and self.nodes_per_job
+        
+        # Edit namelist?
+        
+        # Check output directory exists
+        # and is written in namelist
+        
+        # Submit script
+        
+        # Create README?
+        
+        
+    
+    def run_real_member(self,):
+        """ Submit real.exe to batch scheduler.
+        """
+        pass
             
             
                 
