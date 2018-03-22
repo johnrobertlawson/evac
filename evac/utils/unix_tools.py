@@ -16,41 +16,138 @@ except ImportError:
 
 def bridge_multi(D):
     """
-    Soft-link, copy, or move items.
+    Soft-link, copy, or move multiple items.
 
     D   :   dictionary with the following layout:
-            '<'
+            
     """
     pass
 
-def bridge(frompath,topath):
-    """
-    Soft-link, copy, or move item.
+def bridge(command,frompath,topath,catch_overwrite=True):
+    """ Copy, move, soft-link.
     
-    Create folder if it doesn't exist
-    """
-    tofile, todir = os.path.split(topath)
-    utils.trycreate()
-
-def softlink(frompath,todir,fname=False):
-    """ Arguments must be path objects or strings
+    Args:
+    
+    command     :   (str) - must be one of "copy", "softlink",
+                    "move".
+    frompath    :   (str,Path) - absolute path to origin directory or file
+    topath      :   (str,Path) - absolute path to destination directory or
+                    file. If topath is only a directory, the link will
+                    be the same filename as the origin.
+    catch_overwrite     :   (bool) - if True, raise Exception if
+                            topath already exists
     """
     
     # Use path-like objects
     frompath = enforce_pathobj(frompath)
-
-    # Check frompath is a file (or directory?)
-    frompath.isfile()?
-
-    if not fname:
-        # todir is a path to the new link
-        assert # Check this is file name and not directory
-        topath = todir
+    topath = enforce_pathobj(topath)
+    
+    if catch_overwrite and topath.exists():
+        raise Exception("{} already exists.".format(topath))
+    
+    if command is "copy":
+        # This replaces an existing 'topath' silently
+    elif command is "move":
+        frompath.rename(topath)
+    elif command is "softlink":
+        frompath.symlink_to(topath)
     else:
-        topath = enforce_pathobj(topath) / fname
+        raise Exception("The command variable **{}** is invalid".format(
+                        command))
+    return
+    
+def wowprint(string,emph='red',bold=True,underline=False,formatargs=False):
+    """ Print with colour/bold emphasis on certain things!
+   
+    string      :   (str) - string with any emphasised
+                    item surrounded by two asterisks on both
+                    sides. These are replaced.
+    emph        :   (str,bool) - the colour of the emphasised
+                    text. If False, don't emphasise.
+    
+    Usage:
+    
+    wowprint("The program **prog** is broken",emph='red')
+    wowprint("The program {} is broken",formatargs=('prog',),emph='blue',
+                            underline=True)
+    """
+    def findindex(string, lookup = '**'):
+        try:
+            idx = string.index('**')
+        except ValueError:
+            raise Exception("The wowprint string needs to have two"
+                                " lots of double asterisks.")
+        else:
+            return idx
+            
+    emphs = {}
+    emphs{'red'} = "\033[91m" # fail
+    emphs{'purple'} = "\033[95m" # header
+    emphs{'blue'} = "\033[94m" # OK
+    emphs{'yellow'} = "\033[93m" # warning
+    emphs{'green'} = "\033[92m" # OK
+    
+    emphs['bold'] = "\033[1m" # bold
+    emphs['underline'] = "\033[4m" # underline
+    
+    endcode = "\033[0m" # use at the end, always
+    
+    codes = []
+    if bold:
+        codes.append(emphs['bold'])
+    if underline:
+        codes.append(emphs['underline'])
+    if emph:
+        codes.append(emphs[emph])
+    
+    emphcode = ''.join(*codes)
+    # CASE 1: asterisks round emphasised part
+    if not formatargs:
+        idx0 = findindex(string)
+        string.replace('**',emphcode,maxreplace=1)
+        idx1 = findindex(string)
+        string.replace('**',endcode,maxreplace=1)
+        print(string)
+    else:
+        # This needs to be implemented
+        pass
+    
+    return
 
-    # Check topath
+def move(frompath,topath,catch_overwrite=True):
+    """ Arguments must be path objects or strings.
+    
+    Args:
+    
+    """
+
+def softlink(frompath,topath):
+    """ Arguments must be path objects or strings.
+    
+    Args:
+    
+    frompath    :   (str,Path) - absolute path to origin directory or file
+    topath      :   (str,Path) - absolute path to destination directory or
+                    file. If topath is only a directory, the link will
+                    be the same filename as the origin.
+    """
+    
+    # Use path-like objects
+    frompath = enforce_pathobj(frompath)
+    topath = enforce_pathobj(topath)
+
+    # Check whether paths are files or directories
+    #frompath.isfile()?
+
+    #if not fname:
+        # todir is a path to the new link
+        # assert # Check this is file name and not directory
+        # topath = todir
+    # else:
+        #topath = enforce_pathobj(topath) / fname
+
     frompath.symlink_to(topath)
+    
     return
 
 def enforce_pathobj(obj,path_type='posix'):

@@ -16,28 +16,42 @@ class LazyEnsemble:
     Parent script should be run via batch submission.
     """
     def __init__(self,path_to_exedir,path_to_datadir, path_to_namelistdir,
-                    path_to_icbcdir,path_to_outdir,path_to_batch,initutc,sched='slurm',
-                    path_to_rundir=False,):
+                    path_to_icbcdir,path_to_outdir,path_to_batch,initutc,
+                    sched='slurm',path_to_rundir=False,delete_exe_copy=False,
+                    ):
         """
         Args:
         
-        wrfsrcdir       :   directory of compiled WRF executables
-        wrfrundir       :   directory for running directory.
-                            By default, it is the data directory.
-                            By default,
-                            (maybe better to have permanant duplicates,
-                                rather than spinning up and deleting
-                                new wrf.exe)
-        namelistdir     :   directory containing namelist(s)
-                            templates or full versions.
-        icbcdir         :   directory with initial and boundary
-                            condition files
-        outdir          :   where to move wrfout files to
-        path_to_batch   :   absolute path to *.job script (for slurm)
-        initutc         :   initialisation time (datetime.datetime)
+        path_to_exedir      :   (str) - directory of compiled WRF executables
+        path_to_datadir     :   (str) - directory where wrfout and other data
+                                will be saved.
+        path_to_namelistdir :   (str) - directory containing namelist(s)
+                                templates or full versions.
+        path_to_icbcdir     :   (str) - directory with initial and boundary
+                                condition files
+        path_to_outdir      :   (str) - where to move wrfout files to
+        path_to_batch       :   (str) - absolute path to *.job script
+                                for slurm - not sure about rocks etc
+        initutc             :   (datetime.datetime) - initialisation time
+        
+        path_to_rundir      :   (str, optional) - directory where wrf.exe will
+                                be copied to,
+                                and rsl.error files will be generated.
+                                By default, this is the datadir.
+                                If running multiple ensembles, it is
+                                faster to have permanant folders for each
+                                ensemble, rather than spinning up and
+                                deleting wrf.exe)
+        sched               :   (str, optional) - job scheduler.
+                                Only implemented for slurm right now
+        delete_exe_copy     :   (bool, optional) - whether the .exe files
+                                will be deleted after the run is finished.
+                                The default is no, as numerous ensembles
+                                can use the same run folders, potentially.
         """
         # PATH OBJECTS
         self.exedir = PosixPath(path_to_exedir)
+        self.datadir = PosixPath(path_to_datadir)
         self.namelistdir = PosixPath(path_to_namelistdir)
         self.icbcdir = PosixPath(path_to_icbcdir)
         self.outdir = PosixPath(path_to_outdir)
@@ -51,6 +65,12 @@ class LazyEnsemble:
         # Time of initialisation
         self.initutc = initutc
 
+        self.sched = sched
+        
+        # Options
+        self.delete_exe_copy = delete_exe_copy
+        
+        # INIT PROCEDURE
         # Lookup dictionary of all members
         self.members = {}
         
