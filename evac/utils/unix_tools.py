@@ -85,18 +85,25 @@ def wowprint(string,color='red',bold=True,underline=False,formatargs=False):
     if not all([color,bold,underline,formatargs]):
         return string
 
-def bridge(frompath,topath,mv=False,cp=False,ln=False):
+def bridge(cmd,frompath,topath,mv=False,cp=False,ln=False):
     """
     Soft-link, copy, or move item.
 
     Create folder if it doesn't exist
     """
-    if sum([mv,cp,ln]) != 1:
-        raise Exception("Choose one of mv, ln, cp commands.")
+    #if sum([mv,cp,ln]) != 1:
+    #    raise Exception("Choose one of mv, ln, cp commands.")
     todir, tofile = os.path.split(topath)
     trycreate(todir)
-    if mv:
-        cmd = "mv {} {}".format(frompath,topath)
+    if cmd in ('mv','move'):
+        c = 'mv'
+    elif cmd in ('cp','copy'):
+        c = 'cp'
+    elif cmd in ('ln','link','softlink'):
+        c = 'ln -sf'
+
+    cmd = "{} {} {}".format(c,frompath,topath)
+    return cmd
 
 def trycreate(loc, parents=True):
     """
