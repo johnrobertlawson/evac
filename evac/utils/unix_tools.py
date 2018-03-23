@@ -7,8 +7,6 @@ import os
 import base64
 from pathlib import Path, PosixPath
 
-#from evac.utils.gis_tools import trycreate
-
 try:
     import paramiko
 except ImportError:
@@ -31,7 +29,7 @@ def bridge_multi(D):
         bridge(cmd,frompath,topath)
     return
 
-def bridge(command,frompath,topath,catch_overwrite=True):
+def bridge(command,frompath,topath,catch_overwrite=False):
     """ Copy, move, soft-link.
 
     Args:
@@ -49,6 +47,9 @@ def bridge(command,frompath,topath,catch_overwrite=True):
     # Use path-like objects
     frompath = enforce_pathobj(frompath)
     topath = enforce_pathobj(topath)
+   
+    if topath.is_dir():
+        topath = topath / frompath.name
 
     if catch_overwrite and topath.exists():
         raise Exception("{} already exists.".format(topath))
@@ -66,34 +67,80 @@ def bridge(command,frompath,topath,catch_overwrite=True):
                         command),color='red')
     return
 
-def wowprint(string,color='red',bold=True,underline=False,formatargs=False):
+def wowprint(message,color='red',bold=True,underline=False,formatargs=False):
     """ Print with colour/bold colorasis on certain things!
-
-    string      :   (str) - string with any colorasised
+   
+    message      :   (str) - string with any colorasised
                     item surrounded by two asterisks on both
                     sides. These are replaced.
     color        :   (str,bool) - the colour of the colorasised
                     text. If False, don't colorasise.
-
+    
     Usage:
-
+    
     wowprint("The program **prog** is broken",color='red')
     wowprint("The program {} is broken",formatargs=('prog',),color='blue',
                             underline=True)
     """
     # If nothing is set, pass through without changes
-    if not all([color,bold,underline,formatargs]):
-        return string
+    if not any([color,bold,underline,formatargs]):
+        print(s)
+        return
 
-def bridge(cmd,frompath,topath,mv=False,cp=False,ln=False):
+    def findindex(s, lookup = '**'):
+            try:
+                idx = s.index('**')
+            except ValueError:
+                raise Exception("The wowprint string needs to have two"
+                                    " lots of double asterisks.")
+            else:
+                return idx
+            
+    colors = {}
+    colors['red'] = "\033[91m" # fail
+    colors['purple'] = "\033[95m" # header
+    colors['blue'] = "\033[94m" # OK
+    colors['yellow'] = "\033[93m" # warning
+    colors['green'] = "\033[92m" # OK
+    
+    colors['bold'] = "\033[1m" # bold
+    colors['underline'] = "\033[4m" # underline
+    
+    endcode = "\033[0m" # use at the end, always
+    
+    codes = []
+    if bold:
+        codes.append(colors['bold'])
+    if underline:
+        codes.append(colors['underline'])
+    if color:
+        codes.append(colors[color])
+    
+    colorcode = ''.join(codes)
+    # CASE 1: asterisks round colorasised part
+    if not formatargs:
+        idx0 = findindex('**')
+        message.replace('**',colorcode,1)
+        idx1 = findindex('**')
+        message.replace('**',endcode,1)
+        print(message)
+    else:
+        # This needs to be implemented
+        pass
+    
+    return
+    
+
+def _bridge(cmd,frompath,topath,mv=False,cp=False,ln=False):
     """
+    Olde version.
     Soft-link, copy, or move item.
 
     Create folder if it doesn't exist
     """
     #if sum([mv,cp,ln]) != 1:
     #    raise Exception("Choose one of mv, ln, cp commands.")
-    todir, tofile = os.path.split(topath)
+    todir, tofile = topath.split()
     trycreate(todir)
     if cmd in ('mv','move'):
         c = 'mv'
@@ -105,7 +152,7 @@ def bridge(cmd,frompath,topath,mv=False,cp=False,ln=False):
     cmd = "{} {} {}".format(c,frompath,topath)
     return cmd
 
-def trycreate(loc, parents=True):
+def trycreate(loc, parents=True,exist_ok=True,loc_is_dir=False):
     """
     Args:
 
@@ -114,15 +161,20 @@ def trycreate(loc, parents=True):
                 create a folder if it doesn't already exist. If loc is
                 a file, its parent directory will be treated as loc.
     parents  :   (bool) - if True, then equivalent to mkdir -p </path/>
+    exist_ok    :   (bool) - if True, then warnings are ignored about folder already
+                    existing.
     """
     l = enforce_pathobj(loc)
+    # if not l.is_dir():
+    # if not loc_is_dir:
+        # l = l.parent
 
+    wowprint("Checking **{}** exists.".format(l),color='blue')
     # Does the location exist?
-    if not l.exists:
-        # If so, is it a directory?
-        if not l.is_dir():
-            l = l.parent
-        l.mkdir(parents=parents)
+    if not l.exists():
+        l.mkdir(parents=parents,exist_ok=True)
+        wowprint("The directory **{}** has been made.".format(l),color='red')
+    # pdb.set_trace()
     return
 
 

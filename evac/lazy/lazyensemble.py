@@ -3,6 +3,7 @@ import pdb
 import datetime
 from pathlib import PosixPath
 import subprocess
+import time
 
 import numpy as N
 
@@ -104,6 +105,8 @@ class LazyEnsemble:
         elif endutc:
             runsec = (endutc - initutc).seconds
             assert runsec > 0
+        self.endutc = endutc
+        self.runsec = runsec
 
         # PATH OBJECTS - see pathlib documentation
         self.exedir = PosixPath(path_to_exedir)
@@ -131,6 +134,7 @@ class LazyEnsemble:
 
         # Options
         self.delete_exe_copy = delete_exe_copy
+        self.nl_per_member = nl_per_member
 
         # INIT PROCEDURE
         # Get member names
@@ -150,8 +154,8 @@ class LazyEnsemble:
                         for n in N.arange(1,self.nmems+1)] + [
                         'wrfbdy_d{:02d}'.format(n)
                         for n in N.arange(1,self.nmems+1)]
-            for member in self.members.keys():
-                self.members[member]['icbcs'] = self.membernames
+            for member in self.membernames:
+                self.members[member]['icbcs'] = self.icbcdir / member
         else:
             for member in self.members.keys():
                 self.members[member]['icbcs'] = icbc[member]
@@ -170,8 +174,11 @@ class LazyEnsemble:
             utils.trycreate(mem_datadir)
 
             mem_rundir = self.wrfrundir / mem
+            utils.trycreate(mem_rundir)
+
             members[mem] = {'datadir':mem_datadir,
                                     'rundir':mem_rundir,}
+        time.sleep(1)
         return members
 
     def print_readme(self,):
@@ -193,17 +200,27 @@ class LazyEnsemble:
         linekey must be unambiguous, otherwise it will change the
         first occurence in the file that matches.
         """
-        fs = open(fpath,'r')
+                
+        fs = fpath.open()
         flines = fs.readlines()
-        for idx, line in enumerate(flines):
-            if linekey in line:
-                fs.close()
-                flines[idx] = "{}\n".format(newline)
-                nameout = open(f,'w',1)
-                nameout.writelines(flines)
-                nameout.close()
-                return
-        raise ValueError("Setting",linekey,"not found in script.")
+        the_idx = None
+
+        if isinstance(linekey,int):
+            # This is the line number to insert at
+            the_idx = linekey
+        else:
+            for idx, line in enumerate(flines):
+                if linekey in line:
+                    the_idx = idx
+        fs.close()
+        if the_idx is not None:
+            flines[the_idx] = "{}\n".format(newline)
+            nameout = fpath.open(mode='w',)#1)
+            nameout.writelines(flines)
+            nameout.close()
+            return
+        else:
+            raise ValueError("Setting",linekey,"not found in script.")
         return
 
     def batchscript_for_member(self,member):
@@ -212,7 +229,7 @@ class LazyEnsemble:
         jobname = 'wrf_{}'.format(member)
         path_to_err = (self.wrfrundir / jobname).with_suffix('.err')
         path_to_out = (self.wrfrundir / jobname).with_suffix('.out')
-        path_to_wrfexe = self.wrfrundir / wrf.exe
+        path_to_wrfexe = self.wrfrundir / 'wrf.exe'
         #command = f'time srun {path_to_wrfexe})'
         command = 'time srun {}'.format(path_to_wrfexe)
         rundir = self.members[member]['rundir']
@@ -239,7 +256,7 @@ class LazyEnsemble:
                 -1 : command}
 
         for key,newline in changes.items():
-            edit_batchscript(self,batchpath,key,newline)
+            self.edit_batchscript(batchpath,key,newline)
         return
 
 
@@ -323,11 +340,18 @@ class LazyEnsemble:
         # Copy, link, move everything needed to rundir
         utils.bridge_multi(PRQs)
 
-        # Edit batch script
+        # Copy, edit batch script
+
+        utils.bridge('copy',self.batchscript,rundir)
         # use self.cpus_per_job and self.nodes_per_job?
         self.batchscript_for_member(member)
 
-        # Edit namelist?
+        # Copy, edit namelist
+        if not self.nl_per_member:
+            frompath = self.namelistdir / 'namelist.input'
+        else:
+            raise Exception("Implement this!")
+        utils.bridge('copy',frompath,rundir)
         self.namelist_for_member(member)
 
         # Submit script
