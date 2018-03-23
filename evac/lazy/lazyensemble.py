@@ -81,9 +81,13 @@ class LazyEnsemble:
         nl_suffix           :   (str) - if 'name', the suffix will be the
                                 member name (either passed in or automatically
                                 generated).
-        icbcs               :   (dict) - dictionary of {member:filenames}
+        icbcs               :   (dict,list,bool) - dictionary of {member:filenames}
                                 where 'filenames' are a list/tuple of initial
-                                and boundary condition files, copied to rundir
+                                and boundary condition files, copied to rundir.
+                                If a list, this is used for each ensemble member
+                                from a folder within the icbc_dir.
+                                If True, it looks for the default names
+                                in subfolders of icbc_dir
         dryrun              :   (bool) - if True, don't delete any files
                                 or submit any runs.
         """
@@ -139,11 +143,11 @@ class LazyEnsemble:
         # Lookup dictionary of all members
         self.members = catalog_members()
 
-        if not isisntance(icbcs,dict):
+        if not isinstance(icbcs,dict):
             fnames = ['wrfinput_d{:02d}'.format(n)
-                        for n in N.arange(1,nens+1))] + [
+                        for n in N.arange(1,nens+1)] + [
                         'wrfbdy_d{:02d}'.format(n)
-                        for n in N.arange(1,nens+1))]
+                        for n in N.arange(1,nens+1)]
             for member in self.members.keys():
                 self.members[member]['icbcs'] = self.membernames
         else:
