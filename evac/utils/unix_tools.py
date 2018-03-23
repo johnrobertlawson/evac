@@ -148,12 +148,12 @@ def softlink(frompath,topath):
 
     return
 
-def enforce_pathobj(obj,path_type='posix'):
+def enforce_pathobj(ob,path_type='posix'):
     objs = {'posix':PosixPath}
-    if isinstance(obj,str):
-        return objs[path_type](obj)
-    elif issubclass(obj,Path):
-        return obj
+    if isinstance(ob,str):
+        return objs[path_type](ob)
+    elif issubclass(ob,Path):
+        return ob
     else:
         raise Exception("Object is neither path nor path-like object.")
 
