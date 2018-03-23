@@ -147,9 +147,9 @@ class LazyEnsemble:
 
         if not isinstance(icbcs,dict):
             fnames = ['wrfinput_d{:02d}'.format(n)
-                        for n in N.arange(1,nens+1)] + [
+                        for n in N.arange(1,self.nmems+1)] + [
                         'wrfbdy_d{:02d}'.format(n)
-                        for n in N.arange(1,nens+1)]
+                        for n in N.arange(1,self.nmems+1)]
             for member in self.members.keys():
                 self.members[member]['icbcs'] = self.membernames
         else:
