@@ -211,7 +211,8 @@ class LazyEnsemble:
         path_to_err = (self.wrfrundir / jobname).with_suffix('.err')
         path_to_out = (self.wrfrundir / jobname).with_suffix('.out')
         path_to_wrfexe = self.wrfrundir / wrf.exe
-        command = f'time srun {path_to_wrfexe})'
+        #command = f'time srun {path_to_wrfexe})'
+        command = 'time srun {}'.format(path_to_wrfexe)
         rundir = self.members[member]['rundir']
         batchpath = rundir / self.batchname
         cpu = self.cpus_per_job
@@ -388,7 +389,8 @@ class LazyEnsemble:
         elapsed = firstwait
         while True:
             rsl = self.members[member]['rundir'] / 'rsl.error.0000'
-            tailrsl = subprocess.Popen(f'tail {rsl}',shell=True,
+            #tailrsl = subprocess.Popen(f'tail {rsl}',shell=True,
+            tailrsl = subprocess.Popen('tail {}'.format(rsl),shell=True,
                                         stdout=subprocess.PIPE)
             tailoutput = tailrsl.stdout.read()
             if b"SUCCESS COMPLETE WRF" in tailoutput:
