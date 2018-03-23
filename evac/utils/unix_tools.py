@@ -7,7 +7,7 @@ import os
 import base64
 from pathlib import Path, PosixPath
 
-import evac.utils.gis_tools as utils
+#from evac.utils.gis_tools import trycreate
 
 try:
     import paramiko
