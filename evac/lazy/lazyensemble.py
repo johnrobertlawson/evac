@@ -165,7 +165,7 @@ class LazyEnsemble:
         """ Create the members dictionary.
         """
         members = {}
-        for mem in N.arange(self.membernames):
+        for mem in self.membernames:
             mem_datadir = self.datadir / mem
             utils.trycreate(mem_datadir)
 
