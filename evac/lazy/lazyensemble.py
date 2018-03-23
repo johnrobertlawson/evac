@@ -222,16 +222,17 @@ class LazyEnsemble:
 
         # First, changing the job name.
         # Note the print literals marked with "f" from Python 3.6)
-        changes = dict("#SBATCH -J" = f"#SBATCH -J {jobname}",
+        # changes = dict("#SBATCH -J" = f"#SBATCH -J {jobname}",
+        changes = dict("#SBATCH -J" = "#SBATCH -J {}".format(jobname),
 
         # Next, the output and error files
-                "#SBATCH -o" = f"#SBATCH -o {path_to_err}",
-                "#SBATCH -e" = f"#SBATCH -e {path_to_out}",
+                "#SBATCH -o" = "#SBATCH -o {}".format(path_to_err),
+                "#SBATCH -e" = "#SBATCH -e {}".format(path_to_out),
         # Next the cpu/node settings
                 #f"#SBATCH --ntasks-per-node" = "#SBATCH --ntasks-per-node={tn}",
-                "#SBATCH -n" = f"#SBATCH -n {cpu}",
+                "#SBATCH -n" = "#SBATCH -n {}".format(cpu),
         # Make sure we're in the right directory
-                "cd" = f"cd {rundir}",
+                "cd" = "cd {}".format(rundir),
         # Next the wrf submit command
                 -1 = command)
 
@@ -359,7 +360,8 @@ class LazyEnsemble:
             fs = folder.glob(file)
             for f in fs:
                 if self.dryrun:
-                    utils.wowprint(f"Pretend deleting **{f}**.",color='blue')
+                    utils.wowprint("Pretend deleting **{}**.".format(f),
+                                    color='blue')
                 else:
                     # This means delete!
                     f.unlink()
