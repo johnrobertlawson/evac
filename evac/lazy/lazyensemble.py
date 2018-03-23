@@ -172,7 +172,7 @@ class LazyEnsemble:
                                     'rundir':mem_rundir,}
         return members
 
-    def print_readme(self,outdir=self.outdir,):
+    def print_readme(self,):
         """
         Save a pretty-printed README file to a given directory.
 
