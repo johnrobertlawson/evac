@@ -46,6 +46,7 @@
 <span class="kn">import</span> <span class="nn">pdb</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">S</span>
 
 <span class="sd">&quot;&quot;&quot;Probabilistic scores, using Buizza 2001, MWR.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -131,7 +132,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="ProbScores.compute_crps"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_crps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbScores.compute_crps"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_crps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">threshs</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">QC</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Needs observation array (m x n)</span>
 <span class="sd">        Needs ensemble forecast array (e x m x n) where</span>
@@ -141,26 +142,57 @@
 <span class="sd">        xfs    :   forecasts for N ensemble members</span>
 <span class="sd">        Px is the probability that ob is less or equal to fcst</span>
 <span class="sd">                    - loop through all probs from 0 to 100 %</span>
+
+<span class="sd">        threshs is a numpy array of the levels to apply to the data</span>
+
+<span class="sd">        Discretising using https://www.kaggle.com/c/how-much-did-it-rain#evaluation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Number of ensemble members</span>
         <span class="n">nens</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xfs</span><span class="o">.</span><span class="n">shape</span>
         <span class="c1"># Ensemble is ranked smallest to largest at each grid pt.</span>
         <span class="n">xfs_sort</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xfs</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="c1"># the probability levels for each ensemble member, tiled on grid</span>
-        <span class="c1"># pclist = N.arange(nens)/nens</span>
-        <span class="c1"># Probxx = N.swapaxes(N.tile(pclist,(ny,nx,1)),0,2)</span>
-        <span class="c1"># Probxx = N.ones_like(xfs_sort[0,:,:]) * (N.arange(nens)/nens)</span>
 
-        <span class="c1"># Px, the probability that xa is less than fcst:</span>
-        <span class="n">Px</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">xfs_sort</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">nens</span>
-        <span class="n">Pax</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">xfs_sort</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">QC</span><span class="p">:</span>
+            <span class="n">xfs_sort</span><span class="p">[</span><span class="n">xfs_sort</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># xfs_sort[xfs_sort == N.nan] = 0</span>
 
-        <span class="c1"># The difference between each ensemble member</span>
-        <span class="n">dx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">xfs_sort</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="c1"># Now the integration</span>
-        <span class="n">integrand</span> <span class="o">=</span> <span class="p">(</span><span class="n">Px</span><span class="o">-</span><span class="n">Pax</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dx</span>
-        <span class="n">crps</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">integrand</span><span class="p">)</span>
-        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        # the probability levels for each ensemble member, tiled on grid</span>
+<span class="sd">        # pclist = N.arange(nens)/nens</span>
+<span class="sd">        # Probxx = N.swapaxes(N.tile(pclist,(ny,nx,1)),0,2)</span>
+<span class="sd">        # Probxx = N.ones_like(xfs_sort[0,:,:]) * (N.arange(nens)/nens)</span>
+
+<span class="sd">        # Px, the probability that xa is less than fcst:</span>
+<span class="sd">        # Px = N.sum(N.greater(xfs_sort,self.xa),axis=0)/nens</span>
+<span class="sd">        # Pax = (self.heaviside(xfs_sort-self.xa)).astype(int)</span>
+
+<span class="sd">        # The difference between each ensemble member</span>
+<span class="sd">        # dx = N.diff(xfs_sort,axis=0)</span>
+<span class="sd">        # Now the integration</span>
+<span class="sd">        # integrand = (Px-Pax)**2 * dx</span>
+<span class="sd">        # crps = N.sum(integrand)</span>
+<span class="sd">        </span>
+<span class="sd">        def integrand(a):</span>
+<span class="sd">            Px,Pax = a</span>
+<span class="sd">            return (Px-Pax)**2</span>
+
+<span class="sd">        crps,err = S.integrate.quad(integrand,-N.inf,N.inf,args=([Px,Pax]))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="c1"># probarr = N.sum(N.less_equal(xfs_sort,threshs),axis=0)</span>
+        <span class="c1"># obsarr = (self.heaviside(thresh-self.xa)).astype(int)</span>
+        <span class="c1"># crps = N.sum( (probarr-obsarr)**2)</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">threshs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">thidx</span><span class="p">,</span><span class="n">th</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">threshs</span><span class="p">):</span>
+            <span class="c1"># Sum of 2D field of probs/heaviside</span>
+            <span class="n">Px</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">xfs_sort</span><span class="p">,</span><span class="n">th</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">nens</span> 
+            <span class="n">Hx</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">th</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">xa</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">c</span><span class="p">[</span><span class="n">thidx</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">Px</span> <span class="o">-</span> <span class="n">Hx</span><span class="p">)</span> <span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># Average over all thresholds and grid points</span>
+        <span class="n">crps</span> <span class="o">=</span> <span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">c</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">nens</span><span class="o">*</span><span class="n">Px</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="c1"># pdb.set_trace()</span>
         <span class="k">return</span> <span class="n">crps</span></div>
 
         <span class="c1"># Decompose? What about uncertainty</span>

@@ -45,6 +45,103 @@
             
   <div class="section" id="stats-probscores">
 <h1><cite>stats.probscores</cite><a class="headerlink" href="#stats-probscores" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-evac.stats.probscores"></span><dl class="class">
+<dt id="evac.stats.probscores.ProbScores">
+<em class="property">class </em><code class="descclassname">evac.stats.probscores.</code><code class="descname">ProbScores</code><span class="sig-paren">(</span><em>og=None</em>, <em>pfg=None</em>, <em>xa=None</em>, <em>xfs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.cdf_">
+<code class="descname">cdf_</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.cdf_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.cdf_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_briar">
+<code class="descname">compute_briar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_briar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_briar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_bss">
+<code class="descname">compute_bss</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_bss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_bss" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_crps">
+<code class="descname">compute_crps</code><span class="sig-paren">(</span><em>threshs</em>, <em>mean=True</em>, <em>QC=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_crps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_crps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Needs observation array (m x n)
+Needs ensemble forecast array (e x m x n) where</p>
+<blockquote>
+<div>e = number of ensemble members</div></blockquote>
+<p>xa     :   observation
+xfs    :   forecasts for N ensemble members
+Px is the probability that ob is less or equal to fcst</p>
+<blockquote>
+<div><ul class="simple">
+<li>loop through all probs from 0 to 100 %</li>
+</ul>
+</div></blockquote>
+<p>threshs is a numpy array of the levels to apply to the data</p>
+<p>Discretising using <a class="reference external" href="https://www.kaggle.com/c/how-much-did-it-rain#evaluation">https://www.kaggle.com/c/how-much-did-it-rain#evaluation</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_crps_old">
+<code class="descname">compute_crps_old</code><span class="sig-paren">(</span><em>mean=True</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_crps_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_crps_old" title="Permalink to this definition">¶</a></dt>
+<dd><p>Some inspiration from:
+<a class="reference external" href="https://github.com/TheClimateCorporation/properscoring.git">https://github.com/TheClimateCorporation/properscoring.git</a>
+CRPS (Continuous Ranked Probability Score)
+Measures distance between prob forecast and truth.</p>
+<p>Needs observation array (m x n)
+Needs ensemble forecast array (e x m x n) where</p>
+<blockquote>
+<div>e = number of ensemble members</div></blockquote>
+<p>xa     :   observation
+xfs    :   forecasts for N ensemble members
+rho    :   PDF forecast</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_poutl">
+<code class="descname">compute_poutl</code><span class="sig-paren">(</span><em>E</em>, <em>obs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_poutl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_poutl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Percentage of outliers.</p>
+<p>E       :   Ensemble class instance
+obs     :   observation array the same 2D size.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_rps">
+<code class="descname">compute_rps</code><span class="sig-paren">(</span><em>thresholds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_rps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_rps" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>thresholds</strong> &#8211; 1D list/array, and in same order
+of first dimension of pfg.</li>
+<li><strong>self.pfg</strong> &#8211; 3D array: [probability index,lat,lon]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note:
+RPSg is the grid-point RPS.
+RPS is the area-average (ranked probability score)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.heaviside">
+<code class="descname">heaviside</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.heaviside"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.heaviside" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.rank_hist">
+<code class="descname">rank_hist</code><span class="sig-paren">(</span><em>obdata</em>, <em>ensdata</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.rank_hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.rank_hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for rank histogram over 3D.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

@@ -51,10 +51,15 @@
 <span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 
 <div class="viewcode-block" id="LazyWRF"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF">[docs]</a><span class="k">class</span> <span class="nc">LazyWRF</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sched</span><span class="p">,</span><span class="n">path_to_WRF</span><span class="p">,</span><span class="n">path_to_wrfout</span><span class="p">,</span><span class="n">submit_fname</span><span class="p">,</span>
+    <span class="sd">&quot;&quot;&quot; Designed for running multiple runs from the same folder.</span>
+
+<span class="sd">    For parallel ensemble generation, use LazyEnsemble child class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path_to_WRF</span><span class="p">,</span><span class="n">path_to_wrfout</span><span class="p">,</span><span class="n">submit_fname</span><span class="p">,</span>
                     <span class="n">submit_ideal_fname</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">path_to_storage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">submit_real_fname</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">path_to_WPS</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">path_to_atmos</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">path_to_soil</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                    <span class="n">path_to_WPS</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">path_to_atmos</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">path_to_soil</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">sched</span><span class="o">=</span><span class="s1">&#39;slurm&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sched</span> <span class="o">=</span> <span class="n">sched</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path_to_WRF</span> <span class="o">=</span> <span class="n">path_to_WRF</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path_to_wrfout</span> <span class="o">=</span> <span class="n">path_to_wrfout</span>
@@ -421,7 +426,8 @@
             <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;Running </span><span class="si">%s</span><span class="s1"> has failed. Check </span><span class="si">%s</span><span class="s1">.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">exe</span><span class="p">,</span><span class="n">log</span><span class="p">)))</span>
             <span class="k">raise</span> <span class="ne">Exception</span></div>
 
-<div class="viewcode-block" id="LazyWRF.generate_date"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.generate_date">[docs]</a>    <span class="k">def</span> <span class="nf">generate_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">date</span><span class="p">,</span><span class="n">outstyle</span><span class="o">=</span><span class="s1">&#39;wps&#39;</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="LazyWRF.generate_date"><a class="viewcode-back" href="../../../evac.lazy.lazywrf.html#evac.lazy.lazywrf.LazyWRF.generate_date">[docs]</a>    <span class="k">def</span> <span class="nf">generate_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span><span class="n">outstyle</span><span class="o">=</span><span class="s1">&#39;wps&#39;</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot; Creates date string for namelist files.</span>
 
 <span class="sd">            Input:</span>

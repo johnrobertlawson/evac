@@ -46,6 +46,37 @@
 <h1><cite>utils.unix_tools</cite><a class="headerlink" href="#utils-unix-tools" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="module-evac.utils.unix_tools"></span><p>Utility scripts to help with directory, file, etc issues</p>
 <dl class="function">
+<dt id="evac.utils.unix_tools.bridge">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">bridge</code><span class="sig-paren">(</span><em>command</em>, <em>frompath</em>, <em>topath</em>, <em>catch_overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#bridge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.bridge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy, move, soft-link.</p>
+<p>Args:</p>
+<dl class="docutils">
+<dt>command</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(str) - must be one of &#8220;copy&#8221;, &#8220;softlink&#8221;,</span><dd>&#8220;move&#8221;.</dd>
+</dl>
+<p>frompath    :   (str,Path) - absolute path to origin directory or file
+topath      :   (str,Path) - absolute path to destination directory or</p>
+<blockquote>
+<div>file. If topath is only a directory, the link will
+be the same filename as the origin.</div></blockquote>
+<dl class="docutils">
+<dt>catch_overwrite</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(bool) - if True, raise Exception if</span><dd>topath already exists</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.bridge_multi">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">bridge_multi</code><span class="sig-paren">(</span><em>D</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#bridge_multi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.bridge_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Soft-link, copy, or move multiple items.</p>
+<p>D   :   dictionary with the following layout:
+dict( (frompath,topath)=cmd)</p>
+<p>where</p>
+<p>cmd is &#8216;copy&#8217;,&#8217;softlink&#8217;, or &#8216;move&#8217;
+frompath/topath is absolute path of origin/destination</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="evac.utils.unix_tools.dir_from_naming">
 <code class="descclassname">evac.utils.unix_tools.</code><code class="descname">dir_from_naming</code><span class="sig-paren">(</span><em>root</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#dir_from_naming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.dir_from_naming" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate file path from arguments</p>
@@ -60,9 +91,60 @@ args     :    list of arguments to join as separate folders</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="evac.utils.unix_tools.enforce_pathobj">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">enforce_pathobj</code><span class="sig-paren">(</span><em>obj</em>, <em>path_type='posix'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#enforce_pathobj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.enforce_pathobj" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.softlink">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">softlink</code><span class="sig-paren">(</span><em>frompath</em>, <em>topath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#softlink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.softlink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arguments must be path objects or strings.</p>
+<p>Args:</p>
+<p>frompath    :   (str,Path) - absolute path to origin directory or file
+topath      :   (str,Path) - absolute path to destination directory or</p>
+<blockquote>
+<div>file. If topath is only a directory, the link will
+be the same filename as the origin.</div></blockquote>
+</dd></dl>
+
+<dl class="function">
 <dt id="evac.utils.unix_tools.ssh_client">
 <code class="descclassname">evac.utils.unix_tools.</code><code class="descname">ssh_client</code><span class="sig-paren">(</span><em>ky</em>, <em>domain</em>, <em>username</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#ssh_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.ssh_client" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.trycreate">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">trycreate</code><span class="sig-paren">(</span><em>loc</em>, <em>parents=True</em>, <em>exist_ok=True</em>, <em>loc_is_dir=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#trycreate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.trycreate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Args:</p>
+<dl class="docutils">
+<dt>loc</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(Path,str) - path-like object or string to directory</span><dd>or file. If loc is a directory, this method will attempt to
+create a folder if it doesn&#8217;t already exist. If loc is
+a file, its parent directory will be treated as loc.</dd>
+</dl>
+<p>parents  :   (bool) - if True, then equivalent to mkdir -p &lt;/path/&gt;
+exist_ok    :   (bool) - if True, then warnings are ignored about folder already</p>
+<blockquote>
+<div>existing.</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.wowprint">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">wowprint</code><span class="sig-paren">(</span><em>message</em>, <em>color='red'</em>, <em>bold=True</em>, <em>underline=False</em>, <em>formatargs=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#wowprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.wowprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print with colour/bold colorasis on certain things!</p>
+<dl class="docutils">
+<dt>message</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(str) - string with any colorasised</span><dd>item surrounded by two asterisks on both
+sides. These are replaced.</dd>
+<dt>color</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(str,bool) - the colour of the colorasised</span><dd>text. If False, don&#8217;t colorasise.</dd>
+</dl>
+<p>Usage:</p>
+<p>wowprint(&#8220;The program <strong>prog</strong> is broken&#8221;,color=&#8217;red&#8217;)
+wowprint(&#8220;The program {} is broken&#8221;,formatargs=(&#8216;prog&#8217;,),color=&#8217;blue&#8217;,</p>
+<blockquote>
+<div>underline=True)</div></blockquote>
+</dd></dl>
 
 </div>
 

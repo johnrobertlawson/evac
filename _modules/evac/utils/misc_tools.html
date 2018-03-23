@@ -42,12 +42,38 @@
           <div class="body" role="main">
             
   <h1>Source code for evac.utils.misc_tools</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; Miscellaneous functions.</span>
+<span></span><span class="sd">&quot;&quot;&quot; Miscellaneous functions like decorators.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">time</span>
 
-<div class="viewcode-block" id="some_tool"><a class="viewcode-back" href="../../../evac.utils.misc_tools.html#evac.utils.misc_tools.some_tool">[docs]</a><span class="k">def</span> <span class="nf">some_tool</span><span class="p">():</span>
+<div class="viewcode-block" id="time_me"><a class="viewcode-back" href="../../../evac.utils.misc_tools.html#evac.utils.misc_tools.time_me">[docs]</a><span class="k">def</span> <span class="nf">time_me</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Decorator for timing functions.</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">    @time_me</span>
+<span class="sd">    def function():</span>
+<span class="sd">        pass</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">timed</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;function </span><span class="si">{}</span><span class="s1"> took </span><span class="si">{:2.3f}</span><span class="s1"> sec&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span><span class="n">t1</span><span class="o">-</span><span class="n">t0</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">return</span> <span class="n">timed</span></div>
+
+<div class="viewcode-block" id="loop_me"><a class="viewcode-back" href="../../../evac.utils.misc_tools.html#evac.utils.misc_tools.loop_me">[docs]</a><span class="k">def</span> <span class="nf">loop_me</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TODO: a decorator function that loops an existing function</span>
+<span class="sd">    over all arguments passed.</span>
+
+<span class="sd">    args should be a list of 1D numpy arrays, tuples, or lists</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 </pre></div>
 

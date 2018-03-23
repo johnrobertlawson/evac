@@ -107,7 +107,7 @@
 <span class="sd">                    &#39;kt_mph&#39; converts from knots to mph.</span>
 <span class="sd">                    &#39;mph_kt&#39; converts from mph to knots.</span>
 <span class="sd">                    &#39;mph_ms&#39; converts from mph to m/s.</span>
-<span class="sd">    Todo: </span>
+<span class="sd">    Todo:</span>
 <span class="sd">        * add km/h</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">conversion</span> <span class="o">==</span> <span class="s1">&#39;ms_kt&#39;</span><span class="p">:</span>
@@ -618,11 +618,6 @@
     <span class="n">thin_locs</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">plocs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">thin_locs</span> <span class="c1"># Locations of data at thinned levels</span></div>
 
-<div class="viewcode-block" id="trycreate"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.trycreate">[docs]</a><span class="k">def</span> <span class="nf">trycreate</span><span class="p">(</span><span class="n">loc</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="padded_times"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.padded_times">[docs]</a><span class="k">def</span> <span class="nf">padded_times</span><span class="p">(</span><span class="n">timeseq</span><span class="p">):</span>
     <span class="n">padded</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{0:04d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">timeseq</span><span class="p">]</span>
@@ -1389,7 +1384,7 @@
 <span class="sd">        True if all arrays have the same size.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">arr</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span> 
+    <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
         <span class="n">shps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">a</span> <span class="o">==</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">])</span></div>
 </pre></div>

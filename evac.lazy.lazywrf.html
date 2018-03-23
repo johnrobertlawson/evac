@@ -47,8 +47,10 @@
 <h1><cite>lazy.lazywrf</cite><a class="headerlink" href="#lazy-lazywrf" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="module-evac.lazy.lazywrf"></span><dl class="class">
 <dt id="evac.lazy.lazywrf.LazyWRF">
-<em class="property">class </em><code class="descclassname">evac.lazy.lazywrf.</code><code class="descname">LazyWRF</code><span class="sig-paren">(</span><em>sched</em>, <em>path_to_WRF</em>, <em>path_to_wrfout</em>, <em>submit_fname</em>, <em>submit_ideal_fname=False</em>, <em>path_to_storage=False</em>, <em>submit_real_fname=False</em>, <em>path_to_WPS=False</em>, <em>path_to_atmos=False</em>, <em>path_to_soil=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">evac.lazy.lazywrf.</code><code class="descname">LazyWRF</code><span class="sig-paren">(</span><em>path_to_WRF</em>, <em>path_to_wrfout</em>, <em>submit_fname</em>, <em>submit_ideal_fname=False</em>, <em>path_to_storage=False</em>, <em>submit_real_fname=False</em>, <em>path_to_WPS=False</em>, <em>path_to_atmos=False</em>, <em>path_to_soil=False</em>, <em>sched='slurm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Designed for running multiple runs from the same folder.</p>
+<p>For parallel ensemble generation, use LazyEnsemble child class.</p>
 <dl class="method">
 <dt id="evac.lazy.lazywrf.LazyWRF.add_new_namelist">
 <code class="descname">add_new_namelist</code><span class="sig-paren">(</span><em>suffix</em>, <em>section</em>, <em>sett</em>, <em>newval</em>, <em>quoted</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.add_new_namelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.add_new_namelist" title="Permalink to this definition">¶</a></dt>
@@ -98,9 +100,9 @@ args = names of folder tree, in order of depth.</p>
 </table>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="evac.lazy.lazywrf.LazyWRF.generate_date">
-<code class="descname">generate_date</code><span class="sig-paren">(</span><em>date</em>, <em>outstyle='wps'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.generate_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.generate_date" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">generate_date</code><span class="sig-paren">(</span><em>date</em>, <em>outstyle='wps'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.generate_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.generate_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates date string for namelist files.</p>
 <p>Input:</p>
 </dd></dl>
