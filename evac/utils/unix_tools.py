@@ -19,9 +19,17 @@ def bridge_multi(D):
     Soft-link, copy, or move multiple items.
 
     D   :   dictionary with the following layout:
+    dict( (frompath,topath)=cmd)
+    
+    where
+    
+    cmd is 'copy','softlink', or 'move'
+    frompath/topath is absolute path of origin/destination
             
     """
-    pass
+    for (frompath,topath),cmd in D.items():
+        bridge(cmd,frompath,topath)
+    return
 
 def bridge(command,frompath,topath,catch_overwrite=True):
     """ Copy, move, soft-link.
@@ -119,7 +127,28 @@ def wowprint(string,color='red',bold=True,underline=False,formatargs=False):
         pass
     
     return
-
+    
+    
+def trycreate(loc, parents=True):
+    """
+    Args:
+    
+    loc     :   (Path,str) - path-like object or string to directory
+                or file. If loc is a directory, this method will attempt to
+                create a folder if it doesn't already exist. If loc is
+                a file, its parent directory will be treated as loc.
+    parents  :   (bool) - if True, then equivalent to mkdir -p </path/>
+    """
+    l = enforce_pathobj(loc)
+    
+    # Does the location exist?
+    if not l.exists:
+        # If so, is it a directory?
+        if not l.is_dir():
+            l = l.parent
+        l.mkdir(parents=parents)
+    return
+    
 def move(frompath,topath,catch_overwrite=True):
     """ Arguments must be path objects or strings.
     

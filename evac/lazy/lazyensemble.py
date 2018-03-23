@@ -18,7 +18,7 @@ class LazyEnsemble:
     def __init__(self,path_to_exedir,path_to_datadir, path_to_namelistdir,
                     path_to_icbcdir,path_to_outdir,path_to_batch,initutc,
                     sched='slurm',path_to_rundir=False,delete_exe_copy=False,
-                    ndoms=1,):
+                    ndoms=1,nmems=0,membernames=False):
         """
         Args:
         
@@ -48,7 +48,15 @@ class LazyEnsemble:
                                 will be deleted after the run is finished.
                                 The default is no, as numerous ensembles
                                 can use the same run folders, potentially.
+        ndoms               :   (int) - number of domains
+        nmems               :   (int) - number of members. If zero,
+                                try counting length of membernames.
+        membernames         :   (list,tuple) - list of strings for
+                                member names. If False, use automatic
         """
+        # Check - must have either number of members or a list of names
+        assert isinstance(membernames,(list,tuple)) or (nmems > 0)
+        
         # PATH OBJECTS
         self.exedir = PosixPath(path_to_exedir)
         self.datadir = PosixPath(path_to_datadir)
@@ -74,10 +82,32 @@ class LazyEnsemble:
         self.delete_exe_copy = delete_exe_copy
         
         # INIT PROCEDURE
+        # Get member names
+        if self.membernames is False:
+            self.nmems = nmems
+            self.membernames = ['mem{:02d}'.format(n) for n in
+                                N.arange(1,self.nmems+1)]
+        else:
+            self.membernames = membernames
+            self.nmems = len(self.membernames)
+        
         # Lookup dictionary of all members
-        self.members = {}
+        self.members = catalog_members()
         
         # TO DO - how to automate nests too
+        
+    def catalog_members(self,):
+        """ Create the members dictionary.
+        """
+        members = {}
+        for mem in N.arange(self.membernames):
+            mem_datadir = self.datadir / mem
+            utils.trycreate(mem_datadir)
+            
+            mem_rundir = self.wrfrundir / mem
+            members[mem] = {'datadir':mem_datadir,
+                                    'rundir':mem_rundir,}
+        return members
         
     def copy(self,*args,**kwargs):
         """ Wrapper for self.bridge()
@@ -136,17 +166,22 @@ class LazyEnsemble:
     def batchscript_for_member(self,member):
         """ Edit parts of the batch submission script.
         """
-        # Number of member
-        memberno = 0
-        
-        jobname = 'crashy_mccrashface_{:02d}'.format(
-                        memberno)
+        jobname = 'wrf_{}'.format(member)
         path_to_err = (self.wrfrundir / jobname).with_suffix('.err')
         path_to_out = (self.wrfrundir / jobname).with_suffix('.out')
         command = ''.format()
         
-        # Change required lines here
-        # TODO
+        # First, changing the job name.
+        # Note the print literals marked with "f" from Python 3.6)
+        changes = dict("#SBATCH -J" = f"#SBATCH -J {jobname}",
+        
+        # Next, the output and error files
+                        "#SBATCH -o" = f"#SBATCH -o {path_to_err}",
+                        "#SBATCH -e" = f"#SBATCH -e {path_to_out}",
+        
+        # Next the command
+                        ""
+        
         for key,newline in zip(keys,newlines):
             edit_batchscript(self,self.members[member]['path_to_batch'],
                             key,newline)
@@ -172,13 +207,30 @@ class LazyEnsemble:
         # Generate README for each dir?
         return
 
-    def run_wrf_member(self,member):
+    def run_wrf_member(self,member,prereqs):
         """ Submit a wrf run to batch scheduler.
+        
+        member  :   (str) - name of member to run
+        prereqs :   (dict) - a dictionary containing prerequisite files
+                    needed in rundir. use this format:
+                    
+                    dict( path_to_file = cmd)
+                    
+                    where path_to_file is the absolute path to
+                    the file in question (as str or Path obj) and
+                    cmd is from ['copy','move','softlink'].
         """
+        # These two may well be identical.
+        rundir = self.members[member]['rundir']
+        datadir =  self.members[member]['datadir']
         
-        # Make sure run directory exists
+        # Get dictionary in correct format for bridge_multi
+        PRQs = {}
+        for k,v in prereqs.items():
+            PRQs[(k,rundir)] = v
         
-        # Copy, link, move everything needed
+        # Copy, link, move everything needed to rundir
+        utils.bridge_multi(PRQs)
         
         # Edit batch script
         # use self.cpus_per_job and self.nodes_per_job

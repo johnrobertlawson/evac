@@ -63,7 +63,7 @@ def convert_velocity_units(V,conversion):
                     'kt_mph' converts from knots to mph.
                     'mph_kt' converts from mph to knots.
                     'mph_ms' converts from mph to m/s.
-    Todo: 
+    Todo:
         * add km/h
     """
     if conversion == 'ms_kt':
@@ -574,11 +574,6 @@ def thinned_barbs(pres):
     thin_locs = N.array(plocs)
     return thin_locs # Locations of data at thinned levels
 
-def trycreate(loc):
-    try:
-        os.stat(loc)
-    except:
-        os.makedirs(loc)
 
 def padded_times(timeseq):
     padded = ['{0:04d}'.format(t) for t in timeseq]
@@ -1345,6 +1340,6 @@ def check_same_dimensions(*args):
         True if all arrays have the same size.
     """
     arr = []
-    for arr in args: 
+    for arr in args:
         shps.append(arr.shape)
     return all([a == arr[0] for a in arr])
