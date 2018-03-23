@@ -91,7 +91,7 @@ def bridge(frompath,topath,mv=False,cp=False,ln=False):
 
     Create folder if it doesn't exist
     """
-    if (mv,cp,ln).sum() != 1:
+    if sum([mv,cp,ln]) != 1:
         raise Exception("Choose one of mv, ln, cp commands.")
     todir, tofile = os.path.split(topath)
     trycreate(todir)
