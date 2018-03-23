@@ -4,6 +4,8 @@ import datetime
 from pathlib import PosixPath
 import subprocess
 
+import numpy as N
+
 import evac.utils as utils
 from evac.lazy.lazywrf import LazyWRF
 from evac.utils.exceptions import WRFError
