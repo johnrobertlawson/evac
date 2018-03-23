@@ -252,19 +252,19 @@ class LazyEnsemble:
         """
         nlpath = self.members[member]['rundir'] / 'namelist.input'
 
-        changes = dict('start_year'=self.initutc.year,
-                        'start_month'=self.initutc.month,
-                        'start_day'=self.initutc.day,
-                        'start_hour'=self.initutc.hour,
-                        'start_minute'=self.initutc.minute,
-                        'start_second'=self.initutc.second,
+        changes = dict(start_year=self.initutc.year,
+                        start_month=self.initutc.month,
+                        start_day=self.initutc.day,
+                        start_hour=self.initutc.hour,
+                        start_minute=self.initutc.minute,
+                        start_second=self.initutc.second,
 
-                        'end_year'=self.endutc.year,
-                        'start_month'=self.endutc.month,
-                        'start_day'=self.endutc.day,
-                        'start_hour'=self.endutc.hour,
-                        'start_minute'=self.endutc.minute,
-                        'start_second'=self.endutc.second,
+                        end_year=self.endutc.year,
+                        start_month=self.endutc.month,
+                        start_day=self.endutc.day,
+                        start_hour=self.endutc.hour,
+                        start_minute=self.endutc.minute,
+                        start_second=self.endutc.second,
 
                         # We'll assume the output directory is just default
                         # history_outname would change where the wrfout goes
