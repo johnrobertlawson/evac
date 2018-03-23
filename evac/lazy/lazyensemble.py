@@ -260,11 +260,11 @@ class LazyEnsemble:
                         start_second=self.initutc.second,
 
                         end_year=self.endutc.year,
-                        start_month=self.endutc.month,
-                        start_day=self.endutc.day,
-                        start_hour=self.endutc.hour,
-                        start_minute=self.endutc.minute,
-                        start_second=self.endutc.second,
+                        end_month=self.endutc.month,
+                        end_day=self.endutc.day,
+                        end_hour=self.endutc.hour,
+                        end_minute=self.endutc.minute,
+                        end_second=self.endutc.second,
 
                         # We'll assume the output directory is just default
                         # history_outname would change where the wrfout goes
