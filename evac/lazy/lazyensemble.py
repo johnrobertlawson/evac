@@ -141,7 +141,7 @@ class LazyEnsemble:
             self.nmems = len(self.membernames)
 
         # Lookup dictionary of all members
-        self.members = catalog_members()
+        self.members = self.catalog_members()
 
         if not isinstance(icbcs,dict):
             fnames = ['wrfinput_d{:02d}'.format(n)
