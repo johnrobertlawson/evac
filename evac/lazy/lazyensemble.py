@@ -18,6 +18,11 @@ class LazyEnsemble:
 
     User must specify either endutc or runsec.
 
+    The initial and boundary conditions are copied from path_to_icbcdir
+    to path_to_rundir, using default names.
+
+    Member names, if automatically created, are "mem01", "mem02", etc
+
     Parent script should be run via batch submission. The procedure is:
 
     L = LazyEnsemble(*args,**kwargs)
@@ -28,8 +33,12 @@ class LazyEnsemble:
                     path_to_icbcdir,path_to_outdir,path_to_batch,initutc,
                     sched='slurm',path_to_rundir=False,delete_exe_copy=False,
                     ndoms=1,nmems=0,membernames=False,
-                    endutc=False,runsec=False):
+                    endutc=False,runsec=False,nl_per_member=True,
+                    nl_suffix='name',icbcs=None,dryrun=False):
         """
+        Note that WRF can run with initial and boundary conditions from
+        only the parent domain (d01).
+
         Args:
 
         path_to_exedir      :   (str) - directory of compiled WRF executables
@@ -65,6 +74,18 @@ class LazyEnsemble:
                                 member names. If False, use automatic
         endutc              :   (datetime.datetime) - time to end simulation
         runsec              :   (int) - seconds of simulation time
+        nl_per_member       :   (bool) - if True, each member has their
+                                own namelist file in path_to_namelistdir,
+                                where each member's namelist is the file
+                                namelist.input.<nl_suffix> - see next
+        nl_suffix           :   (str) - if 'name', the suffix will be the
+                                member name (either passed in or automatically
+                                generated).
+        icbcs               :   (dict) - dictionary of {member:filenames}
+                                where 'filenames' are a list/tuple of initial
+                                and boundary condition files, copied to rundir
+        dryrun              :   (bool) - if True, don't delete any files
+                                or submit any runs.
         """
         # Check - must have either number of members or a list of names
         assert isinstance(membernames,(list,tuple)) or (nmems > 0)
@@ -78,7 +99,7 @@ class LazyEnsemble:
             runsec = (endutc - initutc).seconds()
             assert runsec > 0
 
-        # PATH OBJECTS
+        # PATH OBJECTS - see pathlib documentation
         self.exedir = PosixPath(path_to_exedir)
         self.datadir = PosixPath(path_to_datadir)
         self.namelistdir = PosixPath(path_to_namelistdir)
@@ -97,6 +118,7 @@ class LazyEnsemble:
         self.initutc = initutc
 
         self.sched = sched
+        self.dryrun = dryrun
 
         # Number of domains
         self.ndoms = ndoms
@@ -116,6 +138,17 @@ class LazyEnsemble:
 
         # Lookup dictionary of all members
         self.members = catalog_members()
+
+        if not isisntance(icbcs,dict):
+            fnames = ['wrfinput_d{:02d}'.format(n)
+                        for n in N.arange(1,nens+1))] + [
+                        'wrfbdy_d{:02d}'.format(n)
+                        for n in N.arange(1,nens+1))]
+            for member in self.members.keys():
+                self.members[member]['icbcs'] = self.membernames
+        else:
+            for member in self.members.keys():
+                self.members[member]['icbcs'] = icbc[member]
 
         # TO DO - how to automate nests too
         # For now, everything in same folder.
@@ -208,6 +241,8 @@ class LazyEnsemble:
         start/end year, month, day, hour, minute, second
 
         Use multiplied notation by number of domains (self.ndoms)
+
+        Assume that everything else in namelist is correct for member
         """
         nlpath = self.members[member]['rundir'] / 'namelist.input'
 
@@ -226,27 +261,17 @@ class LazyEnsemble:
                         'start_second':self.endutc.second,
 
                         # We'll assume the output directory is just default
-
+                        # history_outname would change where the wrfout goes
         )
 
         for key,newline in changes.items():
             utils.edit_namelist(nlpath,key,newline,doms=self.ndoms)
 
-    def run_all_members(self,cpus=0,nodes=1,):
+    def run_all_members(self,prereqs,**kwargs):
         """ Automatically submit all jobs to the scheduler.
-        """
-        self.cpus_per_job = cpus
-        self.nodes_per_job = nodes
-        for member in self.members:
-            self.run_wrf_member(member)
+        See run_wrf_member() and check_complete() for keyword arguments.
 
-        # Generate README for each dir?
-        return
-
-    def run_wrf_member(self,member,prereqs,dryrun=False):
-        """ Submit a wrf run to batch scheduler.
-
-        member  :   (str) - name of member to run
+        Args:
         prereqs :   (dict) - a dictionary containing prerequisite files
                     needed in rundir. use this format:
 
@@ -255,8 +280,29 @@ class LazyEnsemble:
                     where path_to_file is the absolute path to
                     the file in question (as str or Path obj) and
                     cmd is from ['copy','move','softlink'].
-        dryrun  :   stop just before submission in debug mode.
+
+                    Don't include initial, boundary conditions (these are
+                    different for every member and are copied automatically)
+                    or namelist files (ditto).
         """
+        # Submit these in parallel...
+        for member in self.members:
+            self.run_wrf_member(member,prereqs,**kwargs)
+
+        # Generate README for each dir?
+        return
+
+    def run_wrf_member(self,member,prereqs,cpus=0,nodes=1,
+                        sleep=30,firstwait=3600,
+                        maxtime=(24*3600),):
+        """ Submit a wrf run to batch scheduler.
+
+        member  :   (str) - name of member to run
+
+        """
+        self.cpus_per_job = cpus
+        self.nodes_per_job = nodes
+
         # These two may well be identical.
         rundir = self.members[member]['rundir']
         datadir =  self.members[member]['datadir']
@@ -270,28 +316,28 @@ class LazyEnsemble:
         utils.bridge_multi(PRQs)
 
         # Edit batch script
-        # use self.cpus_per_job and self.nodes_per_job
+        # use self.cpus_per_job and self.nodes_per_job?
+        self.batchscript_for_member(member)
 
         # Edit namelist?
-
-        # Check output directory exists
-        # and is written in namelist
+        self.namelist_for_member(member)
 
         # Submit script
         batchloc = datadir / self.batchname
         cmd = "sbatch f{batchloc}"
-        if dryrun:
+        if self.dryrun:
             pdb.set_trace()
             raise Exception("Exiting - dry run.")
         os.system(cmd)
 
         # Monitor processes
-
+        self.check_complete(member,sleep=sleep,firstwait=firstwait,
+                            maxtime=maxtime)
         # Create README?
 
         # Clean up files
 
-    def cleanup(self,folder,files,dryrun=False):
+    def cleanup(self,folder,files):
         """ Deletes files in given directory that match a glob.
 
         Args:
@@ -307,7 +353,7 @@ class LazyEnsemble:
         for file in files:
             fs = folder.glob(file)
             for f in fs:
-                if dryrun:
+                if self.dryrun:
                     utils.wowprint(f"Pretend deleting **{f}**.",color='blue')
                 else:
                     # This means delete!
