@@ -94,9 +94,69 @@ def bridge(frompath,topath,mv=False,cp=False,ln=False):
     if (mv,cp,ln).sum() != 1:
         raise Exception("Choose one of mv, ln, cp commands.")
     todir, tofile = os.path.split(topath)
-    utils.trycreate(todir)
+    trycreate(todir)
     if mv:
         cmd = "mv {} {}".format(frompath,topath)
+
+def trycreate(loc, parents=True):
+    """
+    Args:
+
+    loc     :   (Path,str) - path-like object or string to directory
+                or file. If loc is a directory, this method will attempt to
+                create a folder if it doesn't already exist. If loc is
+                a file, its parent directory will be treated as loc.
+    parents  :   (bool) - if True, then equivalent to mkdir -p </path/>
+    """
+    l = enforce_pathobj(loc)
+
+    # Does the location exist?
+    if not l.exists:
+        # If so, is it a directory?
+        if not l.is_dir():
+            l = l.parent
+        l.mkdir(parents=parents)
+    return
+
+
+def softlink(frompath,topath):
+    """ Arguments must be path objects or strings.
+
+    Args:
+
+    frompath    :   (str,Path) - absolute path to origin directory or file
+    topath      :   (str,Path) - absolute path to destination directory or
+                    file. If topath is only a directory, the link will
+                    be the same filename as the origin.
+    """
+
+    # Use path-like objects
+    frompath = enforce_pathobj(frompath)
+    topath = enforce_pathobj(topath)
+
+    # Check whether paths are files or directories
+    #frompath.isfile()?
+
+    #if not fname:
+        # todir is a path to the new link
+        # assert # Check this is file name and not directory
+        # topath = todir
+    # else:
+        #topath = enforce_pathobj(topath) / fname
+
+    frompath.symlink_to(topath)
+
+    return
+
+def enforce_pathobj(obj,path_type='posix'):
+    objs = {'posix':PosixPath}
+    if isinstance(obj,str):
+        return objs[path_type](obj)
+    elif issubclass(obj,Path):
+        return obj
+    else:
+        raise Exception("Object is neither path nor path-like object.")
+
 
 def dir_from_naming(root,*args):
     """
