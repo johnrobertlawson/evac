@@ -96,7 +96,7 @@ def bridge(frompath,topath,mv=False,cp=False,ln=False):
     todir, tofile = os.path.split(topath)
     utils.trycreate(todir)
     if mv:
-        cmd = "mv {} {}".format(frompath,topath))
+        cmd = "mv {} {}".format(frompath,topath)
 
 def dir_from_naming(root,*args):
     """
