@@ -2,6 +2,7 @@ import os
 import pdb
 import datetime
 from pathlib import PosixPath
+import subprocess
 
 import evac.utils as utils
 from evac.lazy.lazywrf import LazyWRF
@@ -15,6 +16,8 @@ class LazyEnsemble:
 
     Will not work on Windows systems due to hardcoded PosixPath.
 
+    User must specify either endutc or runsec.
+
     Parent script should be run via batch submission. The procedure is:
 
     L = LazyEnsemble(*args,**kwargs)
@@ -24,7 +27,8 @@ class LazyEnsemble:
     def __init__(self,path_to_exedir,path_to_datadir, path_to_namelistdir,
                     path_to_icbcdir,path_to_outdir,path_to_batch,initutc,
                     sched='slurm',path_to_rundir=False,delete_exe_copy=False,
-                    ndoms=1,nmems=0,membernames=False):
+                    ndoms=1,nmems=0,membernames=False,
+                    endutc=False,runsec=False):
         """
         Args:
 
@@ -59,9 +63,20 @@ class LazyEnsemble:
                                 try counting length of membernames.
         membernames         :   (list,tuple) - list of strings for
                                 member names. If False, use automatic
+        endutc              :   (datetime.datetime) - time to end simulation
+        runsec              :   (int) - seconds of simulation time
         """
         # Check - must have either number of members or a list of names
         assert isinstance(membernames,(list,tuple)) or (nmems > 0)
+
+        # we need one of these optional arguments to compute run time
+        if (endutc is False) and (runsec is False):
+            raise Exception("Specific endutc or runsec.")
+        elif runsec:
+            endutc = initutc + datetime.timedelta(seconds=runsec)
+        elif endutc:
+            runsec = (endutc - initutc).seconds()
+            assert runsec > 0
 
         # PATH OBJECTS
         self.exedir = PosixPath(path_to_exedir)
@@ -105,7 +120,7 @@ class LazyEnsemble:
         # TO DO - how to automate nests too
         # For now, everything in same folder.
         utils.wowprint("Ensemble **created!**",color='purple',bold=True)
-        utils.wowprint("Ensemble **created!**",color='purple',bold=True)
+        utils.wowprint("Now do **run_all_members()**.",color='yellow',bold=True)
 
     def catalog_members(self,):
         """ Create the members dictionary.
@@ -194,6 +209,28 @@ class LazyEnsemble:
 
         Use multiplied notation by number of domains (self.ndoms)
         """
+        nlpath = self.members[member]['rundir'] / 'namelist.input'
+
+        changes = dict('start_year':self.initutc.year,
+                        'start_month':self.initutc.month,
+                        'start_day':self.initutc.day,
+                        'start_hour':self.initutc.hour,
+                        'start_minute':self.initutc.minute,
+                        'start_second':self.initutc.second,
+
+                        'end_year':self.endutc.year,
+                        'start_month':self.endutc.month,
+                        'start_day':self.endutc.day,
+                        'start_hour':self.endutc.hour,
+                        'start_minute':self.endutc.minute,
+                        'start_second':self.endutc.second,
+
+                        # We'll assume the output directory is just default
+
+        )
+
+        for key,newline in changes.items():
+            utils.edit_namelist(nlpath,key,newline,doms=self.ndoms)
 
     def run_all_members(self,cpus=0,nodes=1,):
         """ Automatically submit all jobs to the scheduler.
@@ -254,14 +291,37 @@ class LazyEnsemble:
 
         # Clean up files
 
-    def cleanup(self,folder,files):
+    def cleanup(self,folder,files,dryrun=False):
         """ Deletes files in given directory that match a glob.
-        """
-        pass
 
-    def check_complete(self,member,raise_error=False,sleep=10,firstwait=3600,
+        Args:
+
+        folder      :   (path-like object) - this is where to clean up.
+        files       :   (str,list,tuple) - a list of strings, or a string,
+                        to match glob. For instance, "rsl*".
+        """
+        if isinstance(files,str):
+            files = [files,]
+
+        # Search for these files
+        for file in files:
+            fs = folder.glob(file)
+            for f in fs:
+                if dryrun:
+                    utils.wowprint(f"Pretend deleting **{f}**.",color='blue')
+                else:
+                    # This means delete!
+                    f.unlink()
+        return
+
+    def check_complete(self,member,raise_error=False,sleep=30,firstwait=3600,
                         maxtime=(24*3600)):
         """ Check ensemble member to see if wrf run has finished.
+
+        Returns:
+        True if WRF exits successfully.
+        False if not (and if raise_error is False, otherwise Exception)
+        Does not exit, if maxtime is N.inf and if WRF does not exit
 
         Args:
         raise_error     :   (bool) - if True, pass a WRFError as return
@@ -270,13 +330,30 @@ class LazyEnsemble:
         firstwait       :   (int) - number of seconds to wait after submission
                             before checks
         maxtime         :   (int) - number of seconds after which the
-                            method will assume the member's run has died
+                            method will assume the member's run has died.
+                            If this is infinity, script will NEVER DIE!
         """
         # Don't bother wasting resources etc checking for a run to finish
         time.sleep(firstwait)
+        elapsed = firstwait
         while True:
-            rsl = self.members[member]['rundir'] / 'rsl.error.0000'vim
-
+            rsl = self.members[member]['rundir'] / 'rsl.error.0000'
+            tailrsl = subprocess.Popen(f'tail {rsl}',shell=True,
+                                        stdout=subprocess.PIPE)
+            tailoutput = tailrsl.stdout.read()
+            if b"SUCCESS COMPLETE WRF" in tailoutput:
+                print("WRF has finished; moving to next case.")
+                return True
+            else:
+                # Need to check if job has died! If so, kill script, warn user
+                time.sleep(sleep) # Try again in x sec
+                elapsed += sleep
+                # Check if we've passed the maxtime
+                if elapsed > maxtime:
+                    if raise_error:
+                        raise WRFError("WRF run assumed dead. Exiting.")
+                    else:
+                        return False
 
     def run_real_member(self,):
         """ Submit real.exe to batch scheduler.
