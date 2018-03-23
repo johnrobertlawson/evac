@@ -82,7 +82,7 @@ def wowprint(string,color='red',bold=True,underline=False,formatargs=False):
                             underline=True)
     """
     # If nothing is set, pass through without changes
-    if not all(color,bold,underline,formatargs):
+    if not all([color,bold,underline,formatargs]):
         return string
 
 def bridge(frompath,topath,mv=False,cp=False,ln=False):
