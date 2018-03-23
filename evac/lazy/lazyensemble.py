@@ -234,7 +234,7 @@ class LazyEnsemble:
         # Make sure we're in the right directory
                 "cd" : "cd {}".format(rundir),
         # Next the wrf submit command
-                -1 : command)
+                -1 : command}
 
         for key,newline in changes.items():
             edit_batchscript(self,batchpath,key,newline)
