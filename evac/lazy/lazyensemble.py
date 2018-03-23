@@ -132,7 +132,7 @@ class LazyEnsemble:
 
         # INIT PROCEDURE
         # Get member names
-        if self.membernames is False:
+        if membernames is False:
             self.nmems = nmems
             self.membernames = ['mem{:02d}'.format(n) for n in
                                 N.arange(1,self.nmems+1)]
