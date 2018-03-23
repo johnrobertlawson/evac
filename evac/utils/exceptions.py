@@ -37,3 +37,8 @@ class NonsenseError(PrettyException):
     """
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
+
+class WRFError(PrettyException):
+    """ WRF run has broken somewhere. """
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
