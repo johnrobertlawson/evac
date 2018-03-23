@@ -152,7 +152,7 @@ def enforce_pathobj(obj,path_type='posix'):
     objs = {'posix':PosixPath}
     if isinstance(obj,str):
         return objs[path_type](obj)
-    elif issubclass(obj,PosixPath):
+    elif isinstance(obj,PosixPath):
         return obj
     else:
         raise Exception("Object is neither path nor path-like object.")
