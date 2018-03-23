@@ -5,6 +5,7 @@ Utility scripts to help with directory, file, etc issues
 import pdb
 import os
 import base64
+from pathlib import Path, PosixPath
 
 import utils
 
@@ -15,12 +16,74 @@ except ImportError:
 
 def bridge_multi(D):
     """
-    Soft-link, copy, or move items.
+    Soft-link, copy, or move multiple items.
 
     D   :   dictionary with the following layout:
-            '<'
+    dict( (frompath,topath)=cmd)
+
+    where
+
+    cmd is 'copy','softlink', or 'move'
+    frompath/topath is absolute path of origin/destination
+
     """
-    pass
+    for (frompath,topath),cmd in D.items():
+        bridge(cmd,frompath,topath)
+    return
+
+def bridge(command,frompath,topath,catch_overwrite=True):
+    """ Copy, move, soft-link.
+
+    Args:
+
+    command     :   (str) - must be one of "copy", "softlink",
+                    "move".
+    frompath    :   (str,Path) - absolute path to origin directory or file
+    topath      :   (str,Path) - absolute path to destination directory or
+                    file. If topath is only a directory, the link will
+                    be the same filename as the origin.
+    catch_overwrite     :   (bool) - if True, raise Exception if
+                            topath already exists
+    """
+
+    # Use path-like objects
+    frompath = enforce_pathobj(frompath)
+    topath = enforce_pathobj(topath)
+
+    if catch_overwrite and topath.exists():
+        raise Exception("{} already exists.".format(topath))
+
+    if command is "copy":
+        # This is ridiculous, but that's what I get for using sodding pathlib
+        topath.write_bytes(frompath.read_bytes())
+    elif command is "move":
+        # This replaces an existing 'topath' silently
+        frompath.rename(topath)
+    elif command is "softlink":
+        frompath.symlink_to(topath)
+    else:
+        raise NonsenseError("The command variable **{}** is invalid".format(
+                        command),color='red')
+    return
+
+def wowprint(string,color='red',bold=True,underline=False,formatargs=False):
+    """ Print with colour/bold colorasis on certain things!
+
+    string      :   (str) - string with any colorasised
+                    item surrounded by two asterisks on both
+                    sides. These are replaced.
+    color        :   (str,bool) - the colour of the colorasised
+                    text. If False, don't colorasise.
+
+    Usage:
+
+    wowprint("The program **prog** is broken",color='red')
+    wowprint("The program {} is broken",formatargs=('prog',),color='blue',
+                            underline=True)
+    """
+    # If nothing is set, pass through without changes
+    if not all(color,bold,underline,formatargs):
+        return string
 
 def bridge(frompath,topath,mv=False,cp=False,ln=False):
     """
