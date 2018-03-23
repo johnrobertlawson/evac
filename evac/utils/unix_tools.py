@@ -22,14 +22,18 @@ def bridge_multi(D):
     """
     pass
 
-def bridge(frompath,topath):
+def bridge(frompath,topath,mv=False,cp=False,ln=False):
     """
     Soft-link, copy, or move item.
-    
+
     Create folder if it doesn't exist
     """
-    tofile, todir = os.path.split(topath)
-    utils.trycreate()
+    if (mv,cp,ln).sum() != 1:
+        raise Exception("Choose one of mv, ln, cp commands.")
+    todir, tofile = os.path.split(topath)
+    utils.trycreate(todir)
+    if mv:
+        cmd = "mv {} {}".format(frompath,topath))
 
 def dir_from_naming(root,*args):
     """
