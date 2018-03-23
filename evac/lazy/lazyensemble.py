@@ -100,7 +100,7 @@ class LazyEnsemble:
         elif runsec:
             endutc = initutc + datetime.timedelta(seconds=runsec)
         elif endutc:
-            runsec = (endutc - initutc).seconds()
+            runsec = (endutc - initutc).seconds
             assert runsec > 0
 
         # PATH OBJECTS - see pathlib documentation
