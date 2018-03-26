@@ -200,7 +200,7 @@ class LazyEnsemble:
         linekey must be unambiguous, otherwise it will change the
         first occurence in the file that matches.
         """
-                
+
         fs = fpath.open()
         flines = fs.readlines()
         the_idx = None
@@ -292,7 +292,7 @@ class LazyEnsemble:
         for key,newline in changes.items():
             utils.edit_namelist(nlpath,key,newline,doms=self.ndoms)
 
-    def run_all_members(self,prereqs,**kwargs):
+    def run_all_members(self,prereqs,first=None,**kwargs):
         """ Automatically submit all jobs to the scheduler.
         See run_wrf_member() and check_complete() for keyword arguments.
 
@@ -309,39 +309,46 @@ class LazyEnsemble:
                     Don't include initial, boundary conditions (these are
                     different for every member and are copied automatically)
                     or namelist files (ditto).
+        first       :   (int) - only run the first x members
+        kwargs      :   keyword arguments passed to run_wrf_member.
         """
-        
-        
+
+        # Do we need parallelisation?
+        """
         from multiprocessing import Process, Lock
 
-def f(l, i):
-    l.acquire()
-    try:
-        print('hello world', i)
-    finally:
-        l.release()
+        def f(l, i):
+            l.acquire()
+            try:
+                print('hello world', i)
+            finally:
+                l.release()
 
-if __name__ == '__main__':
-    lock = Lock()
+        if __name__ == '__main__':
+            lock = Lock()
 
-    for num in range(10):
-        
-        Process(target=f, args=(lock, num)).start()
-        
-        
-        
+            for num in range(10):
+
+                Process(target=f, args=(lock, num)).start()
+        """
+
+
         # Set up threads.
-        
-        # Submit these in parallel...
-        for member in self.members:
-            self.run_wrf_member(member,prereqs,**kwargs)
 
+        if first is None:
+            first = len(self.members.keys())
+        # Submit these in parallel...
+        for nmem,member in enumerate(sorted(self.members)):
+            self.run_wrf_member(member,prereqs,**kwargs)
+            if first == nmem:
+                print("Exiting due to test.")
+                break
         # Generate README for each dir?
         return
 
     def run_wrf_member(self,member,prereqs,cpus=1,nodes=1,
                         sleep=30,firstwait=3600,
-                        maxtime=(24*3600),):
+                        maxtime=(24*3600),check=False):
         """ Submit a wrf run to batch scheduler.
 
         member  :   (str) - name of member to run
@@ -385,7 +392,8 @@ if __name__ == '__main__':
         os.system(cmd)
 
         # Monitor processes
-        self.check_complete(member,sleep=sleep,firstwait=firstwait,
+        if check:
+            self.check_complete(member,sleep=sleep,firstwait=firstwait,
                             maxtime=maxtime)
         # Create README?
 
