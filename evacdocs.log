@@ -1,0 +1,624 @@
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+Everything up-to-date
+Running Sphinx v1.6.6
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 0 source files that are out of date
+updating environment: 0 added, 54 changed, 0 removed
+reading sources... [  1%] evac.datafiles.binaryfile
+reading sources... [  3%] evac.datafiles.csvfile
+reading sources... [  5%] evac.datafiles.datafile
+reading sources... [  7%] evac.datafiles.ecmwf
+reading sources... [  9%] evac.datafiles.ensemble
+reading sources... [ 11%] evac.datafiles.gribfile
+reading sources... [ 12%] evac.datafiles.hrrr
+reading sources... [ 14%] evac.datafiles.mrms
+reading sources... [ 16%] evac.datafiles.ncfile
+reading sources... [ 18%] evac.datafiles.obs
+reading sources... [ 20%] evac.datafiles.pngfile
+reading sources... [ 22%] evac.datafiles.radar
+reading sources... [ 24%] evac.datafiles.ruc
+reading sources... [ 25%] evac.datafiles.spclsr
+reading sources... [ 27%] evac.datafiles.stageiv
+reading sources... [ 29%] evac.datafiles.stormevents
+reading sources... [ 31%] evac.datafiles.wrfout
+reading sources... [ 33%] evac.derived
+reading sources... [ 35%] evac.derived.derived
+reading sources... [ 37%] evac.lazy.ideal_profiles
+reading sources... [ 38%] evac.lazy.lazywrf
+reading sources... [ 40%] evac.plot.birdseye
+reading sources... [ 42%] evac.plot.clicker
+reading sources... [ 44%] evac.plot.colourtables
+reading sources... [ 46%] evac.plot.figure
+reading sources... [ 48%] evac.plot.heatmap
+reading sources... [ 50%] evac.plot.map
+reading sources... [ 51%] evac.plot.scales
+reading sources... [ 53%] evac.plot.skewt
+reading sources... [ 55%] evac.plot.timeseries
+reading sources... [ 57%] evac.plot.xsection
+reading sources... [ 59%] evac.stats.casati
+reading sources... [ 61%] evac.stats.detscores
+reading sources... [ 62%] evac.stats.diffenergy
+reading sources... [ 64%] evac.stats.fss
+reading sources... [ 66%] evac.stats.misc_stats
+reading sources... [ 68%] evac.stats.objectbased
+reading sources... [ 70%] evac.stats.probscores
+reading sources... [ 72%] evac.stats.roc
+reading sources... [ 74%] evac.stats.sal
+reading sources... [ 75%] evac.stoch.fractal_tools
+reading sources... [ 77%] evac.stoch.ifsfractal
+reading sources... [ 79%] evac.stoch.lovejoy_fractal
+reading sources... [ 81%] evac.stoch.perturbations
+reading sources... [ 83%] evac.utils.defaults
+reading sources... [ 85%] evac.utils.evac_numbers
+reading sources... [ 87%] evac.utils.evac_types
+reading sources... [ 88%] evac.utils.exceptions
+reading sources... [ 90%] evac.utils.get_data
+reading sources... [ 92%] evac.utils.gis_tools
+reading sources... [ 94%] evac.utils.met_constants
+reading sources... [ 96%] evac.utils.misc_tools
+reading sources... [ 98%] evac.utils.reproject_tools
+reading sources... [100%] evac.utils.unix_tools
+
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.binaryfile.rst:2: WARNING: Title underline too short.
+
+`datafiles.binaryfile`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.binaryfile.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.binaryfile'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.csvfile.rst:2: WARNING: Title underline too short.
+
+`datafiles.csvfile`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.csvfile.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.csvfile'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.datafile.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.datafile'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ecmwf.rst:2: WARNING: Title underline too short.
+
+`datafiles.ecmwf`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ecmwf.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.ecmwf'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ensemble.rst:2: WARNING: Title underline too short.
+
+`datafiles.ensemble`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ensemble.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.ensemble'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.gribfile.rst:2: WARNING: Title underline too short.
+
+`datafiles.gribfile`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.gribfile.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.gribfile'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.hrrr.rst:2: WARNING: Title underline too short.
+
+`datafiles.hrrr`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.hrrr.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.hrrr'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.mrms.rst:2: WARNING: Title underline too short.
+
+`datafiles.mrms`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.mrms.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.mrms'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ncfile.rst:2: WARNING: Title underline too short.
+
+`datafiles.ncfile`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ncfile.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.ncfile'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.obs.rst:2: WARNING: Title underline too short.
+
+`datafiles.obs`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.obs.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.obs'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.pngfile.rst:2: WARNING: Title underline too short.
+
+`datafiles.pngfile`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.pngfile.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.pngfile'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.radar.rst:2: WARNING: Title underline too short.
+
+`datafiles.radar`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.radar.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.radar'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ruc.rst:2: WARNING: Title underline too short.
+
+`datafiles.ruc`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ruc.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.ruc'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.spclsr.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.spclsr'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.stageiv.rst:2: WARNING: Title underline too short.
+
+`datafiles.stageiv`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.stageiv.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.stageiv'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.stormevents.rst:2: WARNING: Title underline too short.
+
+`datafiles.stormevents`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.stormevents.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.stormevents'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.wrfout.rst:2: WARNING: Title underline too short.
+
+`datafiles.wrfout`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.wrfout.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.wrfout'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.derived.rst:2: WARNING: Title underline too short.
+
+`derived`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.derived.rst:6: WARNING: toctree contains reference to nonexisting document 'evac.derived._derived'
+/home/chronos/user/Downloads/evac/docs/source/evac.derived.derived.rst:2: WARNING: Title underline too short.
+
+`derived.derived`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.derived.derived.rst:5: WARNING: autodoc: failed to import module 'evac.derived.derived'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.lazy.ideal_profiles.rst:2: WARNING: Title underline too short.
+
+`lazy.ideal_profiles`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.lazy.ideal_profiles.rst:5: WARNING: autodoc: failed to import module 'evac.lazy.ideal_profiles'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.lazy.lazywrf.rst:2: WARNING: Title underline too short.
+
+`lazy.lazywrf`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.lazy.lazywrf.rst:5: WARNING: autodoc: failed to import module 'evac.lazy.lazywrf'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.birdseye.rst:2: WARNING: Title underline too short.
+
+`plot.birdseye`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.birdseye.rst:5: WARNING: autodoc: failed to import module 'evac.plot.birdseye'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.clicker.rst:2: WARNING: Title underline too short.
+
+`plot.clicker`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.clicker.rst:5: WARNING: autodoc: failed to import module 'evac.plot.clicker'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.colourtables.rst:2: WARNING: Title underline too short.
+
+`plot.colourtables`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.colourtables.rst:5: WARNING: autodoc: failed to import module 'evac.plot.colourtables'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.figure.rst:2: WARNING: Title underline too short.
+
+`plot.figure`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.figure.rst:5: WARNING: autodoc: failed to import module 'evac.plot.figure'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.heatmap.rst:2: WARNING: Title underline too short.
+
+`plot.heatmap`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.heatmap.rst:5: WARNING: autodoc: failed to import module 'evac.plot.heatmap'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.map.rst:2: WARNING: Title underline too short.
+
+`plot.map`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.map.rst:5: WARNING: autodoc: failed to import module 'evac.plot.map'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.scales.rst:2: WARNING: Title underline too short.
+
+`plot.scales`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.scales.rst:5: WARNING: autodoc: failed to import module 'evac.plot.scales'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.skewt.rst:2: WARNING: Title underline too short.
+
+`plot.skewt`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.skewt.rst:5: WARNING: autodoc: failed to import module 'evac.plot.skewt'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.timeseries.rst:2: WARNING: Title underline too short.
+
+`plot.timeseries`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.timeseries.rst:5: WARNING: autodoc: failed to import module 'evac.plot.timeseries'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.xsection.rst:2: WARNING: Title underline too short.
+
+`plot.xsection`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.xsection.rst:5: WARNING: autodoc: failed to import module 'evac.plot.xsection'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.casati.rst:2: WARNING: Title underline too short.
+
+`stats.casati`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.casati.rst:5: WARNING: autodoc: failed to import module 'evac.stats.casati'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.detscores.rst:2: WARNING: Title underline too short.
+
+`stats.detscores`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.detscores.rst:5: WARNING: autodoc: failed to import module 'evac.stats.detscores'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.diffenergy.rst:2: WARNING: Title underline too short.
+
+`stats.diffenergy`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.diffenergy.rst:5: WARNING: autodoc: failed to import module 'evac.stats.diffenergy'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.fss.rst:2: WARNING: Title underline too short.
+
+`stats.fss`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.fss.rst:5: WARNING: autodoc: failed to import module 'evac.stats.fss'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.misc_stats.rst:2: WARNING: Title underline too short.
+
+`stats.misc_stats`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.misc_stats.rst:5: WARNING: autodoc: failed to import module 'evac.stats.misc_stats'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.objectbased.rst:2: WARNING: Title underline too short.
+
+`stats.objectbased`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.objectbased.rst:5: WARNING: autodoc: failed to import module 'evac.stats.objectbased'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.probscores.rst:2: WARNING: Title underline too short.
+
+`stats.probscores`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.probscores.rst:5: WARNING: autodoc: failed to import module 'evac.stats.probscores'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.roc.rst:2: WARNING: Title underline too short.
+
+`stats.roc`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.roc.rst:5: WARNING: autodoc: failed to import module 'evac.stats.roc'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.sal.rst:2: WARNING: Title underline too short.
+
+`stats.sal`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.sal.rst:5: WARNING: autodoc: failed to import module 'evac.stats.sal'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stoch.fractal_tools.rst:2: WARNING: Title underline too short.
+
+`stoch.fractal_tools`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stoch.fractal_tools.rst:5: WARNING: autodoc: failed to import module 'evac.stoch.fractal_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stoch.ifsfractal.rst:2: WARNING: Title underline too short.
+
+`stoch.ifsfractal`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stoch.ifsfractal.rst:5: WARNING: autodoc: failed to import module 'evac.stoch.ifsfractal'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stoch.lovejoy_fractal.rst:2: WARNING: Title underline too short.
+
+`stoch.lovejoy_fractal`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stoch.lovejoy_fractal.rst:5: WARNING: autodoc: failed to import module 'evac.stoch.lovejoy_fractal'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.stoch.perturbations.rst:2: WARNING: Title underline too short.
+
+`stoch.perturbations`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stoch.perturbations.rst:5: WARNING: autodoc: failed to import module 'evac.stoch.perturbations'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.defaults.rst:2: WARNING: Title underline too short.
+
+`utils.defaults`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.defaults.rst:5: WARNING: autodoc: failed to import module 'evac.utils.defaults'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.evac_numbers.rst:2: WARNING: Title underline too short.
+
+`utils.evac_numbers`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.evac_numbers.rst:5: WARNING: autodoc: failed to import module 'evac.utils.evac_numbers'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.evac_types.rst:2: WARNING: Title underline too short.
+
+`utils.evac_types`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.evac_types.rst:5: WARNING: autodoc: failed to import module 'evac.utils.evac_types'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.exceptions.rst:2: WARNING: Title underline too short.
+
+`utils.exceptions`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.exceptions.rst:5: WARNING: autodoc: failed to import module 'evac.utils.exceptions'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.get_data.rst:2: WARNING: Title underline too short.
+
+`utils.get_data`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.get_data.rst:5: WARNING: autodoc: failed to import module 'evac.utils.get_data'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.gis_tools.rst:2: WARNING: Title underline too short.
+
+`utils.gis_tools`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.gis_tools.rst:5: WARNING: autodoc: failed to import module 'evac.utils.gis_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.met_constants.rst:2: WARNING: Title underline too short.
+
+`utils.met_constants`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.met_constants.rst:5: WARNING: autodoc: failed to import module 'evac.utils.met_constants'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.misc_tools.rst:2: WARNING: Title underline too short.
+
+`utils.misc_tools`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.misc_tools.rst:5: WARNING: autodoc: failed to import module 'evac.utils.misc_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.reproject_tools.rst:2: WARNING: Title underline too short.
+
+`utils.reproject_tools`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.reproject_tools.rst:5: WARNING: autodoc: failed to import module 'evac.utils.reproject_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.unix_tools.rst:2: WARNING: Title underline too short.
+
+`utils.unix_tools`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.unix_tools.rst:5: WARNING: autodoc: failed to import module 'evac.utils.unix_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac'
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... /home/chronos/user/Downloads/evac/docs/source/evac.derived.derived.rst: WARNING: document isn't included in any toctree
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.diffenergy.rst: WARNING: document isn't included in any toctree
+done
+preparing documents... done
+writing output... [  1%] evac
+writing output... [  3%] evac.datafiles
+writing output... [  4%] evac.datafiles.binaryfile
+writing output... [  6%] evac.datafiles.csvfile
+writing output... [  8%] evac.datafiles.datafile
+writing output... [  9%] evac.datafiles.ecmwf
+writing output... [ 11%] evac.datafiles.ensemble
+writing output... [ 12%] evac.datafiles.gribfile
+writing output... [ 14%] evac.datafiles.hrrr
+writing output... [ 16%] evac.datafiles.mrms
+writing output... [ 17%] evac.datafiles.ncfile
+writing output... [ 19%] evac.datafiles.obs
+writing output... [ 20%] evac.datafiles.pngfile
+writing output... [ 22%] evac.datafiles.radar
+writing output... [ 24%] evac.datafiles.ruc
+writing output... [ 25%] evac.datafiles.spclsr
+writing output... [ 27%] evac.datafiles.stageiv
+writing output... [ 29%] evac.datafiles.stormevents
+writing output... [ 30%] evac.datafiles.wrfout
+writing output... [ 32%] evac.derived
+writing output... [ 33%] evac.derived.derived
+writing output... [ 35%] evac.lazy
+writing output... [ 37%] evac.lazy.ideal_profiles
+writing output... [ 38%] evac.lazy.lazywrf
+writing output... [ 40%] evac.plot
+writing output... [ 41%] evac.plot.birdseye
+writing output... [ 43%] evac.plot.clicker
+writing output... [ 45%] evac.plot.colourtables
+writing output... [ 46%] evac.plot.figure
+writing output... [ 48%] evac.plot.heatmap
+writing output... [ 50%] evac.plot.map
+writing output... [ 51%] evac.plot.scales
+writing output... [ 53%] evac.plot.skewt
+writing output... [ 54%] evac.plot.timeseries
+writing output... [ 56%] evac.plot.xsection
+writing output... [ 58%] evac.stats
+writing output... [ 59%] evac.stats.casati
+writing output... [ 61%] evac.stats.detscores
+writing output... [ 62%] evac.stats.diffenergy
+writing output... [ 64%] evac.stats.fss
+writing output... [ 66%] evac.stats.misc_stats
+writing output... [ 67%] evac.stats.objectbased
+writing output... [ 69%] evac.stats.probscores
+writing output... [ 70%] evac.stats.roc
+writing output... [ 72%] evac.stats.sal
+writing output... [ 74%] evac.stoch
+writing output... [ 75%] evac.stoch.fractal_tools
+writing output... [ 77%] evac.stoch.ifsfractal
+writing output... [ 79%] evac.stoch.lovejoy_fractal
+writing output... [ 80%] evac.stoch.perturbations
+writing output... [ 82%] evac.utils
+writing output... [ 83%] evac.utils.defaults
+writing output... [ 85%] evac.utils.evac_numbers
+writing output... [ 87%] evac.utils.evac_types
+writing output... [ 88%] evac.utils.exceptions
+writing output... [ 90%] evac.utils.get_data
+writing output... [ 91%] evac.utils.gis_tools
+writing output... [ 93%] evac.utils.met_constants
+writing output... [ 95%] evac.utils.misc_tools
+writing output... [ 96%] evac.utils.reproject_tools
+writing output... [ 98%] evac.utils.unix_tools
+writing output... [100%] index
+
+generating indices... genindex
+writing additional pages... search
+copying static files... WARNING: html_static_path entry '/home/chronos/user/Downloads/evac/docs/source/_static' does not exist
+done
+copying extra files... done
+dumping search index in English (code: en) ... done
+dumping object inventory... done
+build succeeded, 109 warnings.
+
+Build finished. The HTML pages are in ../../evac_docs/html.
+fatal: Not a git repository (or any parent up to mount point /home/chronos)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+fatal: Not a git repository (or any parent up to mount point /home/chronos)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+fatal: Not a git repository (or any parent up to mount point /home/chronos)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
