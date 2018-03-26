@@ -310,6 +310,28 @@ class LazyEnsemble:
                     different for every member and are copied automatically)
                     or namelist files (ditto).
         """
+        
+        
+        from multiprocessing import Process, Lock
+
+def f(l, i):
+    l.acquire()
+    try:
+        print('hello world', i)
+    finally:
+        l.release()
+
+if __name__ == '__main__':
+    lock = Lock()
+
+    for num in range(10):
+        
+        Process(target=f, args=(lock, num)).start()
+        
+        
+        
+        # Set up threads.
+        
         # Submit these in parallel...
         for member in self.members:
             self.run_wrf_member(member,prereqs,**kwargs)
