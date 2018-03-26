@@ -23,7 +23,7 @@ cmd('git commit -m "Updates docs"',evacdir)
 cmd('git push',evacdir)
    
 # Make the html
-cmd('make html 2>&1 | tee log.log',os.path.join(evacdir,'docs'))
+cmd('make html',os.path.join(evacdir,'docs'))
 
 # Git add
 cmd('git add -A .',htmldir)
