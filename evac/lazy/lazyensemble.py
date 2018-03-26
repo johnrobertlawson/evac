@@ -369,6 +369,9 @@ class LazyEnsemble:
         # Copy, link, move everything needed to rundir
         utils.bridge_multi(PRQs)
 
+        # Make sure wrf.exe is executable
+        self.ensure_permissions(rundir / wrf.exe)
+
         # Copy, edit batch script
 
         utils.bridge('copy',self.batchscript,rundir)
@@ -469,3 +472,13 @@ class LazyEnsemble:
         """ Submit real.exe to batch scheduler.
         """
         pass
+
+    def ensure_permissions(self,fpath,permission=755):
+        """ Makes sure the scheduler can run the executable at fpath.
+        """
+        perm = '{:03d}'.format(permission)
+        assert len(perm) = 3
+
+        fpath.chmod('0o{}'.format(perm))
+        print("Changed permissions for {} to {}".format(fpath,perm))
+        return
