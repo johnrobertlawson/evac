@@ -56,12 +56,15 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Module paramiko unavailable. Ignoring import.&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="bridge_multi"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.bridge_multi">[docs]</a><span class="k">def</span> <span class="nf">bridge_multi</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+<div class="viewcode-block" id="bridge_multi"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.bridge_multi">[docs]</a><span class="k">def</span> <span class="nf">bridge_multi</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span><span class="n">fromlist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">todir</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Soft-link, copy, or move multiple items.</span>
 
-<span class="sd">    D   :   dictionary with the following layout:</span>
-<span class="sd">    dict( (frompath,topath)=cmd)</span>
+<span class="sd">    Args:</span>
+<span class="sd">    orders      :   dictionary with the following layout:</span>
+<span class="sd">                    dict( (frompath,topath)=cmd)</span>
+<span class="sd">                    If orders is string, treat it as command,</span>
+<span class="sd">                    and require arguments fromlist and todir.</span>
 
 <span class="sd">    where</span>
 
@@ -69,7 +72,15 @@
 <span class="sd">    frompath/topath is absolute path of origin/destination</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">frompath</span><span class="p">,</span><span class="n">topath</span><span class="p">),</span><span class="n">cmd</span> <span class="ow">in</span> <span class="n">D</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="c1"># Get into correct format</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">orders</span>
+        <span class="n">orders</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">assert</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;copy&#39;</span><span class="p">,</span><span class="s1">&#39;move&#39;</span><span class="p">,</span><span class="s1">&#39;softlink&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fromlist</span><span class="p">:</span>
+            <span class="n">orders</span><span class="p">[(</span><span class="n">f</span><span class="p">,</span><span class="n">todir</span><span class="p">)]</span> <span class="o">=</span> <span class="n">cmd</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">frompath</span><span class="p">,</span><span class="n">topath</span><span class="p">),</span><span class="n">cmd</span> <span class="ow">in</span> <span class="n">orders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">bridge</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span><span class="n">frompath</span><span class="p">,</span><span class="n">topath</span><span class="p">)</span>
     <span class="k">return</span></div>
 
@@ -109,6 +120,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">NonsenseError</span><span class="p">(</span><span class="s2">&quot;The command variable **</span><span class="si">{}</span><span class="s2">** is invalid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">command</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">topath</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
     <span class="k">return</span></div>
 
 <div class="viewcode-block" id="wowprint"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.wowprint">[docs]</a><span class="k">def</span> <span class="nf">wowprint</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">underline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">formatargs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -288,7 +300,9 @@
 <div class="viewcode-block" id="edit_namelist"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.edit_namelist">[docs]</a><span class="k">def</span> <span class="nf">edit_namelist</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">sett</span><span class="p">,</span><span class="n">newval</span><span class="p">,</span><span class="n">absolute</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">doms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">samealldoms</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">doms</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span>
-    <span class="n">fs</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">enforce_pathobj</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="c1">#fs = open(f,&#39;r&#39;)</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
     <span class="c1"># with open(f,&#39;r&#39;) as fopen:</span>
     <span class="c1"># flines = open(f,&#39;r&#39;).readlines()</span>
     <span class="n">flines</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
@@ -309,7 +323,8 @@
                 <span class="n">newval</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,     </span><span class="si">{1}</span><span class="s1">,     </span><span class="si">{2}</span><span class="s1">,&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newval</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">newval</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">newval</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
             <span class="n">flines</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; {0: &lt;</span><span class="si">{sp}</span><span class="s2">}= </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sett</span><span class="p">,</span><span class="n">newval</span><span class="p">,</span><span class="n">sp</span><span class="o">=</span><span class="n">spaces</span><span class="p">)</span>
-            <span class="n">nameout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">nameout</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># nameout = open(f,&#39;w&#39;,1)</span>
             <span class="n">nameout</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">flines</span><span class="p">)</span>
             <span class="n">nameout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>

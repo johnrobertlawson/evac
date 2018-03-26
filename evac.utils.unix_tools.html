@@ -67,10 +67,14 @@ be the same filename as the origin.</div></blockquote>
 
 <dl class="function">
 <dt id="evac.utils.unix_tools.bridge_multi">
-<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">bridge_multi</code><span class="sig-paren">(</span><em>D</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#bridge_multi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.bridge_multi" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">bridge_multi</code><span class="sig-paren">(</span><em>orders</em>, <em>fromlist=False</em>, <em>todir=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#bridge_multi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.bridge_multi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Soft-link, copy, or move multiple items.</p>
-<p>D   :   dictionary with the following layout:
-dict( (frompath,topath)=cmd)</p>
+<p>Args:
+orders      :   dictionary with the following layout:</p>
+<blockquote>
+<div>dict( (frompath,topath)=cmd)
+If orders is string, treat it as command,
+and require arguments fromlist and todir.</div></blockquote>
 <p>where</p>
 <p>cmd is &#8216;copy&#8217;,&#8217;softlink&#8217;, or &#8216;move&#8217;
 frompath/topath is absolute path of origin/destination</p>
