@@ -65,6 +65,7 @@ def bridge(command,frompath,topath,catch_overwrite=False):
     else:
         raise NonsenseError("The command variable **{}** is invalid".format(
                         command),color='red')
+    assert topath.exists()
     return
 
 def wowprint(message,color='red',bold=True,underline=False,formatargs=False):

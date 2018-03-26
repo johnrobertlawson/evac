@@ -9,7 +9,7 @@ import numpy as N
 
 import evac.utils as utils
 from evac.lazy.lazywrf import LazyWRF
-from evac.utils.exceptions import WRFError
+from evac.utils.exceptions import WRFError, PrettyException
 
 class LazyEnsemble:
     """
@@ -91,6 +91,7 @@ class LazyEnsemble:
                                 from a folder within the icbc_dir.
                                 If True, it looks for the default names
                                 in subfolders of icbc_dir
+                                if 'all', it copies everything from default folders.
         dryrun              :   (bool) - if True, don't delete any files
                                 or submit any runs.
         """
@@ -149,16 +150,36 @@ class LazyEnsemble:
         # Lookup dictionary of all members
         self.members = self.catalog_members()
 
-        if not isinstance(icbcs,dict):
+        # Gather ICs, LBCs
+        # Each file that needs to be copied is in a list 
+        #   within ['icbcs'] for each member
+
+        # if icbcs is a dictionary, copy filenames for each member
+        if isinstance(icbcs,dict):
+            for member in self.members:
+                assert isinstance(icbcs[member],(list,tuple))
+                self.members[member]['icbcs'] = icbcs[member]
+
+        # Use the same files for each member
+        elif isinstance(icbcs,(list,tuple)):
+            for member in self.members:
+                self.members[member]['icbcs'] = icbcs
+
+        # Use default naming
+        elif icbcs == True:
             fnames = ['wrfinput_d{:02d}'.format(n)
                         for n in N.arange(1,self.nmems+1)] + [
                         'wrfbdy_d{:02d}'.format(n)
                         for n in N.arange(1,self.nmems+1)]
             for member in self.membernames:
                 self.members[member]['icbcs'] = self.icbcdir / member
-        else:
+        elif icbcs == 'all':
             for member in self.members.keys():
-                self.members[member]['icbcs'] = icbc[member]
+                glb = (self.icbcdir / member).glob('*')
+                self.members[member]['icbcs'] = glb
+        else:
+            raise PrettyException("icbcs setting **{}** is not valid".format(
+                                                    icbcs),color='red')
 
         # TO DO - how to automate nests too
         # For now, everything in same folder.
@@ -373,7 +394,6 @@ class LazyEnsemble:
         self.ensure_permissions(rundir / wrf.exe)
 
         # Copy, edit batch script
-
         utils.bridge('copy',self.batchscript,rundir)
         # use self.cpus_per_job and self.nodes_per_job?
         self.batchscript_for_member(member)
@@ -385,6 +405,9 @@ class LazyEnsemble:
             raise Exception("Implement this!")
         utils.bridge('copy',frompath,rundir)
         self.namelist_for_member(member)
+
+        # Copy ICBC data
+        self.copy_icbc_data()
 
         # Submit script
         batchloc = datadir / self.batchname
@@ -401,6 +424,9 @@ class LazyEnsemble:
         # Create README?
 
         # Clean up files
+
+    def copy_icbc_data(self,):
+        if self.icbcs == 'all':
 
     def cleanup(self,folder,files):
         """ Deletes files in given directory that match a glob.
