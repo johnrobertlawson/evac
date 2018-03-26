@@ -2,6 +2,7 @@ import collections
 import os
 import pdb
 
+import numpy as N
 from mpl_toolkits.basemap import Basemap
 
 from evac.plot.figure import Figure
@@ -19,6 +20,10 @@ class DomainGrid:
             self.__dict__ = inherit.__dict__.copy()
         elif isinstance(inherit,VerifGrid):
             self.__dict__ = inherit.__dict__.copy()
+        elif isinstance(inherit,str):
+            inherit = WRFOut(inherit)
+            self.__dict__ = inherit.__dict__.copy()
+
             # self.lat_0 = inherit.nc.CEN_LAT
             # self.lon_0 = inherit.nc.CEN_LON
         else:
@@ -53,6 +58,8 @@ class Map(Figure):
         """
         if labels is not None:
             assert len(labels) == len(domains)
+        else:
+            labels = N.arange(len(domains))
 
         # Generate domain objects
         self.make_domain_obj(domains)
@@ -71,8 +78,12 @@ class Map(Figure):
             Elim = LD.Elim + abs(LD.Elim-LD.Wlim)*pad
             Slim = LD.Slim - abs(LD.Nlim-LD.Slim)*pad
             Wlim = LD.Wlim - abs(LD.Elim-LD.Wlim)*pad
-            lat_0 = LD.lat_0
-            lon_0 = LD.lon_0
+            try:
+                lat_0 = LD.lat_0
+                lon_0 = LD.lon_0
+            except AttributeError:
+                lat_0 = LD.cen_lat
+                lon_0 = LD.cen_lon
 
         else:
             Nlim = latlons['Nlim']

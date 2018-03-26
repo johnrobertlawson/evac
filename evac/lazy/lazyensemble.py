@@ -361,7 +361,7 @@ class LazyEnsemble:
         # Submit these in parallel...
         for nmem,member in enumerate(sorted(self.members)):
             self.run_wrf_member(member,prereqs,**kwargs)
-            if first == nmem:
+            if first == nmem+1:
                 print("Exiting due to test.")
                 break
         # Generate README for each dir?
@@ -391,7 +391,7 @@ class LazyEnsemble:
         utils.bridge_multi(PRQs)
 
         # Make sure wrf.exe is executable
-        self.ensure_permissions(rundir / wrf.exe)
+        self.ensure_permissions((rundir / 'wrf.exe'),755)
 
         # Copy, edit batch script
         utils.bridge('copy',self.batchscript,rundir)
@@ -407,7 +407,7 @@ class LazyEnsemble:
         self.namelist_for_member(member)
 
         # Copy ICBC data
-        self.copy_icbc_data()
+        utils.bridge_multi('copy',self.members[member]['icbcs'],rundir)
 
         # Submit script
         batchloc = datadir / self.batchname
@@ -425,8 +425,7 @@ class LazyEnsemble:
 
         # Clean up files
 
-    def copy_icbc_data(self,):
-        if self.icbcs == 'all':
+        
 
     def cleanup(self,folder,files):
         """ Deletes files in given directory that match a glob.
@@ -499,12 +498,15 @@ class LazyEnsemble:
         """
         pass
 
-    def ensure_permissions(self,fpath,permission=755):
+    def ensure_permissions(self,fpath,perm_decimal=755):
         """ Makes sure the scheduler can run the executable at fpath.
-        """
-        perm = '{:03d}'.format(permission)
-        assert len(perm) = 3
 
-        fpath.chmod('0o{}'.format(perm))
-        print("Changed permissions for {} to {}".format(fpath,perm))
+        """
+        perm_str = '{:03d}'.format(perm_decimal)
+        assert len(perm_str) == 3
+
+        # fpath.chmod('0o{}'.format(perm))
+        # fpath.chmod(oct(perm_decimal))
+        fpath.chmod(perm_decimal)
+        print("Changed permissions for {} to {}".format(fpath,perm_str))
         return

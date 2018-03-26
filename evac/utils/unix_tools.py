@@ -12,12 +12,15 @@ try:
 except ImportError:
     print("Module paramiko unavailable. Ignoring import.")
 
-def bridge_multi(D):
+def bridge_multi(orders,fromlist=False,todir=False):
     """
     Soft-link, copy, or move multiple items.
 
-    D   :   dictionary with the following layout:
-    dict( (frompath,topath)=cmd)
+    Args:
+    orders      :   dictionary with the following layout:
+                    dict( (frompath,topath)=cmd)
+                    If orders is string, treat it as command,
+                    and require arguments fromlist and todir.
 
     where
 
@@ -25,7 +28,15 @@ def bridge_multi(D):
     frompath/topath is absolute path of origin/destination
 
     """
-    for (frompath,topath),cmd in D.items():
+    # Get into correct format
+    if isinstance(orders,str):
+        cmd = orders
+        orders = {}
+        assert cmd in ('copy','move','softlink')
+        for f in fromlist:
+            orders[(f,todir)] = cmd
+
+    for (frompath,topath),cmd in orders.items():
         bridge(cmd,frompath,topath)
     return
 
