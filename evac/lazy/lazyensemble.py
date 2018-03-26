@@ -227,9 +227,9 @@ class LazyEnsemble:
         """ Edit parts of the batch submission script.
         """
         jobname = 'wrf_{}'.format(member)
-        path_to_err = (self.wrfrundir / jobname).with_suffix('.err')
-        path_to_out = (self.wrfrundir / jobname).with_suffix('.out')
-        path_to_wrfexe = self.wrfrundir / 'wrf.exe'
+        path_to_err = (self.wrfrundir / member / jobname).with_suffix('.err')
+        path_to_out = (self.wrfrundir / member / jobname).with_suffix('.out')
+        path_to_wrfexe = self.wrfrundir / member / 'wrf.exe'
         #command = f'time srun {path_to_wrfexe})'
         command = 'time srun {}'.format(path_to_wrfexe)
         rundir = self.members[member]['rundir']
