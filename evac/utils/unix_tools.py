@@ -244,7 +244,9 @@ def ssh_client(ky,domain,username,password):
 def edit_namelist(f,sett,newval,absolute=False,doms=1,samealldoms=True):
     if doms < 1:
         raise ValueError
-    fs = open(f,'r')
+    f = enforce_pathobj(f)
+    #fs = open(f,'r')
+    fs = f.open('r')
     # with open(f,'r') as fopen:
     # flines = open(f,'r').readlines()
     flines = fs.readlines()
@@ -265,7 +267,8 @@ def edit_namelist(f,sett,newval,absolute=False,doms=1,samealldoms=True):
                 newval = '{0},     {1},     {2},'.format(newval[0],newval[1],newval[2])
 
             flines[idx] = " {0: <{sp}}= {1}\n".format(sett,newval,sp=spaces)
-            nameout = open(f,'w',1)
+            nameout = f.open('w',1)
+            # nameout = open(f,'w',1)
             nameout.writelines(flines)
             nameout.close()
             done = True

@@ -317,7 +317,7 @@ class LazyEnsemble:
         # Generate README for each dir?
         return
 
-    def run_wrf_member(self,member,prereqs,cpus=0,nodes=1,
+    def run_wrf_member(self,member,prereqs,cpus=1,nodes=1,
                         sleep=30,firstwait=3600,
                         maxtime=(24*3600),):
         """ Submit a wrf run to batch scheduler.
@@ -356,7 +356,7 @@ class LazyEnsemble:
 
         # Submit script
         batchloc = datadir / self.batchname
-        cmd = "sbatch f{batchloc}"
+        cmd = "sbatch {}".format(batchloc)
         if self.dryrun:
             pdb.set_trace()
             raise Exception("Exiting - dry run.")
