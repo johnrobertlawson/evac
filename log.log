@@ -1,0 +1,246 @@
+[master 3514ca8] Updates docs
+ 3 files changed, 232 insertions(+), 1 deletion(-)
+ create mode 100644 docs/log.log
+ create mode 100644 log.log
+To ssh://git@github.com/johnrobertlawson/evac.git
+ ! [rejected]        HEAD -> master (fetch first)
+error: failed to push some refs to 'ssh://git@github.com/johnrobertlawson/evac.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first merge the remote changes (e.g.,
+hint: 'git pull') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+Running Sphinx v1.5.1
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 0 source files that are out of date
+updating environment: 0 added, 12 changed, 0 removed
+reading sources... [  8%] evac.datafiles.ecmwf
+reading sources... [ 16%] evac.datafiles.ruc
+reading sources... [ 25%] evac.derived
+reading sources... [ 33%] evac.derived.derived
+reading sources... [ 41%] evac.lazy.ideal_profiles
+reading sources... [ 50%] evac.plot.clicker
+reading sources... [ 58%] evac.plot.timeseries
+reading sources... [ 66%] evac.stats.fss
+reading sources... [ 75%] evac.stats.objectbased
+reading sources... [ 83%] evac.stats.sal
+reading sources... [ 91%] evac.stoch.fractal_tools
+Total time: 0.0
+reading sources... [100%] evac.utils.get_data
+
+/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/matplotlib/__init__.py:1405: UserWarning: 
+This call to matplotlib.use() has no effect because the backend has already
+been chosen; matplotlib.use() must be called *before* pylab, matplotlib.pyplot,
+or matplotlib.backends is imported for the first time.
+
+  warnings.warn(_use_error_msg)
+/home/john.lawson/gits/evac/docs/source/evac.datafiles.ecmwf.rst:2: WARNING: Title underline too short.
+
+`datafiles.ecmwf`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.datafiles.ecmwf.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.ecmwf'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+  File "/home/john.lawson/gits/evac/evac/datafiles/ecmwf.py", line 17, in <module>
+    from .ncfile import NCFile
+ImportError: cannot import name 'NCFile'
+/home/john.lawson/gits/evac/docs/source/evac.datafiles.ruc.rst:2: WARNING: Title underline too short.
+
+`datafiles.ruc`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.datafiles.ruc.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.ruc'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+  File "/home/john.lawson/gits/evac/evac/datafiles/ruc.py", line 23, in <module>
+    import evac.utils.metconstants as mc
+ImportError: No module named 'evac.utils.metconstants'
+/home/john.lawson/gits/evac/docs/source/evac.derived.rst:2: WARNING: Title underline too short.
+
+`derived`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.derived.rst:6: WARNING: toctree contains reference to nonexisting document 'evac.derived._derived'
+/home/john.lawson/gits/evac/docs/source/evac.derived.derived.rst:2: WARNING: Title underline too short.
+
+`derived.derived`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.derived.derived.rst:5: WARNING: autodoc: failed to import module 'evac.derived.derived'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+ImportError: No module named 'evac.derived.derived'
+/home/john.lawson/gits/evac/docs/source/evac.lazy.ideal_profiles.rst:2: WARNING: Title underline too short.
+
+`lazy.ideal_profiles`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.lazy.ideal_profiles.rst:5: WARNING: autodoc: failed to import module 'evac.lazy.ideal_profiles'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+  File "/home/john.lawson/gits/evac/evac/lazy/ideal_profiles.py", line 12, in <module>
+    import WEM.postWRF.postWRF._skewt2 as sT
+ImportError: No module named 'WEM.postWRF.postWRF._skewt2'
+/home/john.lawson/gits/evac/docs/source/evac.plot.clicker.rst:2: WARNING: Title underline too short.
+
+`plot.clicker`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.plot.clicker.rst:5: WARNING: autodoc: failed to import module 'evac.plot.clicker'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+  File "/home/john.lawson/gits/evac/evac/plot/clicker.py", line 13, in <module>
+    from .defaults import Defaults
+ImportError: No module named 'evac.plot.defaults'
+/home/john.lawson/gits/evac/docs/source/evac.plot.timeseries.rst:2: WARNING: Title underline too short.
+
+`plot.timeseries`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.plot.timeseries.rst:5: WARNING: autodoc: failed to import module 'evac.plot.timeseries'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+  File "/home/john.lawson/gits/evac/evac/plot/timeseries.py", line 7, in <module>
+    from .wrfout import WRFOut
+ImportError: No module named 'evac.plot.wrfout'
+/home/john.lawson/gits/evac/docs/source/evac.stats.fss.rst:2: WARNING: Title underline too short.
+
+`stats.fss`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.stats.fss.rst:5: WARNING: autodoc: failed to import module 'evac.stats.fss'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+  File "/home/john.lawson/gits/evac/evac/stats/fss.py", line 8
+    class self.FSS():
+              ^
+SyntaxError: invalid syntax
+/home/john.lawson/gits/evac/docs/source/evac.stats.objectbased.rst:2: WARNING: Title underline too short.
+
+`stats.objectbased`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.stats.objectbased.rst:5: WARNING: autodoc: failed to import module 'evac.stats.objectbased'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+  File "/home/john.lawson/gits/evac/evac/stats/objectbased.py", line 11, in <module>
+    from .wrfout import WRFOut
+ImportError: No module named 'evac.stats.wrfout'
+/home/john.lawson/gits/evac/docs/source/evac.stats.sal.rst:2: WARNING: Title underline too short.
+
+`stats.sal`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.stats.sal.rst:5: WARNING: autodoc: failed to import module 'evac.stats.sal'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+  File "/home/john.lawson/gits/evac/evac/stats/sal.py", line 12, in <module>
+    from .wrfout import WRFOut
+ImportError: No module named 'evac.stats.wrfout'
+/home/john.lawson/gits/evac/docs/source/evac.stoch.fractal_tools.rst:2: WARNING: Title underline too short.
+
+`stoch.fractal_tools`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.stoch.fractal_tools.rst:5: WARNING: autodoc: failed to import module 'evac.stoch.fractal_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+  File "/home/john.lawson/gits/evac/evac/stoch/fractal_tools.py", line 230, in <module>
+    assert True==False
+AssertionError
+/home/john.lawson/gits/evac/docs/source/evac.utils.get_data.rst:2: WARNING: Title underline too short.
+
+`utils.get_data`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.utils.get_data.rst:5: WARNING: autodoc: failed to import module 'evac.utils.get_data'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+  File "/home/john.lawson/gits/evac/evac/utils/get_data.py", line 8, in <module>
+    from . import GIS_tools as utils
+ImportError: cannot import name 'GIS_tools'
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... /home/john.lawson/gits/evac/docs/source/evac.derived.derived.rst:: WARNING: document isn't included in any toctree
+/home/john.lawson/gits/evac/docs/source/evac.stats.diffenergy.rst:: WARNING: document isn't included in any toctree
+done
+preparing documents... done
+writing output... [  5%] evac
+writing output... [ 10%] evac.datafiles
+writing output... [ 15%] evac.datafiles.ecmwf
+writing output... [ 20%] evac.datafiles.ruc
+writing output... [ 25%] evac.derived
+writing output... [ 30%] evac.derived.derived
+writing output... [ 35%] evac.lazy
+writing output... [ 40%] evac.lazy.ideal_profiles
+writing output... [ 45%] evac.plot
+writing output... [ 50%] evac.plot.clicker
+writing output... [ 55%] evac.plot.timeseries
+writing output... [ 60%] evac.stats
+writing output... [ 65%] evac.stats.fss
+writing output... [ 70%] evac.stats.objectbased
+writing output... [ 75%] evac.stats.sal
+writing output... [ 80%] evac.stoch
+writing output... [ 85%] evac.stoch.fractal_tools
+writing output... [ 90%] evac.utils
+writing output... [ 95%] evac.utils.get_data
+writing output... [100%] index
+
+generating indices... genindex py-modindex
+highlighting module code... [  2%] evac.plot.heatmap
+highlighting module code... [  4%] evac.utils.exceptions
+highlighting module code... [  6%] evac.stats.roc
+highlighting module code... [  9%] evac.stoch.lovejoy_fractal
+highlighting module code... [ 11%] evac.datafiles.mrms
+highlighting module code... [ 13%] evac.datafiles.csvfile
+highlighting module code... [ 15%] evac.utils.evac_numbers
+highlighting module code... [ 18%] evac.utils.evac_types
+highlighting module code... [ 20%] evac.stats.detscores
+highlighting module code... [ 22%] evac.utils.reproject_tools
+highlighting module code... [ 25%] evac.datafiles.wrfout
+highlighting module code... [ 27%] evac.stats.casati
+highlighting module code... [ 29%] evac.lazy.ideal_profiles
+highlighting module code... [ 31%] evac.datafiles.ncfile
+highlighting module code... [ 34%] evac.utils.defaults
+highlighting module code... [ 36%] evac.plot.skewt
+highlighting module code... [ 38%] evac.stats.probscores
+highlighting module code... [ 40%] evac.datafiles.obs
+highlighting module code... [ 43%] evac.derived.derived
+highlighting module code... [ 45%] evac.plot.scales
+highlighting module code... [ 47%] evac.datafiles.pngfile
+highlighting module code... [ 50%] evac.utils.misc_tools
+highlighting module code... [ 52%] evac.datafiles.gribfile
+highlighting module code... [ 54%] evac.plot.colourtables
+highlighting module code... [ 56%] evac.stats.diffenergy
+highlighting module code... [ 59%] evac.datafiles.ensemble
+highlighting module code... [ 61%] evac.datafiles.radar
+highlighting module code... [ 63%] evac.stats.misc_stats
+highlighting module code... [ 65%] evac.plot.map
+highlighting module code... [ 68%] evac.datafiles.stormevents
+highlighting module code... [ 70%] evac.datafiles.binaryfile
+highlighting module code... [ 72%] evac.datafiles.hrrr
+highlighting module code... [ 75%] evac.stoch.ifsfractal
+highlighting module code... [ 77%] evac.plot.birdseye
+highlighting module code... [ 79%] evac.datafiles.datafile
+highlighting module code... [ 81%] evac.datafiles.stageiv
+highlighting module code... [ 84%] evac.datafiles.spclsr
+highlighting module code... [ 86%] evac.utils.gis_tools
+highlighting module code... [ 88%] evac.plot.figure
+highlighting module code... [ 90%] evac.plot.axes
+highlighting module code... [ 93%] evac.plot.xsection
+highlighting module code... [ 95%] evac.lazy.lazywrf
+highlighting module code... [ 97%] evac.utils.unix_tools
+highlighting module code... [100%] evac.stoch.perturbations
+
+writing additional pages... search
+copying static files... done
+copying extra files... done
+dumping search index in English (code: en) ... done
+dumping object inventory... done
+build succeeded, 26 warnings.
+
+Build finished. The HTML pages are in ../../evac_docs/html.
+# On branch gh-pages
+nothing to commit, working directory clean
+Everything up-to-date
