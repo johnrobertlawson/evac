@@ -42,7 +42,7 @@ class Map(Figure):
 
         for obj in input_objs:
             DGs.append(DomainGrid(inherit=obj))
-        
+
         self.domains = DGs
         return
 
@@ -59,7 +59,7 @@ class Map(Figure):
         if labels is not None:
             assert len(labels) == len(domains)
         else:
-            labels = N.arange(len(domains))
+            labels = ['Domain {}'.format(n) for n in N.arange(1,len(domains)+1)]
 
         # Generate domain objects
         self.make_domain_obj(domains)
@@ -115,13 +115,13 @@ class Map(Figure):
             print(("Plotting domain {0} for {1}".format(gridlabel,dom)))
             x,y = self.m(dom.lons,dom.lats)
             xl = len(x[0,:])
-            midpt = len(y[0,:])//2         
+            midpt = len(y[0,:])//2
             self.ax.annotate(gridlabel,color=colour,fontsize=10,xy=(x[0,-int(0.12*xl)],y[0,midpt]),
-                         bbox=dict(fc='white'),alpha=1,va='center',ha='left')    
+                         bbox=dict(fc='white'),alpha=1,va='center',ha='left')
             self.m.plot(x[0,:],y[0,:],colour,lw=2)
-            self.m.plot(x[:,0],y[:,0],colour,lw=2) 
-            self.m.plot(x[len(y)-1,:],y[len(y)-1,:],colour,lw=2)     
-            self.m.plot(x[:,len(x)-1],y[:,len(x)-1],colour,lw=2)    
+            self.m.plot(x[:,0],y[:,0],colour,lw=2)
+            self.m.plot(x[len(y)-1,:],y[len(y)-1,:],colour,lw=2)
+            self.m.plot(x[:,len(x)-1],y[:,len(x)-1],colour,lw=2)
 
         fpath = os.path.join(outdir,fname)
         self.fig.savefig(fpath)
