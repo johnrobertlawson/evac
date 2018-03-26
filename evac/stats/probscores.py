@@ -10,12 +10,14 @@ import scipy as S
 class ProbScores:
     def __init__(self,og=None,pfg=None,xa=None,xfs=None):
         """
-        Pick from:
-        self.og         :   True/False field (1D)
-        self.pfg        :   Prob. forecast of event (0.0-1.0)
-        --- or ---
-        self.xa         :   observation field (2D)
-        self.xfs        :   forecast fields (3D)
+        Set up probability scores. User must specify
+        (og and pfg) or (xa and xfs).
+
+        Args:
+            self.og         :   (numpy.array) - True/False field (1D)
+            self.pfg        :   Prob. forecast of event (0.0-1.0)
+            self.xa         :   observation field (2D)
+            self.xfs        :   forecast fields (3D)
         """
         self.og = og
         self.pfg = pfg
