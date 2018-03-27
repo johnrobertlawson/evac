@@ -23,7 +23,7 @@ import datetime
 import evac.utils as utils
 import evac.utils.met_constants as mc
 from WEM.postWRF.postWRF.ncfile import NC
-import evac.derived._derived as derived
+import evac.derived.derived as derived
 
 debug_get = 0
 
