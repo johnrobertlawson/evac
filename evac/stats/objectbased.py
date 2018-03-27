@@ -9,7 +9,7 @@ import scipy.ndimage.filters as filters
 import matplotlib.pyplot as plt
 
 from evac.datafiles.wrfout import WRFOut
-from evac.datafiles.obs import Radar
+from evac.datafiles.radar import Radar
 
 class ObjectBased:
     def __init__(self,Wctrl_fpath,Wmod_fpath,vrbl=False,utc=False,lv=False,
