@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.stats.sal &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.stats.sal</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Todos:</span>
+<span class="sd">    * Make subclass of ObjectBased.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span> <span class="k">as</span> <span class="nn">ndimage</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage.filters</span> <span class="k">as</span> <span class="nn">filters</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">evac.datafiles.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
+<span class="kn">from</span> <span class="nn">evac.datafiles.radar</span> <span class="k">import</span> <span class="n">Radar</span>
+
+<div class="viewcode-block" id="SAL"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL">[docs]</a><span class="k">class</span> <span class="nc">SAL</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Wctrl_fpath</span><span class="p">,</span><span class="n">Wmod_fpath</span><span class="p">,</span><span class="n">vrbl</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">lv</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">accum_hr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">radar_datadir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">thresh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">footprint</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">ctrl_fmt</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span><span class="p">,</span><span class="n">mod_fmt</span><span class="o">=</span><span class="s1">&#39;WRF&#39;</span><span class="p">,</span><span class="n">dx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">dy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">f</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mf">15.0</span><span class="p">,</span><span class="n">datafmt</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># Set data formats for both inputs to override defaults</span>
+        <span class="k">if</span> <span class="n">datafmt</span><span class="p">:</span>
+            <span class="n">ctrl_fmt</span> <span class="o">=</span> <span class="n">datafmt</span>
+            <span class="n">mod_fmt</span> <span class="o">=</span> <span class="n">datafmt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">utc</span> <span class="o">=</span> <span class="n">utc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thresh</span> <span class="o">=</span> <span class="n">thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">footprint</span> <span class="o">=</span> <span class="n">footprint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">vrbl</span> <span class="o">==</span> <span class="s1">&#39;accum_precip&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">accum_hr</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Need to set accumulation hours.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># First, set diagonal length</span>
+        <span class="c1"># And load model data</span>
+
+        <span class="k">if</span> <span class="n">mod_fmt</span> <span class="o">==</span> <span class="s1">&#39;WRF&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">WRFOut</span><span class="p">(</span><span class="n">Wmod_fpath</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dx</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">x_dim</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">y_dim</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compute_d</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">vrbl</span> <span class="o">==</span> <span class="s1">&#39;accum_precip&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">compute_accum_rain</span><span class="p">(</span><span class="n">utc</span><span class="p">,</span><span class="n">accum_hr</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">lv</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="n">utc</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]</span>
+
+        <span class="k">elif</span> <span class="n">mod_fmt</span> <span class="o">==</span> <span class="s1">&#39;array&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Wmod_fpath</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="n">dx</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dy</span> <span class="o">=</span> <span class="n">dy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compute_d</span><span class="p">()</span>
+        
+        <span class="c1"># Load verification data</span>
+        <span class="k">if</span> <span class="n">ctrl_fmt</span> <span class="o">==</span> <span class="s1">&#39;array&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Wctrl_fpath</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">ctrl_fmt</span> <span class="o">==</span> <span class="s1">&#39;obs&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">vrbl</span><span class="o">==</span><span class="s1">&#39;REFL_comp&#39;</span> <span class="ow">or</span> <span class="n">vrbl</span><span class="o">==</span><span class="s1">&#39;cref&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_radar_verif</span><span class="p">(</span><span class="n">utc</span><span class="p">,</span><span class="n">radar_datadir</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ctrl_fmt</span> <span class="o">==</span> <span class="s2">&quot;WRF&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">WRFOut</span><span class="p">(</span><span class="n">Wctrl_fpath</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vrbl</span> <span class="o">==</span> <span class="s1">&#39;accum_precip&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">compute_accum_rain</span><span class="p">(</span><span class="n">utc</span><span class="p">,</span><span class="n">accum_hr</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">lv</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="n">utc</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vrbl</span> <span class="o">=</span> <span class="n">vrbl</span>
+       
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        fig, ax = plt.subplots(1)</span>
+<span class="sd">        ax.pcolor(self.C[&#39;data&#39;])</span>
+<span class="sd">        fig.savefig(&#39;/home/jrlawson/public_html/bowecho/SALtests/obs_pcolor.png&#39;)</span>
+<span class="sd">        plt.close(fig)</span>
+<span class="sd">        fig, ax = plt.subplots(1)</span>
+<span class="sd">        ax.pcolor(self.M[&#39;data&#39;])</span>
+<span class="sd">        fig.savefig(&#39;/home/jrlawson/public_html/bowecho/SALtests/mod_pcolor.png&#39;)</span>
+<span class="sd">        plt.close(fig)</span>
+<span class="sd">        import pdb; pdb.set_trace()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">identify_objects</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compute_amplitude</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compute_location</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compute_structure</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;S = </span><span class="si">{0}</span><span class="s2">    A = </span><span class="si">{1}</span><span class="s2">     L = </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="SAL.get_radar_verif"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.get_radar_verif">[docs]</a>    <span class="k">def</span> <span class="nf">get_radar_verif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utc</span><span class="p">,</span><span class="n">datapath</span><span class="p">):</span>
+        <span class="n">RADAR</span> <span class="o">=</span> <span class="n">Radar</span><span class="p">(</span><span class="n">utc</span><span class="p">,</span><span class="n">datapath</span><span class="p">)</span>
+        <span class="n">Nlim</span><span class="p">,</span> <span class="n">Elim</span><span class="p">,</span> <span class="n">Slim</span><span class="p">,</span> <span class="n">Wlim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_limits</span><span class="p">()</span>
+        <span class="n">wlats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lats1D</span>
+        <span class="n">wlons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;WRFOut&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lons1D</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span> <span class="o">=</span> <span class="n">RADAR</span><span class="o">.</span><span class="n">get_subdomain</span><span class="p">(</span><span class="n">Nlim</span><span class="p">,</span><span class="n">Elim</span><span class="p">,</span><span class="n">Slim</span><span class="p">,</span><span class="n">Wlim</span><span class="p">)</span>
+        <span class="n">dBZ</span> <span class="o">=</span> <span class="n">RADAR</span><span class="o">.</span><span class="n">get_dBZ</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">dBZ_flip</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="n">dBZ</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">RectBivariateSpline</span> <span class="k">as</span> <span class="n">RBS</span>
+        <span class="n">rbs</span> <span class="o">=</span> <span class="n">RBS</span><span class="p">(</span><span class="n">lats</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">lons</span><span class="p">,</span><span class="n">dBZ_flip</span><span class="p">)</span>
+        <span class="n">dBZ_interp</span> <span class="o">=</span> <span class="n">rbs</span><span class="p">(</span><span class="n">wlats</span><span class="p">,</span><span class="n">wlons</span><span class="p">,)</span><span class="c1">#grid=True)</span>
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="c1"># fig, ax = plt.subplots(1)</span>
+        <span class="c1"># ax.imshow(dBZ_interp)</span>
+        <span class="c1"># ax.invert_yaxis()</span>
+        <span class="c1"># fig.tight_layout()</span>
+        <span class="c1"># fig.savefig(&#39;/home/jrlawson/public_html/bowecho/hires/SAL/dBZ_output.png&#39;)</span>
+        <span class="k">return</span> <span class="n">dBZ_interp</span></div>
+
+<div class="viewcode-block" id="SAL.compute_d"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.compute_d">[docs]</a>    <span class="k">def</span> <span class="nf">compute_d</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">xside</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dx</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_dim</span>
+        <span class="n">yside</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dy</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">xside</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">yside</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="SAL.identify_objects"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.identify_objects">[docs]</a>    <span class="k">def</span> <span class="nf">identify_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="c1"># self.f = 1/15.0 used in Wernli et al 2008</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;Rmax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;Rmax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vrbl</span> <span class="o">==</span> <span class="s1">&#39;REFL_comp&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vrbl</span><span class="o">==</span><span class="s1">&#39;cref&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;Rstar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thresh</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;Rstar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thresh</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;Rstar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;Rmax&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;Rstar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;Rmax&#39;</span><span class="p">]</span>
+        <span class="c1"># Find grid points of local precip max &gt; R*</span>
+        <span class="c1"># self.C[&#39;objects&#39;] = {}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_operators</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">,</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;M&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_operators</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">,</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SAL.compute_amplitude"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.compute_amplitude">[docs]</a>    <span class="k">def</span> <span class="nf">compute_amplitude</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]))</span><span class="o">/</span><span class="p">(</span>
+                <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="n">N</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])))</span></div>
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+
+<div class="viewcode-block" id="SAL.compute_location"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.compute_location">[docs]</a>    <span class="k">def</span> <span class="nf">compute_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="n">L1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_L1</span><span class="p">()</span>
+        <span class="n">L2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_L2</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="n">L1</span> <span class="o">+</span> <span class="n">L2</span></div>
+
+<div class="viewcode-block" id="SAL.compute_L1"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.compute_L1">[docs]</a>    <span class="k">def</span> <span class="nf">compute_L1</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="c1"># vector subtraction</span>
+        <span class="n">dist_km</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_diff_km</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;x_CoM&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;x_CoM&#39;</span><span class="p">])</span>
+        <span class="n">L1</span> <span class="o">=</span> <span class="n">dist_km</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+        <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;L1 = </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">L1</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">L1</span></div>
+
+<div class="viewcode-block" id="SAL.vector_diff_km"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.vector_diff_km">[docs]</a>    <span class="k">def</span> <span class="nf">vector_diff_km</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">):</span>
+        <span class="c1"># From grid coords to km difference</span>
+        <span class="n">dist_gp</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+        <span class="n">dist_km</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dx</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dist_gp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">dist_gp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dist_km</span></div>
+
+<div class="viewcode-block" id="SAL.compute_L2"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.compute_L2">[docs]</a>    <span class="k">def</span> <span class="nf">compute_L2</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="n">r_ctrl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_r</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">)</span>
+        <span class="n">r_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_r</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+        <span class="n">L2</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">r_ctrl</span><span class="o">-</span><span class="n">r_mod</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;L2 = </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">L2</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">L2</span></div>
+    
+<div class="viewcode-block" id="SAL.compute_r"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.compute_r">[docs]</a>    <span class="k">def</span> <span class="nf">compute_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dic</span><span class="p">):</span>
+        <span class="n">Rn_sum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">Rn_sum</span> <span class="o">+=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;Rn&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_diff_km</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;x_CoM&#39;</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;CoM&#39;</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">Rn_sum</span> <span class="o">/</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;R_tot&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">r</span></div>
+
+<div class="viewcode-block" id="SAL.object_operators"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.object_operators">[docs]</a>    <span class="k">def</span> <span class="nf">object_operators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dic</span><span class="p">,</span><span class="n">typ</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">nsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">footprint</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;Rstar&#39;</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">mask</span><span class="p">[</span><span class="n">data</span><span class="o">&lt;</span><span class="n">thresh</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">mask</span><span class="p">[</span><span class="n">data</span><span class="o">&gt;=</span><span class="n">thresh</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="n">labeled</span><span class="p">,</span> <span class="n">num_objects</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+
+        <span class="n">sizes</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">labeled</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_objects</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+
+        <span class="n">masksize</span> <span class="o">=</span> <span class="n">sizes</span> <span class="o">&lt;</span> <span class="n">nsize</span>
+        <span class="n">remove_pixel</span> <span class="o">=</span> <span class="n">masksize</span><span class="p">[</span><span class="n">labeled</span><span class="p">]</span>
+        <span class="n">labeled</span><span class="p">[</span><span class="n">remove_pixel</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labeled</span><span class="p">)</span>
+        <span class="n">label_im</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">labeled</span><span class="p">)</span>
+
+        <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Total R for objects</span>
+        <span class="n">R_objs_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">ln</span><span class="p">,</span><span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+            <span class="n">cy</span><span class="p">,</span> <span class="n">cx</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">labeled</span><span class="p">,</span><span class="n">l</span><span class="p">)</span>
+            <span class="c1"># First record is for whole field</span>
+            <span class="k">if</span> <span class="n">ln</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;x_CoM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cx</span><span class="p">,</span><span class="n">cy</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">][</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">][</span><span class="n">l</span><span class="p">][</span><span class="s1">&#39;CoM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cx</span><span class="p">,</span><span class="n">cy</span><span class="p">)</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">][</span><span class="n">l</span><span class="p">][</span><span class="s1">&#39;Rn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">labeled</span><span class="p">,</span><span class="n">l</span><span class="p">)</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">][</span><span class="n">l</span><span class="p">][</span><span class="s1">&#39;RnMax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">labeled</span><span class="p">,</span><span class="n">l</span><span class="p">)</span>
+                <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">][</span><span class="n">l</span><span class="p">][</span><span class="s1">&#39;Vn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">][</span><span class="n">l</span><span class="p">][</span><span class="s1">&#39;Rn&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">][</span><span class="n">l</span><span class="p">][</span><span class="s1">&#39;RnMax&#39;</span><span class="p">]</span>
+                <span class="n">R_objs_count</span> <span class="o">+=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">][</span><span class="n">l</span><span class="p">][</span><span class="s1">&#39;Rn&#39;</span><span class="p">]</span>
+
+        <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;R_tot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">R_objs_count</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;obj_array&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">labeled</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        fig, ax = plt.subplots(1)</span>
+<span class="sd">        ccc = ax.pcolor(label_im)</span>
+<span class="sd">        plt.colorbar(ccc)</span>
+<span class="sd">        fig.savefig(&#39;/home/jrlawson/public_html/bowecho/SALtests/{0}_objects_{1}.png&#39;.format(typ,self.utc))</span>
+<span class="sd">        plt.close(fig)</span>
+<span class="sd">        if typ == &#39;M&#39;:</span>
+<span class="sd">            fig, ax = plt.subplots(1)</span>
+<span class="sd">            cb1 = ax.pcolormesh(self.M[&#39;data&#39;])</span>
+<span class="sd">            plt.colorbar(cb1)</span>
+<span class="sd">            fig.savefig(&#39;/home/jrlawson/public_html/bowecho/SALtests/mod_pcolor.png&#39;)</span>
+<span class="sd">            plt.close(fig)</span>
+<span class="sd">        # import pdb; pdb.set_trace()</span>
+<span class="sd">        else:</span>
+<span class="sd">            fig, ax = plt.subplots(1)</span>
+<span class="sd">            cb2 = ax.pcolormesh(self.C[&#39;data&#39;])</span>
+<span class="sd">            plt.colorbar(cb2)</span>
+<span class="sd">            fig.savefig(&#39;/home/jrlawson/public_html/bowecho/SALtests/ctrl_pcolor.png&#39;)</span>
+<span class="sd">            plt.close(fig)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">bow_radius</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">bow_radius</span><span class="p">:</span>
+            <span class="n">sizes2</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span><span class="n">label_im</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="o">+</span><span class="mi">1</span><span class="p">))))</span>
+            <span class="n">bigidx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sizes2</span><span class="o">==</span><span class="n">N</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">sizes2</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># import pdb; pdb.set_trace()</span>
+            <span class="n">slicex</span><span class="p">,</span> <span class="n">slicey</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">find_objects</span><span class="p">(</span><span class="n">label_im</span><span class="o">==</span><span class="n">bigidx</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">roi_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">slicex</span><span class="p">,</span><span class="n">slicey</span><span class="p">]</span>
+            <span class="n">roi</span> <span class="o">=</span> <span class="n">label_im</span><span class="p">[</span><span class="n">slicex</span><span class="p">,</span><span class="n">slicey</span><span class="p">]</span>
+            <span class="c1"># markers = N.array([int(slicex.start),int(slicey.start)])</span>
+            <span class="n">filt</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">median_filter</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+            <span class="c1"># filt2 = ndimage.morphology.binary_closing(filt,iterations=1)</span>
+            <span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+            <span class="c1"># ax.imshow(roi)</span>
+            <span class="c1"># ax.flat[0].imshow(label_im)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+            <span class="c1"># ax.imshow(label_im)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;/home/jrlawson/public_html/bowecho/radiustest.png&#39;</span><span class="p">)</span>
+            <span class="kn">import</span> <span class="nn">pdb</span><span class="p">;</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span></div>
+        <span class="c1"># self.obj_dic = dic</span>
+
+<div class="viewcode-block" id="SAL.compute_structure"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.compute_structure">[docs]</a>    <span class="k">def</span> <span class="nf">compute_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">V_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_V</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+        <span class="n">V_ctrl</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">compute_V</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">=</span> <span class="p">(</span><span class="n">V_mod</span> <span class="o">-</span> <span class="n">V_ctrl</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">V_mod</span><span class="o">+</span><span class="n">V_ctrl</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="SAL.compute_V"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.compute_V">[docs]</a>    <span class="k">def</span> <span class="nf">compute_V</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dic</span><span class="p">):</span>
+        <span class="n">Vn_sum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">Vn_sum</span> <span class="o">+=</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;Rn&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;Vn&#39;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">V</span> <span class="o">=</span> <span class="n">Vn_sum</span> <span class="o">/</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;R_tot&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+            <span class="n">V</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">V</span></div>
+
+<div class="viewcode-block" id="SAL.active_px"><a class="viewcode-back" href="../../../evac.stats.sal.html#evac.stats.sal.SAL.active_px">[docs]</a>    <span class="k">def</span> <span class="nf">active_px</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;ctrl&#39;</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;pc&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return number of pixels included in chosen dataset&#39;s objects.</span>
+<span class="sd">        data is set to &#39;ctrl&#39; or &#39;mod&#39;.</span>
+<span class="sd">        Expressed as percentage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;ctrl&#39;</span><span class="p">:</span>
+            <span class="n">dd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="s1">&#39;obj_array&#39;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;mod&#39;</span><span class="p">:</span>
+            <span class="n">dd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="s1">&#39;obj_array&#39;</span><span class="p">]</span>
+        <span class="n">active_px</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">dd</span><span class="p">)</span>
+        <span class="n">tot_px</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">size</span>
+        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s1">&#39;pc&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">active_px</span><span class="o">/</span><span class="p">(</span><span class="n">tot_px</span><span class="o">*</span><span class="mf">1.0</span><span class="p">))</span><span class="o">*</span><span class="mf">100.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">active_px</span><span class="p">,</span> <span class="n">tot_px</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
