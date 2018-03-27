@@ -1,12 +1,11 @@
 import os
-import calendar 
+import calendar
 import time
 import pdb
 import sys
 import glob
 
-from . import GIS_tools as utils
-from . import GIS_tools
+import evac.utils.gis_tools as utils
 
 # date format: YYYYMMDD (string)
 
@@ -41,7 +40,7 @@ def getgefs(dates,download=1,split=1,lowres=0,custom_ens=0,control=1,
     # --output-document=CATNAME concatenates all files together for the big grib file
     # -nd makes sure hierachy isn't downloaded too
 
-    if download: 
+    if download:
         for d in dates:
             for e in ens:
                 url = os.path.join(FTP, d[0:4], d[0:6], d+'00', e, coord)
@@ -57,7 +56,7 @@ def getgefs(dates,download=1,split=1,lowres=0,custom_ens=0,control=1,
     # fout : smaller grib2 output file with just one forecast time
     # timestr : search pattern to find the forecast time
 
-    if split: 
+    if split:
         for d in dates:
             # Convert this date to python time for later conversion
             pytime_anl = calendar.timegm((int(d[:4]),int(d[4:6]),int(d[6:8]),0,0,0))
@@ -67,11 +66,11 @@ def getgefs(dates,download=1,split=1,lowres=0,custom_ens=0,control=1,
                 for t in range(0,198,6):
                     ts = "%03d" %t # Gets files into chron order with padded zeroes
                     if t==0:
-                        timestr = '":anl:"'    
+                        timestr = '":anl:"'
                     else:
                         timestr = ''.join(('":(',str(t),' hour fcst):"'))
                     fout = fprefix + ts + '.grib2'
-                    str1 = ' '.join(('wgrib2',fin,'-match',timestr,'-grib',fout)) 
+                    str1 = ' '.join(('wgrib2',fin,'-match',timestr,'-grib',fout))
                     os.system(str1)
 
 def getgfs(dates,hours):
@@ -79,7 +78,7 @@ def getgfs(dates,hours):
 
     Inputs:
     dates       :   List of strings, YYYYMMDD
-    hours       :   List of strings, HH 
+    hours       :   List of strings, HH
     """
 
     # If date is before 2007, download grib1.
@@ -97,7 +96,7 @@ def getnam(dates,hours,datatype,**kwargs):
 
     Inputs:
     dates       :   List of strings, YYYYMMDD
-    hours       :   List of strings, HH 
+    hours       :   List of strings, HH
     datatype    :   analysis or forecast.
 
     Optional arguments for forecasts via kwargs:
@@ -120,7 +119,7 @@ def getnam(dates,hours,datatype,**kwargs):
                             d[:6]+'/'+ d+'/namanl_218_'+d+'_'+h+'00_000.grb"')
                 os.system(command)
          
-    # Where are these forecast archives?                
+    # Where are these forecast archives?
     def get_218fcst(dates,hours,Tmax,Tint):
         for d in dates:
             for h in hours:
@@ -163,7 +162,7 @@ def RUC_fname(utc,filetype='grib'):
     """
     version = RUC_version(utc)
 
-    t = GIS_tools.ensure_datenum(utc)
+    t = utils.ensure_datenum(utc)
     yr = time.gmtime(t).tm_year
     mth = time.gmtime(t).tm_mon
     day = time.gmtime(t).tm_mday
@@ -191,7 +190,7 @@ def RUC_URL(utc):
     """
     Returns URL to download RUC file from nomads.
     """
-    t = GIS_tools.ensure_datenum(utc)
+    t = utils.ensure_datenum(utc)
     yr = time.gmtime(t).tm_year
     mth = time.gmtime(t).tm_mon
     day = time.gmtime(t).tm_mday
@@ -204,7 +203,7 @@ def RUC_URL(utc):
 def RUC_version(utc,fname=False,URL=False):
     """Returns the version/fname of RUC file
     """
-    t = GIS_tools.ensure_datenum(utc)
+    t = utils.ensure_datenum(utc)
     date0 = utils.ensure_datenum((2004,1,1,0,0,0))
     date1 = utils.ensure_datenum((2007,1,1,0,0,0))
     date2 = utils.ensure_datenum((2008,1,1,0,0,0))

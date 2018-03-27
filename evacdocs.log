@@ -1,0 +1,684 @@
+[master 7edfcbc] Updates docs
+ 1 file changed, 624 deletions(-)
+ rewrite evacdocs.log (100%)
+To https://github.com/johnrobertlawson/evac.git
+   587da56..7edfcbc  master -> master
+Running Sphinx v1.6.6
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 0 source files that are out of date
+updating environment: 0 added, 36 changed, 0 removed
+reading sources... [  2%] evac.datafiles.ecmwf
+reading sources... [  5%] evac.datafiles.ensemble
+reading sources... [  8%] evac.datafiles.ncfile
+reading sources... [ 11%] evac.datafiles.ruc
+reading sources... [ 13%] evac.datafiles.stageiv
+reading sources... [ 16%] evac.datafiles.wrfout
+reading sources... [ 19%] evac.derived
+reading sources... [ 22%] evac.derived.derived
+reading sources... [ 25%] evac.lazy.ideal_profiles
+reading sources... [ 27%] evac.lazy.lazywrf
+reading sources... [ 30%] evac.plot.birdseye
+reading sources... [ 33%] evac.plot.clicker
+reading sources... [ 36%] evac.plot.figure
+reading sources... [ 38%] evac.plot.heatmap
+reading sources... [ 41%] evac.plot.map
+reading sources... [ 44%] evac.plot.scales
+reading sources... [ 47%] evac.plot.timeseries
+reading sources... [ 50%] evac.plot.xsection
+reading sources... [ 52%] evac.stats.casati
+reading sources... [ 55%] evac.stats.detscores
+reading sources... [ 58%] evac.stats.fss
+reading sources... [ 61%] evac.stats.misc_stats
+reading sources... [ 63%] evac.stats.objectbased
+reading sources... [ 66%] evac.stats.roc
+reading sources... [ 69%] evac.stats.sal
+reading sources... [ 72%] evac.stoch.fractal_tools
+Total time: 0.0
+reading sources... [ 75%] evac.utils.defaults
+reading sources... [ 77%] evac.utils.evac_numbers
+reading sources... [ 80%] evac.utils.evac_types
+reading sources... [ 83%] evac.utils.exceptions
+reading sources... [ 86%] evac.utils.get_data
+reading sources... [ 88%] evac.utils.gis_tools
+reading sources... [ 91%] evac.utils.met_constants
+reading sources... [ 94%] evac.utils.misc_tools
+reading sources... [ 97%] evac.utils.reproject_tools
+reading sources... [100%] evac.utils.unix_tools
+
+/usr/local/conda3/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
+  return f(*args, **kwds)
+/home/chronos/user/Downloads/evac/evac/plot/clicker.py:2: UserWarning: 
+This call to matplotlib.use() has no effect because the backend has already
+been chosen; matplotlib.use() must be called *before* pylab, matplotlib.pyplot,
+or matplotlib.backends is imported for the first time.
+
+The backend was *originally* set to 'agg' by the following code:
+  File "/usr/local/conda3/bin/sphinx-build", line 11, in <module>
+    load_entry_point('Sphinx==1.6.6', 'console_scripts', 'sphinx-build')()
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/__init__.py", line 69, in main
+    return make_main(argv)
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/__init__.py", line 120, in make_main
+    return make_mode.run_make_mode(argv[2:])  # type: ignore
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/make_mode.py", line 323, in run_make_mode
+    return getattr(make, run_method)()
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/make_mode.py", line 102, in build_html
+    if self.run_generic_build('html') > 0:
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/make_mode.py", line 311, in run_generic_build
+    return cmdline.main(args + opts)
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/cmdline.py", line 306, in main
+    app.build(opts.force_all, filenames)
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/application.py", line 339, in build
+    self.builder.build_update()
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/builders/__init__.py", line 329, in build_update
+    'out of date' % len(to_build))
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/builders/__init__.py", line 342, in build
+    updated_docnames = set(self.env.update(self.config, self.srcdir, self.doctreedir))
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/environment/__init__.py", line 601, in update
+    self._read_serial(docnames, self.app)
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/environment/__init__.py", line 621, in _read_serial
+    self.read_doc(docname, app)
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/environment/__init__.py", line 758, in read_doc
+    pub.publish()
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/core.py", line 217, in publish
+    self.settings)
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/io.py", line 74, in read
+    self.parse()
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/readers/__init__.py", line 78, in parse
+    self.parser.parse(self.input, document)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/parsers/rst/__init__.py", line 191, in parse
+    self.statemachine.run(inputlines, document, inliner=self.inliner)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/parsers/rst/states.py", line 171, in run
+    input_source=document['source'])
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/statemachine.py", line 239, in run
+    context, state, transitions)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/statemachine.py", line 460, in check_line
+    return method(match, context, next_state)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/parsers/rst/states.py", line 2753, in underline
+    self.section(title, source, style, lineno - 1, messages)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/parsers/rst/states.py", line 327, in section
+    self.new_subsection(title, lineno, messages)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/parsers/rst/states.py", line 395, in new_subsection
+    node=section_node, match_titles=True)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/parsers/rst/states.py", line 282, in nested_parse
+    node=node, match_titles=match_titles)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/parsers/rst/states.py", line 196, in run
+    results = StateMachineWS.run(self, input_lines, input_offset)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/statemachine.py", line 239, in run
+    context, state, transitions)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/statemachine.py", line 460, in check_line
+    return method(match, context, next_state)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/parsers/rst/states.py", line 2326, in explicit_markup
+    nodelist, blank_finish = self.explicit_construct(match)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/parsers/rst/states.py", line 2338, in explicit_construct
+    return method(self, expmatch)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/parsers/rst/states.py", line 2081, in directive
+    directive_class, match, type_name, option_presets)
+  File "/usr/local/conda3/lib/python3.6/site-packages/docutils/parsers/rst/states.py", line 2130, in run_directive
+    result = directive_instance.run()
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 1843, in run
+    documenter.generate(more_content=self.content)
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 1080, in generate
+    if not self.import_object():
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/datafiles/ruc.py", line 11, in <module>
+    import matplotlib.pyplot as plt
+  File "/usr/local/conda3/lib/python3.6/site-packages/matplotlib/pyplot.py", line 72, in <module>
+    from matplotlib.backends import pylab_setup
+  File "/usr/local/conda3/lib/python3.6/site-packages/matplotlib/backends/__init__.py", line 14, in <module>
+    line for line in traceback.format_stack()
+
+
+  M.use('gtkagg')
+/usr/local/conda3/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
+  return f(*args, **kwds)
+/usr/local/conda3/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
+  return f(*args, **kwds)
+/usr/local/conda3/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
+  return f(*args, **kwds)
+/usr/local/conda3/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility. Expected 96, got 88
+  return f(*args, **kwds)
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ecmwf.rst:2: WARNING: Title underline too short.
+
+`datafiles.ecmwf`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ecmwf.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.ecmwf'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/datafiles/ecmwf.py", line 11, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ensemble.rst:2: WARNING: Title underline too short.
+
+`datafiles.ensemble`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ensemble.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.ensemble'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/datafiles/ensemble.py", line 14, in <module>
+    import evac.utils as utils
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ncfile.rst:2: WARNING: Title underline too short.
+
+`datafiles.ncfile`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ncfile.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.ncfile'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/datafiles/ncfile.py", line 1, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ruc.rst:2: WARNING: Title underline too short.
+
+`datafiles.ruc`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.ruc.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.ruc'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/datafiles/ruc.py", line 13, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.stageiv.rst:2: WARNING: Title underline too short.
+
+`datafiles.stageiv`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.stageiv.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.stageiv'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/datafiles/stageiv.py", line 9, in <module>
+    from mpl_toolkits.basemap import Basemap
+ModuleNotFoundError: No module named 'mpl_toolkits.basemap'
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.wrfout.rst:2: WARNING: Title underline too short.
+
+`datafiles.wrfout`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.datafiles.wrfout.rst:5: WARNING: autodoc: failed to import module 'evac.datafiles.wrfout'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/datafiles/wrfout.py", line 12, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.derived.rst:2: WARNING: Title underline too short.
+
+`derived`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.derived.rst:6: WARNING: toctree contains reference to nonexisting document 'evac.derived._derived'
+/home/chronos/user/Downloads/evac/docs/source/evac.derived.derived.rst:2: WARNING: Title underline too short.
+
+`derived.derived`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.derived.derived.rst:5: WARNING: autodoc: failed to import module 'evac.derived.derived'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+ModuleNotFoundError: No module named 'evac.derived.derived'
+/home/chronos/user/Downloads/evac/docs/source/evac.lazy.ideal_profiles.rst:2: WARNING: Title underline too short.
+
+`lazy.ideal_profiles`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.lazy.ideal_profiles.rst:5: WARNING: autodoc: failed to import module 'evac.lazy.ideal_profiles'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/lazy/ideal_profiles.py", line 10, in <module>
+    import evac.utils as utils
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.lazy.lazywrf.rst:2: WARNING: Title underline too short.
+
+`lazy.lazywrf`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.lazy.lazywrf.rst:5: WARNING: autodoc: failed to import module 'evac.lazy.lazywrf'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/lazy/lazywrf.py", line 7, in <module>
+    import evac.utils as utils
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.birdseye.rst:2: WARNING: Title underline too short.
+
+`plot.birdseye`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.birdseye.rst:5: WARNING: autodoc: failed to import module 'evac.plot.birdseye'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/plot/birdseye.py", line 15, in <module>
+    from mpl_toolkits.basemap import Basemap
+ModuleNotFoundError: No module named 'mpl_toolkits.basemap'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.clicker.rst:2: WARNING: Title underline too short.
+
+`plot.clicker`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.clicker.rst:5: WARNING: autodoc: failed to import module 'evac.plot.clicker'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/plot/clicker.py", line 11, in <module>
+    from .scales import Scales
+  File "/home/chronos/user/Downloads/evac/evac/plot/scales.py", line 25, in <module>
+    import evac.utils as utils
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.figure.rst:2: WARNING: Title underline too short.
+
+`plot.figure`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.figure.rst:5: WARNING: autodoc: failed to import module 'evac.plot.figure'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/plot/figure.py", line 10, in <module>
+    from mpl_toolkits.basemap import Basemap
+ModuleNotFoundError: No module named 'mpl_toolkits.basemap'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.heatmap.rst:2: WARNING: Title underline too short.
+
+`plot.heatmap`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.heatmap.rst:5: WARNING: autodoc: failed to import module 'evac.plot.heatmap'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/plot/heatmap.py", line 9, in <module>
+    from .figure import Figure
+  File "/home/chronos/user/Downloads/evac/evac/plot/figure.py", line 10, in <module>
+    from mpl_toolkits.basemap import Basemap
+ModuleNotFoundError: No module named 'mpl_toolkits.basemap'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.map.rst:2: WARNING: Title underline too short.
+
+`plot.map`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.map.rst:5: WARNING: autodoc: failed to import module 'evac.plot.map'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/plot/map.py", line 6, in <module>
+    from mpl_toolkits.basemap import Basemap
+ModuleNotFoundError: No module named 'mpl_toolkits.basemap'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.scales.rst:2: WARNING: Title underline too short.
+
+`plot.scales`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.scales.rst:5: WARNING: autodoc: failed to import module 'evac.plot.scales'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/plot/scales.py", line 25, in <module>
+    import evac.utils as utils
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.timeseries.rst:2: WARNING: Title underline too short.
+
+`plot.timeseries`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.timeseries.rst:5: WARNING: autodoc: failed to import module 'evac.plot.timeseries'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/plot/timeseries.py", line 7, in <module>
+    from .wrfout import WRFOut
+ModuleNotFoundError: No module named 'evac.plot.wrfout'
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.xsection.rst:2: WARNING: Title underline too short.
+
+`plot.xsection`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.plot.xsection.rst:5: WARNING: autodoc: failed to import module 'evac.plot.xsection'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/plot/xsection.py", line 16, in <module>
+    from .figure import Figure
+  File "/home/chronos/user/Downloads/evac/evac/plot/figure.py", line 10, in <module>
+    from mpl_toolkits.basemap import Basemap
+ModuleNotFoundError: No module named 'mpl_toolkits.basemap'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.casati.rst:2: WARNING: Title underline too short.
+
+`stats.casati`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.casati.rst:5: WARNING: autodoc: failed to import module 'evac.stats.casati'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/stats/casati.py", line 7, in <module>
+    from evac.utils.exceptions import QCError, FormatError
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.detscores.rst:2: WARNING: Title underline too short.
+
+`stats.detscores`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.detscores.rst:5: WARNING: autodoc: failed to import module 'evac.stats.detscores'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/stats/detscores.py", line 15, in <module>
+    from evac.stats.misc_stats import compute_contingency
+  File "/home/chronos/user/Downloads/evac/evac/stats/misc_stats.py", line 14, in <module>
+    import evac.utils.gis_tools as utils
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.fss.rst:2: WARNING: Title underline too short.
+
+`stats.fss`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.fss.rst:5: WARNING: autodoc: failed to import module 'evac.stats.fss'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/stats/fss.py", line 8
+    class self.FSS():
+              ^
+SyntaxError: invalid syntax
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.misc_stats.rst:2: WARNING: Title underline too short.
+
+`stats.misc_stats`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.misc_stats.rst:5: WARNING: autodoc: failed to import module 'evac.stats.misc_stats'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/stats/misc_stats.py", line 14, in <module>
+    import evac.utils.gis_tools as utils
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.objectbased.rst:2: WARNING: Title underline too short.
+
+`stats.objectbased`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.objectbased.rst:5: WARNING: autodoc: failed to import module 'evac.stats.objectbased'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/stats/objectbased.py", line 11, in <module>
+    from .wrfout import WRFOut
+ModuleNotFoundError: No module named 'evac.stats.wrfout'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.roc.rst:2: WARNING: Title underline too short.
+
+`stats.roc`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.roc.rst:5: WARNING: autodoc: failed to import module 'evac.stats.roc'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/stats/roc.py", line 10, in <module>
+    from .detscores import DetScores
+  File "/home/chronos/user/Downloads/evac/evac/stats/detscores.py", line 15, in <module>
+    from evac.stats.misc_stats import compute_contingency
+  File "/home/chronos/user/Downloads/evac/evac/stats/misc_stats.py", line 14, in <module>
+    import evac.utils.gis_tools as utils
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.sal.rst:2: WARNING: Title underline too short.
+
+`stats.sal`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.sal.rst:5: WARNING: autodoc: failed to import module 'evac.stats.sal'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/stats/sal.py", line 12, in <module>
+    from .wrfout import WRFOut
+ModuleNotFoundError: No module named 'evac.stats.wrfout'
+/home/chronos/user/Downloads/evac/docs/source/evac.stoch.fractal_tools.rst:2: WARNING: Title underline too short.
+
+`stoch.fractal_tools`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.stoch.fractal_tools.rst:5: WARNING: autodoc: failed to import module 'evac.stoch.fractal_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/stoch/fractal_tools.py", line 230, in <module>
+    assert True==False
+AssertionError
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.defaults.rst:2: WARNING: Title underline too short.
+
+`utils.defaults`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.defaults.rst:5: WARNING: autodoc: failed to import module 'evac.utils.defaults'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.evac_numbers.rst:2: WARNING: Title underline too short.
+
+`utils.evac_numbers`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.evac_numbers.rst:5: WARNING: autodoc: failed to import module 'evac.utils.evac_numbers'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.evac_types.rst:2: WARNING: Title underline too short.
+
+`utils.evac_types`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.evac_types.rst:5: WARNING: autodoc: failed to import module 'evac.utils.evac_types'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.exceptions.rst:2: WARNING: Title underline too short.
+
+`utils.exceptions`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.exceptions.rst:5: WARNING: autodoc: failed to import module 'evac.utils.exceptions'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.get_data.rst:2: WARNING: Title underline too short.
+
+`utils.get_data`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.get_data.rst:5: WARNING: autodoc: failed to import module 'evac.utils.get_data'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.gis_tools.rst:2: WARNING: Title underline too short.
+
+`utils.gis_tools`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.gis_tools.rst:5: WARNING: autodoc: failed to import module 'evac.utils.gis_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.met_constants.rst:2: WARNING: Title underline too short.
+
+`utils.met_constants`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.met_constants.rst:5: WARNING: autodoc: failed to import module 'evac.utils.met_constants'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.misc_tools.rst:2: WARNING: Title underline too short.
+
+`utils.misc_tools`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.misc_tools.rst:5: WARNING: autodoc: failed to import module 'evac.utils.misc_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.reproject_tools.rst:2: WARNING: Title underline too short.
+
+`utils.reproject_tools`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.reproject_tools.rst:5: WARNING: autodoc: failed to import module 'evac.utils.reproject_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.unix_tools.rst:2: WARNING: Title underline too short.
+
+`utils.unix_tools`
+=======
+/home/chronos/user/Downloads/evac/docs/source/evac.utils.unix_tools.rst:5: WARNING: autodoc: failed to import module 'evac.utils.unix_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/usr/local/conda3/lib/python3.6/site-packages/sphinx/ext/autodoc.py", line 658, in import_object
+    __import__(self.modname)
+  File "/home/chronos/user/Downloads/evac/evac/utils/__init__.py", line 10, in <module>
+    from .gis_tools import *
+  File "/home/chronos/user/Downloads/evac/evac/utils/gis_tools.py", line 2, in <module>
+    from netCDF4 import Dataset
+ModuleNotFoundError: No module named 'netCDF4'
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... /home/chronos/user/Downloads/evac/docs/source/evac.derived.derived.rst: WARNING: document isn't included in any toctree
+/home/chronos/user/Downloads/evac/docs/source/evac.stats.diffenergy.rst: WARNING: document isn't included in any toctree
+done
+preparing documents... done
+writing output... [  2%] evac
+writing output... [  4%] evac.datafiles
+writing output... [  6%] evac.datafiles.ecmwf
+writing output... [  9%] evac.datafiles.ensemble
+writing output... [ 11%] evac.datafiles.ncfile
+writing output... [ 13%] evac.datafiles.ruc
+writing output... [ 15%] evac.datafiles.stageiv
+writing output... [ 18%] evac.datafiles.wrfout
+writing output... [ 20%] evac.derived
+writing output... [ 22%] evac.derived.derived
+writing output... [ 25%] evac.lazy
+writing output... [ 27%] evac.lazy.ideal_profiles
+writing output... [ 29%] evac.lazy.lazywrf
+writing output... [ 31%] evac.plot
+writing output... [ 34%] evac.plot.birdseye
+writing output... [ 36%] evac.plot.clicker
+writing output... [ 38%] evac.plot.figure
+writing output... [ 40%] evac.plot.heatmap
+writing output... [ 43%] evac.plot.map
+writing output... [ 45%] evac.plot.scales
+writing output... [ 47%] evac.plot.timeseries
+writing output... [ 50%] evac.plot.xsection
+writing output... [ 52%] evac.stats
+writing output... [ 54%] evac.stats.casati
+writing output... [ 56%] evac.stats.detscores
+writing output... [ 59%] evac.stats.fss
+writing output... [ 61%] evac.stats.misc_stats
+writing output... [ 63%] evac.stats.objectbased
+writing output... [ 65%] evac.stats.roc
+writing output... [ 68%] evac.stats.sal
+writing output... [ 70%] evac.stoch
+writing output... [ 72%] evac.stoch.fractal_tools
+writing output... [ 75%] evac.utils
+writing output... [ 77%] evac.utils.defaults
+writing output... [ 79%] evac.utils.evac_numbers
+writing output... [ 81%] evac.utils.evac_types
+writing output... [ 84%] evac.utils.exceptions
+writing output... [ 86%] evac.utils.get_data
+writing output... [ 88%] evac.utils.gis_tools
+writing output... [ 90%] evac.utils.met_constants
+writing output... [ 93%] evac.utils.misc_tools
+writing output... [ 95%] evac.utils.reproject_tools
+writing output... [ 97%] evac.utils.unix_tools
+writing output... [100%] index
+
+generating indices... genindex py-modindex
+highlighting module code... [  5%] evac.datafiles.binaryfile
+highlighting module code... [ 11%] evac.datafiles.csvfile
+highlighting module code... [ 16%] evac.datafiles.datafile
+highlighting module code... [ 22%] evac.datafiles.gribfile
+highlighting module code... [ 27%] evac.datafiles.hrrr
+highlighting module code... [ 33%] evac.datafiles.mrms
+highlighting module code... [ 38%] evac.datafiles.obs
+highlighting module code... [ 44%] evac.datafiles.pngfile
+highlighting module code... [ 50%] evac.datafiles.radar
+highlighting module code... [ 55%] evac.datafiles.spclsr
+highlighting module code... [ 61%] evac.datafiles.stormevents
+highlighting module code... [ 66%] evac.plot.colourtables
+highlighting module code... [ 72%] evac.plot.skewt
+highlighting module code... [ 77%] evac.stats.diffenergy
+highlighting module code... [ 83%] evac.stats.probscores
+highlighting module code... [ 88%] evac.stoch.ifsfractal
+highlighting module code... [ 94%] evac.stoch.lovejoy_fractal
+highlighting module code... [100%] evac.stoch.perturbations
+
+writing additional pages... search
+copying static files... WARNING: html_static_path entry '/home/chronos/user/Downloads/evac/docs/source/_static' does not exist
+done
+copying extra files... done
+dumping search index in English (code: en) ... done
+dumping object inventory... done
+build succeeded, 75 warnings.
+
+Build finished. The HTML pages are in ../../evac_docs/html.
+fatal: Not a git repository (or any parent up to mount point /home/chronos)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+fatal: Not a git repository (or any parent up to mount point /home/chronos)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+fatal: Not a git repository (or any parent up to mount point /home/chronos)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).

@@ -14,7 +14,7 @@ from mpl_toolkits.basemap import Basemap
 import numpy as N
 
 import evac.utils as utils
-from .ncfile import NCFile
+from evac.datafiles.ncfile import NCFile
 
 class ECMWF(NCFile):
     def __init__(self,fpath,config):

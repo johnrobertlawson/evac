@@ -227,7 +227,6 @@ if __name__ == '__main__':
 end = time.time()
 all_elapsed = "Total time: {0:.1f}".format(end-start)
 print(all_elapsed)
-assert True==False
 
 pulseshape = dR * N.exp(-1*(u/rho)**(2*s))
 pulselength = 0 # probability of rhotick > rho is 1/rho, for rho > 1
