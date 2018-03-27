@@ -45,6 +45,66 @@
             
   <div class="section" id="utils-get-data">
 <h1><cite>utils.get_data</cite><a class="headerlink" href="#utils-get-data" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-evac.utils.get_data"></span><dl class="function">
+<dt id="evac.utils.get_data.RUC_URL">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">RUC_URL</code><span class="sig-paren">(</span><em>utc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#RUC_URL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.RUC_URL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns URL to download RUC file from nomads.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.RUC_fname">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">RUC_fname</code><span class="sig-paren">(</span><em>utc</em>, <em>filetype='grib'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#RUC_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.RUC_fname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns RUC filename for date.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.RUC_version">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">RUC_version</code><span class="sig-paren">(</span><em>utc</em>, <em>fname=False</em>, <em>URL=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#RUC_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.RUC_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the version/fname of RUC file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.getgefs">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">getgefs</code><span class="sig-paren">(</span><em>dates</em>, <em>download=1</em>, <em>split=1</em>, <em>lowres=0</em>, <em>custom_ens=0</em>, <em>control=1</em>, <em>coord='latlon'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#getgefs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.getgefs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This script downloads all variables for GEFS R2 reforecasts.
+All runs are initialised at 0000 UTC.</p>
+<p>Inputs (all optional unless stated):
+dates       :   YYYYMMDD, list of strings (mandatory)
+download    :   whether to download the data
+split       :   whether to split up the data
+lowres      :   whether to download times after T+190
+custom_ens  :   a custom list of perturbation ensemble members
+control     :   whether to download the control member
+coord       :   latlon/gaussian grid</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.getgfs">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">getgfs</code><span class="sig-paren">(</span><em>dates</em>, <em>hours</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#getgfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.getgfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads GFS analysis data.</p>
+<p>Inputs:
+dates       :   List of strings, YYYYMMDD
+hours       :   List of strings, HH</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.getnam">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">getnam</code><span class="sig-paren">(</span><em>dates</em>, <em>hours</em>, <em>datatype</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#getnam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.getnam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads NAM analysis and forecast data.</p>
+<p>Inputs:
+dates       :   List of strings, YYYYMMDD
+hours       :   List of strings, HH
+datatype    :   analysis or forecast.</p>
+<p>Optional arguments for forecasts via kwargs:
+tmax        :   maximum forecast time to download (inclusive)
+tint        :   internal (hr) between fetched forecasts</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.getruc">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">getruc</code><span class="sig-paren">(</span><em>utc</em>, <em>ncpath='./'</em>, <em>convert2nc=False</em>, <em>duplicate=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#getruc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.getruc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 
 

@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.stats.fss &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.stats.fss</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage.filters</span>
+
+<span class="kn">from</span> <span class="nn">evac.utils.exceptions</span> <span class="k">import</span> <span class="n">FormatError</span>
+
+<div class="viewcode-block" id="FSS"><a class="viewcode-back" href="../../../evac.stats.fss.html#evac.stats.fss.FSS">[docs]</a><span class="k">class</span> <span class="nc">FSS</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data_fcst</span><span class="p">,</span><span class="n">data_obs</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">lv</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span><span class="n">ns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">ns_step</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Fcst and ob data needs to be on the same grid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_fcst</span> <span class="o">=</span> <span class="n">data_fcst</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_obs</span> <span class="o">=</span> <span class="n">data_obs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span> <span class="o">=</span> <span class="n">thresholds</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">enforce_2D</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_grid_check</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">xdim</span> <span class="o">=</span> <span class="n">data</span>
+
+        <span class="c1"># Neighbourhoods</span>
+        <span class="k">if</span> <span class="n">ns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ns</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">maxlen</span><span class="p">,</span><span class="n">ns_step</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ns</span> <span class="o">=</span> <span class="n">ns</span>
+
+        <span class="c1"># Computations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compute_MSE</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compute_FSS</span><span class="p">()</span>
+        <span class="k">return</span>
+        
+<div class="viewcode-block" id="FSS.enforce_2D"><a class="viewcode-back" href="../../../evac.stats.fss.html#evac.stats.fss.FSS.enforce_2D">[docs]</a>    <span class="k">def</span> <span class="nf">enforce_2D</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot;Both data grids need to be 2D.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">data_fcst</span><span class="p">):</span>
+            <span class="n">shp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">shp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,:]</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">shp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">shp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FormatError</span><span class="p">(</span><span class="s2">&quot;Data needs to be 2D.&quot;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="FSS.do_grid_check"><a class="viewcode-back" href="../../../evac.stats.fss.html#evac.stats.fss.FSS.do_grid_check">[docs]</a>    <span class="k">def</span> <span class="nf">do_grid_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot; Make sure grids are identical size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ydim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xdim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_fcst</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_obs</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydim</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xdim</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">FormatError</span><span class="p">(</span><span class="s2">&quot;Obs and forecast data not same size.&quot;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+    
+<div class="viewcode-block" id="FSS.compute_FSS"><a class="viewcode-back" href="../../../evac.stats.fss.html#evac.stats.fss.FSS.compute_FSS">[docs]</a>    <span class="k">def</span> <span class="nf">compute_FSS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">maxlen</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydim</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xdim</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="n">threshs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">[</span><span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FSS</span><span class="p">[</span><span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="c1"># Convert to binary using thresholds</span>
+            <span class="n">fc</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_fcst</span><span class="p">)</span>
+            <span class="n">ob</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_obs</span><span class="p">)</span>
+            <span class="n">fc</span><span class="p">[</span><span class="n">fc</span> <span class="o">&lt;</span> <span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">fc</span><span class="p">[</span><span class="n">fc</span> <span class="o">&gt;=</span> <span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">ob</span><span class="p">[</span><span class="n">ob</span> <span class="o">&lt;</span> <span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">ob</span><span class="p">[</span><span class="n">ob</span> <span class="o">&gt;=</span> <span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ns</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">FSS</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="c1"># print(&quot;self.FSS for threshold {0} mm and n={1}.&quot;.format(th,n))</span>
+                <span class="c1"># self.FSS computation w/ fractions</span>
+
+                <span class="n">pad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">On</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">uniform_filter</span><span class="p">(</span><span class="n">ob</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span>
+                                <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span><span class="n">cval</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">Mn</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">uniform_filter</span><span class="p">(</span><span class="n">fc</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span>
+                                <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span><span class="n">cval</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+                <span class="c1"># Delete meaningless smoothed data</span>
+                <span class="n">cutrangex</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">pad</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdim</span><span class="o">-</span><span class="n">pad</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xdim</span><span class="p">))</span>
+                <span class="n">cutrangey</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">pad</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydim</span><span class="o">-</span><span class="n">pad</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xdim</span><span class="p">))</span>
+                <span class="n">On</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">On</span><span class="p">,</span><span class="n">cutrangey</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">Mn</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">Mn</span><span class="p">,</span><span class="n">cutrangey</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">On</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">On</span><span class="p">,</span><span class="n">cutrangex</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">Mn</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">Mn</span><span class="p">,</span><span class="n">cutrangex</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">cutlenx</span> <span class="o">=</span> <span class="n">On</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">cutleny</span> <span class="o">=</span> <span class="n">On</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># self.MSE</span>
+                <span class="n">sqdif</span> <span class="o">=</span> <span class="p">(</span><span class="n">On</span><span class="o">-</span><span class="n">Mn</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">cutlenx</span><span class="o">*</span><span class="n">cutleny</span><span class="p">))</span><span class="o">*</span><span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sqdif</span><span class="p">)</span>
+
+                <span class="c1"># Reference self.MSE</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;ref&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">cutlenx</span><span class="o">*</span><span class="n">cutleny</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">On</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Mn</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+            
+                <span class="c1"># self.FSS</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">FSS</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;score&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSE</span><span class="p">[</span><span class="n">th</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;ref&#39;</span><span class="p">])</span>
+        <span class="k">return</span></div></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
