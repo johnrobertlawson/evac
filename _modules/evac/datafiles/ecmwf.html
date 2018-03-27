@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.datafiles.ecmwf &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.datafiles.ecmwf</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; ECMWF data in NetCDF format.</span>
+
+<span class="sd">Todos:</span>
+<span class="sd">    * Remove redundant plotting (but keep logic)</span>
+<span class="sd">    * Create key table for looking up variables</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="k">import</span> <span class="n">Basemap</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+
+<span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">evac.datafiles.ncfile</span> <span class="k">import</span> <span class="n">NCFile</span>
+
+<div class="viewcode-block" id="ECMWF"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF">[docs]</a><span class="k">class</span> <span class="nc">ECMWF</span><span class="p">(</span><span class="n">NCFile</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">,</span><span class="n">config</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">Defaults</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ec</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecmwf_times</span><span class="p">()</span>
+        <span class="c1"># self.dx =</span>
+        <span class="c1"># self.dy =</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;g0_lat_2&#39;</span><span class="p">][:]</span> <span class="c1">#N to S</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;g0_lon_3&#39;</span><span class="p">][:]</span> <span class="c1">#W to E</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lvs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;lv_ISBL1&#39;</span><span class="p">][:]</span> <span class="c1">#jet to sfc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;Z_GDS0_ISBL&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># Times, levels, lats, lons</span>
+
+<div class="viewcode-block" id="ECMWF.ecmwf_times"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.ecmwf_times">[docs]</a>    <span class="k">def</span> <span class="nf">ecmwf_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ec_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;initial_time0_hours&#39;</span><span class="p">][:]</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">ec_t</span><span class="o">*</span><span class="mf">3600.0</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1490184.0</span><span class="o">*</span><span class="mf">3600.0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">t</span></div>
+
+<div class="viewcode-block" id="ECMWF.find_level_idx"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.find_level_idx">[docs]</a>    <span class="k">def</span> <span class="nf">find_level_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lv</span><span class="p">):</span>
+        <span class="n">lvs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lvs</span><span class="p">)</span>
+        <span class="n">lv_idx</span> <span class="o">=</span> <span class="n">lvs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">lv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lv_idx</span></div>
+
+<div class="viewcode-block" id="ECMWF.find_time_idx"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.find_time_idx">[docs]</a>    <span class="k">def</span> <span class="nf">find_time_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="k">pass</span> <span class="c1"># It&#39;s a datenum</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ECMWF.get_key"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.get_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">):</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">keys</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Z_GDS0_ISBL&#39;</span>
+        <span class="n">keys</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;W_GDS0_ISBL&#39;</span>
+        <span class="k">return</span> <span class="n">keys</span><span class="p">[</span><span class="n">va</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ECMWF.get"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+        <span class="n">t_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_time_idx</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">lv_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_level_idx</span><span class="p">(</span><span class="n">lv</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">va</span> <span class="o">==</span> <span class="s1">&#39;wind&#39;</span><span class="p">:</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;U_GDS0_ISBL&#39;</span><span class="p">][</span><span class="n">t_idx</span><span class="p">,</span><span class="n">lv_idx</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;V_GDS0_ISBL&#39;</span><span class="p">][</span><span class="n">t_idx</span><span class="p">,</span><span class="n">lv_idx</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">u</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_key</span><span class="p">(</span><span class="n">va</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">t_idx</span><span class="p">,</span><span class="n">lv_idx</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="ECMWF.plot"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
+
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">va</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">m</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">basemap_setup</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="s1">&#39;scale&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">S</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">]</span>
+                <span class="n">f1</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">S</span><span class="p">,</span><span class="n">colors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f1</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">colors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="o">.</span><span class="n">plot_titles</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">string_from_time</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s1">&#39;wind_overlay&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">jet</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;wind_overlay&#39;</span><span class="p">]</span>
+                <span class="n">wind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wind&#39;</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+                <span class="n">windplot</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">wind</span><span class="p">,</span><span class="n">jet</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">windplot</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;W_overlay&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">Wscale</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;W_overlay&#39;</span><span class="p">]</span>
+                <span class="n">W</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;W&#39;</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+                <span class="n">windplot</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">W</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">windplot</span><span class="p">)</span>
+
+
+            <span class="c1"># if self.C.colorbar:</span>
+                <span class="c1"># plt.colorbar(orientation=&#39;horizontal&#39;)</span>
+
+            <span class="n">datestr</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">string_from_time</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;ECMWF&#39;</span><span class="p">,</span><span class="n">va</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">lv</span><span class="p">),</span><span class="n">datestr</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span>
+
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Plotting </span><span class="si">{0}</span><span class="s2"> at </span><span class="si">{1}</span><span class="s2"> for </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">va</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">datestr</span><span class="p">)))</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">clabel</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%4u</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+
+            <span class="n">utils</span><span class="o">.</span><span class="n">trycreate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="o">.</span><span class="n">output_root</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="o">.</span><span class="n">output_root</span><span class="p">,</span><span class="n">fname</span><span class="p">))</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+
+<div class="viewcode-block" id="ECMWF.basemap_setup"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.basemap_setup">[docs]</a>    <span class="k">def</span> <span class="nf">basemap_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Fetch settings</span>
+        <span class="n">basemap_res</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">,</span><span class="s1">&#39;basemap_res&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">basemap_res</span><span class="p">)</span>
+        <span class="n">lllat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">lllon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">urlat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">urlon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;Wlim&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">lllat</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Slim&#39;</span><span class="p">]</span>
+            <span class="n">lllon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Wlim&#39;</span><span class="p">]</span>
+            <span class="n">urlat</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Nlim&#39;</span><span class="p">]</span>
+            <span class="n">urlon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Elim&#39;</span><span class="p">]</span>
+
+        <span class="c1"># dx = 13.0</span>
+        <span class="c1"># dy = 13.0</span>
+        <span class="c1"># x_dim = lats.shape[0]</span>
+        <span class="c1"># y_dim = lats.shape[1]</span>
+        <span class="c1"># width_m = dx*(x_dim-1)</span>
+        <span class="c1"># height_m = dy*(y_dim-1)</span>
+        <span class="n">lat0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">y_dim</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">lon0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_dim</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="n">Basemap</span><span class="p">(</span>
+            <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;merc&#39;</span><span class="p">,</span>
+            <span class="n">llcrnrlon</span><span class="o">=</span><span class="n">lllon</span><span class="p">,</span><span class="n">llcrnrlat</span><span class="o">=</span><span class="n">lllat</span><span class="p">,</span>
+            <span class="n">urcrnrlon</span><span class="o">=</span><span class="n">urlon</span><span class="p">,</span><span class="n">urcrnrlat</span><span class="o">=</span><span class="n">urlat</span><span class="p">,</span>
+            <span class="n">lat_0</span><span class="o">=</span><span class="n">lat0</span><span class="p">,</span><span class="n">lon_0</span><span class="o">=</span><span class="n">lon0</span><span class="p">,</span>
+            <span class="n">resolution</span><span class="o">=</span><span class="n">basemap_res</span><span class="p">,</span><span class="n">area_thresh</span><span class="o">=</span><span class="mi">500</span>
+            <span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">drawcoastlines</span><span class="p">()</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">drawstates</span><span class="p">()</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">drawcountries</span><span class="p">()</span>
+
+        <span class="c1"># Draw meridians etc with wrff.lat/lon spacing</span>
+        <span class="c1"># Default should be a tenth of width of plot, rounded to sig fig</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="n">mx</span><span class="p">,</span> <span class="n">my</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="n">mx</span><span class="p">,</span><span class="n">my</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">m</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

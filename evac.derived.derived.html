@@ -43,6 +43,392 @@
             
   <div class="section" id="derived-derived">
 <h1><cite>derived.derived</cite><a class="headerlink" href="#derived-derived" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-evac.derived.derived"></span><p>For computing derived variables from existing fields.</p>
+<p>TODO: steal a lot of these from WRFOut.
+TODO: there might be some overlap from stats.</p>
+<dl class="function">
+<dt id="evac.derived.derived.cold_pool_depth">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">cold_pool_depth</code><span class="sig-paren">(</span><em>self</em>, <em>dpt</em>, <em>heights</em>, <em>dpt_env</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#cold_pool_depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.cold_pool_depth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.cold_pool_strength">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">cold_pool_strength</code><span class="sig-paren">(</span><em>self</em>, <em>X</em>, <em>time</em>, <em>swath_width=100</em>, <em>env=0</em>, <em>dz=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#cold_pool_strength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.cold_pool_strength" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns array the same shape as WRF domain.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> &#8211; cross-section object with given path
+This path goes front-to-back through a bow</li>
+<li><strong>km</strong> &#8211; width in the line-normal direction</li>
+<li><strong>env</strong> &#8211; (x,y) for location to sample environmental dpt</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_C2">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_C2</code><span class="sig-paren">(</span><em>self</em>, <em>x</em>, <em>y</em>, <em>dpt</em>, <em>heights</em>, <em>dpt_env</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_C2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_C2" title="Permalink to this definition">¶</a></dt>
+<dd><p>C^2 as found in James et al. 2006 MWR</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; x location in domain</li>
+<li><strong>y</strong> &#8211; y location in domain</li>
+<li><strong>dpt</strong> &#8211; density potential temperature slice</li>
+<li><strong>heights</strong> &#8211; height AGL slice</li>
+<li><strong>dpt_env</strong> &#8211; environmental dpt, column</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_CAPE">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_CAPE</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_CAPE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_CAPE" title="Permalink to this definition">¶</a></dt>
+<dd><p>INCOMPLETE!</p>
+<p>CAPE method based on GEMPAK&#8217;s pdsuml.f function</p>
+<p>Inputs:</p>
+<p>tidx,lvidx,lonidx,latidx  :   dictionary of level/time/lat/lon</p>
+<p>Outputs:
+CAPE    :   convective available potential energy
+CIN     :   convective inhibition</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_DCAPE">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_DCAPE</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_DCAPE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_DCAPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_DCP">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_DCP</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_DCP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_DCP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Derecho Composite Parameter (Evans and Doswell, 2001, WAF)
+And info from SPC Mesoanalyses</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_PMSL_gradient">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_PMSL_gradient</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_PMSL_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_PMSL_gradient" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_Q_pert">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_Q_pert</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_Q_pert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_Q_pert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_REFL_comp">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_REFL_comp</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_REFL_comp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_REFL_comp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_RH">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_RH</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_RH"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_RH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_T2_gradient">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_T2_gradient</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_T2_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_T2_gradient" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_T2_pertub">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_T2_pertub</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_T2_pertub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_T2_pertub" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_Td">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_Td</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_Td"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_Td" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using HootPy equation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_Td_2">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_Td_2</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other='C'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_Td_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_Td_2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Another version of Td
+From p70 Djuric Weather Analysis</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_accum_rain">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_accum_rain</code><span class="sig-paren">(</span><em>self</em>, <em>utc</em>, <em>accum_hr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_accum_rain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_accum_rain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Needs to be expanded to include other precip</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_buoyancy">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_buoyancy</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_buoyancy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_buoyancy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method from Adams-Selin et al., 2013, WAF</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_comp_ref">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_comp_ref</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_comp_ref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_comp_ref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Amend this so variables obtain at start fetch only correct date, lats, lons
+All levels need to be fetched as this is composite reflectivity</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_cpdz">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_cpdz</code><span class="sig-paren">(</span><em>self</em>, <em>x</em>, <em>y</em>, <em>dpt</em>, <em>heights</em>, <em>dpt_env</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_cpdz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_cpdz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cold pool depth</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; x location in domain</li>
+<li><strong>y</strong> &#8211; y location in domain</li>
+<li><strong>dpt</strong> &#8211; density potential temperature slice</li>
+<li><strong>heights</strong> &#8211; height AGL slice</li>
+<li><strong>dpt_env</strong> &#8211; environmental dpt, column</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_density">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_density</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_density" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_derivatives">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_derivatives</code><span class="sig-paren">(</span><em>self</em>, <em>U</em>, <em>V</em>, <em>axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_derivatives" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_divergence">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_divergence</code><span class="sig-paren">(</span><em>self</em>, <em>U</em>, <em>V</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_divergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_divergence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_dpt">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_dpt</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_dpt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_dpt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Potential: if surface level is requested, choose sigma level just
+about the surface. I don&#8217;t think this affects any
+other dictionaries around...</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_dptp">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_dptp</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_dptp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_dptp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_dryairmass">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_dryairmass</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_dryairmass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_dryairmass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_drybulb">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_drybulb</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other='K'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_drybulb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_drybulb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_fluid_trapping_diagnostic">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_fluid_trapping_diagnostic</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_fluid_trapping_diagnostic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_fluid_trapping_diagnostic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_frontogenesis">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_frontogenesis</code><span class="sig-paren">(</span><em>self</em>, <em>time</em>, <em>level</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_frontogenesis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_frontogenesis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Note that all variables fetched with self.get have been
+destaggered and are at the same location.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Frontgenesis in Kelvin per second.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Front</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_geopotential">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_geopotential</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_geopotential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_geopotential" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_geopotential_height">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_geopotential_height</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_geopotential_height"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_geopotential_height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_instantaneous_local_Lyapunov">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_instantaneous_local_Lyapunov</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_instantaneous_local_Lyapunov"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_instantaneous_local_Lyapunov" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_mixing_ratios">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_mixing_ratios</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_mixing_ratios"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_mixing_ratios" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_olr">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_olr</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_olr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_olr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_omega">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_omega</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_omega"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_omega" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_pmsl">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_pmsl</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_pmsl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_pmsl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_pressure">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_pressure</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_pressure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_pressure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_qtotal">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_qtotal</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_qtotal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_qtotal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_satvappres">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_satvappres</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_satvappres"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_satvappres" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_shear">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_shear</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_shear" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> &#8211; dictionary of &#8216;top&#8217; and &#8216;bottom&#8217; levels, km</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Could make this faster with numpy.digitize()?</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_shear_deformation">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_shear_deformation</code><span class="sig-paren">(</span><em>self</em>, <em>U</em>, <em>V</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_shear_deformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_shear_deformation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_simref_atlevel">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_simref_atlevel</code><span class="sig-paren">(</span><em>self</em>, <em>level=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_simref_atlevel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_simref_atlevel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_spechum">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_spechum</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_spechum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_spechum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_stretch_deformation">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_stretch_deformation</code><span class="sig-paren">(</span><em>self</em>, <em>U</em>, <em>V</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_stretch_deformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_stretch_deformation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_strongest_wind">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_strongest_wind</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_strongest_wind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_strongest_wind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pass the array of time indices and it will find the max
+along that axis.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_temp_advection">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_temp_advection</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_temp_advection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_temp_advection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_theta">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_theta</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_theta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_theta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_thetae">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_thetae</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_thetae"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_thetae" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_total_deformation">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_total_deformation</code><span class="sig-paren">(</span><em>self</em>, <em>U</em>, <em>V</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_total_deformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_total_deformation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_vappres">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_vappres</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_vappres"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_vappres" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_vorticity">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_vorticity</code><span class="sig-paren">(</span><em>self</em>, <em>U</em>, <em>V</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_vorticity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_vorticity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns vertical vorticity. In future, change to allow all thre
+components to be be returned.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_wind">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_wind</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_wind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_wind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_wind10">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_wind10</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_wind10"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_wind10" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.find_gust_front">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">find_gust_front</code><span class="sig-paren">(</span><em>self</em>, <em>wind_slice</em>, <em>T2_slice</em>, <em>angle</em>, <em>method=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#find_gust_front"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.find_gust_front" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find location of maximum shear in the horizontal wind along a
+1D slice.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wind_slice</strong> &#8211; 1D numpy array</li>
+<li><strong>T2_slice</strong> &#8211; temp 2m slice</li>
+<li><strong>angle</strong> &#8211; angle of slice cross-section</li>
+<li><strong>method</strong> &#8211; way to locate gust front</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.return_axis_of_dilatation_components">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">return_axis_of_dilatation_components</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx=False</em>, <em>lonidx=False</em>, <em>latidx=False</em>, <em>other=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#return_axis_of_dilatation_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.return_axis_of_dilatation_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.return_vorticity">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">return_vorticity</code><span class="sig-paren">(</span><em>self</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#return_vorticity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.return_vorticity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 
 
