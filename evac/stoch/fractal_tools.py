@@ -228,50 +228,51 @@ end = time.time()
 all_elapsed = "Total time: {0:.1f}".format(end-start)
 print(all_elapsed)
 
-pulseshape = dR * N.exp(-1*(u/rho)**(2*s))
-pulselength = 0 # probability of rhotick > rho is 1/rho, for rho > 1
-#fig.colorbar(cc)
+if __name__ == "__main__":
+    pulseshape = dR * N.exp(-1*(u/rho)**(2*s))
+    pulselength = 0 # probability of rhotick > rho is 1/rho, for rho > 1
+    #fig.colorbar(cc)
 
 
 
-# 2D
-A = 0 # random area of pulse
-a = 0 # pulse area
-RT = 0 # threshold
-coverage = 0.3 # enforce coverage of rainfall/clouds
+    # 2D
+    A = 0 # random area of pulse
+    a = 0 # pulse area
+    RT = 0 # threshold
+    coverage = 0.3 # enforce coverage of rainfall/clouds
 
 
-# enforce values < 0 = 0
-Rtick = R-RT # rainrate
-Rtick = 0
+    # enforce values < 0 = 0
+    Rtick = R-RT # rainrate
+    Rtick = 0
 
-Li = int(L)
-li = int(l)
-field = N.zeros([Li,Li])
-centre = N.zeros([li,li])
+    Li = int(L)
+    li = int(l)
+    field = N.zeros([Li,Li])
+    centre = N.zeros([li,li])
 
 
-dR = N.random.randint(-1,1) * A**H
+    dR = N.random.randint(-1,1) * A**H
 
-# best pulse shape
-LAMB = 1.2 # Radius
-radius = N.pi
-LAMBstar = N.sqrt(LAMB**2 - 1) # ?
-delta = 0.5*(LAMBstar + LAMB)
-sigma = 0.5*(LAMB-LAMBstar)
-pulseshape = dR * N.exp(-1*((u**2/rhotick**2)-delta**2)/sigma**2)**(2*s)
-# This should give smooth annulus of size rhotick.
+    # best pulse shape
+    LAMB = 1.2 # Radius
+    radius = N.pi
+    LAMBstar = N.sqrt(LAMB**2 - 1) # ?
+    delta = 0.5*(LAMBstar + LAMB)
+    sigma = 0.5*(LAMB-LAMBstar)
+    pulseshape = dR * N.exp(-1*((u**2/rhotick**2)-delta**2)/sigma**2)**(2*s)
+    # This should give smooth annulus of size rhotick.
 
-# A is set so that Pr( A greater than a) varies as 1/a
-ppcens = get_poissons()
-for ppcen in ppcens:
-    px, py = ppcen
+    # A is set so that Pr( A greater than a) varies as 1/a
+    ppcens = get_poissons()
+    for ppcen in ppcens:
+        px, py = ppcen
 
-    field[px,py] = 0
-# fractal = field
-rate = field-RT
+        field[px,py] = 0
+    # fractal = field
+    rate = field-RT
 
-fig,ax = plt.subplots(1)
-ax.pcolormesh(rate,cmap=M.cm.Greys)
-fig.colorbar
-fig.show()
+    fig,ax = plt.subplots(1)
+    ax.pcolormesh(rate,cmap=M.cm.Greys)
+    fig.colorbar
+    fig.show()
