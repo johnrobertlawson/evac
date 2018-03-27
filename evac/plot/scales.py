@@ -25,8 +25,8 @@ from . import colourtables as ct
 import evac.utils as utils
 import evac.utils.evac_types as evac_types
 
-class Scales(object):
-    def __init__(self,vrbl,lv,clvs=0):
+class Scales:
+    def __init__(self,vrbl,lv=None,clvs=None):
         self.lv = lv
         self.A = self.get_dict_of_levels()
         # Variable and vertical level determine contour scale

@@ -120,7 +120,8 @@ class HRRR_native_grid(WRF_native_grid):
 
 def create_new_grid(Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
                     lat_ts=None,resolution='i',nx=None,ny=None,
-                    tlat1=30.0,tlat2=60.0,cen_lat=None,cen_lon=None,):
+                    tlat1=30.0,tlat2=60.0,cen_lat=None,cen_lon=None,
+                    lats=None,lons=None):
                     # lllon=None,lllat=None,urlat=None,urlon=None):
     """Create new domain for interpolating to, for instance.
 
