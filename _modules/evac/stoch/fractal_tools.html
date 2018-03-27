@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.stoch.fractal_tools &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.stoch.fractal_tools</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Pool</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">M</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">SS</span>
+
+<span class="c1">### 1D PLOT ###</span>
+
+<span class="c1">### VARIABLES ###</span>
+<span class="n">R</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Function, varying with scale t</span>
+<span class="n">dR</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># height of pulse - rainfatll intensity increment</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1"># width of pulse - rainfall duration</span>
+<span class="n">ppcen</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># centre of pulse according to Poisson process</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="mf">0.025</span> <span class="c1"># constant rate for Poisson process</span>
+<span class="n">rhotick</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># random duration</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mi">5</span><span class="o">/</span><span class="mi">3</span> <span class="c1"># ?&gt;&gt;</span>
+<span class="n">H</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">alpha</span> <span class="c1"># scaling exponent</span>
+<span class="n">lamb</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># ???</span>
+<span class="n">L0</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Interval min</span>
+<span class="n">L</span> <span class="o">=</span> <span class="mi">400</span> <span class="c1"># Interval max</span>
+<span class="n">l</span> <span class="o">=</span> <span class="n">L</span><span class="o">/</span><span class="mi">6</span> <span class="c1"># Inner interval length</span>
+<span class="n">s</span> <span class="o">=</span> <span class="mi">8</span> <span class="c1"># smoothing factor. S -&gt; inf makes rectangular</span>
+<span class="n">u</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># distance from centre of echo</span>
+<span class="n">rho_i</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># minimum resolution or inner scale - in pixels</span>
+<span class="c1"># rho_0 = mu*L # outer scale</span>
+<span class="n">rho_0</span> <span class="o">=</span> <span class="mi">1200</span> <span class="c1"># outer scale</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mf">1.6e5</span> <span class="c1"># number of pulses</span>
+<span class="c1"># Enforce L/l between 3 and 6</span>
+
+<span class="c1">### TEST DISTRUBTION ###</span>
+<span class="c1"># fig,ax = plt.subplots(1)</span>
+<span class="c1"># a_ = rho_i + 1</span>
+<span class="c1"># b_ = rho_0</span>
+<span class="c1"># xx = N.linspace(SS.reciprocal.ppf(0.01, a_, b_),</span>
+                <span class="c1"># SS.reciprocal.ppf(0.99, a_, b_), 100)</span>
+<span class="c1"># ax.plot(xx,SS.reciprocal.pdf(xx,a_,b_))</span>
+<span class="c1"># fig.show()</span>
+
+
+<div class="viewcode-block" id="get_poisson"><a class="viewcode-back" href="../../../evac.stoch.fractal_tools.html#evac.stoch.fractal_tools.get_poisson">[docs]</a><span class="k">def</span> <span class="nf">get_poisson</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">size</span><span class="p">):</span>
+    <span class="c1"># poisson = []</span>
+    <span class="c1"># for nd in ndim:</span>
+    <span class="c1"># poisson.append(N.random.poisson(lam=mu,size=n))</span>
+    <span class="k">return</span> <span class="n">N</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="n">L</span><span class="o">/</span><span class="n">mu</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span></div>
+        <span class="c1"># yield poisson</span>
+
+<span class="c1">###### Fig 7 ########</span>
+<span class="n">fig7</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">if</span> <span class="n">fig7</span><span class="p">:</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">50000</span>
+    <span class="n">rho_0</span> <span class="o">=</span> <span class="mi">50000</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="mi">10000</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="mi">20000</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="mf">2.5</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="mi">5</span><span class="o">/</span><span class="mi">3</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">alpha</span>
+    <span class="n">rho_i</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">R</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">N</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">centres</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_integers</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">high</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+    <span class="c1"># centreP = get_poisson(centreU,mu,n)[0]</span>
+    <span class="n">rholist</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">rho_i</span><span class="p">,</span><span class="n">rho_0</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">cdf</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">rholist</span>
+    <span class="n">pdf</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">cdf</span><span class="p">)</span><span class="o">*-</span><span class="mi">1</span>
+    <span class="n">pdf_full</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdf</span><span class="p">,</span><span class="mi">1</span><span class="o">-</span><span class="n">pdf</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+    <span class="k">for</span> <span class="n">centreU</span> <span class="ow">in</span> <span class="n">centres</span><span class="p">:</span>
+        <span class="n">centreP</span> <span class="o">=</span> <span class="n">get_poisson</span><span class="p">(</span><span class="n">centreU</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">n</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">rhotick</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">rholist</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">pdf_full</span><span class="p">)</span>
+        <span class="n">dR</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">rhotick</span><span class="o">**</span><span class="n">H</span>
+        <span class="n">hw</span> <span class="o">=</span> <span class="n">rhotick</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">R</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">centreP</span><span class="o">-</span><span class="n">hw</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">centreP</span><span class="o">+</span><span class="n">hw</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">dR</span>
+
+    <span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="kc">True</span><span class="o">==</span><span class="kc">False</span>
+
+<span class="c1">####### Fig. 8 ########</span>
+<div class="viewcode-block" id="get_donut"><a class="viewcode-back" href="../../../evac.stoch.fractal_tools.html#evac.stoch.fractal_tools.get_donut">[docs]</a><span class="k">def</span> <span class="nf">get_donut</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span><span class="n">yy</span><span class="p">,</span><span class="n">cenx</span><span class="p">,</span><span class="n">ceny</span><span class="p">,</span><span class="n">rad</span><span class="p">,</span><span class="n">wid</span><span class="p">):</span>
+    <span class="n">circle</span> <span class="o">=</span> <span class="p">(</span><span class="n">xx</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">cenx</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">yy</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceny</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">donut</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">circle</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">rad</span> <span class="o">+</span> <span class="n">wid</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">circle</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">rad</span> <span class="o">-</span> <span class="n">wid</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">donut</span></div>
+
+
+<div class="viewcode-block" id="fractal_worker"><a class="viewcode-back" href="../../../evac.stoch.fractal_tools.html#evac.stoch.fractal_tools.fractal_worker">[docs]</a><span class="k">def</span> <span class="nf">fractal_worker</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">high</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">rholist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">xx</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">yy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sigma</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">mu</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">pdf_full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">R</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">q</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">centrex</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_integers</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">high</span><span class="o">=</span><span class="n">high</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">centrey</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_integers</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">high</span><span class="o">=</span><span class="n">high</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># checkstart = time.time()</span>
+    <span class="k">for</span> <span class="n">cenx</span><span class="p">,</span> <span class="n">ceny</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">centrex</span><span class="p">,</span><span class="n">centrey</span><span class="p">):</span>
+        <span class="n">rhotick</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">count</span><span class="o">%</span><span class="mi">200</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Doing plot #&#39;</span><span class="p">,</span><span class="n">count</span><span class="p">,</span><span class="s2">&quot;of&quot;</span><span class="p">,</span><span class="n">size</span><span class="p">)</span>
+            <span class="c1"># checkpoint = time.time()</span>
+            <span class="c1"># elapsed = &quot;{0:.1f}&quot;.format(checkpoint-checkstart)</span>
+            <span class="c1"># print(&quot;200 took &quot;,elapsed,&quot;sec&quot;)</span>
+            <span class="c1"># checkstart = checkpoint</span>
+            <span class="c1"># del checkpoint</span>
+        <span class="n">cenxP</span> <span class="o">=</span> <span class="n">get_poisson</span><span class="p">(</span><span class="n">cenx</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cenyP</span> <span class="o">=</span> <span class="n">get_poisson</span><span class="p">(</span><span class="n">ceny</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">while</span> <span class="n">rhotick</span> <span class="o">&lt;</span> <span class="n">rho_i</span><span class="p">:</span>
+            <span class="n">rhotick</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">rholist</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">pdf_full</span><span class="p">)</span>
+
+        <span class="n">dR</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">rhotick</span><span class="o">**</span><span class="n">H</span>
+        <span class="c1"># Rc = N.zeros_like(R)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(((</span><span class="n">xx</span><span class="o">-</span><span class="n">cenx</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="p">((</span><span class="n">yy</span><span class="o">-</span><span class="n">ceny</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">R</span> <span class="o">+=</span> <span class="n">dR</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="p">((</span><span class="n">u</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">rhotick</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="n">delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">)</span>
+        <span class="c1"># Rc = dR * N.exp(-1*((u**2/rhotick**2)-delta**2)/sigma**2)**(2*s)</span>
+        <span class="c1"># donut = get_donut(xx,yy,cenxP,cenyP,delta,sigma)</span>
+        <span class="c1"># donut = get_donut(xx,yy,cenxP,cenyP,640,60)</span>
+        <span class="c1"># R += Rc</span>
+        <span class="c1"># centreP = get_poisson(centreU,mu,n)[0]</span>
+        <span class="c1"># rhotick = N.random.choice(rholist,p=pdf_full)</span>
+        <span class="c1"># hw = rhotick/2</span>
+        <span class="c1"># R[int(centreP-hw):int(centreP+hw)] += dR</span>
+    <span class="c1"># return R</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">R</span><span class="p">)</span></div>
+
+
+<span class="n">fig8</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">fig8</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">Exception</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">CPUs</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">rho_i</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">rho_0</span> <span class="o">=</span> <span class="mi">900</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="mi">300</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="mi">300</span>
+    <span class="c1"># n = 160000</span>
+    <span class="c1"># n = CPUs*9000</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">CPUs</span><span class="o">*</span><span class="mi">6000</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="mf">2.5</span>
+    <span class="c1"># LAMB = 1.2 * N.pi</span>
+    <span class="n">LAMB</span> <span class="o">=</span> <span class="mf">1.2</span>
+    <span class="n">LAMBstar</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">LAMB</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">LAMBstar</span> <span class="o">+</span> <span class="n">LAMB</span><span class="p">)</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">LAMB</span><span class="o">-</span><span class="n">LAMBstar</span><span class="p">)</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="mi">5</span> <span class="c1"># ?&gt;&gt;</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">alpha</span> <span class="c1"># scaling exponent</span>
+
+
+    <span class="n">rholist</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">rho_0</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">cdf</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">rholist</span>
+    <span class="n">pdf</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">cdf</span><span class="p">)</span><span class="o">*-</span><span class="mi">1</span>
+    <span class="n">pdf_full</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdf</span><span class="p">,</span><span class="mi">1</span><span class="o">-</span><span class="n">pdf</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+    <span class="n">R</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">N</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[:</span><span class="n">L</span><span class="p">,</span> <span class="p">:</span><span class="n">L</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting computation now&quot;</span><span class="p">)</span>
+    <span class="c1"># paralellise the processing</span>
+    <span class="n">npart</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="n">CPUs</span><span class="p">)</span>
+    <span class="c1"># centrex = N.random.random_integers(low=0,high=L,size=n)</span>
+    <span class="c1"># centrey = N.random.random_integers(low=0,high=L,size=n)</span>
+    <span class="n">Rs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">Rsum</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+
+
+    <span class="c1"># Pool = multiprocessing.Pool(CPUs)</span>
+    <span class="n">queues</span> <span class="o">=</span> <span class="p">[</span><span class="n">Queue</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">CPUs</span><span class="p">)]</span>
+    <span class="n">kw</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">npart</span>
+    <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span>
+    <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;rholist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rholist</span>
+    <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;xx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xx</span>
+    <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;yy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yy</span>
+    <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span>
+    <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+    <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+    <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;mu&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mu</span>
+    <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;pdf_full&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdf_full</span>
+    <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span>
+    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">queues</span><span class="p">:</span>
+        <span class="n">KW</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">KW</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>
+        <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">fractal_worker</span><span class="p">,</span><span class="n">kwargs</span><span class="o">=</span><span class="n">KW</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+        <span class="n">job</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">qn</span><span class="p">,</span><span class="n">q</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">queues</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Getting Queue #&quot;</span><span class="p">,</span><span class="n">qn</span><span class="p">)</span>
+        <span class="n">Rq</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">Rsum</span> <span class="o">+=</span> <span class="n">Rq</span>
+    <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+        <span class="n">job</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="c1"># for cpu in CPUs:</span>
+        <span class="c1"># pool.apply(fractal_worker,args=(*listargs))</span>
+        <span class="c1"># pool.close()</span>
+        <span class="c1"># pool.join()</span>
+        <span class="c1"># Rs.append(fractal_worker())</span>
+    <span class="c1"># pdb.set_trace()</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">Rsum</span>
+    <span class="n">fig</span><span class="p">,</span><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span>
+    <span class="c1"># fig,ax = plt.subplots(1,figsize=(12,10))</span>
+    <span class="c1"># R += -(0.70*R.max())</span>
+    <span class="c1"># R[R&lt;0] = 1e-5</span>
+    <span class="c1"># R[R&gt;100] = 100</span>
+    <span class="c1"># R = N.log(R)</span>
+    <span class="c1"># R[R&lt;0] = 1e-5</span>
+    <span class="c1"># ISNAN = N.isnan(R)</span>
+    <span class="c1"># R[ISNAN] = 0</span>
+    <span class="c1"># R = R[int(l/2):-int(l/2),int(l/2):-int(l/2))</span>
+    <span class="c1"># xx, yy = N.mgrid[:l,:l]</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">cc</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span><span class="n">yy</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys_r</span><span class="p">,)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+    <span class="c1"># cc = ax.pcolormesh(xx,yy,R,cmap=M.cm.Greys_r,norm=M.colors.LogNorm(vmin=R.max(),vmax=R.max()))</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># vals, edges = N.histogram(R,bins=20)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cc</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;lovejoy_example.png&#39;</span><span class="p">)</span>
+<span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">all_elapsed</span> <span class="o">=</span> <span class="s2">&quot;Total time: </span><span class="si">{0:.1f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">all_elapsed</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">pulseshape</span> <span class="o">=</span> <span class="n">dR</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="p">(</span><span class="n">u</span><span class="o">/</span><span class="n">rho</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">))</span>
+    <span class="n">pulselength</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># probability of rhotick &gt; rho is 1/rho, for rho &gt; 1</span>
+    <span class="c1">#fig.colorbar(cc)</span>
+
+
+
+    <span class="c1"># 2D</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># random area of pulse</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># pulse area</span>
+    <span class="n">RT</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># threshold</span>
+    <span class="n">coverage</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># enforce coverage of rainfall/clouds</span>
+
+
+    <span class="c1"># enforce values &lt; 0 = 0</span>
+    <span class="n">Rtick</span> <span class="o">=</span> <span class="n">R</span><span class="o">-</span><span class="n">RT</span> <span class="c1"># rainrate</span>
+    <span class="n">Rtick</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">Li</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+    <span class="n">li</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">Li</span><span class="p">,</span><span class="n">Li</span><span class="p">])</span>
+    <span class="n">centre</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">li</span><span class="p">,</span><span class="n">li</span><span class="p">])</span>
+
+
+    <span class="n">dR</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span><span class="o">**</span><span class="n">H</span>
+
+    <span class="c1"># best pulse shape</span>
+    <span class="n">LAMB</span> <span class="o">=</span> <span class="mf">1.2</span> <span class="c1"># Radius</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">LAMBstar</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">LAMB</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># ?</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">LAMBstar</span> <span class="o">+</span> <span class="n">LAMB</span><span class="p">)</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">LAMB</span><span class="o">-</span><span class="n">LAMBstar</span><span class="p">)</span>
+    <span class="n">pulseshape</span> <span class="o">=</span> <span class="n">dR</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="p">((</span><span class="n">u</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">rhotick</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="n">delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">)</span>
+    <span class="c1"># This should give smooth annulus of size rhotick.</span>
+
+    <span class="c1"># A is set so that Pr( A greater than a) varies as 1/a</span>
+    <span class="n">ppcens</span> <span class="o">=</span> <span class="n">get_poissons</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">ppcen</span> <span class="ow">in</span> <span class="n">ppcens</span><span class="p">:</span>
+        <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="n">ppcen</span>
+
+        <span class="n">field</span><span class="p">[</span><span class="n">px</span><span class="p">,</span><span class="n">py</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># fractal = field</span>
+    <span class="n">rate</span> <span class="o">=</span> <span class="n">field</span><span class="o">-</span><span class="n">RT</span>
+
+    <span class="n">fig</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Greys</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
