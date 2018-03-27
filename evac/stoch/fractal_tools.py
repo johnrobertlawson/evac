@@ -230,7 +230,7 @@ print(all_elapsed)
 
 pulseshape = dR * N.exp(-1*(u/rho)**(2*s))
 pulselength = 0 # probability of rhotick > rho is 1/rho, for rho > 1
-rbar(cc)
+fig.colorbar(cc)
 
 
 

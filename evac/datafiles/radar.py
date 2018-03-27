@@ -9,7 +9,7 @@ Todos:
     * Remove redundant basemap generation method.
 """
 
-from .pngfile import PNGFile
+from evac.datafiles.pngfile import PNGFile
 
 class Radar(PNGFile):
     def __init__(self,utc,datapath):
