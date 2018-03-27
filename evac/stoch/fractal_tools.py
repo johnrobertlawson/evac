@@ -245,8 +245,10 @@ coverage = 0.3 # enforce coverage of rainfall/clouds
 Rtick = R-RT # rainrate
 Rtick = 0
 
-field = N.zeros([L,L])
-centre = N.zeros([l,l])
+Li = int(L)
+li = int(l)
+field = N.zeros([Li,Li])
+centre = N.zeros([li,li])
 
 
 dR = N.random.randint(-1,1) * A**H
