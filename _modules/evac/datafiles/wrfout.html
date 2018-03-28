@@ -560,7 +560,8 @@
 
         <span class="k">return</span> <span class="n">tbl</span></div>
 
-<div class="viewcode-block" id="WRFOut.compute"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="p">,</span><span class="n">lookup</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="c1"># def compute(self,vrbl,tidx,lvidx,lonidx,latidx,other,lookup=0):</span>
+<div class="viewcode-block" id="WRFOut.compute"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">lookup</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Look up method needed to return array of data</span>
 <span class="sd">        for required variable.</span>
 
@@ -577,7 +578,9 @@
         <span class="k">if</span> <span class="n">lookup</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="n">lookup</span> <span class="ow">in</span> <span class="n">tbl</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">tbl</span><span class="p">[</span><span class="n">vrbl</span><span class="p">](</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+            <span class="c1"># response = tbl[vrbl](tidx,lvidx,lonidx,latidx,other)</span>
+            <span class="c1"># Edited to pass in self to derived functions.</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">tbl</span><span class="p">[</span><span class="n">vrbl</span><span class="p">](</span><span class="bp">self</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span></div>
 
 

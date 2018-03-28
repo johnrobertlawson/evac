@@ -194,6 +194,11 @@ at ftime in the time range. Default is False (like Python).</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_cenlatlons">
+<code class="descname">get_cenlatlons</code><span class="sig-paren">(</span><em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_cenlatlons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_cenlatlons" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="evac.datafiles.ensemble.Ensemble.get_exceedance_probs">
 <code class="descname">get_exceedance_probs</code><span class="sig-paren">(</span><em>vrbl</em>, <em>overunder</em>, <em>threshold</em>, <em>level=None</em>, <em>itime=None</em>, <em>ftime=None</em>, <em>fcsttime=None</em>, <em>Nlim=None</em>, <em>Elim=None</em>, <em>Slim=None</em>, <em>Wlim=None</em>, <em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_exceedance_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_exceedance_probs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return probability of exceeding or reaching a threshold.</p>
@@ -235,6 +240,22 @@ Each forecast time is a different file.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_latlons">
+<code class="descname">get_latlons</code><span class="sig-paren">(</span><em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_latlons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_latlons" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_limits">
+<code class="descname">get_limits</code><span class="sig-paren">(</span><em>dom=1</em>, <em>fmt='dict'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_limits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the limits of the domain.</p>
+<p>Args:</p>
+<p>dom     :   (int) - domain number to return
+fmt     :   (str) - format to return data.</p>
+<blockquote>
+<div>If &#8216;dict&#8217;, dictionary.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
 <dt id="evac.datafiles.ensemble.Ensemble.get_members">
 <code class="descname">get_members</code><span class="sig-paren">(</span><em>f_prefix=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_members" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a dictionary with all data.</p>
@@ -243,6 +264,11 @@ members[member][domain][time][data]</p>
 <p>Returns members (dict): Dictionary of ensemble members</p>
 <p>Also returns fdt (int): Seconds between output files.</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_nx_ny">
+<code class="descname">get_nx_ny</code><span class="sig-paren">(</span><em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_nx_ny"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_nx_ny" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="evac.datafiles.ensemble.Ensemble.get_wrf_members">

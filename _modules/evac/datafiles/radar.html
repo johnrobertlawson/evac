@@ -52,11 +52,21 @@
 <span class="sd">        Probably using the __next__ built-in.</span>
 <span class="sd">    * Remove redundant basemap generation method.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 
 <span class="kn">from</span> <span class="nn">evac.datafiles.pngfile</span> <span class="k">import</span> <span class="n">PNGFile</span>
+<span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">evac.plot.colourtables</span> <span class="k">as</span> <span class="nn">ct</span>
+<span class="kn">from</span> <span class="nn">evac.plot.birdseye</span> <span class="k">import</span> <span class="n">BirdsEye</span>
 
 <div class="viewcode-block" id="Radar"><a class="viewcode-back" href="../../../evac.datafiles.radar.html#evac.datafiles.radar.Radar">[docs]</a><span class="k">class</span> <span class="nc">Radar</span><span class="p">(</span><span class="n">PNGFile</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utc</span><span class="p">,</span><span class="n">datapath</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utc</span><span class="p">,</span><span class="n">datapath</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="s1">&#39;merc&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Composite radar archive data from mesonet.agron.iastate.edu.</span>
 
@@ -65,6 +75,7 @@
 <span class="sd">            wldpath (str)       :   Absolute path to .wld file</span>
 <span class="sd">            fmt (str)           :   format of data - N0Q or N0R</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">proj</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">utc</span> <span class="o">=</span> <span class="n">utc</span>
         <span class="n">fname_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_radar_fname</span><span class="p">()</span>
 
@@ -205,9 +216,15 @@
 
 <div class="viewcode-block" id="Radar.plot_radar"><a class="viewcode-back" href="../../../evac.datafiles.radar.html#evac.datafiles.radar.Radar.plot_radar">[docs]</a>    <span class="k">def</span> <span class="nf">plot_radar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">outdir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fname</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Nlim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">Elim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Slim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Wlim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">cb</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">drawcounties</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                    <span class="n">drawcounties</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">save</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot radar data.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        save        :   (str,bool) - If &#39;auto&#39;, saving will only occur if</span>
+<span class="sd">                        fig and ax are not specified.</span>
+<span class="sd">                        If True, the figure is saved; if False, not.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># if not fig:</span>
             <span class="c1"># fig, ax = plt.subplots()</span>
@@ -215,18 +232,17 @@
         <span class="c1">#lons, lats = self.m.makegrid(self.xlen,self.ylen)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Nlim</span><span class="p">,</span><span class="nb">float</span><span class="p">):</span>
             <span class="n">data</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_subdomain</span><span class="p">(</span><span class="n">Nlim</span><span class="p">,</span><span class="n">Elim</span><span class="p">,</span><span class="n">Slim</span><span class="p">,</span><span class="n">Wlim</span><span class="p">)</span>
-            <span class="c1"># x,y = self.m(lons,lats)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
             <span class="n">lats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span> <span class="c1">#flip lats upside down?</span>
             <span class="n">lons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons</span>
             <span class="c1"># x,y = self.m(*N.meshgrid(lons,lats))</span>
 
+        <span class="c1"># xx,uy = self.m(lons,lats)</span>
         <span class="c1"># x,y = self.m(*N.meshgrid(lons,lats))</span>
         <span class="c1"># x,y = self.m(*N.meshgrid(lons,lats[::-1]))</span>
 
         <span class="c1"># Custom colorbar</span>
-        <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">colourtables</span> <span class="k">as</span> <span class="n">ct</span>
         <span class="n">radarcmap</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">reflect_ncdc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clvs</span><span class="p">)</span>
         <span class="c1"># radarcmap = ct.ncdc_modified_ISU(self.clvs)</span>
 
@@ -243,17 +259,18 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">fname</span><span class="p">:</span>
             <span class="n">tstr</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">string_from_time</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
             <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;verif_radar_</span><span class="si">{0}</span><span class="s1">.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tstr</span><span class="p">)</span>
-        <span class="n">F</span> <span class="o">=</span> <span class="n">BirdsEye</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">BirdsEye</span><span class="p">(</span><span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cb</span><span class="p">:</span>
             <span class="n">cb</span> <span class="o">=</span> <span class="s1">&#39;horizontal&#39;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="n">save</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">save</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">save</span> <span class="ow">is</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">save</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">save</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">F</span><span class="o">.</span><span class="n">plot2D</span><span class="p">(</span><span class="n">dBZ</span><span class="p">,</span><span class="n">fname</span><span class="p">,</span><span class="n">outdir</span><span class="o">=</span><span class="n">outdir</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="n">lons</span><span class="p">,</span>
                     <span class="n">cmap</span><span class="o">=</span><span class="n">radarcmap</span><span class="p">,</span><span class="n">clvs</span><span class="o">=</span><span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
                     <span class="n">cb</span><span class="o">=</span><span class="n">cb</span><span class="p">,</span><span class="n">cblabel</span><span class="o">=</span><span class="s1">&#39;Composite reflectivity (dBZ)&#39;</span><span class="p">,</span>
-                    <span class="n">drawcounties</span><span class="o">=</span><span class="n">drawcounties</span><span class="p">,</span><span class="n">save</span><span class="o">=</span><span class="n">save</span><span class="p">)</span></div></div>
+                    <span class="n">drawcounties</span><span class="o">=</span><span class="n">drawcounties</span><span class="p">,</span><span class="n">save</span><span class="o">=</span><span class="n">save</span><span class="p">,</span><span class="n">lat_ts</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,)</span></div></div>
         <span class="c1"># im = self.ax.contourf(x,y,dBZ,alpha=0.5,cmap=radarcmap,</span>
                                 <span class="c1"># levels=N.arange(5.0,90.5,0.5))</span>
         <span class="c1"># outpath = os.path.join(outdir,fname)</span>

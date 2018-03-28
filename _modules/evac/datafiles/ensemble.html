@@ -56,8 +56,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 
 <span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">from</span> <span class="nn">.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
-<span class="kn">from</span> <span class="nn">.gefs</span> <span class="k">import</span> <span class="n">GEFS</span>
+<span class="kn">from</span> <span class="nn">evac.datafiles.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
+<span class="kn">from</span> <span class="nn">evac.datafiles.gefs</span> <span class="k">import</span> <span class="n">GEFS</span>
 
 <span class="c1"># Dummy variable in place of proper subclass of WRFOut</span>
 <span class="n">AuxWRFOut</span> <span class="o">=</span> <span class="nb">object</span>
@@ -109,7 +109,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fileformat</span> <span class="o">=</span> <span class="n">fileformat</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span> <span class="o">=</span> <span class="n">ctrl</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span> <span class="o">=</span> <span class="n">rootdir</span>
+        <span class="c1"># Remove any trailing slash!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span> <span class="o">=</span> <span class="n">rootdir</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span> <span class="o">=</span> <span class="n">initutc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doms</span> <span class="o">=</span> <span class="n">doms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">=</span> <span class="n">fmt</span>
@@ -127,6 +128,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_members</span><span class="p">(</span><span class="n">f_prefix</span><span class="o">=</span><span class="n">f_prefix</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nmems</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">member_names</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nperts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmems</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">isctrl</span>
+
+        <span class="c1"># Check to see if the ensemble isn&#39;t just an empty list!</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmems</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Files not found.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
 
         <span class="c1"># Get start and end of whole dataset (inclusive)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filetimes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_of_filetimes</span><span class="p">(</span><span class="n">arb</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -222,12 +228,13 @@
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f_prefix</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">)):</span>
                     <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">f_prefix</span><span class="p">[</span><span class="n">domn</span><span class="p">])]</span>
                 <span class="k">if</span> <span class="n">main_fname</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-                    <span class="c1"># pdb.set_trace()</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Found&quot;</span><span class="p">,</span><span class="n">main_fname</span><span class="p">,</span><span class="s2">&quot;in&quot;</span><span class="p">,</span><span class="n">dirname</span><span class="p">)</span>
                     <span class="n">dsp</span> <span class="o">=</span>  <span class="n">dirname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
                     <span class="n">rsp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
 
                     <span class="c1"># The following logic merges subdir names</span>
                     <span class="c1"># e.g. ensemble grouped twice by perturbation type?</span>
+                    <span class="c1"># pdb.set_trace()</span>
                     <span class="k">if</span> <span class="n">dsp</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">rsp</span><span class="p">:</span>
                         <span class="n">member</span> <span class="o">=</span> <span class="n">dirname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="k">elif</span> <span class="n">dsp</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">rsp</span><span class="p">:</span>
@@ -640,7 +647,47 @@
 
         <span class="c1"># pdb.set_trace()</span>
 
-        <span class="k">return</span> <span class="n">t</span><span class="p">,</span> <span class="n">tidx</span></div></div>
+        <span class="k">return</span> <span class="n">t</span><span class="p">,</span> <span class="n">tidx</span></div>
+
+<div class="viewcode-block" id="Ensemble.get_limits"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_limits">[docs]</a>    <span class="k">def</span> <span class="nf">get_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;dict&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the limits of the domain.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        dom     :   (int) - domain number to return</span>
+<span class="sd">        fmt     :   (str) - format to return data.</span>
+<span class="sd">                    If &#39;dict&#39;, dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arbitrary_pick</span><span class="p">(</span><span class="n">dataobj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="n">dom</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">is</span> <span class="s1">&#39;dict&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Nlim&#39;</span><span class="p">:</span><span class="n">W</span><span class="o">.</span><span class="n">Nlim</span><span class="p">,</span>
+                    <span class="s1">&#39;Elim&#39;</span><span class="p">:</span><span class="n">W</span><span class="o">.</span><span class="n">Elim</span><span class="p">,</span>
+                    <span class="s1">&#39;Slim&#39;</span><span class="p">:</span><span class="n">W</span><span class="o">.</span><span class="n">Slim</span><span class="p">,</span>
+                    <span class="s1">&#39;Wlim&#39;</span><span class="p">:</span><span class="n">W</span><span class="o">.</span><span class="n">Wlim</span><span class="p">,}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span></div>
+
+<div class="viewcode-block" id="Ensemble.get_latlons"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_latlons">[docs]</a>    <span class="k">def</span> <span class="nf">get_latlons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arbitrary_pick</span><span class="p">(</span><span class="n">dataobj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="n">dom</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">W</span><span class="o">.</span><span class="n">lats</span><span class="p">,</span> <span class="n">W</span><span class="o">.</span><span class="n">lons</span></div>
+
+    <span class="c1"># def get_xx_yy(self,dom=1):</span>
+        <span class="c1"># W = self.arbitrary_pick(dataobj=True,dom=dom)</span>
+        <span class="c1"># return W.xx, W.yy</span>
+
+<div class="viewcode-block" id="Ensemble.get_nx_ny"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_nx_ny">[docs]</a>    <span class="k">def</span> <span class="nf">get_nx_ny</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arbitrary_pick</span><span class="p">(</span><span class="n">dataobj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="n">dom</span><span class="p">)</span>
+        <span class="c1"># return W.nx, W.ny</span>
+        <span class="k">return</span> <span class="n">W</span><span class="o">.</span><span class="n">x_dim</span><span class="p">,</span> <span class="n">W</span><span class="o">.</span><span class="n">y_dim</span></div>
+
+<div class="viewcode-block" id="Ensemble.get_cenlatlons"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble.get_cenlatlons">[docs]</a>    <span class="k">def</span> <span class="nf">get_cenlatlons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arbitrary_pick</span><span class="p">(</span><span class="n">dataobj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="n">dom</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">W</span><span class="o">.</span><span class="n">cen_lat</span><span class="p">,</span> <span class="n">W</span><span class="o">.</span><span class="n">cen_lon</span></div></div>
+
+
+        
+
+        
 </pre></div>
 
           </div>

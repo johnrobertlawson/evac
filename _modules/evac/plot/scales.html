@@ -69,8 +69,8 @@
 <span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">import</span> <span class="nn">evac.utils.evac_types</span> <span class="k">as</span> <span class="nn">evac_types</span>
 
-<div class="viewcode-block" id="Scales"><a class="viewcode-back" href="../../../evac.plot.scales.html#evac.plot.scales.Scales">[docs]</a><span class="k">class</span> <span class="nc">Scales</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">clvs</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Scales"><a class="viewcode-back" href="../../../evac.plot.scales.html#evac.plot.scales.Scales">[docs]</a><span class="k">class</span> <span class="nc">Scales</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">lv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">clvs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lv</span> <span class="o">=</span> <span class="n">lv</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dict_of_levels</span><span class="p">()</span>
         <span class="c1"># Variable and vertical level determine contour scale</span>

@@ -62,7 +62,7 @@ servers.</p>
 </dl>
 <dl class="class">
 <dt id="evac.datafiles.radar.Radar">
-<em class="property">class </em><code class="descclassname">evac.datafiles.radar.</code><code class="descname">Radar</code><span class="sig-paren">(</span><em>utc</em>, <em>datapath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">evac.datafiles.radar.</code><code class="descname">Radar</code><span class="sig-paren">(</span><em>utc</em>, <em>datapath</em>, <em>proj='merc'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="evac.datafiles.pngfile.html#evac.datafiles.pngfile.PNGFile" title="evac.datafiles.pngfile.PNGFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.pngfile.PNGFile</span></code></a></p>
 <dl class="method">
 <dt id="evac.datafiles.radar.Radar.generate_basemap">
@@ -94,8 +94,14 @@ servers.</p>
 
 <dl class="method">
 <dt id="evac.datafiles.radar.Radar.plot_radar">
-<code class="descname">plot_radar</code><span class="sig-paren">(</span><em>outdir=False</em>, <em>fig=False</em>, <em>ax=False</em>, <em>fname=False</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em>, <em>cb=True</em>, <em>drawcounties=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.plot_radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.plot_radar" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_radar</code><span class="sig-paren">(</span><em>outdir=False</em>, <em>fig=False</em>, <em>ax=False</em>, <em>fname=False</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em>, <em>cb=True</em>, <em>drawcounties=False</em>, <em>save='auto'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.plot_radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.plot_radar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot radar data.</p>
+<p>Args:</p>
+<dl class="docutils">
+<dt>save</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(str,bool) - If &#8216;auto&#8217;, saving will only occur if</span><dd>fig and ax are not specified.
+If True, the figure is saved; if False, not.</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
