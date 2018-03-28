@@ -23,7 +23,7 @@ cmd('git commit -m "Updates docs"',evacdir)
 cmd('git push',evacdir)
    
 # Make the html
-cmd('sphinx-apidoc -o ./source ../evac',os.path.join(evacdir,'docs'))
+cmd('sphinx-apidoc -e -o ./source ../evac',os.path.join(evacdir,'docs'))
 cmd('make html',os.path.join(evacdir,'docs'))
 
 # Git add
