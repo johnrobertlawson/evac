@@ -125,8 +125,8 @@ class LazyEnsemble:
             self.endutc = initutc + datetime.timedelta(seconds=self.runsec)
         elif endutc:
             self.endutc = endutc
-            runsec = (self.endutc - initutc).seconds
-            assert runsec > 0
+            self.runsec = (self.endutc - initutc).seconds
+            assert self.runsec > 0
 
         # PATH OBJECTS - see pathlib documentation
         self.exedir = PosixPath(path_to_exedir)
