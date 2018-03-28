@@ -47,7 +47,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">.binaryfile</span> <span class="k">import</span> <span class="n">BinaryFile</span>
 
-<div class="viewcode-block" id="MRMS"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.mrms.MRMS">[docs]</a><span class="k">class</span> <span class="nc">MRMS</span><span class="p">(</span><span class="n">BinaryFile</span><span class="p">):</span>
+<div class="viewcode-block" id="MRMS"><a class="viewcode-back" href="../../../evac.datafiles.mrms.html#evac.datafiles.mrms.MRMS">[docs]</a><span class="k">class</span> <span class="nc">MRMS</span><span class="p">(</span><span class="n">BinaryFile</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">rootdir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">product</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">utc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A helper function to automatically generate file name</span>
@@ -68,7 +68,7 @@
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MRMS.generate_fpath"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.mrms.MRMS.generate_fpath">[docs]</a>    <span class="k">def</span> <span class="nf">generate_fpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rootdir</span><span class="p">,</span><span class="n">prod</span><span class="p">,</span><span class="n">utc</span><span class="p">):</span>
+<div class="viewcode-block" id="MRMS.generate_fpath"><a class="viewcode-back" href="../../../evac.datafiles.mrms.html#evac.datafiles.mrms.MRMS.generate_fpath">[docs]</a>    <span class="k">def</span> <span class="nf">generate_fpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rootdir</span><span class="p">,</span><span class="n">prod</span><span class="p">,</span><span class="n">utc</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an absolute path based on product and time of data</span>
 <span class="sd">        that is required, in a root directory.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

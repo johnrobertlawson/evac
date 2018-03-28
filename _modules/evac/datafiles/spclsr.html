@@ -47,7 +47,7 @@
 
 <span class="kn">from</span> <span class="nn">.csvfile</span> <span class="k">import</span> <span class="n">CSVFile</span>
 
-<div class="viewcode-block" id="SPCLSR"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.spclsr.SPCLSR">[docs]</a><span class="k">class</span> <span class="nc">SPCLSR</span><span class="p">(</span><span class="n">CSVFile</span><span class="p">):</span>
+<div class="viewcode-block" id="SPCLSR"><a class="viewcode-back" href="../../../evac.datafiles.spclsr.html#evac.datafiles.spclsr.SPCLSR">[docs]</a><span class="k">class</span> <span class="nc">SPCLSR</span><span class="p">(</span><span class="n">CSVFile</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utc</span><span class="p">,</span><span class="n">datadir</span><span class="p">,</span><span class="n">wind</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">hail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">torn</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">utc</span> <span class="o">=</span> <span class="n">utc</span>
         <span class="n">tt</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">ensure_timetuple</span><span class="p">(</span><span class="n">utc</span><span class="p">)</span>
@@ -96,7 +96,7 @@
             <span class="c1">#times = reports[&#39;time&#39;]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">threats</span> <span class="o">=</span> <span class="n">threats</span>
 
-<div class="viewcode-block" id="SPCLSR.report_datenum"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.spclsr.SPCLSR.report_datenum">[docs]</a>    <span class="k">def</span> <span class="nf">report_datenum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">timestamp</span><span class="p">):</span>
+<div class="viewcode-block" id="SPCLSR.report_datenum"><a class="viewcode-back" href="../../../evac.datafiles.spclsr.html#evac.datafiles.spclsr.SPCLSR.report_datenum">[docs]</a>    <span class="k">def</span> <span class="nf">report_datenum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">timestamp</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        convert timestamp to datenum format.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -113,7 +113,7 @@
         <span class="n">tdelta</span> <span class="o">=</span> <span class="p">((</span><span class="n">hr</span><span class="o">-</span><span class="mi">12</span><span class="p">)</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">mn</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">itime_dn</span> <span class="o">+</span> <span class="n">tdelta</span></div>
 
-<div class="viewcode-block" id="SPCLSR.plot_reports"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.spclsr.SPCLSR.plot_reports">[docs]</a>    <span class="k">def</span> <span class="nf">plot_reports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SPCLSR.plot_reports"><a class="viewcode-back" href="../../../evac.datafiles.spclsr.html#evac.datafiles.spclsr.SPCLSR.plot_reports">[docs]</a>    <span class="k">def</span> <span class="nf">plot_reports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">plot_all</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">for</span> <span class="n">threat</span> <span class="ow">in</span> <span class="n">threats</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">plot_all</span><span class="p">:</span>

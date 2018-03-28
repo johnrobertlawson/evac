@@ -1,6 +1,5 @@
-`stats.misc_stats`
-=======
-
+evac.stats.misc_stats module
+============================
 
 .. automodule:: evac.stats.misc_stats
     :members:

@@ -55,7 +55,7 @@
 
 <span class="kn">from</span> <span class="nn">.datafile</span> <span class="k">import</span> <span class="n">DataFile</span>
 
-<div class="viewcode-block" id="GribFile"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile">[docs]</a><span class="k">class</span> <span class="nc">GribFile</span><span class="p">(</span><span class="n">DataFile</span><span class="p">):</span>
+<div class="viewcode-block" id="GribFile"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile">[docs]</a><span class="k">class</span> <span class="nc">GribFile</span><span class="p">(</span><span class="n">DataFile</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generic load for Grib 1/2 files (both?)</span>
 
 <span class="sd">    Todos:</span>
@@ -84,14 +84,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">t_dim</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">get_units</span><span class="p">()</span>
 
-<div class="viewcode-block" id="GribFile.get_units"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile.get_units">[docs]</a>    <span class="k">def</span> <span class="nf">get_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="GribFile.get_units"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.get_units">[docs]</a>    <span class="k">def</span> <span class="nf">get_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot; The units used for variables within.</span>
 <span class="sd">        This should be overridden in children.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">UNITS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pressure&#39;</span><span class="p">:</span><span class="s1">&#39;Pa&#39;</span><span class="p">,}</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="GribFile.get_record"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile.get_record">[docs]</a>    <span class="k">def</span> <span class="nf">get_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrblkey</span><span class="p">,</span><span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GribFile.get_record"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.get_record">[docs]</a>    <span class="k">def</span> <span class="nf">get_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrblkey</span><span class="p">,</span><span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">ngg</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vrblkey</span><span class="p">))</span>
         <span class="c1"># print(vrbl)</span>
@@ -106,7 +106,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Picking index </span><span class="si">{0}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">gg</span></div>
 
-<div class="viewcode-block" id="GribFile.idx_from_lv"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile.idx_from_lv">[docs]</a>    <span class="k">def</span> <span class="nf">idx_from_lv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrblkey</span><span class="p">,</span><span class="n">lv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GribFile.idx_from_lv"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.idx_from_lv">[docs]</a>    <span class="k">def</span> <span class="nf">idx_from_lv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrblkey</span><span class="p">,</span><span class="n">lv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return the index to load a requested level (in hPa).</span>
 <span class="sd">        If level doesn&#39;t exist, throw an exception.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -124,7 +124,7 @@
                 <span class="k">return</span> <span class="n">nl</span></div>
 
 
-<div class="viewcode-block" id="GribFile.get"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GribFile.get"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        I don&#39;t think we need utc/lv - aren&#39;t all grib files one time? - but</span>
 <span class="sd">        it is here to enable compatibility with other get() APIs.</span>
@@ -140,7 +140,7 @@
         <span class="c1"># pdb.set_trace()</span>
         <span class="c1"># return arr</span>
 
-<div class="viewcode-block" id="GribFile.enforce_4d"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile.enforce_4d">[docs]</a>    <span class="k">def</span> <span class="nf">enforce_4d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr</span><span class="p">):</span>
+<div class="viewcode-block" id="GribFile.enforce_4d"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.enforce_4d">[docs]</a>    <span class="k">def</span> <span class="nf">enforce_4d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;TODO: move higher up to super-superclass?</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -149,18 +149,18 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Why is this data not 2d?&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">arr4d</span></div>
 
-<div class="viewcode-block" id="GribFile.lookup_vrbl"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile.lookup_vrbl">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_vrbl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">):</span>
+<div class="viewcode-block" id="GribFile.lookup_vrbl"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.lookup_vrbl">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_vrbl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">):</span>
         <span class="n">LOOKUP</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># Children should use the right keys/indices here</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">vrbl</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GribFile.return_latlon"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile.return_latlon">[docs]</a>    <span class="k">def</span> <span class="nf">return_latlon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GribFile.return_latlon"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.return_latlon">[docs]</a>    <span class="k">def</span> <span class="nf">return_latlon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">gg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arbitrary_pick</span><span class="p">()</span>
         <span class="n">latlon</span> <span class="o">=</span> <span class="n">gg</span><span class="o">.</span><span class="n">latlons</span><span class="p">()</span>
         <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span> <span class="o">=</span> <span class="n">latlon</span>
         <span class="k">return</span> <span class="n">lats</span><span class="p">,</span><span class="n">lons</span></div>
 
-<div class="viewcode-block" id="GribFile.projection"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile.projection">[docs]</a>    <span class="k">def</span> <span class="nf">projection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GribFile.projection"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.projection">[docs]</a>    <span class="k">def</span> <span class="nf">projection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># self.m = Basemap(projection=&#39;npstere&#39;,lon_0=-105.0,#lat_1=60.0,</span>
                 <span class="c1"># llcrnrlon=lllon,llcrnrlat=lllat,urcrnrlon=urlon,urcrnrlat=urlat,</span>
                             <span class="c1"># boundinglat=24.701632)</span>
@@ -181,18 +181,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="o">.</span><span class="n">shape</span></div>
 
-<div class="viewcode-block" id="GribFile.arbitrary_pick"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile.arbitrary_pick">[docs]</a>    <span class="k">def</span> <span class="nf">arbitrary_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GribFile.arbitrary_pick"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.arbitrary_pick">[docs]</a>    <span class="k">def</span> <span class="nf">arbitrary_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">vrbl</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">gg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_record</span><span class="p">(</span><span class="n">vrbl</span><span class="p">,</span><span class="n">idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">gg</span></div>
 
-<div class="viewcode-block" id="GribFile.return_vrbl_records"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile.return_vrbl_records">[docs]</a>    <span class="k">def</span> <span class="nf">return_vrbl_records</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">):</span>
+<div class="viewcode-block" id="GribFile.return_vrbl_records"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.return_vrbl_records">[docs]</a>    <span class="k">def</span> <span class="nf">return_vrbl_records</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">):</span>
         <span class="n">vidx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_fields_array</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="n">vrbl</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">vidx</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_fields_array</span><span class="p">[</span><span class="n">idx</span><span class="p">,:])</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="GribFile.search_keyword"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gribfile.GribFile.search_keyword">[docs]</a>    <span class="k">def</span> <span class="nf">search_keyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">keyword</span><span class="p">):</span>
+<div class="viewcode-block" id="GribFile.search_keyword"><a class="viewcode-back" href="../../../evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile.search_keyword">[docs]</a>    <span class="k">def</span> <span class="nf">search_keyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">keyword</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Look for record entries based on a keyword.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_fields_list</span><span class="p">:</span>

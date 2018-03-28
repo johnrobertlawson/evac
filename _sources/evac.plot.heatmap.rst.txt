@@ -1,6 +1,5 @@
-`plot.heatmap`
-=======
-
+evac.plot.heatmap module
+========================
 
 .. automodule:: evac.plot.heatmap
     :members:

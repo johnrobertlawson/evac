@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.lazy.lazyensemble module &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-evac.lazy.lazyensemble">
+<span id="evac-lazy-lazyensemble-module"></span><h1>evac.lazy.lazyensemble module<a class="headerlink" href="#module-evac.lazy.lazyensemble" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble">
+<em class="property">class </em><code class="descclassname">evac.lazy.lazyensemble.</code><code class="descname">LazyEnsemble</code><span class="sig-paren">(</span><em>path_to_exedir</em>, <em>path_to_datadir</em>, <em>path_to_namelistdir</em>, <em>path_to_icbcdir</em>, <em>path_to_outdir</em>, <em>path_to_batch</em>, <em>initutc</em>, <em>sched='slurm'</em>, <em>path_to_rundir=False</em>, <em>delete_exe_copy=False</em>, <em>ndoms=1</em>, <em>nmems=0</em>, <em>membernames=False</em>, <em>endutc=False</em>, <em>runsec=False</em>, <em>nl_per_member=True</em>, <em>nl_suffix='name'</em>, <em>icbcs=None</em>, <em>dryrun=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Generate ensemble by running multiple WRF runs simulataneously.
+This is done by creating temporary folder and linking/copying.
+Efficiency improvements from Monte Flora.</p>
+<p>Will not work on Windows systems due to hardcoded PosixPath.</p>
+<p>User must specify either endutc or runsec.</p>
+<p>The initial and boundary conditions are copied from path_to_icbcdir
+to path_to_rundir, using default names.</p>
+<p>Member names, if automatically created, are &#8220;mem01&#8221;, &#8220;mem02&#8221;, etc</p>
+<p>Parent script should be run via batch submission. The procedure is:</p>
+<p>L = LazyEnsemble(<a href="#id1"><span class="problematic" id="id2">*</span></a>args,**kwargs)
+L.run_all_members()</p>
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.batchscript_for_member">
+<code class="descname">batchscript_for_member</code><span class="sig-paren">(</span><em>member</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.batchscript_for_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.batchscript_for_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edit parts of the batch submission script.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.catalog_members">
+<code class="descname">catalog_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.catalog_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.catalog_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the members dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.check_complete">
+<code class="descname">check_complete</code><span class="sig-paren">(</span><em>member</em>, <em>raise_error=False</em>, <em>sleep=30</em>, <em>firstwait=3600</em>, <em>maxtime=86400</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.check_complete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.check_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check ensemble member to see if wrf run has finished.</p>
+<p>Returns:
+True if WRF exits successfully.
+False if not (and if raise_error is False, otherwise Exception)
+Does not exit, if maxtime is N.inf and if WRF does not exit</p>
+<p>Args:
+raise_error     :   (bool) - if True, pass a WRFError as return</p>
+<blockquote>
+<div>if WRF breaks.</div></blockquote>
+<p>sleep           :   (int) - number of seconds to wait between checks
+firstwait       :   (int) - number of seconds to wait after submission</p>
+<blockquote>
+<div>before checks</div></blockquote>
+<dl class="docutils">
+<dt>maxtime</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(int) - number of seconds after which the</span><dd>method will assume the member&#8217;s run has died.
+If this is infinity, script will NEVER DIE!</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.cleanup">
+<code class="descname">cleanup</code><span class="sig-paren">(</span><em>folder</em>, <em>files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes files in given directory that match a glob.</p>
+<p>Args:</p>
+<p>folder      :   (path-like object) - this is where to clean up.
+files       :   (str,list,tuple) - a list of strings, or a string,</p>
+<blockquote>
+<div>to match glob. For instance, &#8220;rsl*&#8221;.</div></blockquote>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.edit_batchscript">
+<em class="property">static </em><code class="descname">edit_batchscript</code><span class="sig-paren">(</span><em>fpath</em>, <em>linekey</em>, <em>newline</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.edit_batchscript"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.edit_batchscript" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace a line from the submission script
+that matches a key (linekey) with newline.</p>
+<p>linekey must be unambiguous, otherwise it will change the
+first occurence in the file that matches.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.ensure_permissions">
+<code class="descname">ensure_permissions</code><span class="sig-paren">(</span><em>fpath</em>, <em>perm_decimal=755</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.ensure_permissions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.ensure_permissions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes sure the scheduler can run the executable at fpath.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.namelist_for_member">
+<code class="descname">namelist_for_member</code><span class="sig-paren">(</span><em>member</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.namelist_for_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.namelist_for_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edit parts of the namelist</p>
+<p>start/end year, month, day, hour, minute, second</p>
+<p>Use multiplied notation by number of domains (self.ndoms)</p>
+<p>Assume that everything else in namelist is correct for member</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.print_readme">
+<code class="descname">print_readme</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.print_readme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.print_readme" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a pretty-printed README file to a given directory.</p>
+<p>Optional argument will print namelist.input</p>
+<p>Maybe this could be a decorator method that logs this data for each
+ensemble member.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.run_all_members">
+<code class="descname">run_all_members</code><span class="sig-paren">(</span><em>prereqs</em>, <em>first=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.run_all_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.run_all_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically submit all jobs to the scheduler.
+See run_wrf_member() and check_complete() for keyword arguments.</p>
+<p>Args:
+prereqs :   (dict) - a dictionary containing prerequisite files</p>
+<blockquote>
+<div><p>needed in rundir. use this format:</p>
+<p>dict( path_to_file = cmd)</p>
+<p>where path_to_file is the absolute path to
+the file in question (as str or Path obj) and
+cmd is from [&#8216;copy&#8217;,&#8217;move&#8217;,&#8217;softlink&#8217;].</p>
+<p>Don&#8217;t include initial, boundary conditions (these are
+different for every member and are copied automatically)
+or namelist files (ditto).</p>
+</div></blockquote>
+<p>first       :   (int) - only run the first x members
+kwargs      :   keyword arguments passed to run_wrf_member.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.run_real_member">
+<code class="descname">run_real_member</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.run_real_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.run_real_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit real.exe to batch scheduler.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member">
+<code class="descname">run_wrf_member</code><span class="sig-paren">(</span><em>member</em>, <em>prereqs</em>, <em>cpus=1</em>, <em>nodes=1</em>, <em>sleep=30</em>, <em>firstwait=3600</em>, <em>maxtime=86400</em>, <em>check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.run_wrf_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit a wrf run to batch scheduler.</p>
+<p>member  :   (str) - name of member to run</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/evac.lazy.lazyensemble.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/evac.lazy.lazyensemble.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

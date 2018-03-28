@@ -1,6 +1,5 @@
-`utils.misc_tools`
-=======
-
+evac.utils.misc_tools module
+============================
 
 .. automodule:: evac.utils.misc_tools
     :members:

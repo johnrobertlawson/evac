@@ -1,6 +1,5 @@
-`datafiles.pngfile`
-=======
-
+evac.datafiles.pngfile module
+=============================
 
 .. automodule:: evac.datafiles.pngfile
     :members:

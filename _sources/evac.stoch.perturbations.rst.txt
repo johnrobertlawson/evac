@@ -1,6 +1,5 @@
-`stoch.perturbations`
-=======
-
+evac.stoch.perturbations module
+===============================
 
 .. automodule:: evac.stoch.perturbations
     :members:

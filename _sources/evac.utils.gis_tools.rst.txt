@@ -1,6 +1,5 @@
-`utils.gis_tools`
-=======
-
+evac.utils.gis_tools module
+===========================
 
 .. automodule:: evac.utils.gis_tools
     :members:

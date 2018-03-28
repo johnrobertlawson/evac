@@ -1,6 +1,5 @@
-`stats.casati`
-=======
-
+evac.stats.casati module
+========================
 
 .. automodule:: evac.stats.casati
     :members:

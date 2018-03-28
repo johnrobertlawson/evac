@@ -1,6 +1,5 @@
-`datafiles.gribfile`
-=======
-
+evac.datafiles.gribfile module
+==============================
 
 .. automodule:: evac.datafiles.gribfile
     :members:

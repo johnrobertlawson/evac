@@ -50,7 +50,7 @@
 
 <span class="kn">from</span> <span class="nn">evac.utils.exceptions</span> <span class="k">import</span> <span class="n">QCError</span><span class="p">,</span> <span class="n">FormatError</span>
 
-<div class="viewcode-block" id="Casati"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati">[docs]</a><span class="k">class</span> <span class="nc">Casati</span><span class="p">:</span>
+<div class="viewcode-block" id="Casati"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati">[docs]</a><span class="k">class</span> <span class="nc">Casati</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fcstdata</span><span class="p">,</span><span class="n">verifdata</span><span class="p">,</span><span class="n">thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">64</span><span class="p">),</span>
                     <span class="n">store_all_arrays</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">recalibration</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Casati et al. 2004, Meteorol. Appl.</span>
@@ -106,7 +106,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">do_SS</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="Casati.enforce_2D"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.enforce_2D">[docs]</a>    <span class="k">def</span> <span class="nf">enforce_2D</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="Casati.enforce_2D"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.enforce_2D">[docs]</a>    <span class="k">def</span> <span class="nf">enforce_2D</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot;Make sure the grid is 2-D.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Pass a 2D array.&#39;</span>
@@ -122,7 +122,7 @@
         <span class="k">return</span></div>
 
     
-<div class="viewcode-block" id="Casati.do_square_check"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.do_square_check">[docs]</a>    <span class="k">def</span> <span class="nf">do_square_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Casati.do_square_check"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_square_check">[docs]</a>    <span class="k">def</span> <span class="nf">do_square_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Assert that the grid is a power of 2.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_fcstdata</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_verifdata</span><span class="p">):</span>
@@ -138,7 +138,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">]))</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="Casati.do_QC"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.do_QC">[docs]</a>    <span class="k">def</span> <span class="nf">do_QC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">print_location</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">min_thresh</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">max_thresh</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+<div class="viewcode-block" id="Casati.do_QC"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_QC">[docs]</a>    <span class="k">def</span> <span class="nf">do_QC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">print_location</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">min_thresh</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">max_thresh</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
                 <span class="n">fatal_exception</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check for stupid values in data.</span>
 <span class="sd">        </span>
@@ -167,7 +167,7 @@
             <span class="c1"># pdb.set_trace()</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="Casati.do_dithering"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.do_dithering">[docs]</a>    <span class="k">def</span> <span class="nf">do_dithering</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dithrange</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">64</span><span class="p">)):</span>
+<div class="viewcode-block" id="Casati.do_dithering"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_dithering">[docs]</a>    <span class="k">def</span> <span class="nf">do_dithering</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dithrange</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">64</span><span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;Apply dithering to non-zero precipitation values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_fcstdata</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_verifdata</span><span class="p">):</span>
@@ -191,7 +191,7 @@
             <span class="n">data</span><span class="p">[</span><span class="n">norain_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No-rain pixels now set to </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
 
-<div class="viewcode-block" id="Casati.norm_func"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.norm_func">[docs]</a>    <span class="k">def</span> <span class="nf">norm_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">orig</span><span class="p">):</span>
+<div class="viewcode-block" id="Casati.norm_func"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.norm_func">[docs]</a>    <span class="k">def</span> <span class="nf">norm_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">orig</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; More QC here with negative values?</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">orig</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
@@ -200,7 +200,7 @@
             <span class="n">new</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">orig</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">new</span></div>
 
-<div class="viewcode-block" id="Casati.do_normalize"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.do_normalize">[docs]</a>    <span class="k">def</span> <span class="nf">do_normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="Casati.do_normalize"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_normalize">[docs]</a>    <span class="k">def</span> <span class="nf">do_normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot;Normalise data by base 2 where it isn&#39;t -6.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">vf</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_func</span><span class="p">)</span>
@@ -213,7 +213,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Normalization complete.&quot;</span><span class="p">)</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="Casati.do_recalibration"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.do_recalibration">[docs]</a>    <span class="k">def</span> <span class="nf">do_recalibration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;faster&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Casati.do_recalibration"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_recalibration">[docs]</a>    <span class="k">def</span> <span class="nf">do_recalibration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;faster&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Yr = (1/Fx) * Fy</span>
 
@@ -241,7 +241,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Recalibration complete.&quot;</span><span class="p">)</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="Casati.calc_ecdf"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.calc_ecdf">[docs]</a>    <span class="k">def</span> <span class="nf">calc_ecdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+<div class="viewcode-block" id="Casati.calc_ecdf"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.calc_ecdf">[docs]</a>    <span class="k">def</span> <span class="nf">calc_ecdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Do empirical cumulative distribution of an array.</span>
 <span class="sd">        </span>
 <span class="sd">        arr -   N.ndarray</span>
@@ -258,7 +258,7 @@
             <span class="n">ecd</span> <span class="o">=</span> <span class="n">ecd</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">valshape</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ecd</span></div>
     
-<div class="viewcode-block" id="Casati.do_BED"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.do_BED">[docs]</a>    <span class="k">def</span> <span class="nf">do_BED</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="Casati.do_BED"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_BED">[docs]</a>    <span class="k">def</span> <span class="nf">do_BED</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot;Binary error decomposition.</span>
 
 <span class="sd">        Yr = Recalibrated forecast</span>
@@ -291,10 +291,10 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Binary error decomposition complete.&quot;</span><span class="p">)</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="Casati.BED"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.BED">[docs]</a>    <span class="k">def</span> <span class="nf">BED</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pixel</span><span class="p">,</span><span class="n">thresh</span><span class="p">):</span>
+<div class="viewcode-block" id="Casati.BED"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.BED">[docs]</a>    <span class="k">def</span> <span class="nf">BED</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pixel</span><span class="p">,</span><span class="n">thresh</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">pixel</span> <span class="o">&gt;</span> <span class="n">thresh</span> <span class="k">else</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Casati.Haar"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.Haar">[docs]</a>    <span class="k">def</span> <span class="nf">Haar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Z</span><span class="p">):</span>
+<div class="viewcode-block" id="Casati.Haar"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.Haar">[docs]</a>    <span class="k">def</span> <span class="nf">Haar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Z</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Z14 is Eq 14 from paper.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">father</span> <span class="o">=</span> <span class="p">{}</span>
@@ -319,7 +319,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished Haar decomposition.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Zl</span><span class="p">,</span> <span class="n">father</span><span class="p">,</span> <span class="n">mother</span><span class="p">,</span> <span class="n">Ztotal</span></div>
 
-<div class="viewcode-block" id="Casati.do_MSE"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.do_MSE">[docs]</a>    <span class="k">def</span> <span class="nf">do_MSE</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="Casati.do_MSE"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_MSE">[docs]</a>    <span class="k">def</span> <span class="nf">do_MSE</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="c1"># Eq. 8 etc are ambiguous.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">MSE</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="p">:</span>
@@ -331,7 +331,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MSE calculation complete.&quot;</span><span class="p">)</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="Casati.do_SS"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.casati.Casati.do_SS">[docs]</a>    <span class="k">def</span> <span class="nf">do_SS</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="Casati.do_SS"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati.do_SS">[docs]</a>    <span class="k">def</span> <span class="nf">do_SS</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SS</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SS</span><span class="p">[</span><span class="n">th</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>

@@ -1,6 +1,5 @@
-`datafiles.radar`
-=======
-
+evac.datafiles.radar module
+===========================
 
 .. automodule:: evac.datafiles.radar
     :members:

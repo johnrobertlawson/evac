@@ -1,6 +1,5 @@
-`derived.derived`
-=======
-
+evac.derived.derived module
+===========================
 
 .. automodule:: evac.derived.derived
     :members:

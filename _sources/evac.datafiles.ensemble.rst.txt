@@ -1,6 +1,5 @@
-`datafiles.ensemble`
-=======
-
+evac.datafiles.ensemble module
+==============================
 
 .. automodule:: evac.datafiles.ensemble
     :members:

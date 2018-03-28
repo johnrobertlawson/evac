@@ -1,6 +1,5 @@
-`plot.clicker`
-=======
-
+evac.plot.clicker module
+========================
 
 .. automodule:: evac.plot.clicker
     :members:

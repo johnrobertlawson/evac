@@ -1,6 +1,5 @@
-`plot.map`
-=======
-
+evac.plot.map module
+====================
 
 .. automodule:: evac.plot.map
     :members:

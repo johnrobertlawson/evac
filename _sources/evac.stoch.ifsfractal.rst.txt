@@ -1,6 +1,5 @@
-`stoch.ifsfractal`
-=======
-
+evac.stoch.ifsfractal module
+============================
 
 .. automodule:: evac.stoch.ifsfractal
     :members:

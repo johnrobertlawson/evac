@@ -1,6 +1,5 @@
-`plot.figure`
-=======
-
+evac.plot.figure module
+=======================
 
 .. automodule:: evac.plot.figure
     :members:

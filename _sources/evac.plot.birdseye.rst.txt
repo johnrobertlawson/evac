@@ -1,6 +1,5 @@
-`plot.birdseye`
-=======
-
+evac.plot.birdseye module
+=========================
 
 .. automodule:: evac.plot.birdseye
     :members:

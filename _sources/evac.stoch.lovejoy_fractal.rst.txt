@@ -1,6 +1,5 @@
-`stoch.lovejoy_fractal`
-=======
-
+evac.stoch.lovejoy_fractal module
+=================================
 
 .. automodule:: evac.stoch.lovejoy_fractal
     :members:

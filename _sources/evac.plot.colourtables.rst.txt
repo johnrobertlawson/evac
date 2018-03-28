@@ -1,6 +1,5 @@
-`plot.colourtables`
-=======
-
+evac.plot.colourtables module
+=============================
 
 .. automodule:: evac.plot.colourtables
     :members:

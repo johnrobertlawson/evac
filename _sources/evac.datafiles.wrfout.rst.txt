@@ -1,6 +1,5 @@
-`datafiles.wrfout`
-=======
-
+evac.datafiles.wrfout module
+============================
 
 .. automodule:: evac.datafiles.wrfout
     :members:

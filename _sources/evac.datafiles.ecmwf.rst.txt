@@ -1,6 +1,5 @@
-`datafiles.ecmwf`
-=======
-
+evac.datafiles.ecmwf module
+===========================
 
 .. automodule:: evac.datafiles.ecmwf
     :members:

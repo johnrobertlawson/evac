@@ -1,6 +1,5 @@
-`stats.sal`
-=======
-
+evac.stats.sal module
+=====================
 
 .. automodule:: evac.stats.sal
     :members:

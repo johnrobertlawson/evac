@@ -55,7 +55,7 @@
 <span class="kn">from</span> <span class="nn">.probscores</span> <span class="k">import</span> <span class="n">ProbScores</span>
 <span class="kn">from</span> <span class="nn">evac.stats.misc_stats</span> <span class="k">import</span> <span class="n">compute_contingency</span>
 
-<div class="viewcode-block" id="ROC"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.roc.ROC">[docs]</a><span class="k">class</span> <span class="nc">ROC</span><span class="p">(</span><span class="n">DetScores</span><span class="p">,</span><span class="n">ProbScores</span><span class="p">):</span>
+<div class="viewcode-block" id="ROC"><a class="viewcode-back" href="../../../evac.stats.roc.html#evac.stats.roc.ROC">[docs]</a><span class="k">class</span> <span class="nc">ROC</span><span class="p">(</span><span class="n">DetScores</span><span class="p">,</span><span class="n">ProbScores</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ob</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ensemble</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">obs_array</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">thresholds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overunder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -83,7 +83,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_roc_contingency</span><span class="p">()</span>
         <span class="c1"># self.a,self.b,self.c,self.d = compute_contingency(forecast,obs,thresh,overunder)</span>
 
-<div class="viewcode-block" id="ROC.compute_roc_contingency"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.roc.ROC.compute_roc_contingency">[docs]</a>    <span class="k">def</span> <span class="nf">compute_roc_contingency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ROC.compute_roc_contingency"><a class="viewcode-back" href="../../../evac.stats.roc.html#evac.stats.roc.ROC.compute_roc_contingency">[docs]</a>    <span class="k">def</span> <span class="nf">compute_roc_contingency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># ws contains all prob thresholds</span>
         <span class="n">ws</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nens</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">ws</span><span class="p">)])</span>
@@ -123,7 +123,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span>
         <span class="k">return</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span>
 
-<div class="viewcode-block" id="ROC.compute_roca"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.roc.ROC.compute_roca">[docs]</a>    <span class="k">def</span> <span class="nf">compute_roca</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ROC.compute_roca"><a class="viewcode-back" href="../../../evac.stats.roc.html#evac.stats.roc.ROC.compute_roca">[docs]</a>    <span class="k">def</span> <span class="nf">compute_roca</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Area under ROC curve.</span>
 
 <span class="sd">        TODO.&quot;&quot;&quot;</span>
@@ -132,7 +132,7 @@
         <span class="n">ROCA</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">HR</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">FAR</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ROCA</span></div>
 
-<div class="viewcode-block" id="ROC.compute_rocas"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.roc.ROC.compute_rocas">[docs]</a>    <span class="k">def</span> <span class="nf">compute_rocas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ROC.compute_rocas"><a class="viewcode-back" href="../../../evac.stats.roc.html#evac.stats.roc.ROC.compute_rocas">[docs]</a>    <span class="k">def</span> <span class="nf">compute_rocas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;ROC area skill score.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>

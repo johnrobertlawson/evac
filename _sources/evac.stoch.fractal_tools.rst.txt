@@ -1,6 +1,5 @@
-`stoch.fractal_tools`
-=======
-
+evac.stoch.fractal_tools module
+===============================
 
 .. automodule:: evac.stoch.fractal_tools
     :members:

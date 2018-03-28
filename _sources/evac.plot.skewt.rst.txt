@@ -1,6 +1,5 @@
-`plot.skewt`
-=======
-
+evac.plot.skewt module
+======================
 
 .. automodule:: evac.plot.skewt
     :members:

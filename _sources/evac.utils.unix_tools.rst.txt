@@ -1,6 +1,5 @@
-`utils.unix_tools`
-=======
-
+evac.utils.unix_tools module
+============================
 
 .. automodule:: evac.utils.unix_tools
     :members:

@@ -1,6 +1,5 @@
-`datafiles.stormevents`
-=======
-
+evac.datafiles.stormevents module
+=================================
 
 .. automodule:: evac.datafiles.stormevents
     :members:

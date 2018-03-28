@@ -1,6 +1,5 @@
-`plot.xsection`
-=======
-
+evac.plot.xsection module
+=========================
 
 .. automodule:: evac.plot.xsection
     :members:

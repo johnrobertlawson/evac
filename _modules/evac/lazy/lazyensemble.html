@@ -55,7 +55,7 @@
 <span class="kn">from</span> <span class="nn">evac.lazy.lazywrf</span> <span class="k">import</span> <span class="n">LazyWRF</span>
 <span class="kn">from</span> <span class="nn">evac.utils.exceptions</span> <span class="k">import</span> <span class="n">WRFError</span><span class="p">,</span> <span class="n">PrettyException</span>
 
-<div class="viewcode-block" id="LazyEnsemble"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble">[docs]</a><span class="k">class</span> <span class="nc">LazyEnsemble</span><span class="p">:</span>
+<div class="viewcode-block" id="LazyEnsemble"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble">[docs]</a><span class="k">class</span> <span class="nc">LazyEnsemble</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate ensemble by running multiple WRF runs simulataneously.</span>
 <span class="sd">    This is done by creating temporary folder and linking/copying.</span>
@@ -230,7 +230,7 @@
         <span class="n">utils</span><span class="o">.</span><span class="n">wowprint</span><span class="p">(</span><span class="s2">&quot;Ensemble **created!**&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span><span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">wowprint</span><span class="p">(</span><span class="s2">&quot;Now do **run_all_members()**.&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span><span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="LazyEnsemble.catalog_members"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.catalog_members">[docs]</a>    <span class="k">def</span> <span class="nf">catalog_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="LazyEnsemble.catalog_members"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble.catalog_members">[docs]</a>    <span class="k">def</span> <span class="nf">catalog_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot; Create the members dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
@@ -246,7 +246,7 @@
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">members</span></div>
 
-<div class="viewcode-block" id="LazyEnsemble.print_readme"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.print_readme">[docs]</a>    <span class="k">def</span> <span class="nf">print_readme</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="LazyEnsemble.print_readme"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble.print_readme">[docs]</a>    <span class="k">def</span> <span class="nf">print_readme</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save a pretty-printed README file to a given directory.</span>
 
@@ -258,7 +258,7 @@
         <span class="k">pass</span></div>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="LazyEnsemble.edit_batchscript"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.edit_batchscript">[docs]</a>    <span class="k">def</span> <span class="nf">edit_batchscript</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">linekey</span><span class="p">,</span><span class="n">newline</span><span class="p">):</span>
+<div class="viewcode-block" id="LazyEnsemble.edit_batchscript"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble.edit_batchscript">[docs]</a>    <span class="k">def</span> <span class="nf">edit_batchscript</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">linekey</span><span class="p">,</span><span class="n">newline</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Replace a line from the submission script</span>
 <span class="sd">        that matches a key (linekey) with newline.</span>
 
@@ -288,7 +288,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Setting&quot;</span><span class="p">,</span><span class="n">linekey</span><span class="p">,</span><span class="s2">&quot;not found in script.&quot;</span><span class="p">)</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="LazyEnsemble.batchscript_for_member"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.batchscript_for_member">[docs]</a>    <span class="k">def</span> <span class="nf">batchscript_for_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">):</span>
+<div class="viewcode-block" id="LazyEnsemble.batchscript_for_member"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble.batchscript_for_member">[docs]</a>    <span class="k">def</span> <span class="nf">batchscript_for_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Edit parts of the batch submission script.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">jobname</span> <span class="o">=</span> <span class="s1">&#39;wrf_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
@@ -325,7 +325,7 @@
         <span class="k">return</span></div>
 
 
-<div class="viewcode-block" id="LazyEnsemble.namelist_for_member"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.namelist_for_member">[docs]</a>    <span class="k">def</span> <span class="nf">namelist_for_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">):</span>
+<div class="viewcode-block" id="LazyEnsemble.namelist_for_member"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble.namelist_for_member">[docs]</a>    <span class="k">def</span> <span class="nf">namelist_for_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Edit parts of the namelist</span>
 
 <span class="sd">        start/end year, month, day, hour, minute, second</span>
@@ -357,7 +357,7 @@
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">newline</span> <span class="ow">in</span> <span class="n">changes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">edit_namelist</span><span class="p">(</span><span class="n">nlpath</span><span class="p">,</span><span class="n">key</span><span class="p">,</span><span class="n">newline</span><span class="p">,</span><span class="n">doms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndoms</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LazyEnsemble.run_all_members"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.run_all_members">[docs]</a>    <span class="k">def</span> <span class="nf">run_all_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prereqs</span><span class="p">,</span><span class="n">first</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="LazyEnsemble.run_all_members"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble.run_all_members">[docs]</a>    <span class="k">def</span> <span class="nf">run_all_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prereqs</span><span class="p">,</span><span class="n">first</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Automatically submit all jobs to the scheduler.</span>
 <span class="sd">        See run_wrf_member() and check_complete() for keyword arguments.</span>
 
@@ -411,7 +411,7 @@
         <span class="c1"># Generate README for each dir?</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="LazyEnsemble.run_wrf_member"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member">[docs]</a>    <span class="k">def</span> <span class="nf">run_wrf_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">,</span><span class="n">prereqs</span><span class="p">,</span><span class="n">cpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nodes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<div class="viewcode-block" id="LazyEnsemble.run_wrf_member"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member">[docs]</a>    <span class="k">def</span> <span class="nf">run_wrf_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">,</span><span class="n">prereqs</span><span class="p">,</span><span class="n">cpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nodes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                         <span class="n">sleep</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">firstwait</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>
                         <span class="n">maxtime</span><span class="o">=</span><span class="p">(</span><span class="mi">24</span><span class="o">*</span><span class="mi">3600</span><span class="p">),</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Submit a wrf run to batch scheduler.</span>
@@ -471,7 +471,7 @@
 
         
 
-<div class="viewcode-block" id="LazyEnsemble.cleanup"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">folder</span><span class="p">,</span><span class="n">files</span><span class="p">):</span>
+<div class="viewcode-block" id="LazyEnsemble.cleanup"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">folder</span><span class="p">,</span><span class="n">files</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Deletes files in given directory that match a glob.</span>
 
 <span class="sd">        Args:</span>
@@ -495,7 +495,7 @@
                     <span class="n">f</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="LazyEnsemble.check_complete"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.check_complete">[docs]</a>    <span class="k">def</span> <span class="nf">check_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">,</span><span class="n">raise_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sleep</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">firstwait</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>
+<div class="viewcode-block" id="LazyEnsemble.check_complete"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble.check_complete">[docs]</a>    <span class="k">def</span> <span class="nf">check_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">,</span><span class="n">raise_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sleep</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">firstwait</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>
                         <span class="n">maxtime</span><span class="o">=</span><span class="p">(</span><span class="mi">24</span><span class="o">*</span><span class="mi">3600</span><span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot; Check ensemble member to see if wrf run has finished.</span>
 
@@ -537,12 +537,12 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="LazyEnsemble.run_real_member"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.run_real_member">[docs]</a>    <span class="k">def</span> <span class="nf">run_real_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="LazyEnsemble.run_real_member"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble.run_real_member">[docs]</a>    <span class="k">def</span> <span class="nf">run_real_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot; Submit real.exe to batch scheduler.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="LazyEnsemble.ensure_permissions"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.ensure_permissions">[docs]</a>    <span class="k">def</span> <span class="nf">ensure_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">,</span><span class="n">perm_decimal</span><span class="o">=</span><span class="mi">755</span><span class="p">):</span>
+<div class="viewcode-block" id="LazyEnsemble.ensure_permissions"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble.ensure_permissions">[docs]</a>    <span class="k">def</span> <span class="nf">ensure_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">,</span><span class="n">perm_decimal</span><span class="o">=</span><span class="mi">755</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Makes sure the scheduler can run the executable at fpath.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>

@@ -1,6 +1,5 @@
-`utils.evac_types`
-=======
-
+evac.utils.evac_types module
+============================
 
 .. automodule:: evac.utils.evac_types
     :members:

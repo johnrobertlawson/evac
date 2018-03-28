@@ -1,6 +1,5 @@
-`utils.evac_numbers`
-=======
-
+evac.utils.evac_numbers module
+==============================
 
 .. automodule:: evac.utils.evac_numbers
     :members:

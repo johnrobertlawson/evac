@@ -1,6 +1,5 @@
-`datafiles.ruc`
-=======
-
+evac.datafiles.ruc module
+=========================
 
 .. automodule:: evac.datafiles.ruc
     :members:

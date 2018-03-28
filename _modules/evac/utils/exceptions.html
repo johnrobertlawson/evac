@@ -45,7 +45,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Custom exceptions.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="PrettyException"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.exceptions.PrettyException">[docs]</a><span class="k">class</span> <span class="nc">PrettyException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="PrettyException"><a class="viewcode-back" href="../../../evac.utils.exceptions.html#evac.utils.exceptions.PrettyException">[docs]</a><span class="k">class</span> <span class="nc">PrettyException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Subclassed error that prints real pretty.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">message</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">bold</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -54,12 +54,12 @@
                         <span class="n">underline</span><span class="o">=</span><span class="n">underline</span><span class="p">,</span><span class="n">formatargs</span><span class="o">=</span><span class="n">formatargs</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">wowmessage</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FormatError"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.exceptions.FormatError">[docs]</a><span class="k">class</span> <span class="nc">FormatError</span><span class="p">(</span><span class="n">PrettyException</span><span class="p">):</span>
+<div class="viewcode-block" id="FormatError"><a class="viewcode-back" href="../../../evac.utils.exceptions.html#evac.utils.exceptions.FormatError">[docs]</a><span class="k">class</span> <span class="nc">FormatError</span><span class="p">(</span><span class="n">PrettyException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Data is the wrong format or shape.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="QCError"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.exceptions.QCError">[docs]</a><span class="k">class</span> <span class="nc">QCError</span><span class="p">(</span><span class="n">PrettyException</span><span class="p">):</span>
+<div class="viewcode-block" id="QCError"><a class="viewcode-back" href="../../../evac.utils.exceptions.html#evac.utils.exceptions.QCError">[docs]</a><span class="k">class</span> <span class="nc">QCError</span><span class="p">(</span><span class="n">PrettyException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Data has failed a quality control check.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">error</span><span class="o">=</span><span class="s1">&#39;Quality Control error.&#39;</span><span class="p">,</span><span class="n">pass_idx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -76,13 +76,13 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">pass_idx</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="NonsenseError"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.exceptions.NonsenseError">[docs]</a><span class="k">class</span> <span class="nc">NonsenseError</span><span class="p">(</span><span class="n">PrettyException</span><span class="p">):</span>
+<div class="viewcode-block" id="NonsenseError"><a class="viewcode-back" href="../../../evac.utils.exceptions.html#evac.utils.exceptions.NonsenseError">[docs]</a><span class="k">class</span> <span class="nc">NonsenseError</span><span class="p">(</span><span class="n">PrettyException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Data or argument doesn&#39;t make any sense.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WRFError"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.exceptions.WRFError">[docs]</a><span class="k">class</span> <span class="nc">WRFError</span><span class="p">(</span><span class="n">PrettyException</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFError"><a class="viewcode-back" href="../../../evac.utils.exceptions.html#evac.utils.exceptions.WRFError">[docs]</a><span class="k">class</span> <span class="nc">WRFError</span><span class="p">(</span><span class="n">PrettyException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; WRF run has broken somewhere. &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>

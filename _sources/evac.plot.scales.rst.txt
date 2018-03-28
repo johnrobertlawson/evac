@@ -1,6 +1,5 @@
-`plot.scales`
-=======
-
+evac.plot.scales module
+=======================
 
 .. automodule:: evac.plot.scales
     :members:

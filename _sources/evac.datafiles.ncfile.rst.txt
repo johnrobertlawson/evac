@@ -1,6 +1,5 @@
-`datafiles.ncfile`
-=======
-
+evac.datafiles.ncfile module
+============================
 
 .. automodule:: evac.datafiles.ncfile
     :members:

@@ -1,6 +1,5 @@
-`stats.roc`
-=======
-
+evac.stats.roc module
+=====================
 
 .. automodule:: evac.stats.roc
     :members:

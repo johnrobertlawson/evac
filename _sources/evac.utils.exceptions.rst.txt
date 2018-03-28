@@ -1,6 +1,5 @@
-`utils.exceptions`
-=======
-
+evac.utils.exceptions module
+============================
 
 .. automodule:: evac.utils.exceptions
     :members:

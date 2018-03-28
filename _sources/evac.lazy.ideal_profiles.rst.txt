@@ -1,6 +1,5 @@
-`lazy.ideal_profiles`
-=======
-
+evac.lazy.ideal_profiles module
+===============================
 
 .. automodule:: evac.lazy.ideal_profiles
     :members:

@@ -1,6 +1,5 @@
-`plot.timeseries`
-=======
-
+evac.plot.timeseries module
+===========================
 
 .. automodule:: evac.plot.timeseries
     :members:

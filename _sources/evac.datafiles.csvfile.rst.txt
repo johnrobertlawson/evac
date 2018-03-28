@@ -1,6 +1,5 @@
-`datafiles.csvfile`
-=======
-
+evac.datafiles.csvfile module
+=============================
 
 .. automodule:: evac.datafiles.csvfile
     :members:

@@ -1,6 +1,5 @@
-`utils.defaults`
-=======
-
+evac.utils.defaults module
+==========================
 
 .. automodule:: evac.utils.defaults
     :members:

@@ -1,6 +1,5 @@
-`datafiles.hrrr`
-=======
-
+evac.datafiles.hrrr module
+==========================
 
 .. automodule:: evac.datafiles.hrrr
     :members:

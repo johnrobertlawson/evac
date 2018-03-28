@@ -60,7 +60,7 @@
 <span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">from</span> <span class="nn">evac.datafiles.ncfile</span> <span class="k">import</span> <span class="n">NCFile</span>
 
-<div class="viewcode-block" id="ECMWF"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.ecmwf.ECMWF">[docs]</a><span class="k">class</span> <span class="nc">ECMWF</span><span class="p">(</span><span class="n">NCFile</span><span class="p">):</span>
+<div class="viewcode-block" id="ECMWF"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF">[docs]</a><span class="k">class</span> <span class="nc">ECMWF</span><span class="p">(</span><span class="n">NCFile</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">,</span><span class="n">config</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">C</span> <span class="o">=</span> <span class="n">config</span>
@@ -79,17 +79,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">z_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="c1"># Times, levels, lats, lons</span>
 
-<div class="viewcode-block" id="ECMWF.ecmwf_times"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.ecmwf.ECMWF.ecmwf_times">[docs]</a>    <span class="k">def</span> <span class="nf">ecmwf_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ECMWF.ecmwf_times"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.ecmwf_times">[docs]</a>    <span class="k">def</span> <span class="nf">ecmwf_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ec_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;initial_time0_hours&#39;</span><span class="p">][:]</span>
         <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">ec_t</span><span class="o">*</span><span class="mf">3600.0</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1490184.0</span><span class="o">*</span><span class="mf">3600.0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">t</span></div>
 
-<div class="viewcode-block" id="ECMWF.find_level_idx"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.ecmwf.ECMWF.find_level_idx">[docs]</a>    <span class="k">def</span> <span class="nf">find_level_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lv</span><span class="p">):</span>
+<div class="viewcode-block" id="ECMWF.find_level_idx"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.find_level_idx">[docs]</a>    <span class="k">def</span> <span class="nf">find_level_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lv</span><span class="p">):</span>
         <span class="n">lvs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lvs</span><span class="p">)</span>
         <span class="n">lv_idx</span> <span class="o">=</span> <span class="n">lvs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">lv</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lv_idx</span></div>
 
-<div class="viewcode-block" id="ECMWF.find_time_idx"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.ecmwf.ECMWF.find_time_idx">[docs]</a>    <span class="k">def</span> <span class="nf">find_time_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="ECMWF.find_time_idx"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.find_time_idx">[docs]</a>    <span class="k">def</span> <span class="nf">find_time_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
             <span class="k">pass</span> <span class="c1"># It&#39;s a datenum</span>
         <span class="k">else</span><span class="p">:</span>
@@ -97,13 +97,13 @@
         <span class="n">ts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ECMWF.get_key"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.ecmwf.ECMWF.get_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">):</span>
+<div class="viewcode-block" id="ECMWF.get_key"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.get_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">):</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">keys</span><span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Z_GDS0_ISBL&#39;</span>
         <span class="n">keys</span><span class="p">[</span><span class="s1">&#39;W&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;W_GDS0_ISBL&#39;</span>
         <span class="k">return</span> <span class="n">keys</span><span class="p">[</span><span class="n">va</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ECMWF.get"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.ecmwf.ECMWF.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="ECMWF.get"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
         <span class="n">t_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_time_idx</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
         <span class="n">lv_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_level_idx</span><span class="p">(</span><span class="n">lv</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">va</span> <span class="o">==</span> <span class="s1">&#39;wind&#39;</span><span class="p">:</span>
@@ -116,7 +116,7 @@
         <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="ECMWF.plot"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.ecmwf.ECMWF.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ECMWF.plot"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
 
             <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
@@ -165,7 +165,7 @@
 
 
 
-<div class="viewcode-block" id="ECMWF.basemap_setup"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.ecmwf.ECMWF.basemap_setup">[docs]</a>    <span class="k">def</span> <span class="nf">basemap_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ECMWF.basemap_setup"><a class="viewcode-back" href="../../../evac.datafiles.ecmwf.html#evac.datafiles.ecmwf.ECMWF.basemap_setup">[docs]</a>    <span class="k">def</span> <span class="nf">basemap_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Fetch settings</span>
         <span class="n">basemap_res</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">,</span><span class="s1">&#39;basemap_res&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">basemap_res</span><span class="p">)</span>
         <span class="n">lllat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>

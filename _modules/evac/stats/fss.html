@@ -49,7 +49,7 @@
 
 <span class="kn">from</span> <span class="nn">evac.utils.exceptions</span> <span class="k">import</span> <span class="n">FormatError</span>
 
-<div class="viewcode-block" id="FSS"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.fss.FSS">[docs]</a><span class="k">class</span> <span class="nc">FSS</span><span class="p">:</span>
+<div class="viewcode-block" id="FSS"><a class="viewcode-back" href="../../../evac.stats.fss.html#evac.stats.fss.FSS">[docs]</a><span class="k">class</span> <span class="nc">FSS</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data_fcst</span><span class="p">,</span><span class="n">data_obs</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">lv</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span><span class="n">ns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">ns_step</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
@@ -74,7 +74,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">compute_FSS</span><span class="p">()</span>
         <span class="k">return</span>
         
-<div class="viewcode-block" id="FSS.enforce_2D"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.fss.FSS.enforce_2D">[docs]</a>    <span class="k">def</span> <span class="nf">enforce_2D</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="FSS.enforce_2D"><a class="viewcode-back" href="../../../evac.stats.fss.html#evac.stats.fss.FSS.enforce_2D">[docs]</a>    <span class="k">def</span> <span class="nf">enforce_2D</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot;Both data grids need to be 2D.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">data_fcst</span><span class="p">):</span>
@@ -91,7 +91,7 @@
                 <span class="k">raise</span> <span class="n">FormatError</span><span class="p">(</span><span class="s2">&quot;Data needs to be 2D.&quot;</span><span class="p">)</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="FSS.do_grid_check"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.fss.FSS.do_grid_check">[docs]</a>    <span class="k">def</span> <span class="nf">do_grid_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="FSS.do_grid_check"><a class="viewcode-back" href="../../../evac.stats.fss.html#evac.stats.fss.FSS.do_grid_check">[docs]</a>    <span class="k">def</span> <span class="nf">do_grid_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot; Make sure grids are identical size.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ydim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xdim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_fcst</span><span class="o">.</span><span class="n">shape</span>
@@ -99,7 +99,7 @@
             <span class="k">raise</span> <span class="n">FormatError</span><span class="p">(</span><span class="s2">&quot;Obs and forecast data not same size.&quot;</span><span class="p">)</span>
         <span class="k">return</span></div>
     
-<div class="viewcode-block" id="FSS.compute_FSS"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.fss.FSS.compute_FSS">[docs]</a>    <span class="k">def</span> <span class="nf">compute_FSS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FSS.compute_FSS"><a class="viewcode-back" href="../../../evac.stats.fss.html#evac.stats.fss.FSS.compute_FSS">[docs]</a>    <span class="k">def</span> <span class="nf">compute_FSS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">maxlen</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydim</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xdim</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="n">threshs</span><span class="p">:</span>

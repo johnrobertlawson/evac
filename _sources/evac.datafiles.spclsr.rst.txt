@@ -1,6 +1,5 @@
-`datafiles.spclsr`
-==================
-
+evac.datafiles.spclsr module
+============================
 
 .. automodule:: evac.datafiles.spclsr
     :members:

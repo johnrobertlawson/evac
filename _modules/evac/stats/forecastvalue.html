@@ -48,7 +48,7 @@
 <span class="kn">from</span> <span class="nn">evac.utils.exceptions</span> <span class="k">import</span> <span class="n">FormatError</span><span class="p">,</span> <span class="n">NonsenseError</span>
 <span class="kn">from</span> <span class="nn">evac.stats.detscores</span> <span class="k">import</span> <span class="n">DetScores</span>
 
-<div class="viewcode-block" id="ForecastValue"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.forecastvalue.ForecastValue">[docs]</a><span class="k">class</span> <span class="nc">ForecastValue</span><span class="p">(</span><span class="n">DetScores</span><span class="p">):</span>
+<div class="viewcode-block" id="ForecastValue"><a class="viewcode-back" href="../../../evac.stats.forecastvalue.html#evac.stats.forecastvalue.ForecastValue">[docs]</a><span class="k">class</span> <span class="nc">ForecastValue</span><span class="p">(</span><span class="n">DetScores</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">CLs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Compute FV, forecast value, as Buizza 2001.</span>
 
@@ -91,7 +91,7 @@
         <span class="k">for</span> <span class="n">cl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">CLs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">FVs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_FV</span><span class="p">(</span><span class="n">cl</span><span class="p">))</span>
 
-<div class="viewcode-block" id="ForecastValue.compute_FV"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.forecastvalue.ForecastValue.compute_FV">[docs]</a>    <span class="k">def</span> <span class="nf">compute_FV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cl</span><span class="p">):</span>
+<div class="viewcode-block" id="ForecastValue.compute_FV"><a class="viewcode-back" href="../../../evac.stats.forecastvalue.html#evac.stats.forecastvalue.ForecastValue.compute_FV">[docs]</a>    <span class="k">def</span> <span class="nf">compute_FV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cl</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Compute FV.</span>
 
 <span class="sd">        Note the variable &quot;x&quot; is the minimum of C/L ratio and P_cli.</span>
@@ -117,7 +117,7 @@
 
         <span class="k">return</span> <span class="n">FV</span></div>
 
-<div class="viewcode-block" id="ForecastValue.get_FV"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.forecastvalue.ForecastValue.get_FV">[docs]</a>    <span class="k">def</span> <span class="nf">get_FV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cl</span><span class="p">):</span>
+<div class="viewcode-block" id="ForecastValue.get_FV"><a class="viewcode-back" href="../../../evac.stats.forecastvalue.html#evac.stats.forecastvalue.ForecastValue.get_FV">[docs]</a>    <span class="k">def</span> <span class="nf">get_FV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cl</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return the FV for a given cost/loss ratio, otherwise None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">clidx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CLs</span> <span class="o">==</span> <span class="n">cl</span><span class="p">)</span>

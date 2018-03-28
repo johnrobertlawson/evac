@@ -1,6 +1,5 @@
-`stats.diffenergy`
-=======
-
+evac.stats.diffenergy module
+============================
 
 .. automodule:: evac.stats.diffenergy
     :members:

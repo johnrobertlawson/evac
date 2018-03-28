@@ -49,10 +49,10 @@
 
 <span class="kn">from</span> <span class="nn">evac.utils.exceptions</span> <span class="k">import</span> <span class="n">FormatError</span>
 
-<div class="viewcode-block" id="is_list"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.evac_types.is_list">[docs]</a><span class="k">def</span> <span class="nf">is_list</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="is_list"><a class="viewcode-back" href="../../../evac.utils.evac_types.html#evac.utils.evac_types.is_list">[docs]</a><span class="k">def</span> <span class="nf">is_list</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="enforce_same_dimensions"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.evac_types.enforce_same_dimensions">[docs]</a><span class="k">def</span> <span class="nf">enforce_same_dimensions</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="enforce_same_dimensions"><a class="viewcode-back" href="../../../evac.utils.evac_types.html#evac.utils.evac_types.enforce_same_dimensions">[docs]</a><span class="k">def</span> <span class="nf">enforce_same_dimensions</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">check_same_dimensions</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">FormatError</span><span class="p">(</span><span class="s2">&quot;Input arrays not all same size.&quot;</span><span class="p">)</span>
     <span class="k">return</span></div>
