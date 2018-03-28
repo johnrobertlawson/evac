@@ -4,30 +4,11 @@ evac.lazy package
 Submodules
 ----------
 
-evac.lazy.ideal_profiles module
--------------------------------
+.. toctree::
 
-.. automodule:: evac.lazy.ideal_profiles
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-evac.lazy.lazyensemble module
------------------------------
-
-.. automodule:: evac.lazy.lazyensemble
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-evac.lazy.lazywrf module
-------------------------
-
-.. automodule:: evac.lazy.lazywrf
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   evac.lazy.ideal_profiles
+   evac.lazy.lazyensemble
+   evac.lazy.lazywrf
 
 Module contents
 ---------------
