@@ -33,11 +33,13 @@ class LazyEnsemble:
 
     """
     def __init__(self,path_to_exedir,path_to_datadir, path_to_namelistdir,
-                    path_to_icbcdir,path_to_outdir,path_to_batch,initutc,
+                    path_to_icdir,path_to_lbcdir,path_to_outdir,
+                    path_to_batch,initutc,
                     sched='slurm',path_to_rundir=False,delete_exe_copy=False,
                     ndoms=1,nmems=0,membernames=False,
                     endutc=False,runsec=False,nl_per_member=True,
-                    nl_suffix='name',icbcs=None,dryrun=False):
+                    nl_suffix='name',icbcs=None,dryrun=False,
+                    rename_d01_ics=False):
         """
         Note that WRF can run with initial and boundary conditions from
         only the parent domain (d01).
@@ -49,8 +51,10 @@ class LazyEnsemble:
                                 will be saved.
         path_to_namelistdir :   (str) - directory containing namelist(s)
                                 templates or full versions.
-        path_to_icbcdir     :   (str) - directory with initial and boundary
-                                condition files
+        path_to_icdir       :   (str,bool) - directory with initial conditions
+                                If False, don't copy any ICs.
+        path_to_lbcdir      :   (str,bool) - directory with boundary conditions
+                                If False, don't copy any LBCss.
         path_to_outdir      :   (str) - where to move wrfout files to
         path_to_batch       :   (str) - absolute path to *.job script
                                 for slurm - not sure about rocks etc
@@ -84,20 +88,36 @@ class LazyEnsemble:
         nl_suffix           :   (str) - if 'name', the suffix will be the
                                 member name (either passed in or automatically
                                 generated).
-        icbcs               :   (dict,list,bool) - dictionary of {member:filenames}
-                                where 'filenames' are a list/tuple of initial
-                                and boundary condition files, copied to rundir.
-                                If a list, this is used for each ensemble member
-                                from a folder within the icbc_dir.
+        ics,lbcs            :   (dict,list,bool) - filename of IC/LBC files.
+                                
+                                if dictionary, format is {member :{(from,to):cmd)
+                                where cmd is "move", "copy", or "softlink", and
+                                to/from are the absolute paths
+                                
+                                If a list, this is used for each ensemble
+                                member from a folder within icdir and
+                                lbcdir, respectively.
+                                
                                 If True, it looks for the default names
-                                in subfolders of icbc_dir
-                                if 'all', it copies everything from default folders.
+                                in subfolders of icdir and lbcdir
+                                
+                                if 'all', it copies everything from the
+                                default folders.
+                                
+                                if any other string, it glob-matches
+                                ics/lbcs and imports all matches.
+                                
         dryrun              :   (bool) - if True, don't delete any files
                                 or submit any runs.
+        rename_d01_ics      :   (bool) - if True, rename d01 ICs to
+                                wrfinput_d01. Only works if only the
+                                d01 domain has ICs.
         """
         # Check - must have either number of members or a list of names
         assert isinstance(membernames,(list,tuple)) or (nmems > 0)
 
+        self.rename_d01_ics = rename_d01_ics
+        
         # we need one of these optional arguments to compute run time
         if (endutc is False) and (runsec is False):
             raise Exception("Specific endutc or runsec.")
@@ -113,7 +133,17 @@ class LazyEnsemble:
         self.exedir = PosixPath(path_to_exedir)
         self.datadir = PosixPath(path_to_datadir)
         self.namelistdir = PosixPath(path_to_namelistdir)
-        self.icbcdir = PosixPath(path_to_icbcdir)
+        
+        if not path_to_icdir:
+            self.icdir = None
+        else:
+            self.icdir = PosixPath(path_to_icdir)
+            
+        if not path_to_lbcdir:
+            self.lbcdir = None
+        else:
+            self.lbcdir = PosixPath(path_to_lbcdir)
+            
         self.outdir = PosixPath(path_to_outdir)
         self.batchscript = PosixPath(path_to_batch)
 
@@ -132,6 +162,7 @@ class LazyEnsemble:
 
         # Number of domains
         self.ndoms = ndoms
+        self.dom_names = ['d{:02d}'.format(n) for n in range(1,self.ndoms+1)]
 
         # Options
         self.delete_exe_copy = delete_exe_copy
@@ -151,41 +182,79 @@ class LazyEnsemble:
         self.members = self.catalog_members()
 
         # Gather ICs, LBCs
-        # Each file that needs to be copied is in a list 
+        # Each file that needs to be copied is in a list
         #   within ['icbcs'] for each member
 
         # if icbcs is a dictionary, copy filenames for each member
-        if isinstance(icbcs,dict):
-            for member in self.members:
-                assert isinstance(icbcs[member],(list,tuple))
-                self.members[member]['icbcs'] = icbcs[member]
-
-        # Use the same files for each member
-        elif isinstance(icbcs,(list,tuple)):
-            for member in self.members:
-                self.members[member]['icbcs'] = icbcs
-
-        # Use default naming
-        elif icbcs == True:
-            fnames = ['wrfinput_d{:02d}'.format(n)
-                        for n in N.arange(1,self.nmems+1)] + [
-                        'wrfbdy_d{:02d}'.format(n)
-                        for n in N.arange(1,self.nmems+1)]
-            for member in self.membernames:
-                self.members[member]['icbcs'] = self.icbcdir / member
-        elif icbcs == 'all':
-            for member in self.members.keys():
-                glb = (self.icbcdir / member).glob('*')
-                self.members[member]['icbcs'] = glb
-        else:
-            raise PrettyException("icbcs setting **{}** is not valid".format(
-                                                    icbcs),color='red')
-
+        if self.icdir is not None:
+            get_paths_to_input(ics,'ics')
+        if self.lbcdir is not None:
+            get_paths_to_input(lbcs,'lbcs')
+        
         # TO DO - how to automate nests too
         # For now, everything in same folder.
         utils.wowprint("Ensemble **created!**",color='purple',bold=True)
         utils.wowprint("Now do **run_all_members()**.",color='yellow',bold=True)
+        
+    def get_paths_to_input(self,userinput,opt,fname_warning=True):
+        """ Logic to add absolute paths of ICs or LBCs to the dictionary.
+        
+        
+        Args:
+        
+        userinput   :   ics or lbcs from __init__.
+        opt         :   (str) - 'ics' or 'lbcs'
+        fname_warning   :   (bool) - if True, raise Exception if
+                            the IC/LBC files do not follow the
+                            convention for the wrf run directory
+        """
+        
+        if opt is 'ics':
+            default_prefix = 'wrfinput_d'
+            the_dir = self.icdir
+        elif opt is 'lbcs':
+            default_prefix = 'wrfbdy_d'
+            the_dir = self.lbcdir
+        else:
+            raise Exception("Specific either ics or lbcs for opt.")
+        
+        if isinstance(userinput,dict):
+            #dictionary format is {member :{(from,to):cmd)
+            for member in self.members:
+                # So for each member, this entry is a dictionary
+                # dict((frompath,topath)=command)
+                self.members[member][opt] = userinput[member]
 
+        # Use the same files for each member
+        elif isinstance(userinput,(list,tuple)):
+            for member in self.members:
+                self.members[member][opt] = userinput
+
+        # Use default naming
+        elif userinput == True:
+            fnames = ['{}{:02d}'.format(default_prefix,n)
+                        for n in N.arange(1,self.nmems+1)]
+            for member in self.membernames:
+                self.members[member][opt] = the_dir / member
+        elif isinstance(userinput,str):
+            if userinput == 'all':
+                globkey = '*'
+            else:
+                globkey = userinput
+                
+            for member in self.members.keys():
+                glb = (the_dir / member).glob(globkey)
+                self.members[member][opt] = glb
+        else:
+            raise PrettyException("userinput setting **{}** is not valid".format(
+                            userinput),color='red')
+
+        if fname_warning:
+            for member in self.members.keys():
+                for f in self.members[member][opt]:
+                    assert f.startswith(default_prefix)
+        return
+        
     def catalog_members(self,):
         """ Create the members dictionary.
         """
@@ -369,7 +438,8 @@ class LazyEnsemble:
 
     def run_wrf_member(self,member,prereqs,cpus=1,nodes=1,
                         sleep=30,firstwait=3600,
-                        maxtime=(24*3600),check=False):
+                        maxtime=(24*3600),check=False,
+                        rename_dict={}):
         """ Submit a wrf run to batch scheduler.
 
         member  :   (str) - name of member to run
@@ -406,9 +476,19 @@ class LazyEnsemble:
         utils.bridge('copy',frompath,rundir)
         self.namelist_for_member(member)
 
-        # Copy ICBC data
-        utils.bridge_multi('copy',self.members[member]['icbcs'],rundir)
+        # Copy ICBC data if not done manually
+        
+        utils.bridge_multi(self.members[member]['ics'])
+        
+        if self.lbcdir is not None:
+            utils.bridge_multi('softlink',self.members[member]['lbcs'],rundir)
 
+        # Rename files in the rundir that match a glob
+        # There must only be one match, obviously.
+        for old,new in rename_dict:
+            # old = utils.enforce_pathobj(old)
+            utils.bridge('move',old,new)
+        
         # Submit script
         batchloc = datadir / self.batchname
         cmd = "sbatch {}".format(batchloc)
@@ -510,3 +590,24 @@ class LazyEnsemble:
         fpath.chmod(perm_decimal)
         print("Changed permissions for {} to {}".format(fpath,perm_str))
         return
+
+    def aa_test(self,param1,param2=2,param3=('hi','there')):
+        """Example of docstring on the __init__ method.
+
+        The __init__ method may be documented in either the class level
+        docstring, or as a docstring on the __init__ method itself.
+
+        Either form is acceptable, but the two should not be mixed. Choose one
+        convention to document the __init__ method and be consistent with it.
+
+        Note:
+            Do not include the `self` parameter in the ``Args`` section.
+
+        Args:
+            param1 (str): Description of `param1`.
+            param2 (:obj:`int`, optional): Description of `param2`. Multiple
+                lines are supported.
+            param3 (list(str)): Description of `param3`.
+
+        """
+        pass
