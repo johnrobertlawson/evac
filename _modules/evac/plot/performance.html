@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.plot.performance &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.plot.performance</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">M</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">evac.utils.evac_numbers</span> <span class="k">import</span> <span class="n">is_number</span><span class="p">,</span> <span class="n">has_integers</span><span class="p">,</span> <span class="n">is_integer</span><span class="p">,</span> <span class="n">is_array</span>
+<span class="kn">from</span> <span class="nn">evac.plot.figure</span> <span class="k">import</span> <span class="n">Figure</span>
+
+<div class="viewcode-block" id="Performance"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.performance.Performance">[docs]</a><span class="k">class</span> <span class="nc">Performance</span><span class="p">(</span><span class="n">Figure</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">outpath</span><span class="p">,</span><span class="n">fname</span><span class="p">,</span><span class="n">legendkwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Performance diagram, from Roebber 2009 WAF.</span>
+
+<span class="sd">        Some checking with WFRT&#39;s verif package (Github)</span>
+
+<span class="sd">        To maintain flexibility, the user should do the following</span>
+<span class="sd">        outside the class once initialised:</span>
+
+<span class="sd">        Performance.plot_data(...) # As many times as needed</span>
+<span class="sd">        Performance.save() # When finished</span>
+
+<span class="sd">        If passing in stats, they should be:</span>
+
+<span class="sd">        POD     =   A/A+C</span>
+<span class="sd">        FAR     =   B/A+B</span>
+<span class="sd">        BIAS    =   (A+B)/(A+C)</span>
+<span class="sd">        CSI     =   A/(A+B+C)</span>
+<span class="sd">        SR      =   1- FAR</span>
+<span class="sd">               </span>
+<span class="sd">        Some plotting settings, like bias contours, can be accessed:</span>
+
+<span class="sd">        Performance.contours[&#39;bias&#39;] = [0.5,1,1.5]</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            outpath     :   directory for saving figure</span>
+<span class="sd">            fname       :   file name</span>
+<span class="sd">            legendkwargs:   key-words for ax.legend().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outpath</span> <span class="o">=</span> <span class="n">outpath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span>
+        <span class="c1">#self.ncol = ncol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lk</span> <span class="o">=</span> <span class="n">legendkwargs</span>
+
+        <span class="c1"># Plotting settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contours</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contours</span><span class="p">[</span><span class="s1">&#39;bias&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.75</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.25</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contours</span><span class="p">[</span><span class="s1">&#39;csi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">1.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="c1"># self.xticks = 201</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xticks</span> <span class="o">=</span> <span class="mi">401</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yticks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xticks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sr_x</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">xticks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pod_y</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">yticks</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_axis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_bias_lines</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_csi_lines</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ready to receive plotting data via plot_data().&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Performance.create_axis"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.performance.Performance.create_axis">[docs]</a>    <span class="k">def</span> <span class="nf">create_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">xlab</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">1.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xlab</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xlab</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Success Ratio&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">ylab</span> <span class="o">=</span> <span class="n">xlab</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">ylab</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">ylab</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Probability of Detection&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Performance.plot_bias_lines"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.performance.Performance.plot_bias_lines">[docs]</a>    <span class="k">def</span> <span class="nf">plot_bias_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bias_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_bias_lines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">bn</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contours</span><span class="p">[</span><span class="s1">&#39;bias&#39;</span><span class="p">]):</span>
+            <span class="c1"># self.ax.plot(bias_arr[:,0,bn],bias_arr[:,1,bn],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bias_arr</span><span class="p">[:,</span><span class="mi">1</span><span class="p">,</span><span class="n">bn</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">pod_y</span><span class="p">,</span>
+                            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+            <span class="n">bstr</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:1.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+            <span class="c1"># pdb.set_trace()</span>
+            <span class="k">if</span> <span class="n">b</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">xpos</span> <span class="o">=</span> <span class="mf">1.00</span>
+                <span class="n">ypos</span> <span class="o">=</span> <span class="n">b</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">xpos</span> <span class="o">=</span> <span class="mf">1.00</span><span class="o">/</span><span class="n">b</span>
+                <span class="n">ypos</span> <span class="o">=</span> <span class="mf">1.00</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">bstr</span><span class="p">,</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">xpos</span><span class="p">,</span><span class="n">ypos</span><span class="p">),</span><span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span>
+                            <span class="c1"># bbox=dict(fc=&#39;red&#39;),color=&#39;white&#39;,</span>
+                            <span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>
+                            <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">textcoords</span><span class="o">=</span><span class="s1">&#39;offset points&#39;</span><span class="p">,</span>
+                            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Performance.plot_csi_lines"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.performance.Performance.plot_csi_lines">[docs]</a>    <span class="k">def</span> <span class="nf">plot_csi_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">xpos</span> <span class="o">=</span> <span class="mf">0.945</span>
+        <span class="n">csi_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_csi_lines</span><span class="p">()</span>
+        <span class="c1"># mid = N.floor(csi_arr.shape[0]/2)</span>
+        <span class="c1"># mid = N.int(csi_arr.shape[0] - (0.975*csi_arr.shape[0]))</span>
+        <span class="n">nc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contours</span><span class="p">[</span><span class="s1">&#39;csi&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">cn</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contours</span><span class="p">[</span><span class="s1">&#39;csi&#39;</span><span class="p">]):</span>
+            <span class="c1"># csi_c = self.ax.plot(csi_arr[:,0,cn],csi_arr[:,1,cn],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sr_x</span><span class="p">,</span><span class="n">csi_arr</span><span class="p">[:,</span><span class="mi">1</span><span class="p">,</span><span class="n">cn</span><span class="p">],</span>
+                                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,)</span>
+            <span class="n">cstr</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:1.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="c1"># self.ax.clabel(csi_c[1],fontsize=8,inline=True,fmt=&#39;%1.1f&#39;)</span>
+            <span class="c1"># pdb.set_trace()</span>
+            <span class="c1"># if not N.isnan(csi_arr[mid,1,cn]):</span>
+            <span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="c1"># negx = int(negx_factor*self.xticks)</span>
+                <span class="c1"># yidx = N.abs(csi_arr[:,0,cn]-(1-negx_factor)).argmin()</span>
+                <span class="n">ypos</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span><span class="o">/</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">xpos</span><span class="p">))</span>
+                <span class="c1"># self.fig.text(N.ones(nc)*0.93,csi_arr[mid,1,cn],</span>
+                                <span class="c1"># cstr,color=&#39;blue&#39;,)#facecolor=&#39;white&#39;)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">cstr</span><span class="p">,</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">xpos</span><span class="o">-</span><span class="mf">0.01</span><span class="p">,</span><span class="n">ypos</span><span class="p">),</span>
+                <span class="c1"># self.ax.annotate(cstr,xy=(1-negx_factor,csi_arr[mid,1,cn]),</span>
+                                    <span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> 
+                                    <span class="c1">#color=&#39;white&#39;, bbox=dict(fc=&#39;blue&#39;),</span>
+                                    <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">fc</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span><span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                                    <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">textcoords</span><span class="o">=</span><span class="s1">&#39;offset points&#39;</span><span class="p">,</span>
+                                    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span></div>
+        <span class="c1"># pdb.set_trace()</span>
+
+
+<div class="viewcode-block" id="Performance.compute_bias_lines"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.performance.Performance.compute_bias_lines">[docs]</a>    <span class="k">def</span> <span class="nf">compute_bias_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bias_arr</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">sr_x</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">contours</span><span class="p">[</span><span class="s1">&#39;bias&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">bn</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contours</span><span class="p">[</span><span class="s1">&#39;bias&#39;</span><span class="p">]):</span>
+            <span class="n">bias_arr</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,</span><span class="n">bn</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pod_y</span><span class="o">/</span><span class="n">b</span>
+            <span class="n">bias_arr</span><span class="p">[:,</span><span class="mi">1</span><span class="p">,</span><span class="n">bn</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr_x</span><span class="o">/</span><span class="n">b</span>
+        <span class="n">bias_arr</span><span class="p">[</span><span class="n">bias_arr</span><span class="o">&gt;</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="k">return</span> <span class="n">bias_arr</span></div>
+
+<div class="viewcode-block" id="Performance.compute_csi_lines"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.performance.Performance.compute_csi_lines">[docs]</a>    <span class="k">def</span> <span class="nf">compute_csi_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># might need to switch around the axes</span>
+        <span class="n">csi_arr</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">sr_x</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">contours</span><span class="p">[</span><span class="s1">&#39;csi&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">cn</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contours</span><span class="p">[</span><span class="s1">&#39;csi&#39;</span><span class="p">]):</span>
+            <span class="c1"># x coordinates for this CSI contour</span>
+            <span class="n">sr_x_c</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span><span class="o">/</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">pod_y</span><span class="p">))</span>
+            <span class="c1"># and y coordinates</span>
+            <span class="n">pod_y_c</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span><span class="o">/</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">sr_x</span><span class="p">))</span>
+
+            <span class="c1"># assign to array</span>
+            <span class="n">csi_arr</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,</span><span class="n">cn</span><span class="p">]</span> <span class="o">=</span> <span class="n">sr_x_c</span>
+            <span class="n">csi_arr</span><span class="p">[:,</span><span class="mi">1</span><span class="p">,</span><span class="n">cn</span><span class="p">]</span> <span class="o">=</span> <span class="n">pod_y_c</span>
+
+        <span class="c1"># pdb.set_trace()</span>
+        <span class="n">csi_arr</span><span class="p">[</span><span class="n">csi_arr</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">csi_arr</span><span class="p">[</span><span class="n">csi_arr</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">return</span> <span class="n">csi_arr</span></div>
+
+<div class="viewcode-block" id="Performance.plot_data"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.performance.Performance.plot_data">[docs]</a>    <span class="k">def</span> <span class="nf">plot_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pod</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">far</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">abcd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">plotkwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Plot a datum point onto graph.</span>
+
+<span class="sd">        Example plotkwargs include:</span>
+<span class="sd">            s   :   size</span>
+<span class="sd">            marker  :   marker, e.g.: v X + * D</span>
+<span class="sd">            c   :   colour</span>
+<span class="sd">            alpha   :   0-1</span>
+<span class="sd">            edgecolors  :   colour</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            pod     :   probability of detection (one point)</span>
+<span class="sd">            sr      :   success rate (one point)</span>
+<span class="sd">            far     :   false alarm rate (one point)</span>
+<span class="sd">            abcd    :   2x2 contingency table (to be implemented)</span>
+<span class="sd">            a,b,c,d :   integers of contingency table</span>
+<span class="sd">            plotkwargs  :   plotting system for matplotlib.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">get_scores</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+            <span class="n">DS</span> <span class="o">=</span> <span class="n">DetScores</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+            <span class="n">pod</span> <span class="o">=</span> <span class="n">DS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;POD&#39;</span><span class="p">)</span>
+            <span class="n">sr</span> <span class="o">=</span> <span class="n">DS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SR&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pod</span><span class="p">,</span><span class="n">sr</span>
+
+        <span class="k">if</span> <span class="n">is_array</span><span class="p">(</span><span class="n">abcd</span><span class="p">)</span> <span class="ow">and</span> <span class="n">has_integers</span><span class="p">(</span><span class="n">abcd</span><span class="p">):</span>
+            <span class="c1"># Compute scores here.</span>
+            <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">abcd</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="n">pod</span><span class="p">,</span><span class="n">sr</span> <span class="o">=</span> <span class="n">get_scores</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">is_number</span><span class="p">(</span><span class="n">sr</span><span class="p">)</span> <span class="ow">or</span> <span class="n">is_number</span><span class="p">(</span><span class="n">far</span><span class="p">):</span>
+                <span class="c1"># x axis is present</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">is_number</span><span class="p">(</span><span class="n">pod</span><span class="p">):</span>
+                    <span class="c1"># y axis is not</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span>
+                <span class="k">if</span> <span class="n">sr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">sr</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">far</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">is_integer</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span>
+            <span class="n">pod</span><span class="p">,</span><span class="n">sr</span> <span class="o">=</span> <span class="n">get_scores</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">sr</span><span class="p">,</span><span class="n">pod</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span><span class="o">**</span><span class="n">plotkwargs</span><span class="p">)</span></div>
+        <span class="c1"># print(&quot;Ready to save via save(), or plot more with plot_data().&quot;)</span>
+
+<div class="viewcode-block" id="Performance.save"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.performance.Performance.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot; Extends Figure.save() by completing tasks before saving.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">lk</span><span class="p">)</span>
+        <span class="c1"># self.fig.tight_layout()</span>
+        <span class="c1"># self.fig.subplots_adjust(top=0.95,right=0.95)</span>
+        <span class="c1"># super(Performance,self).save(tight=False)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Performance</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

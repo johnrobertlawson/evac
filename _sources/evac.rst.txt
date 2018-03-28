@@ -1,7 +1,11 @@
 evac package
 ============
 
+Subpackages
+-----------
+
 .. toctree::
+
     evac.datafiles
     evac.derived
     evac.lazy
@@ -9,3 +13,11 @@ evac package
     evac.stats
     evac.stoch
     evac.utils
+
+Module contents
+---------------
+
+.. automodule:: evac
+    :members:
+    :undoc-members:
+    :show-inheritance:

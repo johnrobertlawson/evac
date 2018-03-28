@@ -63,7 +63,7 @@
 <span class="c1">#from . import unix_tools</span>
 <span class="c1">#from . import get_data</span>
 
-<div class="viewcode-block" id="decompose_wind"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.decompose_wind">[docs]</a><span class="k">def</span> <span class="nf">decompose_wind</span><span class="p">(</span><span class="n">wspd</span><span class="p">,</span><span class="n">wdir</span><span class="p">,</span><span class="n">wdir_fmt</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="decompose_wind"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.decompose_wind">[docs]</a><span class="k">def</span> <span class="nf">decompose_wind</span><span class="p">(</span><span class="n">wspd</span><span class="p">,</span><span class="n">wdir</span><span class="p">,</span><span class="n">wdir_fmt</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Turn a wind speed and direction into u and v components.</span>
 
 <span class="sd">    Uses meteorological convention - so a westerly wind is 270.</span>
@@ -96,7 +96,7 @@
 
     <span class="k">return</span> <span class="n">u</span><span class="p">,</span><span class="n">v</span></div>
 
-<div class="viewcode-block" id="convert_velocity_units"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.convert_velocity_units">[docs]</a><span class="k">def</span> <span class="nf">convert_velocity_units</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">conversion</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_velocity_units"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.convert_velocity_units">[docs]</a><span class="k">def</span> <span class="nf">convert_velocity_units</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">conversion</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert a velocity from one unit to another.</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
@@ -130,12 +130,12 @@
     
     <span class="k">return</span> <span class="n">V</span> <span class="o">*</span> <span class="n">factor</span></div>
     
-<div class="viewcode-block" id="combine_wind_components"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.combine_wind_components">[docs]</a><span class="k">def</span> <span class="nf">combine_wind_components</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="combine_wind_components"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.combine_wind_components">[docs]</a><span class="k">def</span> <span class="nf">combine_wind_components</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
     <span class="n">wdir</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">))</span> <span class="o">+</span> <span class="mf">180.0</span>
     <span class="n">wspd</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">u</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">wspd</span><span class="p">,</span> <span class="n">wdir</span></div>
 
-<div class="viewcode-block" id="dewpoint"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.dewpoint">[docs]</a><span class="k">def</span> <span class="nf">dewpoint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">RH</span><span class="p">):</span> <span class="c1"># Lawrence 2005 BAMS?</span>
+<div class="viewcode-block" id="dewpoint"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.dewpoint">[docs]</a><span class="k">def</span> <span class="nf">dewpoint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">RH</span><span class="p">):</span> <span class="c1"># Lawrence 2005 BAMS?</span>
     <span class="c1">#T in C</span>
     <span class="c1">#RH in 0-100 format</span>
     <span class="n">es</span> <span class="o">=</span> <span class="mf">6.11</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">((</span><span class="mf">7.5</span><span class="o">*</span><span class="n">T</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">237.7</span><span class="o">+</span><span class="n">T</span><span class="p">)))</span>
@@ -145,7 +145,7 @@
     <span class="c1">#pdb.set_trace()</span>
     <span class="k">return</span> <span class="n">Td</span></div>
 
-<div class="viewcode-block" id="csvprocess"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.csvprocess">[docs]</a><span class="k">def</span> <span class="nf">csvprocess</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">names</span><span class="p">,</span><span class="n">convert</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="csvprocess"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.csvprocess">[docs]</a><span class="k">def</span> <span class="nf">csvprocess</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">names</span><span class="p">,</span><span class="n">convert</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="c1"># Get stations</span>
     <span class="n">stationlist</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;stid&#39;</span><span class="p">])</span> <span class="c1"># Stations in the record</span>
     <span class="n">stnum</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stationlist</span><span class="p">)</span> <span class="c1"># Number of them</span>
@@ -246,7 +246,7 @@
 <span class="n">rE</span> <span class="o">=</span> <span class="mi">6378100</span> <span class="c1"># radius of Earth in metres</span>
 
 
-<div class="viewcode-block" id="get_cross_section"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.get_cross_section">[docs]</a><span class="k">def</span> <span class="nf">get_cross_section</span><span class="p">(</span><span class="n">Alat</span><span class="p">,</span> <span class="n">Alon</span><span class="p">,</span> <span class="n">Blat</span><span class="p">,</span> <span class="n">Blon</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cross_section"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.get_cross_section">[docs]</a><span class="k">def</span> <span class="nf">get_cross_section</span><span class="p">(</span><span class="n">Alat</span><span class="p">,</span> <span class="n">Alon</span><span class="p">,</span> <span class="n">Blat</span><span class="p">,</span> <span class="n">Blon</span><span class="p">):</span>
     <span class="c1"># Now find cross-sections</span>
     <span class="n">Ax</span><span class="p">,</span> <span class="n">Ay</span> <span class="o">=</span> <span class="n">gridded_data</span><span class="o">.</span><span class="n">getXY</span><span class="p">(</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="p">,</span><span class="n">Alat</span><span class="p">,</span><span class="n">Alon</span><span class="p">)</span>
     <span class="n">Bx</span><span class="p">,</span> <span class="n">By</span> <span class="o">=</span> <span class="n">gridded_data</span><span class="o">.</span><span class="n">getXY</span><span class="p">(</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="p">,</span><span class="n">Blat</span><span class="p">,</span><span class="n">Blon</span><span class="p">)</span>
@@ -275,12 +275,12 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="generate_image_loop"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.generate_image_loop">[docs]</a><span class="k">def</span> <span class="nf">generate_image_loop</span><span class="p">(</span><span class="n">dom</span><span class="o">=</span><span class="s1">&#39;d03&#39;</span><span class="p">,</span><span class="n">fpath</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="generate_image_loop"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.generate_image_loop">[docs]</a><span class="k">def</span> <span class="nf">generate_image_loop</span><span class="p">(</span><span class="n">dom</span><span class="o">=</span><span class="s1">&#39;d03&#39;</span><span class="p">,</span><span class="n">fpath</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating a pretty loop...&quot;</span><span class="p">)</span>
     <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;convert -delay 50 &#39;</span><span class="o">+</span><span class="n">fpath</span><span class="o">+</span><span class="n">dom</span><span class="o">+</span><span class="s1">&#39;*.png &gt; -loop &#39;</span><span class="o">+</span><span class="n">fpath</span><span class="o">+</span><span class="n">dom</span><span class="o">+</span><span class="s1">&#39;_windloop.gif&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finished!&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="p_interpol"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.p_interpol">[docs]</a><span class="k">def</span> <span class="nf">p_interpol</span><span class="p">(</span><span class="n">dom</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">ncfolder</span><span class="p">,</span><span class="n">datestr</span><span class="p">):</span>
+<div class="viewcode-block" id="p_interpol"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.p_interpol">[docs]</a><span class="k">def</span> <span class="nf">p_interpol</span><span class="p">(</span><span class="n">dom</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">ncfolder</span><span class="p">,</span><span class="n">datestr</span><span class="p">):</span>
     <span class="n">datestr2</span> <span class="o">=</span> <span class="n">datestr</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="n">datestr</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="n">datestr</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">datestr</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;:00:00&#39;</span>
     <span class="n">fname</span> <span class="o">=</span> <span class="n">ncfolder</span><span class="o">+</span><span class="s1">&#39;wrfout_&#39;</span><span class="o">+</span><span class="n">dom</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">datestr2</span>
     <span class="n">nc</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -297,12 +297,12 @@
         <span class="n">var_interp</span><span class="p">[</span><span class="n">t</span><span class="p">,:,</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">p_levels</span><span class="p">,</span><span class="n">pressure</span><span class="p">[</span><span class="n">t</span><span class="p">,::</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">],</span><span class="n">var_data</span><span class="p">[</span><span class="n">t</span><span class="p">,::</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">var_interpi</span></div>
 
-<div class="viewcode-block" id="hgt_from_sigma"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.hgt_from_sigma">[docs]</a><span class="k">def</span> <span class="nf">hgt_from_sigma</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span>
+<div class="viewcode-block" id="hgt_from_sigma"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.hgt_from_sigma">[docs]</a><span class="k">def</span> <span class="nf">hgt_from_sigma</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span>
     <span class="n">vert_coord</span> <span class="o">=</span> <span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;PH&#39;</span><span class="p">][:]</span> <span class="o">+</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;PHB&#39;</span><span class="p">][:])</span> <span class="o">/</span> <span class="mf">9.81</span>
     <span class="k">return</span> <span class="n">vert_coord</span></div>
 
 <span class="c1"># This converts wrf&#39;s time to python and human time</span>
-<div class="viewcode-block" id="find_time_index"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.find_time_index">[docs]</a><span class="k">def</span> <span class="nf">find_time_index</span><span class="p">(</span><span class="n">wrftime</span><span class="p">,</span><span class="n">reqtimetuple</span><span class="p">,</span><span class="n">tupleformat</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="find_time_index"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.find_time_index">[docs]</a><span class="k">def</span> <span class="nf">find_time_index</span><span class="p">(</span><span class="n">wrftime</span><span class="p">,</span><span class="n">reqtimetuple</span><span class="p">,</span><span class="n">tupleformat</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="c1"># wrftime = WRF Times in array</span>
     <span class="c1"># reqtime = desired time in six-tuple</span>
 
@@ -330,7 +330,7 @@
 
 <span class="c1"># Find data for certain time, locations, level, variables</span>
 <span class="c1"># For surface data</span>
-<div class="viewcode-block" id="TimeSfcLatLon"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.TimeSfcLatLon">[docs]</a><span class="k">def</span> <span class="nf">TimeSfcLatLon</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span><span class="n">varlist</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">latslons</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeSfcLatLon"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.TimeSfcLatLon">[docs]</a><span class="k">def</span> <span class="nf">TimeSfcLatLon</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span><span class="n">varlist</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">latslons</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">):</span>
     <span class="c1"># Time (DateTime in string)</span>
     <span class="k">if</span> <span class="n">times</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
         <span class="n">timeInds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;Times&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
@@ -363,14 +363,14 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 <span class="c1"># Get lat/lon as 1D arrays from WRF</span>
-<div class="viewcode-block" id="latlon_1D"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.latlon_1D">[docs]</a><span class="k">def</span> <span class="nf">latlon_1D</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span>
+<div class="viewcode-block" id="latlon_1D"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.latlon_1D">[docs]</a><span class="k">def</span> <span class="nf">latlon_1D</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span>
     <span class="n">Nx</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="s1">&#39;WEST-EAST_GRID_DIMENSION&#39;</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
     <span class="n">Ny</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="s1">&#39;SOUTH-NORTH_GRID_DIMENSION&#39;</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
     <span class="n">lats</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;XLAT&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,:,</span><span class="n">Nx</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">lons</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;XLONG&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="n">Ny</span><span class="o">/</span><span class="mi">2</span><span class="p">,:]</span>
     <span class="k">return</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span></div>
 
-<div class="viewcode-block" id="netcdf_files_in"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.netcdf_files_in">[docs]</a><span class="k">def</span> <span class="nf">netcdf_files_in</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">init_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">model</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">return_model</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="netcdf_files_in"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.netcdf_files_in">[docs]</a><span class="k">def</span> <span class="nf">netcdf_files_in</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">init_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">model</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">return_model</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Hunt through given folder to find the right netcdf file for data.</span>
 <span class="sd">    Return ncpath (absolute path to file) and model (RUC, WRF, etc).</span>
 
@@ -462,7 +462,7 @@
             <span class="k">raise</span> <span class="ne">Exception</span></div>
 
 
-<div class="viewcode-block" id="wrfout_files_in"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.wrfout_files_in">[docs]</a><span class="k">def</span> <span class="nf">wrfout_files_in</span><span class="p">(</span><span class="n">folders</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">init_time</span><span class="o">=</span><span class="s1">&#39;notset&#39;</span><span class="p">,</span><span class="n">descend</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">avoid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<div class="viewcode-block" id="wrfout_files_in"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.wrfout_files_in">[docs]</a><span class="k">def</span> <span class="nf">wrfout_files_in</span><span class="p">(</span><span class="n">folders</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">init_time</span><span class="o">=</span><span class="s1">&#39;notset&#39;</span><span class="p">,</span><span class="n">descend</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">avoid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                     <span class="n">unambiguous</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Hunt through given folder(s) to find all occurrences of wrfout</span>
@@ -547,7 +547,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">wrfouts</span></div>
 
-<div class="viewcode-block" id="getXY"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.getXY">[docs]</a><span class="k">def</span> <span class="nf">getXY</span><span class="p">(</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="p">,</span><span class="n">ptlat</span><span class="p">,</span><span class="n">ptlon</span><span class="p">):</span>
+<div class="viewcode-block" id="getXY"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.getXY">[docs]</a><span class="k">def</span> <span class="nf">getXY</span><span class="p">(</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="p">,</span><span class="n">ptlat</span><span class="p">,</span><span class="n">ptlon</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Output is lat, lon so y,x</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -564,7 +564,7 @@
     <span class="n">exactlon</span> <span class="o">=</span> <span class="n">lons</span><span class="p">[</span><span class="n">wherelon</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">lat_idx</span><span class="p">,</span><span class="n">lon_idx</span><span class="p">,</span> <span class="n">exactlat</span><span class="p">,</span> <span class="n">exactlon</span></div>
 
-<div class="viewcode-block" id="gettopo"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.gettopo">[docs]</a><span class="k">def</span> <span class="nf">gettopo</span><span class="p">():</span>
+<div class="viewcode-block" id="gettopo"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.gettopo">[docs]</a><span class="k">def</span> <span class="nf">gettopo</span><span class="p">():</span>
     <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;/uufs/chpc.utah.edu/common/home/u0737349/dsws/topodata/globe30.bin&#39;</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
     <span class="n">fdata</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int16&#39;</span><span class="p">)</span>
@@ -584,7 +584,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Topographic data has been loaded. Everest is but a mere pixel.&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">topodata</span><span class="p">,</span> <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span></div>
 
-<div class="viewcode-block" id="xs_distance"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.xs_distance">[docs]</a><span class="k">def</span> <span class="nf">xs_distance</span><span class="p">(</span><span class="n">Alat</span><span class="p">,</span> <span class="n">Alon</span><span class="p">,</span> <span class="n">Blat</span><span class="p">,</span> <span class="n">Blon</span><span class="p">):</span>
+<div class="viewcode-block" id="xs_distance"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.xs_distance">[docs]</a><span class="k">def</span> <span class="nf">xs_distance</span><span class="p">(</span><span class="n">Alat</span><span class="p">,</span> <span class="n">Alon</span><span class="p">,</span> <span class="n">Blat</span><span class="p">,</span> <span class="n">Blon</span><span class="p">):</span>
     <span class="n">phi1</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">90.0</span><span class="o">-</span><span class="n">Alat</span><span class="p">)</span>
     <span class="n">phi2</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">90.0</span><span class="o">-</span><span class="n">Blat</span><span class="p">)</span>
     <span class="n">theta1</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">Alon</span><span class="p">)</span>
@@ -609,7 +609,7 @@
     <span class="k">pass</span>
 
 <span class="c1"># Create thinned pressure levels for skew T barb plotting</span>
-<div class="viewcode-block" id="thinned_barbs"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.thinned_barbs">[docs]</a><span class="k">def</span> <span class="nf">thinned_barbs</span><span class="p">(</span><span class="n">pres</span><span class="p">):</span>
+<div class="viewcode-block" id="thinned_barbs"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.thinned_barbs">[docs]</a><span class="k">def</span> <span class="nf">thinned_barbs</span><span class="p">(</span><span class="n">pres</span><span class="p">):</span>
     <span class="n">levels</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">20000.0</span><span class="p">,</span><span class="mf">105000.0</span><span class="p">,</span><span class="mf">5000.0</span><span class="p">)</span>
     <span class="n">plocs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">levels</span><span class="p">:</span>
@@ -619,11 +619,11 @@
     <span class="k">return</span> <span class="n">thin_locs</span> <span class="c1"># Locations of data at thinned levels</span></div>
 
 
-<div class="viewcode-block" id="padded_times"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.padded_times">[docs]</a><span class="k">def</span> <span class="nf">padded_times</span><span class="p">(</span><span class="n">timeseq</span><span class="p">):</span>
+<div class="viewcode-block" id="padded_times"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.padded_times">[docs]</a><span class="k">def</span> <span class="nf">padded_times</span><span class="p">(</span><span class="n">timeseq</span><span class="p">):</span>
     <span class="n">padded</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{0:04d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">timeseq</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">padded</span></div>
 
-<div class="viewcode-block" id="string_from_time"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.string_from_time">[docs]</a><span class="k">def</span> <span class="nf">string_from_time</span><span class="p">(</span><span class="n">usage</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">strlen</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">conven</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="string_from_time"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.string_from_time">[docs]</a><span class="k">def</span> <span class="nf">string_from_time</span><span class="p">(</span><span class="n">usage</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">strlen</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">conven</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    conven  :   convection of MM/DD versus DD/MM</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -697,11 +697,11 @@
         <span class="k">raise</span> <span class="ne">Exception</span>
     <span class="k">return</span> <span class="n">strg</span></div>
 
-<div class="viewcode-block" id="lookup_time"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.lookup_time">[docs]</a><span class="k">def</span> <span class="nf">lookup_time</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="lookup_time"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.lookup_time">[docs]</a><span class="k">def</span> <span class="nf">lookup_time</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
     <span class="n">D</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;hour&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;minute&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
     <span class="k">return</span> <span class="n">D</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="get_level_naming"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.get_level_naming">[docs]</a><span class="k">def</span> <span class="nf">get_level_naming</span><span class="p">(</span><span class="n">va</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="get_level_naming"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.get_level_naming">[docs]</a><span class="k">def</span> <span class="nf">get_level_naming</span><span class="p">(</span><span class="n">va</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1">#lv = kwargs[&#39;lv&#39;]</span>
 
     <span class="k">if</span> <span class="n">lv</span> <span class="o">&lt;</span> <span class="mi">1500</span><span class="p">:</span>
@@ -722,7 +722,7 @@
             <span class="k">return</span> <span class="s1">&#39;all_lev&#39;</span></div>
 
 
-<div class="viewcode-block" id="check_vertical_coordinate"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.check_vertical_coordinate">[docs]</a><span class="k">def</span> <span class="nf">check_vertical_coordinate</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
+<div class="viewcode-block" id="check_vertical_coordinate"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.check_vertical_coordinate">[docs]</a><span class="k">def</span> <span class="nf">check_vertical_coordinate</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Check to see what type of level is requested by user.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -767,7 +767,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unknown vertical coordinate.&#39;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">Exception</span></div>
 
-<div class="viewcode-block" id="closest"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.closest">[docs]</a><span class="k">def</span> <span class="nf">closest</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+<div class="viewcode-block" id="closest"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.closest">[docs]</a><span class="k">def</span> <span class="nf">closest</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find index of closest value.</span>
 <span class="sd">    Only working on 1D array right now.</span>
@@ -784,7 +784,7 @@
     <span class="n">idx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">arr</span> <span class="o">-</span> <span class="n">val</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">idx</span></div>
 
-<div class="viewcode-block" id="closest_datetime"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.closest_datetime">[docs]</a><span class="k">def</span> <span class="nf">closest_datetime</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="nb">round</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="closest_datetime"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.closest_datetime">[docs]</a><span class="k">def</span> <span class="nf">closest_datetime</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="nb">round</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Find closest value in list of datetimes.</span>
 <span class="sd">    Return index of closest.</span>
 
@@ -842,7 +842,7 @@
 
     <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">dtss</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="dstack_loop"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.dstack_loop">[docs]</a><span class="k">def</span> <span class="nf">dstack_loop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="dstack_loop"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.dstack_loop">[docs]</a><span class="k">def</span> <span class="nf">dstack_loop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tries to stack numpy array (data) into &#39;stack&#39; object (obj).</span>
 <span class="sd">    If obj doesn&#39;t exist, then initialise it</span>
@@ -855,7 +855,7 @@
 
     <span class="k">return</span> <span class="n">stack</span></div>
 
-<div class="viewcode-block" id="dstack_loop_v2"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.dstack_loop_v2">[docs]</a><span class="k">def</span> <span class="nf">dstack_loop_v2</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="dstack_loop_v2"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.dstack_loop_v2">[docs]</a><span class="k">def</span> <span class="nf">dstack_loop_v2</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Need to set obj = 0 at start of loop in master script</span>
 
@@ -872,7 +872,7 @@
 
     <span class="k">return</span> <span class="n">stack</span></div>
 
-<div class="viewcode-block" id="vstack_loop"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.vstack_loop">[docs]</a><span class="k">def</span> <span class="nf">vstack_loop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="vstack_loop"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.vstack_loop">[docs]</a><span class="k">def</span> <span class="nf">vstack_loop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Need to set obj = 0 at start of loop in master script</span>
 
@@ -889,7 +889,7 @@
     <span class="k">return</span> <span class="n">stack</span></div>
 
 
-<div class="viewcode-block" id="generate_times"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.generate_times">[docs]</a><span class="k">def</span> <span class="nf">generate_times</span><span class="p">(</span><span class="n">idate</span><span class="p">,</span><span class="n">fdate</span><span class="p">,</span><span class="n">interval</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;timetuple&#39;</span><span class="p">,</span><span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="generate_times"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.generate_times">[docs]</a><span class="k">def</span> <span class="nf">generate_times</span><span class="p">(</span><span class="n">idate</span><span class="p">,</span><span class="n">fdate</span><span class="p">,</span><span class="n">interval</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;timetuple&#39;</span><span class="p">,</span><span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :param itime:       Start date/time. Format is</span>
 <span class="sd">                        YYYY,MM,DD,HH,MM,SS (calendar.timegm).</span>
@@ -920,7 +920,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">times</span></div>
 
-<div class="viewcode-block" id="generate_colours"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.generate_colours">[docs]</a><span class="k">def</span> <span class="nf">generate_colours</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="generate_colours"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.generate_colours">[docs]</a><span class="k">def</span> <span class="nf">generate_colours</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    M       :   Matplotlib instance</span>
 <span class="sd">    n       :   number of colours you want</span>
@@ -934,7 +934,7 @@
     <span class="n">colourlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">M</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">spectral</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.08</span><span class="p">,</span><span class="mf">0.97</span><span class="p">,</span><span class="n">n</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">colourlist</span></div>
 
-<div class="viewcode-block" id="get_sequence"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.get_sequence">[docs]</a><span class="k">def</span> <span class="nf">get_sequence</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sos</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="get_sequence"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.get_sequence">[docs]</a><span class="k">def</span> <span class="nf">get_sequence</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sos</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Returns a sequence (tuple or list) for iteration.</span>
 <span class="sd">    Avoids an error for strings/integers.</span>
 <span class="sd">    SoS = 1 enables the check for a sequence of sequences (list of dates)</span>
@@ -952,7 +952,7 @@
         <span class="c1"># make a one-element list</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,]</span></div>
 
-<div class="viewcode-block" id="convert_tuple_to_dntimes"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.convert_tuple_to_dntimes">[docs]</a><span class="k">def</span> <span class="nf">convert_tuple_to_dntimes</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_tuple_to_dntimes"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.convert_tuple_to_dntimes">[docs]</a><span class="k">def</span> <span class="nf">convert_tuple_to_dntimes</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert tuple or tuple of tuples to datenum date format.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -964,7 +964,7 @@
 
     <span class="k">return</span> <span class="n">dntimes</span></div>
 
-<div class="viewcode-block" id="ensure_datenum"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.ensure_datenum">[docs]</a><span class="k">def</span> <span class="nf">ensure_datenum</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="ensure_datenum"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.ensure_datenum">[docs]</a><span class="k">def</span> <span class="nf">ensure_datenum</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make sure times are in list-of-datenums format.</span>
 <span class="sd">    If not, convert them.</span>
@@ -1010,7 +1010,7 @@
 
     <span class="kn">import</span> <span class="nn">pdb</span><span class="p">;</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ensure_timetuple"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.ensure_timetuple">[docs]</a><span class="k">def</span> <span class="nf">ensure_timetuple</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;single&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="ensure_timetuple"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.ensure_timetuple">[docs]</a><span class="k">def</span> <span class="nf">ensure_timetuple</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;single&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    MAke sure time(s) are in six-item tuple format</span>
 <span class="sd">    (YYYY,MM,DD,HH,MM,SS)</span>
@@ -1054,7 +1054,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nonsense format choice.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">Exception</span></div>
 
-<div class="viewcode-block" id="ensure_datetime"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.ensure_datetime">[docs]</a><span class="k">def</span> <span class="nf">ensure_datetime</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="ensure_datetime"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.ensure_datetime">[docs]</a><span class="k">def</span> <span class="nf">ensure_datetime</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Possibilities:</span>
 <span class="sd">    times = 123456                                      #1</span>
@@ -1084,16 +1084,16 @@
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unidentified format.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">utc</span></div>
 
-<div class="viewcode-block" id="datetime_to_timetuple"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.datetime_to_timetuple">[docs]</a><span class="k">def</span> <span class="nf">datetime_to_timetuple</span><span class="p">(</span><span class="n">utc</span><span class="p">):</span>
+<div class="viewcode-block" id="datetime_to_timetuple"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.datetime_to_timetuple">[docs]</a><span class="k">def</span> <span class="nf">datetime_to_timetuple</span><span class="p">(</span><span class="n">utc</span><span class="p">):</span>
     <span class="n">tttime</span> <span class="o">=</span> <span class="p">(</span><span class="n">utc</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="n">utc</span><span class="o">.</span><span class="n">month</span><span class="p">,</span><span class="n">utc</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
                 <span class="n">utc</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span><span class="n">utc</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span><span class="n">utc</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">tttime</span></div>
 
-<div class="viewcode-block" id="timetuple_to_datetime"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.timetuple_to_datetime">[docs]</a><span class="k">def</span> <span class="nf">timetuple_to_datetime</span><span class="p">(</span><span class="n">utc</span><span class="p">):</span>
+<div class="viewcode-block" id="timetuple_to_datetime"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.timetuple_to_datetime">[docs]</a><span class="k">def</span> <span class="nf">timetuple_to_datetime</span><span class="p">(</span><span class="n">utc</span><span class="p">):</span>
     <span class="n">dttime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="o">*</span><span class="n">utc</span><span class="p">[:</span><span class="mi">6</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">dttime</span></div>
 
-<div class="viewcode-block" id="dt_from_fnames"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.dt_from_fnames">[docs]</a><span class="k">def</span> <span class="nf">dt_from_fnames</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span><span class="n">f2</span><span class="p">,</span><span class="n">model</span><span class="p">):</span>
+<div class="viewcode-block" id="dt_from_fnames"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.dt_from_fnames">[docs]</a><span class="k">def</span> <span class="nf">dt_from_fnames</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span><span class="n">f2</span><span class="p">,</span><span class="n">model</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Work out time difference between two data files</span>
 <span class="sd">    from their naming scheme.</span>
 
@@ -1117,7 +1117,7 @@
         <span class="n">dt</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">seconds</span></div>
 
-<div class="viewcode-block" id="get_netcdf_naming"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.get_netcdf_naming">[docs]</a><span class="k">def</span> <span class="nf">get_netcdf_naming</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="get_netcdf_naming"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.get_netcdf_naming">[docs]</a><span class="k">def</span> <span class="nf">get_netcdf_naming</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    By default:</span>
 <span class="sd">    wrfout files don&#39;t have an extension</span>
@@ -1147,7 +1147,7 @@
         <span class="k">raise</span> <span class="ne">Exception</span>
     <span class="k">return</span> <span class="n">fname</span></div>
 
-<div class="viewcode-block" id="determine_model"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.determine_model">[docs]</a><span class="k">def</span> <span class="nf">determine_model</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<div class="viewcode-block" id="determine_model"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.determine_model">[docs]</a><span class="k">def</span> <span class="nf">determine_model</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return model depending on naming convention.</span>
 
@@ -1162,7 +1162,7 @@
 
     <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="save_data"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.save_data">[docs]</a><span class="k">def</span> <span class="nf">save_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">folder</span><span class="p">,</span><span class="n">fname</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pickle&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="save_data"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.save_data">[docs]</a><span class="k">def</span> <span class="nf">save_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">folder</span><span class="p">,</span><span class="n">fname</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pickle&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save array to file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1189,7 +1189,7 @@
 
     <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Saved file </span><span class="si">{0}</span><span class="s2"> to </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">folder</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="load_data"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.load_data">[docs]</a><span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">fname</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pickle&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="load_data"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.load_data">[docs]</a><span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">fname</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pickle&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load array from file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1212,7 +1212,7 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="return_subdomain"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.return_subdomain">[docs]</a><span class="k">def</span> <span class="nf">return_subdomain</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="p">,</span><span class="n">Nlim</span><span class="p">,</span><span class="n">Elim</span><span class="p">,</span><span class="n">Slim</span><span class="p">,</span><span class="n">Wlim</span><span class="p">,</span>
+<div class="viewcode-block" id="return_subdomain"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.return_subdomain">[docs]</a><span class="k">def</span> <span class="nf">return_subdomain</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="p">,</span><span class="n">Nlim</span><span class="p">,</span><span class="n">Elim</span><span class="p">,</span><span class="n">Slim</span><span class="p">,</span><span class="n">Wlim</span><span class="p">,</span>
                         <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;latlon&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns smaller domain of data and lats/lons based</span>
@@ -1267,7 +1267,7 @@
     <span class="c1"># pdb.set_trace()</span>
     <span class="k">return</span> <span class="n">data</span><span class="p">,</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span></div>
 
-<div class="viewcode-block" id="interp_latlon"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.interp_latlon">[docs]</a><span class="k">def</span> <span class="nf">interp_latlon</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">,</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="p">):</span>
+<div class="viewcode-block" id="interp_latlon"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.interp_latlon">[docs]</a><span class="k">def</span> <span class="nf">interp_latlon</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">,</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="p">):</span>
     <span class="n">ntimes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">nlvs</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">dataout</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">ntimes</span><span class="p">,</span><span class="n">nlvs</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
@@ -1277,7 +1277,7 @@
     <span class="k">return</span> <span class="n">dataout</span></div>
 
 
-<div class="viewcode-block" id="interp2point"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.interp2point">[docs]</a><span class="k">def</span> <span class="nf">interp2point</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">lat_loc</span><span class="p">,</span><span class="n">lon_loc</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">,</span><span class="n">lvidx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">xyidx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="interp2point"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.interp2point">[docs]</a><span class="k">def</span> <span class="nf">interp2point</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">lat_loc</span><span class="p">,</span><span class="n">lon_loc</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">,</span><span class="n">lvidx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">xyidx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">er</span> <span class="o">=</span> <span class="mi">6370000</span>
         <span class="k">if</span> <span class="n">xyidx</span><span class="p">:</span>
             <span class="c1"># Don&#39;t need data, ignore</span>
@@ -1310,7 +1310,7 @@
 
         <span class="k">return</span> <span class="n">weighted_mean</span></div>
 
-<div class="viewcode-block" id="haversine_baker"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.haversine_baker">[docs]</a><span class="k">def</span> <span class="nf">haversine_baker</span><span class="p">(</span><span class="n">lon1</span><span class="p">,</span> <span class="n">lat1</span><span class="p">,</span> <span class="n">lon2</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">radians</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">earth_rad</span><span class="o">=</span><span class="mf">6371.227</span><span class="p">):</span>
+<div class="viewcode-block" id="haversine_baker"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.haversine_baker">[docs]</a><span class="k">def</span> <span class="nf">haversine_baker</span><span class="p">(</span><span class="n">lon1</span><span class="p">,</span> <span class="n">lat1</span><span class="p">,</span> <span class="n">lon2</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">radians</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">earth_rad</span><span class="o">=</span><span class="mf">6371.227</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Allows to calculate geographical distance</span>
 <span class="sd">    using the haversine formula.</span>
@@ -1362,20 +1362,20 @@
         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">distance</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="get_latlon_idx"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.get_latlon_idx">[docs]</a><span class="k">def</span> <span class="nf">get_latlon_idx</span><span class="p">(</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+<div class="viewcode-block" id="get_latlon_idx"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.get_latlon_idx">[docs]</a><span class="k">def</span> <span class="nf">get_latlon_idx</span><span class="p">(</span><span class="n">lats</span><span class="p">,</span><span class="n">lons</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
     <span class="n">coords</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">argmin</span><span class="p">((</span><span class="n">lat</span><span class="o">-</span><span class="n">lats</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span>
                 <span class="p">(</span><span class="n">lon</span><span class="o">-</span><span class="n">lons</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span><span class="n">lons</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="c1"># lon, lat</span>
     <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coords</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="make_subplot_label"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.make_subplot_label">[docs]</a><span class="k">def</span> <span class="nf">make_subplot_label</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">label</span><span class="p">):</span>
+<div class="viewcode-block" id="make_subplot_label"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.make_subplot_label">[docs]</a><span class="k">def</span> <span class="nf">make_subplot_label</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">label</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">label</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">):</span>
         <span class="n">label</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.15</span><span class="p">,</span><span class="n">label</span><span class="p">,</span><span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
         <span class="n">bbox</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;facecolor&#39;</span><span class="p">:</span><span class="s1">&#39;white&#39;</span><span class="p">},</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span></div>
 
-<div class="viewcode-block" id="check_same_dimensions"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.check_same_dimensions">[docs]</a><span class="k">def</span> <span class="nf">check_same_dimensions</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="check_same_dimensions"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.gis_tools.check_same_dimensions">[docs]</a><span class="k">def</span> <span class="nf">check_same_dimensions</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Args:</span>
 <span class="sd">        ``*args``       :   A number of N.ndarray types</span>

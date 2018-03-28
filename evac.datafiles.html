@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datafiles &#8212; evac 0.1.0 documentation</title>
+    <title>evac.datafiles package &#8212; evac 0.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="datafiles.binaryfile" href="evac.datafiles.binaryfile.html" />
+    <link rel="next" title="evac.derived package" href="evac.derived.html" />
     <link rel="prev" title="evac package" href="evac.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -43,29 +43,1229 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="datafiles">
-<h1><cite>datafiles</cite><a class="headerlink" href="#datafiles" title="Permalink to this headline">¶</a></h1>
-<p>Mostly classes that load data files pertinent to weather data and forecasts.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.binaryfile.html"><cite>datafiles.binaryfile</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.csvfile.html"><cite>datafiles.csvfile</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.datafile.html"><cite>datafiles.datafile</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.ecmwf.html"><cite>datafiles.ecmwf</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.ensemble.html"><cite>datafiles.ensemble</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.gribfile.html"><cite>datafiles.gribfile</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.hrrr.html"><cite>datafiles.hrrr</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.mrms.html"><cite>datafiles.mrms</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.ncfile.html"><cite>datafiles.ncfile</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.obs.html"><cite>datafiles.obs</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.pngfile.html"><cite>datafiles.pngfile</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.radar.html"><cite>datafiles.radar</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.ruc.html"><cite>datafiles.ruc</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.spclsr.html"><cite>datafiles.spclsr</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.stageiv.html"><cite>datafiles.stageiv</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.stormevents.html"><cite>datafiles.stormevents</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.datafiles.wrfout.html"><cite>datafiles.wrfout</cite></a></li>
+  <div class="section" id="evac-datafiles-package">
+<h1>evac.datafiles package<a class="headerlink" href="#evac-datafiles-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-evac.datafiles.binaryfile">
+<span id="evac-datafiles-binaryfile-module"></span><h2>evac.datafiles.binaryfile module<a class="headerlink" href="#module-evac.datafiles.binaryfile" title="Permalink to this headline">¶</a></h2>
+<p>Any miscellaneous binary file.</p>
+<dl class="class">
+<dt id="evac.datafiles.binaryfile.BinaryFile">
+<em class="property">class </em><code class="descclassname">evac.datafiles.binaryfile.</code><code class="descname">BinaryFile</code><a class="reference internal" href="_modules/evac/datafiles/binaryfile.html#BinaryFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.binaryfile.BinaryFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.datafile.DataFile" title="evac.datafiles.datafile.DataFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.datafile.DataFile</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.csvfile">
+<span id="evac-datafiles-csvfile-module"></span><h2>evac.datafiles.csvfile module<a class="headerlink" href="#module-evac.datafiles.csvfile" title="Permalink to this headline">¶</a></h2>
+<p>Comma separated value data type.</p>
+<dl class="class">
+<dt id="evac.datafiles.csvfile.CSVFile">
+<em class="property">class </em><code class="descclassname">evac.datafiles.csvfile.</code><code class="descname">CSVFile</code><a class="reference internal" href="_modules/evac/datafiles/csvfile.html#CSVFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.csvfile.CSVFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.datafile.DataFile" title="evac.datafiles.datafile.DataFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.datafile.DataFile</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.datafile">
+<span id="evac-datafiles-datafile-module"></span><h2>evac.datafiles.datafile module<a class="headerlink" href="#module-evac.datafiles.datafile" title="Permalink to this headline">¶</a></h2>
+<p>Generic superclass for data file. Could be netCDF, grib1,
+grib2...</p>
+<p>This is where derived functions should be attached (computing vorticity, etc)</p>
+<dl class="class">
+<dt id="evac.datafiles.datafile.DataFile">
+<em class="property">class </em><code class="descclassname">evac.datafiles.datafile.</code><code class="descname">DataFile</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/datafile.html#DataFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.datafile.DataFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.ecmwf">
+<span id="evac-datafiles-ecmwf-module"></span><h2>evac.datafiles.ecmwf module<a class="headerlink" href="#module-evac.datafiles.ecmwf" title="Permalink to this headline">¶</a></h2>
+<p>ECMWF data in NetCDF format.</p>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Remove redundant plotting (but keep logic)</li>
+<li>Create key table for looking up variables</li>
 </ul>
+</dd>
+</dl>
+<dl class="class">
+<dt id="evac.datafiles.ecmwf.ECMWF">
+<em class="property">class </em><code class="descclassname">evac.datafiles.ecmwf.</code><code class="descname">ECMWF</code><span class="sig-paren">(</span><em>fpath</em>, <em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ecmwf.html#ECMWF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ecmwf.ECMWF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.ncfile.NCFile" title="evac.datafiles.ncfile.NCFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.ncfile.NCFile</span></code></a></p>
+<dl class="method">
+<dt id="evac.datafiles.ecmwf.ECMWF.basemap_setup">
+<code class="descname">basemap_setup</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ecmwf.html#ECMWF.basemap_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ecmwf.ECMWF.basemap_setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ecmwf.ECMWF.ecmwf_times">
+<code class="descname">ecmwf_times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ecmwf.html#ECMWF.ecmwf_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ecmwf.ECMWF.ecmwf_times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ecmwf.ECMWF.find_level_idx">
+<code class="descname">find_level_idx</code><span class="sig-paren">(</span><em>lv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ecmwf.html#ECMWF.find_level_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ecmwf.ECMWF.find_level_idx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ecmwf.ECMWF.find_time_idx">
+<code class="descname">find_time_idx</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ecmwf.html#ECMWF.find_time_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ecmwf.ECMWF.find_time_idx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ecmwf.ECMWF.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>va</em>, <em>lv</em>, <em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ecmwf.html#ECMWF.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ecmwf.ECMWF.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ecmwf.ECMWF.get_key">
+<code class="descname">get_key</code><span class="sig-paren">(</span><em>va</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ecmwf.html#ECMWF.get_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ecmwf.ECMWF.get_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ecmwf.ECMWF.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>va</em>, <em>lv</em>, <em>times</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ecmwf.html#ECMWF.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ecmwf.ECMWF.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.ensemble">
+<span id="evac-datafiles-ensemble-module"></span><h2>evac.datafiles.ensemble module<a class="headerlink" href="#module-evac.datafiles.ensemble" title="Permalink to this headline">¶</a></h2>
+<p>Ensemble of forecasts.</p>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Change from ensemble of WRFOut files to any sort of datafile.</li>
+<li>Consistency with method names (e.g., get() )</li>
+</ul>
+</dd>
+</dl>
+<dl class="class">
+<dt id="evac.datafiles.ensemble.Ensemble">
+<em class="property">class </em><code class="descclassname">evac.datafiles.ensemble.</code><code class="descname">Ensemble</code><span class="sig-paren">(</span><em>rootdir</em>, <em>initutc</em>, <em>doms=1</em>, <em>ctrl='ctrl'</em>, <em>aux=False</em>, <em>model='wrf'</em>, <em>fmt='em_real'</em>, <em>f_prefix='default'</em>, <em>loadobj=True</em>, <em>ncf=False</em>, <em>debug=False</em>, <em>onefolder=False</em>, <em>fileformat='netcdf'</em>, <em>gefsformat=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.accumulated">
+<code class="descname">accumulated</code><span class="sig-paren">(</span><em>vrbl='RAINNC'</em>, <em>itime=0</em>, <em>ftime=-1</em>, <em>level=False</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em>, <em>inclusive=False</em>, <em>lons=None</em>, <em>lats=None</em>, <em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.accumulated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.accumulated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accumulate, for every ensemble member, at each grid point,
+the variable specified. Usually precipitation.</p>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>Logic to work out if values are for each history output</dt>
+<dd>timestep, from the start of the simulation, from the
+start of the data file...</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.arbitrary_pick">
+<code class="descname">arbitrary_pick</code><span class="sig-paren">(</span><em>dataobj=False</em>, <em>give_keys=False</em>, <em>give_path=False</em>, <em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.arbitrary_pick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.arbitrary_pick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arbitrary pick of a datafile entry in the members dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataobj</strong> (<em>bool</em><em>, </em><em>optional</em>) &#8211; if True, return the DataFile subclass.
+Otherwise, return filepath.</li>
+<li><strong>give_keys</strong> (<em>bool</em><em>, </em><em>optional</em>) &#8211; if True, return a list of
+member, domain, time keys to enter into a dictionary.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.closest_to_mean">
+<code class="descname">closest_to_mean</code><span class="sig-paren">(</span><em>vrbl</em>, <em>level</em>, <em>fcsttime</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.closest_to_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.closest_to_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find closest member to the mean for given variable
+Passing latlon/box allows calculation over given area
+(Box is in grid spaces)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.compute_fdt">
+<code class="descname">compute_fdt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.compute_fdt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.compute_fdt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the difference in time between each data file&#8217;s first entry.</p>
+<p>Returns the difference in seconds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.compute_history_dt">
+<code class="descname">compute_history_dt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.compute_history_dt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.compute_history_dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate time difference between each history output
+time. This could be across multiple files or in one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.compute_nt_per_file">
+<code class="descname">compute_nt_per_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.compute_nt_per_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.compute_nt_per_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.datafile_object">
+<code class="descname">datafile_object</code><span class="sig-paren">(</span><em>fpath</em>, <em>loadobj=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.datafile_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.datafile_object" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.find_file_for_t">
+<code class="descname">find_file_for_t</code><span class="sig-paren">(</span><em>simutc</em>, <em>member</em>, <em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.find_file_for_t"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.find_file_for_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine file to load given required time.</p>
+<p>Raises exception if history time doesn&#8217;t exist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>utc</strong> (<em>datetime.datetime</em>) &#8211; Desired time</li>
+<li><strong>member</strong> (<em>str</em>) &#8211; Name of member to look up. If &#8220;arb&#8221;, pick
+a member arbitrarily (this assumes members have
+identical structure of times in the data).</li>
+<li><strong>dom</strong> (<em>int</em><em>, </em><em>optional</em>) &#8211; Domain number to look up</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">members dictionary key for right file,
+index (int): Index in that file.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">t (datetime.datetime)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Give nearest time (and/or file object) if time doesn&#8217;t exist.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>vrbl</em>, <em>level=None</em>, <em>utc=None</em>, <em>itime=False</em>, <em>ftime=False</em>, <em>fcsttime=False</em>, <em>Nlim=None</em>, <em>Elim=None</em>, <em>Slim=None</em>, <em>Wlim=None</em>, <em>inclusive=False</em>, <em>lats=None</em>, <em>lons=None</em>, <em>dom=1</em>, <em>members=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns 5D array of data for ranges.</p>
+<p>Needs to load WRFOut files if self.loadobj is False.</p>
+<p>Ordered in descending order on pert. members
+First dimension is ensemble members.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inclusive</strong> (<em>bool</em><em>, </em><em>optional</em>) &#8211; if True, included time specified
+at ftime in the time range. Default is False (like Python).</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first simple">
+<li>lat/lon box is in the correct projection?</li>
+<li>Implement bounding lat/lon box.</li>
+<li>fcsttime and utc are the same to maintain compatibility</li>
+</ul>
+<p class="last">because get() APIs in different areas of evac/WEM</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_cenlatlons">
+<code class="descname">get_cenlatlons</code><span class="sig-paren">(</span><em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_cenlatlons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_cenlatlons" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_exceedance_probs">
+<code class="descname">get_exceedance_probs</code><span class="sig-paren">(</span><em>vrbl</em>, <em>overunder</em>, <em>threshold</em>, <em>level=None</em>, <em>itime=None</em>, <em>ftime=None</em>, <em>fcsttime=None</em>, <em>Nlim=None</em>, <em>Elim=None</em>, <em>Slim=None</em>, <em>Wlim=None</em>, <em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_exceedance_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_exceedance_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return probability of exceeding or reaching a threshold.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vrbl</strong> (<em>str</em><em>,</em><em>N.array</em>) &#8211; variable. If N.array, use provided data
+(i.e. override the loading).
+Must be 5D.
+[ensemble_member,time,level,lat,lon]</li>
+<li><strong>overunder</strong> (<em>str</em>) &#8211; threshold evaluation
+&#8216;over&#8217;, &#8216;overeq&#8217;,&#8217;under&#8217;,&#8217;undereq&#8217;,&#8217;equal&#8217;</li>
+<li><strong>threshold</strong> (<em>float</em><em>,</em><em>int</em>) &#8211; the threshold in same (SI) units as data</li>
+<li><strong>itime</strong> (<em>datetime.datetime</em>) &#8211; initial time</li>
+<li><strong>ftime</strong> (<em>datetime.datetime</em>) &#8211; final time</li>
+<li><strong>fcsttime</strong> (<em>datetime.datetime</em>) &#8211; single time (must be present if itime
+and ftime are None.)</li>
+<li><strong>Elim</strong><strong>, </strong><strong>Slim</strong><strong>, </strong><strong>Wlim</strong> (<em>Nlim</em><em>,</em><em></em>) &#8211; bounding box of lats/lons</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_gefs_ensemble">
+<code class="descname">get_gefs_ensemble</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_gefs_ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_gefs_ensemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>All gefs data files should be in the same folder.
+Each forecast time is a different file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_gefs_members">
+<code class="descname">get_gefs_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_gefs_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_gefs_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load GEFS grib files that are all in one folder.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_latlons">
+<code class="descname">get_latlons</code><span class="sig-paren">(</span><em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_latlons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_latlons" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_limits">
+<code class="descname">get_limits</code><span class="sig-paren">(</span><em>dom=1</em>, <em>fmt='dict'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_limits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the limits of the domain.</p>
+<p>Args:</p>
+<p>dom     :   (int) - domain number to return
+fmt     :   (str) - format to return data.</p>
+<blockquote>
+<div>If &#8216;dict&#8217;, dictionary.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_members">
+<code class="descname">get_members</code><span class="sig-paren">(</span><em>f_prefix=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a dictionary with all data.</p>
+<p>Format is:
+members[member][domain][time][data]</p>
+<p>Returns members (dict): Dictionary of ensemble members</p>
+<p>Also returns fdt (int): Seconds between output files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_nx_ny">
+<code class="descname">get_nx_ny</code><span class="sig-paren">(</span><em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_nx_ny"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_nx_ny" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.get_wrf_members">
+<code class="descname">get_wrf_members</code><span class="sig-paren">(</span><em>f_prefix=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.get_wrf_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.get_wrf_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.list_of_filetimes">
+<code class="descname">list_of_filetimes</code><span class="sig-paren">(</span><em>arb=False</em>, <em>member=False</em>, <em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.list_of_filetimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.list_of_filetimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return list of times for each data file&#8217;s first time entry,
+for a member and domain.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>arb</strong> (<em>bool</em><em>, </em><em>optional</em>) &#8211; If true, arbitrarily pick a
+member and domain to build the time list, i.e.,
+assuming all members/domains have same list</li>
+<li><strong>member</strong> (<em>str</em><em>, </em><em>optional</em>) &#8211; Name of member to build times
+from. Needed if arb is False.</li>
+<li><strong>dom</strong> (<em>int</em><em>, </em><em>optional</em>) &#8211; Number of domain to build times
+from. Default is 1.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><em>vrbl</em>, <em>fcsttime=False</em>, <em>level=False</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em>, <em>itime=False</em>, <em>ftime=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns mean.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.return_DF_for_t">
+<code class="descname">return_DF_for_t</code><span class="sig-paren">(</span><em>utc</em>, <em>member</em>, <em>dom=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.return_DF_for_t"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.return_DF_for_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ensemble.Ensemble.std">
+<code class="descname">std</code><span class="sig-paren">(</span><em>vrbl</em>, <em>fcsttime=False</em>, <em>itime=False</em>, <em>ftime=False</em>, <em>level=False</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ensemble.html#Ensemble.std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ensemble.Ensemble.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return standard devation</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.gefs">
+<span id="evac-datafiles-gefs-module"></span><h2>evac.datafiles.gefs module<a class="headerlink" href="#module-evac.datafiles.gefs" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.datafiles.gefs.GEFS">
+<em class="property">class </em><code class="descclassname">evac.datafiles.gefs.</code><code class="descname">GEFS</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gefs.html#GEFS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gefs.GEFS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.gribfile.GribFile" title="evac.datafiles.gribfile.GribFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.gribfile.GribFile</span></code></a></p>
+<dl class="method">
+<dt id="evac.datafiles.gefs.GEFS.lookup_vrbl">
+<code class="descname">lookup_vrbl</code><span class="sig-paren">(</span><em>self1</em>, <em>vrbl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gefs.html#GEFS.lookup_vrbl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gefs.GEFS.lookup_vrbl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.gfs">
+<span id="evac-datafiles-gfs-module"></span><h2>evac.datafiles.gfs module<a class="headerlink" href="#module-evac.datafiles.gfs" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.datafiles.gfs.GFS">
+<em class="property">class </em><code class="descclassname">evac.datafiles.gfs.</code><code class="descname">GFS</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gfs.html#GFS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gfs.GFS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.gribfile.GribFile" title="evac.datafiles.gribfile.GribFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.gribfile.GribFile</span></code></a></p>
+<dl class="method">
+<dt id="evac.datafiles.gfs.GFS.lookup_vrbl">
+<code class="descname">lookup_vrbl</code><span class="sig-paren">(</span><em>vrbl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gfs.html#GFS.lookup_vrbl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gfs.GFS.lookup_vrbl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.gribfile">
+<span id="evac-datafiles-gribfile-module"></span><h2>evac.datafiles.gribfile module<a class="headerlink" href="#module-evac.datafiles.gribfile" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.datafiles.gribfile.GribFile">
+<em class="property">class </em><code class="descclassname">evac.datafiles.gribfile.</code><code class="descname">GribFile</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.datafile.DataFile" title="evac.datafiles.datafile.DataFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.datafile.DataFile</span></code></a></p>
+<p>Generic load for Grib 1/2 files (both?)</p>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Make general, i.e. remove HRRR etc specifics</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.arbitrary_pick">
+<code class="descname">arbitrary_pick</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.arbitrary_pick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.arbitrary_pick" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.enforce_4d">
+<code class="descname">enforce_4d</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.enforce_4d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.enforce_4d" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO: move higher up to super-superclass?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>vrbl</em>, <em>idx=0</em>, <em>utc=None</em>, <em>level=None</em>, <em>lons=None</em>, <em>lats=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>I don&#8217;t think we need utc/lv - aren&#8217;t all grib files one time? - but
+it is here to enable compatibility with other get() APIs.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.get_record">
+<code class="descname">get_record</code><span class="sig-paren">(</span><em>vrblkey</em>, <em>idx=None</em>, <em>level=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.get_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.get_record" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.get_units">
+<code class="descname">get_units</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.get_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.get_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>The units used for variables within.
+This should be overridden in children.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.idx_from_lv">
+<code class="descname">idx_from_lv</code><span class="sig-paren">(</span><em>vrblkey</em>, <em>lv=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.idx_from_lv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.idx_from_lv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index to load a requested level (in hPa).
+If level doesn&#8217;t exist, throw an exception.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.lookup_vrbl">
+<code class="descname">lookup_vrbl</code><span class="sig-paren">(</span><em>vrbl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.lookup_vrbl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.lookup_vrbl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.projection">
+<code class="descname">projection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.projection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.return_latlon">
+<code class="descname">return_latlon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.return_latlon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.return_latlon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.return_vrbl_records">
+<code class="descname">return_vrbl_records</code><span class="sig-paren">(</span><em>vrbl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.return_vrbl_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.return_vrbl_records" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.gribfile.GribFile.search_keyword">
+<code class="descname">search_keyword</code><span class="sig-paren">(</span><em>keyword</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/gribfile.html#GribFile.search_keyword"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.gribfile.GribFile.search_keyword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look for record entries based on a keyword.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.hrrr">
+<span id="evac-datafiles-hrrr-module"></span><h2>evac.datafiles.hrrr module<a class="headerlink" href="#module-evac.datafiles.hrrr" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.datafiles.hrrr.HRRR">
+<em class="property">class </em><code class="descclassname">evac.datafiles.hrrr.</code><code class="descname">HRRR</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/hrrr.html#HRRR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.hrrr.HRRR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.gribfile.GribFile" title="evac.datafiles.gribfile.GribFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.gribfile.GribFile</span></code></a></p>
+<dl class="method">
+<dt id="evac.datafiles.hrrr.HRRR.lookup_vrbl">
+<code class="descname">lookup_vrbl</code><span class="sig-paren">(</span><em>vrbl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/hrrr.html#HRRR.lookup_vrbl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.hrrr.HRRR.lookup_vrbl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.mrms">
+<span id="evac-datafiles-mrms-module"></span><h2>evac.datafiles.mrms module<a class="headerlink" href="#module-evac.datafiles.mrms" title="Permalink to this headline">¶</a></h2>
+<p>Multi-radar, multi-sensor data. Converts from their custom
+binary data format.</p>
+<dl class="class">
+<dt id="evac.datafiles.mrms.MRMS">
+<em class="property">class </em><code class="descclassname">evac.datafiles.mrms.</code><code class="descname">MRMS</code><span class="sig-paren">(</span><em>fpath=False</em>, <em>rootdir=False</em>, <em>product=False</em>, <em>utc=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/mrms.html#MRMS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.mrms.MRMS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.binaryfile.BinaryFile" title="evac.datafiles.binaryfile.BinaryFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.binaryfile.BinaryFile</span></code></a></p>
+<dl class="method">
+<dt id="evac.datafiles.mrms.MRMS.generate_fpath">
+<code class="descname">generate_fpath</code><span class="sig-paren">(</span><em>rootdir</em>, <em>prod</em>, <em>utc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/mrms.html#MRMS.generate_fpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.mrms.MRMS.generate_fpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an absolute path based on product and time of data
+that is required, in a root directory.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.ncfile">
+<span id="evac-datafiles-ncfile-module"></span><h2>evac.datafiles.ncfile module<a class="headerlink" href="#module-evac.datafiles.ncfile" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.datafiles.ncfile.NCFile">
+<em class="property">class </em><code class="descclassname">evac.datafiles.ncfile.</code><code class="descname">NCFile</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ncfile.html#NCFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ncfile.NCFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.datafile.DataFile" title="evac.datafiles.datafile.DataFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.datafile.DataFile</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.obs">
+<span id="evac-datafiles-obs-module"></span><h2>evac.datafiles.obs module<a class="headerlink" href="#module-evac.datafiles.obs" title="Permalink to this headline">¶</a></h2>
+<p>Analogue of ensemble.py but for observation data across scales, variables,
+and times.</p>
+<dl class="class">
+<dt id="evac.datafiles.obs.Obs">
+<em class="property">class </em><code class="descclassname">evac.datafiles.obs.</code><code class="descname">Obs</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/obs.html#Obs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.obs.Obs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>An instance represents a data set.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.pngfile">
+<span id="evac-datafiles-pngfile-module"></span><h2>evac.datafiles.pngfile module<a class="headerlink" href="#module-evac.datafiles.pngfile" title="Permalink to this headline">¶</a></h2>
+<p>Reads in png data.</p>
+<dl class="class">
+<dt id="evac.datafiles.pngfile.PNGFile">
+<em class="property">class </em><code class="descclassname">evac.datafiles.pngfile.</code><code class="descname">PNGFile</code><a class="reference internal" href="_modules/evac/datafiles/pngfile.html#PNGFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.pngfile.PNGFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.datafile.DataFile" title="evac.datafiles.datafile.DataFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.datafile.DataFile</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.radar">
+<span id="evac-datafiles-radar-module"></span><h2>evac.datafiles.radar module<a class="headerlink" href="#module-evac.datafiles.radar" title="Permalink to this headline">¶</a></h2>
+<p>Radar download, manipulation, and plotting.</p>
+<p>This uses composite reflectivity data stored on Iowa State Univ.
+servers.</p>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>Allow different inheritance depending on the data format.</dt>
+<dd>Probably using the __next__ built-in.</dd>
+</dl>
+</li>
+<li>Remove redundant basemap generation method.</li>
+</ul>
+</dd>
+</dl>
+<dl class="class">
+<dt id="evac.datafiles.radar.Radar">
+<em class="property">class </em><code class="descclassname">evac.datafiles.radar.</code><code class="descname">Radar</code><span class="sig-paren">(</span><em>utc</em>, <em>datapath</em>, <em>proj='merc'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.pngfile.PNGFile" title="evac.datafiles.pngfile.PNGFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.pngfile.PNGFile</span></code></a></p>
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.generate_basemap">
+<code class="descname">generate_basemap</code><span class="sig-paren">(</span><em>fig</em>, <em>ax</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.generate_basemap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.generate_basemap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate basemap.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.get_dBZ">
+<code class="descname">get_dBZ</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.get_dBZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.get_dBZ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.get_radar_fname">
+<code class="descname">get_radar_fname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.get_radar_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.get_radar_fname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.get_radar_url">
+<code class="descname">get_radar_url</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.get_radar_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.get_radar_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.get_subdomain">
+<code class="descname">get_subdomain</code><span class="sig-paren">(</span><em>Nlim</em>, <em>Elim</em>, <em>Slim</em>, <em>Wlim</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.get_subdomain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.get_subdomain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return data array between bounds</p>
+<p>If overwrite is True, replace class data with new subdomain</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.radar.Radar.plot_radar">
+<code class="descname">plot_radar</code><span class="sig-paren">(</span><em>outdir=False</em>, <em>fig=False</em>, <em>ax=False</em>, <em>fname=False</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em>, <em>cb=True</em>, <em>drawcounties=False</em>, <em>save='auto'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/radar.html#Radar.plot_radar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.radar.Radar.plot_radar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot radar data.</p>
+<p>Args:</p>
+<dl class="docutils">
+<dt>save</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(str,bool) - If &#8216;auto&#8217;, saving will only occur if</span><dd>fig and ax are not specified.
+If True, the figure is saved; if False, not.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.ruc">
+<span id="evac-datafiles-ruc-module"></span><h2>evac.datafiles.ruc module<a class="headerlink" href="#module-evac.datafiles.ruc" title="Permalink to this headline">¶</a></h2>
+<p>RUC/RAP data will probably need to be cut down to fit the WRF domain
+it is compared to.</p>
+<p>This script should inherit WRFOut and override the &#8216;get&#8217; command.</p>
+<dl class="class">
+<dt id="evac.datafiles.ruc.RUC">
+<em class="property">class </em><code class="descclassname">evac.datafiles.ruc.</code><code class="descname">RUC</code><span class="sig-paren">(</span><em>fpath</em>, <em>wrfdir=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.wrfout.WRFOut" title="evac.datafiles.wrfout.WRFOut"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.wrfout.WRFOut</span></code></a></p>
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.basemap_setup">
+<code class="descname">basemap_setup</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.basemap_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.basemap_setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.check_compute">
+<code class="descname">check_compute</code><span class="sig-paren">(</span><em>vrbl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.check_compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.check_compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>OVERRIDE WRFOUT VERSION</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.colocate_WRF_map">
+<code class="descname">colocate_WRF_map</code><span class="sig-paren">(</span><em>wrfdir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.colocate_WRF_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.colocate_WRF_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.compute_shear_old">
+<code class="descname">compute_shear_old</code><span class="sig-paren">(</span><em>nc</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.compute_shear_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.compute_shear_old" title="Permalink to this definition">¶</a></dt>
+<dd><p>top and bottom in km.
+kwargs[&#8216;top&#8217;]
+kwargs[&#8216;bottom&#8217;]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.compute_theta">
+<code class="descname">compute_theta</code><span class="sig-paren">(</span><em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.compute_theta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.compute_theta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override due to lack of &#8220;T&#8221; in RUC.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.compute_wind10_2">
+<code class="descname">compute_wind10_2</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.compute_wind10_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.compute_wind10_2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version &#8216;3&#8217; for RAP has U10 and V10</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.cut_2D_array">
+<code class="descname">cut_2D_array</code><span class="sig-paren">(</span><em>data_in</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.cut_2D_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.cut_2D_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a smaller array of data
+depending of specified limits</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.cut_lat_lon">
+<code class="descname">cut_lat_lon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.cut_lat_lon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.cut_lat_lon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a smaller array of data
+depending of specified limits</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.get_MAYBE">
+<code class="descname">get_MAYBE</code><span class="sig-paren">(</span><em>vrbl</em>, <em>utc=False</em>, <em>level=False</em>, <em>lats=False</em>, <em>lons=False</em>, <em>smooth=1</em>, <em>other=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.get_MAYBE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.get_MAYBE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overwrite WRFOut method here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.get_OLD">
+<code class="descname">get_OLD</code><span class="sig-paren">(</span><em>va</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.get_OLD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.get_OLD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.get_fname">
+<code class="descname">get_fname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.get_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.get_fname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.get_grid_spacing">
+<code class="descname">get_grid_spacing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.get_grid_spacing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.get_grid_spacing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.get_key">
+<code class="descname">get_key</code><span class="sig-paren">(</span><em>vrbl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.get_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.get_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the netcdf key for the desired variable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.get_latlon">
+<code class="descname">get_latlon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.get_latlon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.get_latlon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.get_p">
+<code class="descname">get_p</code><span class="sig-paren">(</span><em>vrbl</em>, <em>tidx</em>, <em>level</em>, <em>lonidx</em>, <em>latidx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.get_p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.get_p" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.get_time_seq">
+<code class="descname">get_time_seq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.get_time_seq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.get_time_seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes sure time is time sequence
+(YYYY,MM,DD,HH,MM,SS)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.get_utc_time">
+<code class="descname">get_utc_time</code><span class="sig-paren">(</span><em>rawtime</em>, <em>fmt='datenum'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.get_utc_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.get_utc_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.get_version">
+<code class="descname">get_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.get_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.get_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>vrbl</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>OVERRIDE WRFOUT VERSION</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>variables</em>, <em>lv</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.plot_streamlines">
+<code class="descname">plot_streamlines</code><span class="sig-paren">(</span><em>va</em>, <em>lv</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.plot_streamlines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.plot_streamlines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.plot_variable">
+<code class="descname">plot_variable</code><span class="sig-paren">(</span><em>va</em>, <em>lv</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.plot_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.plot_variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.spclsr">
+<span id="evac-datafiles-spclsr-module"></span><h2>evac.datafiles.spclsr module<a class="headerlink" href="#module-evac.datafiles.spclsr" title="Permalink to this headline">¶</a></h2>
+<p>Local storm reports from SPC site.</p>
+<dl class="class">
+<dt id="evac.datafiles.spclsr.SPCLSR">
+<em class="property">class </em><code class="descclassname">evac.datafiles.spclsr.</code><code class="descname">SPCLSR</code><span class="sig-paren">(</span><em>utc</em>, <em>datadir</em>, <em>wind=True</em>, <em>hail=True</em>, <em>torn=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/spclsr.html#SPCLSR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.spclsr.SPCLSR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.csvfile.CSVFile" title="evac.datafiles.csvfile.CSVFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.csvfile.CSVFile</span></code></a></p>
+<dl class="method">
+<dt id="evac.datafiles.spclsr.SPCLSR.plot_reports">
+<code class="descname">plot_reports</code><span class="sig-paren">(</span><em>fig=False</em>, <em>ax=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/spclsr.html#SPCLSR.plot_reports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.spclsr.SPCLSR.plot_reports" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.spclsr.SPCLSR.report_datenum">
+<code class="descname">report_datenum</code><span class="sig-paren">(</span><em>timestamp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/spclsr.html#SPCLSR.report_datenum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.spclsr.SPCLSR.report_datenum" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert timestamp to datenum format.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.stageiv">
+<span id="evac-datafiles-stageiv-module"></span><h2>evac.datafiles.stageiv module<a class="headerlink" href="#module-evac.datafiles.stageiv" title="Permalink to this headline">¶</a></h2>
+<p>STAGE IV precip data.</p>
+<dl class="class">
+<dt id="evac.datafiles.stageiv.StageIV">
+<em class="property">class </em><code class="descclassname">evac.datafiles.stageiv.</code><code class="descname">StageIV</code><span class="sig-paren">(</span><em>dir_or_file</em>, <em>load_1h=True</em>, <em>load_6h=False</em>, <em>load_24h=False</em>, <em>loadobj=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.gribfile.GribFile" title="evac.datafiles.gribfile.GribFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.gribfile.GribFile</span></code></a></p>
+<dl class="method">
+<dt id="evac.datafiles.stageiv.StageIV.arbitrary_pick">
+<code class="descname">arbitrary_pick</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV.arbitrary_pick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV.arbitrary_pick" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.stageiv.StageIV.date_from_fname">
+<code class="descname">date_from_fname</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV.date_from_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV.date_from_fname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.stageiv.StageIV.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>utc</em>, <em>accum_hr='01h'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a given time, in similar manner to WRFOut.</p>
+<p>Wrapper for return_array with reshape to 4D</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.stageiv.StageIV.load_accum">
+<code class="descname">load_accum</code><span class="sig-paren">(</span><em>G</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV.load_accum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV.load_accum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.stageiv.StageIV.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><em>f</em>, <em>loadobj=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV.load_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.stageiv.StageIV.load_gribpart">
+<code class="descname">load_gribpart</code><span class="sig-paren">(</span><em>G</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV.load_gribpart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV.load_gribpart" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.stageiv.StageIV.projection">
+<code class="descname">projection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV.projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV.projection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.stageiv.StageIV.return_array">
+<code class="descname">return_array</code><span class="sig-paren">(</span><em>utc</em>, <em>accum_hr='01h'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV.return_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV.return_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.stageiv.StageIV.return_latlon">
+<code class="descname">return_latlon</code><span class="sig-paren">(</span><em>G</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV.return_latlon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV.return_latlon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.stageiv.StageIV.return_point">
+<code class="descname">return_point</code><span class="sig-paren">(</span><em>utc</em>, <em>lat</em>, <em>lon</em>, <em>accum_hr='01h'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV.return_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV.return_point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.stormevents">
+<span id="evac-datafiles-stormevents-module"></span><h2>evac.datafiles.stormevents module<a class="headerlink" href="#module-evac.datafiles.stormevents" title="Permalink to this headline">¶</a></h2>
+<p>NWS storm events from &lt;this website&gt;...</p>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Move or remove redundant plotting method</li>
+</ul>
+</dd>
+</dl>
+<dl class="class">
+<dt id="evac.datafiles.stormevents.StormEvents">
+<em class="property">class </em><code class="descclassname">evac.datafiles.stormevents.</code><code class="descname">StormEvents</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stormevents.html#StormEvents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stormevents.StormEvents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.datafiles.csvfile.CSVFile" title="evac.datafiles.csvfile.CSVFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.csvfile.CSVFile</span></code></a></p>
+<dl class="method">
+<dt id="evac.datafiles.stormevents.StormEvents.convert_times">
+<code class="descname">convert_times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stormevents.html#StormEvents.convert_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stormevents.StormEvents.convert_times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.stormevents.StormEvents.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>reports</em>, <em>itime</em>, <em>ftime</em>, <em>fname</em>, <em>outdir</em>, <em>Nlim=False</em>, <em>Elim=False</em>, <em>Slim=False</em>, <em>Wlim=False</em>, <em>annotate=True</em>, <em>fig=False</em>, <em>ax=False</em>, <em>ss=50</em>, <em>color='blue'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stormevents.html#StormEvents.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stormevents.StormEvents.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles.wrfout">
+<span id="evac-datafiles-wrfout-module"></span><h2>evac.datafiles.wrfout module<a class="headerlink" href="#module-evac.datafiles.wrfout" title="Permalink to this headline">¶</a></h2>
+<p>Compute or load data from netCDF file.</p>
+<p>Dimensions of 4D variable X are X.dimensions:
+(Time,bottom_top,south_north,west_east_stag)
+Time, levels, latitude, longitude</p>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Move computation of derived variables to derive/ folder!</li>
+<li>Make method assign the returns to instance instead of returning.</li>
+</ul>
+</dd>
+</dl>
+<dl class="class">
+<dt id="evac.datafiles.wrfout.WRFOut">
+<em class="property">class </em><code class="descclassname">evac.datafiles.wrfout.</code><code class="descname">WRFOut</code><span class="sig-paren">(</span><em>fpath</em>, <em>fmt='em_real'</em>, <em>ncks=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">WEM.postWRF.postWRF.ncfile.NC</span></code></p>
+<p>An instance of WRFOut contains all the methods that are used to
+access and process netCDF data.</p>
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.check_compute">
+<code class="descname">check_compute</code><span class="sig-paren">(</span><em>vrbl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.check_compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.check_compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method returns the required variables
+that need to be loaded from the netCDF file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vrbl</strong> &#8211; WRF variable desired</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>True if variable exists in wrfout file.</dt>
+<dd>False if the variable needs computing.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.check_destagger">
+<code class="descname">check_destagger</code><span class="sig-paren">(</span><em>var</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.check_destagger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.check_destagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks up dimensions of netCDF file without loading data.</p>
+<p>Returns dimension number that requires destaggering</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.check_vcs">
+<code class="descname">check_vcs</code><span class="sig-paren">(</span><em>z1</em>, <em>z2</em>, <em>exception=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.check_vcs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.check_vcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the vertical coordinate systems</p>
+<p>If identical, return the system
+If not, raise an exception.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.compute">
+<code class="descname">compute</code><span class="sig-paren">(</span><em>vrbl</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>other=False</em>, <em>lookup=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look up method needed to return array of data
+for required variable.</p>
+<p>Keyword arguments include settings for computation
+e.g. top and bottom of shear computation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vrbl</strong> &#8211; variable name</li>
+<li><strong>tidx</strong> &#8211; time index/indices</li>
+<li><strong>lookup</strong> &#8211; enables a check to see if something can be
+computed. Returns true or false.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.compute_ave">
+<code class="descname">compute_ave</code><span class="sig-paren">(</span><em>va</em>, <em>z1</em>, <em>z2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.compute_ave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.compute_ave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute average values for variable in layer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>va</strong> &#8211; variable</li>
+<li><strong>z1</strong> &#8211; height at bottom</li>
+<li><strong>z2</strong> &#8211; height at top</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the averaged variable</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">data</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Move or remove?</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.create_slice">
+<code class="descname">create_slice</code><span class="sig-paren">(</span><em>vrbl</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em>, <em>dim_names</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.create_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.create_slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create slices from indices of level, time, lat, lon.
+False mean pick all indices.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.destagger">
+<code class="descname">destagger</code><span class="sig-paren">(</span><em>data</em>, <em>ax</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.destagger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.destagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Destagger data which needs it doing.</p>
+<p>Theta always has unstaggered points in all three spatial dimensions (axes=1,2,3).</p>
+<p>Data should be 4D but just the slice required to reduce unnecessary computation time.</p>
+<p>Don&#8217;t destagger in x/y for columns</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> &#8211; numpy array of data requiring destaggering</li>
+<li><strong>ax</strong> &#8211; axis requiring destaggering</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.em_real_init">
+<code class="descname">em_real_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.em_real_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.em_real_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grab the 2D arrays of the wrfout file.</p>
+<p>self.lats and self.lons represent the 2D arrays.</p>
+<p>self.lats1D and self.lons1D represent the 1D arrays intersecting
+the middle of the domain. They shouldn&#8217;t be used for plotting.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>vrbl</em>, <em>utc=None</em>, <em>level=None</em>, <em>lats=None</em>, <em>lons=None</em>, <em>smooth=1</em>, <em>other=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data.</p>
+<p>Will interpolate onto pressure, height coordinates if needed.
+Will smooth if needed.</p>
+<p>Level:
+* indices: integer or N.ndarray of integers
+* pressure: string ending in &#8216;hPa&#8217;
+* height: string ending in &#8216;m&#8217; or &#8216;km&#8217;
+* isentropic: string ending in &#8216;K&#8217;</p>
+<p>Lats:
+* indices: integer or N.ndarray of integers
+* lats: float or N.ndarray of floats</p>
+<p>Lons:
+* indices: integer or N.ndarray of integers
+* lons: float or N.ndarray of floats</p>
+<p>Args:
+vrbl    :        WRF or computed variable required
+utc     :        indices (&lt;500): integer/N.ndarray of integers.</p>
+<blockquote>
+<div>time tuple: 6-item tuple or list/tuple of these.
+datenum: integer &gt;500 or list of them.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get_XY">
+<code class="descname">get_XY</code><span class="sig-paren">(</span><em>lat</em>, <em>lon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get_XY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get_XY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return grid indices for lat/lon pair.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get_dimensions">
+<code class="descname">get_dimensions</code><span class="sig-paren">(</span><em>fmt='em_real'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get_dims">
+<code class="descname">get_dims</code><span class="sig-paren">(</span><em>var</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get_dims" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get_lat_idx">
+<code class="descname">get_lat_idx</code><span class="sig-paren">(</span><em>lat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get_lat_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get_lat_idx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get_latlon_idx">
+<code class="descname">get_latlon_idx</code><span class="sig-paren">(</span><em>lat</em>, <em>lon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get_latlon_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get_latlon_idx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get_limited_domain">
+<code class="descname">get_limited_domain</code><span class="sig-paren">(</span><em>da</em>, <em>skip=1</em>, <em>return_array='idx'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get_limited_domain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get_limited_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return smaller array of lats, lons depending on
+input dictionary of N, E, S, W limits.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>skip</strong> &#8211; for creating thinned domains</li>
+<li><strong>return_type</strong> &#8211; if idx, return array of idx
+if slice, return slice only
+if latlon, return lat/lon values</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get_limits">
+<code class="descname">get_limits</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get_limits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get_limits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get_lon_idx">
+<code class="descname">get_lon_idx</code><span class="sig-paren">(</span><em>lon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get_lon_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get_lon_idx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get_missing_axes">
+<code class="descname">get_missing_axes</code><span class="sig-paren">(</span><em>dims</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get_missing_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get_missing_axes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get_p">
+<code class="descname">get_p</code><span class="sig-paren">(</span><em>vrbl</em>, <em>tidx=None</em>, <em>level=None</em>, <em>lonidx=None</em>, <em>latidx=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get_p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an pressure level isosurface of given variable.
+Interpolation is linear so watch out.</p>
+<p>Dimensions returns as (height,lat,lon)
+Or is it (height,lon, lat!?)</p>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Need to include limited domain functionality</li>
+</ul>
+</dd>
+</dl>
+<p>if vrbl==&#8217;pressure&#8217;,create constant grid.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.get_time_idx">
+<code class="descname">get_time_idx</code><span class="sig-paren">(</span><em>utcs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.get_time_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.get_time_idx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get closest index to desired time</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>utcs</strong> (<em>list</em><em>,</em><em>tuple</em><em>, </em><em>int</em>) &#8211; times</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">closest index to desired time</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">tidx (int)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.ideal_init">
+<code class="descname">ideal_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.ideal_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.ideal_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.interp_to_p_fortran">
+<code class="descname">interp_to_p_fortran</code><span class="sig-paren">(</span><em>config</em>, <em>nc_path</em>, <em>var</em>, <em>lv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.interp_to_p_fortran"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.interp_to_p_fortran" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses p_interp fortran code to put data onto a pressure
+level specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>config</strong> &#8211; contains directory of p_interp files</li>
+<li><strong>nc_path</strong> &#8211; path to original netCDF file data</li>
+<li><strong>var</strong> &#8211; variable(s) to compute</li>
+<li><strong>lv</strong> &#8211; pressure level(s) to compute</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">path to new netCDF file with p co-ords</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">fpath</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>vrbl</em>, <em>tidx</em>, <em>lvidx</em>, <em>lonidx</em>, <em>latidx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch netCDF data for a given variable, for given time, level,
+latitude, and longitude indices.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vrbl</strong> &#8211; WRF variable</li>
+<li><strong>tidx</strong> &#8211; time index. False fetches all.</li>
+<li><strong>lvidx</strong> &#8211; level index. False fetches all</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>Get rid of integer arguments earlier in the method chain, and</dt>
+<dd>make them single-element numpy arrays.</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.make_4D">
+<code class="descname">make_4D</code><span class="sig-paren">(</span><em>datain</em>, <em>vrbl=False</em>, <em>missing_axis=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.make_4D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.make_4D" title="Permalink to this definition">¶</a></dt>
+<dd><p>If vrbl, look up the wrfout file&#8217;s variable dimensions and
+adjust accordingly to get into 4D structure. If not vrbl,
+for instance a computed variable, the user needs to specify
+which axes are missing in a tuple.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.return_tbl">
+<code class="descname">return_tbl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.return_tbl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.return_tbl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary to look up method for computing a variable
+Todos:</p>
+<blockquote>
+<div><ul class="simple">
+<li>merge with derived/_derived.py</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.return_tidx_range">
+<code class="descname">return_tidx_range</code><span class="sig-paren">(</span><em>utc0</em>, <em>utc1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.return_tidx_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.return_tidx_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give a start and end time. Returns an array of
+all indices. Useful for self.get() to return an
+array of data with all times between utc0 and utc1.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.wrfout.WRFOut.wrftime_to_datenum">
+<code class="descname">wrftime_to_datenum</code><span class="sig-paren">(</span><em>fmt='timegm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.wrftime_to_datenum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.wrftime_to_datenum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert wrf&#8217;s weird Times variable to datenum or datetime.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.datafiles">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-evac.datafiles" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -74,13 +1274,41 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">evac.datafiles package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.binaryfile">evac.datafiles.binaryfile module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.csvfile">evac.datafiles.csvfile module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.datafile">evac.datafiles.datafile module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.ecmwf">evac.datafiles.ecmwf module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.ensemble">evac.datafiles.ensemble module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.gefs">evac.datafiles.gefs module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.gfs">evac.datafiles.gfs module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.gribfile">evac.datafiles.gribfile module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.hrrr">evac.datafiles.hrrr module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.mrms">evac.datafiles.mrms module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.ncfile">evac.datafiles.ncfile module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.obs">evac.datafiles.obs module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.pngfile">evac.datafiles.pngfile module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.radar">evac.datafiles.radar module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.ruc">evac.datafiles.ruc module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.spclsr">evac.datafiles.spclsr module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.stageiv">evac.datafiles.stageiv module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.stormevents">evac.datafiles.stormevents module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles.wrfout">evac.datafiles.wrfout module</a></li>
+<li><a class="reference internal" href="#module-evac.datafiles">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="evac.html">evac package</a><ul>
       <li>Previous: <a href="evac.html" title="previous chapter">evac package</a></li>
-      <li>Next: <a href="evac.datafiles.binaryfile.html" title="next chapter"><cite>datafiles.binaryfile</cite></a></li>
+      <li>Next: <a href="evac.derived.html" title="next chapter">evac.derived package</a></li>
   </ul></li>
   </ul></li>
 </ul>

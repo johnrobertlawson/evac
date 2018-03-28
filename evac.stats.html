@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>stats &#8212; evac 0.1.0 documentation</title>
+    <title>evac.stats package &#8212; evac 0.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,8 +26,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="stats.casati" href="evac.stats.casati.html" />
-    <link rel="prev" title="plot.xsection" href="evac.plot.xsection.html" />
+    <link rel="next" title="evac.stoch package" href="evac.stoch.html" />
+    <link rel="prev" title="evac.plot package" href="evac.plot.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -43,21 +43,854 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="stats">
-<h1><cite>stats</cite><a class="headerlink" href="#stats" title="Permalink to this headline">¶</a></h1>
-<p>Functions and classes for computing skill scores and statistics
-relevant for meteorology.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="evac.stats.casati.html"><cite>stats.casati</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.stats.detscores.html"><cite>stats.detscores</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.stats.fss.html"><cite>stats.fss</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.stats.misc_stats.html"><cite>stats.misc_stats</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.stats.objectbased.html"><cite>stats.objectbased</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.stats.probscores.html"><cite>stats.probscores</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.stats.roc.html"><cite>stats.roc</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.stats.sal.html"><cite>stats.sal</cite></a></li>
+  <div class="section" id="evac-stats-package">
+<h1>evac.stats package<a class="headerlink" href="#evac-stats-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-evac.stats.briar">
+<span id="evac-stats-briar-module"></span><h2>evac.stats.briar module<a class="headerlink" href="#module-evac.stats.briar" title="Permalink to this headline">¶</a></h2>
+<p>Briar and related scores/metrics.</p>
+<dl class="class">
+<dt id="evac.stats.briar.Briar">
+<em class="property">class </em><code class="descclassname">evac.stats.briar.</code><code class="descname">Briar</code><a class="reference internal" href="_modules/evac/stats/briar.html#Briar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.briar.Briar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.stats.probscores.ProbScores" title="evac.stats.probscores.ProbScores"><code class="xref py py-class docutils literal"><span class="pre">evac.stats.probscores.ProbScores</span></code></a></p>
+<dl class="method">
+<dt id="evac.stats.briar.Briar.compute_briar">
+<code class="descname">compute_briar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/briar.html#Briar.compute_briar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.briar.Briar.compute_briar" title="Permalink to this definition">¶</a></dt>
+<dd><p>The better the forecast, the smaller the Briar score.
+Ideal limit is 0.</p>
+<p>Args:</p>
+<p>N   :   number of verifying observations
+gi  :   occurrence prob of event E for a verif date i</p>
+<blockquote>
+<div>Must be between 0 and 1 inclusive.</div></blockquote>
+<dl class="docutils">
+<dt>Oi</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">If E occurred, this is 1; otherwise 0.</span><dd>Must be either 0 or 1.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.stats.casati">
+<span id="evac-stats-casati-module"></span><h2>evac.stats.casati module<a class="headerlink" href="#module-evac.stats.casati" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.stats.casati.Casati">
+<em class="property">class </em><code class="descclassname">evac.stats.casati.</code><code class="descname">Casati</code><span class="sig-paren">(</span><em>fcstdata</em>, <em>verifdata</em>, <em>thresholds=(0.5</em>, <em>1</em>, <em>4</em>, <em>16</em>, <em>64)</em>, <em>store_all_arrays=True</em>, <em>recalibration=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.stats.casati.Casati.BED">
+<code class="descname">BED</code><span class="sig-paren">(</span><em>pixel</em>, <em>thresh</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.BED"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.BED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.Haar">
+<code class="descname">Haar</code><span class="sig-paren">(</span><em>Z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.Haar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.Haar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Z14 is Eq 14 from paper.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.calc_ecdf">
+<code class="descname">calc_ecdf</code><span class="sig-paren">(</span><em>arr</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.calc_ecdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.calc_ecdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do empirical cumulative distribution of an array.</p>
+<p>arr -   N.ndarray
+val -   threshold</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_BED">
+<code class="descname">do_BED</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_BED"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_BED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binary error decomposition.</p>
+<p>Yr = Recalibrated forecast
+X = Normalized analysis/verif
+Z3 = Binary error (Eq. 3 in paper)
+IYr = Binary image for recal. fcst (Eq.2 in paper)
+Ix = Binary image for norm. verif (Eq.2 in paper)
+Zf, Zm = Father and mother wavelets from Eq. 4 / Appendix in paper
+Z = binary error image, post-Haar</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_MSE">
+<code class="descname">do_MSE</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_MSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_MSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_QC">
+<code class="descname">do_QC</code><span class="sig-paren">(</span><em>print_location=True</em>, <em>min_thresh=0.0</em>, <em>max_thresh=500</em>, <em>fatal_exception=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_QC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_QC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for stupid values in data.</p>
+<p>Optional:
+print_location (bool) - if True, print the array location where</p>
+<blockquote>
+<div>the nonsensical values exist</div></blockquote>
+<dl class="docutils">
+<dt>min_thresh, max_thresh (float,int) - min and max values of allowable</dt>
+<dd>range, to raise Exception</dd>
+</dl>
+<p>fatal_exception     -   if True, kill script if there are out-of-range vals.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_SS">
+<code class="descname">do_SS</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_SS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_SS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_dithering">
+<code class="descname">do_dithering</code><span class="sig-paren">(</span><em>dithrange=0.015625</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_dithering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_dithering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply dithering to non-zero precipitation values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_normalize">
+<code class="descname">do_normalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalise data by base 2 where it isn&#8217;t -6.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_recalibration">
+<code class="descname">do_recalibration</code><span class="sig-paren">(</span><em>method='faster'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_recalibration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_recalibration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yr = (1/Fx) * Fy</p>
+<p>Yr = recalibrated forecast
+Fx = Empirical cum. dist. of verif
+Fy = Empirical cum. dist. of fcst</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.do_square_check">
+<code class="descname">do_square_check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.do_square_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.do_square_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that the grid is a power of 2.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.enforce_2D">
+<code class="descname">enforce_2D</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.enforce_2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.enforce_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure the grid is 2-D.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.casati.Casati.norm_func">
+<code class="descname">norm_func</code><span class="sig-paren">(</span><em>orig</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/casati.html#Casati.norm_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.casati.Casati.norm_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>More QC here with negative values?</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.stats.detscores">
+<span id="evac-stats-detscores-module"></span><h2>evac.stats.detscores module<a class="headerlink" href="#module-evac.stats.detscores" title="Permalink to this headline">¶</a></h2>
+<p>Miscellaneous (and more simple) deterministic scores.</p>
+<p>Using Buizza 2001, MWR.</p>
+<p>a = observed and forecast
+b = forecast but not observed
+c = observed but not forecast
+d = neither observed nor forecast</p>
+<dl class="class">
+<dt id="evac.stats.detscores.DetScores">
+<em class="property">class </em><code class="descclassname">evac.stats.detscores.</code><code class="descname">DetScores</code><span class="sig-paren">(</span><em>arr2x2=None</em>, <em>a=None</em>, <em>b=None</em>, <em>c=None</em>, <em>d=None</em>, <em>fcst_arr=None</em>, <em>obs_arr=None</em>, <em>thresh=None</em>, <em>overunder=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.check_approx">
+<code class="descname">check_approx</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.check_approx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.check_approx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_E">
+<code class="descname">compute_E</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_E"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_E" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_ar">
+<code class="descname">compute_ar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_ar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_ar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of hits expected by pure chance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_bias">
+<code class="descname">compute_bias</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_bias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_bias" title="Permalink to this definition">¶</a></dt>
+<dd><p>Eq. 10 in B01.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_csi">
+<code class="descname">compute_csi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_csi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_csi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_falsealarmrate">
+<code class="descname">compute_falsealarmrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_falsealarmrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_falsealarmrate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_falsealarmratio">
+<code class="descname">compute_falsealarmratio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_falsealarmratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_falsealarmratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as PFD</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_gilbert">
+<code class="descname">compute_gilbert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_gilbert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_gilbert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_heidke">
+<code class="descname">compute_heidke</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_heidke"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_heidke" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_hitrate">
+<code class="descname">compute_hitrate</code><span class="sig-paren">(</span><em>method=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_hitrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_hitrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accuracy.</p>
+<p>Eq. 6 in B01.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_kss">
+<code class="descname">compute_kss</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_kss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_kss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Eq. 13 in B01.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_pcli">
+<code class="descname">compute_pcli</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_pcli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_pcli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Observed frequency of event under consideration.
+Also known as base rate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_peirce">
+<code class="descname">compute_peirce</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_peirce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_peirce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_pfd">
+<code class="descname">compute_pfd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_pfd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_pfd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accuracy - probability of false detection.</p>
+<p>Eq. 9 in B01.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_pod">
+<code class="descname">compute_pod</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_pod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_pod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accuracy - probability of detection.</p>
+<p>Eq. 8 in B01.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_propcorrect">
+<code class="descname">compute_propcorrect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_propcorrect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_propcorrect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_successrate">
+<code class="descname">compute_successrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_successrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_successrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>1-FAR.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_threat">
+<code class="descname">compute_threat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_threat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_threat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accuracy.</p>
+<p>Eq. 7 in B01.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.compute_yuleq">
+<code class="descname">compute_yuleq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.compute_yuleq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.compute_yuleq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.detscores.DetScores.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>score</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/detscores.html#DetScores.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.detscores.DetScores.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter method for obtaining a score via string.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.stats.diffenergy">
+<span id="evac-stats-diffenergy-module"></span><h2>evac.stats.diffenergy module<a class="headerlink" href="#module-evac.stats.diffenergy" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.stats.diffenergy.DiffEnergy">
+<em class="property">class </em><code class="descclassname">evac.stats.diffenergy.</code><code class="descname">DiffEnergy</code><a class="reference internal" href="_modules/evac/stats/diffenergy.html#DiffEnergy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.diffenergy.DiffEnergy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>DKE, DTE, DDTE, DDKE.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.stats.forecastvalue">
+<span id="evac-stats-forecastvalue-module"></span><h2>evac.stats.forecastvalue module<a class="headerlink" href="#module-evac.stats.forecastvalue" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.stats.forecastvalue.ForecastValue">
+<em class="property">class </em><code class="descclassname">evac.stats.forecastvalue.</code><code class="descname">ForecastValue</code><span class="sig-paren">(</span><em>CLs=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/forecastvalue.html#ForecastValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.forecastvalue.ForecastValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.stats.detscores.DetScores" title="evac.stats.detscores.DetScores"><code class="xref py py-class docutils literal"><span class="pre">evac.stats.detscores.DetScores</span></code></a></p>
+<dl class="method">
+<dt id="evac.stats.forecastvalue.ForecastValue.compute_FV">
+<code class="descname">compute_FV</code><span class="sig-paren">(</span><em>cl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/forecastvalue.html#ForecastValue.compute_FV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.forecastvalue.ForecastValue.compute_FV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute FV.</p>
+<p>Note the variable &#8220;x&#8221; is the minimum of C/L ratio and P_cli.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cl</strong> (<em>float</em>) &#8211; Cost/loss ratio</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.forecastvalue.ForecastValue.get_FV">
+<code class="descname">get_FV</code><span class="sig-paren">(</span><em>cl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/forecastvalue.html#ForecastValue.get_FV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.forecastvalue.ForecastValue.get_FV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the FV for a given cost/loss ratio, otherwise None.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.stats.fss">
+<span id="evac-stats-fss-module"></span><h2>evac.stats.fss module<a class="headerlink" href="#module-evac.stats.fss" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.stats.fss.FSS">
+<em class="property">class </em><code class="descclassname">evac.stats.fss.</code><code class="descname">FSS</code><span class="sig-paren">(</span><em>data_fcst</em>, <em>data_obs</em>, <em>itime=False</em>, <em>ftime=False</em>, <em>lv=False</em>, <em>thresholds=(0.5</em>, <em>1</em>, <em>2</em>, <em>4</em>, <em>8)</em>, <em>ns=None</em>, <em>ns_step=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/fss.html#FSS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.fss.FSS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.stats.fss.FSS.compute_FSS">
+<code class="descname">compute_FSS</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/fss.html#FSS.compute_FSS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.fss.FSS.compute_FSS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.fss.FSS.do_grid_check">
+<code class="descname">do_grid_check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/fss.html#FSS.do_grid_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.fss.FSS.do_grid_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure grids are identical size.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.fss.FSS.enforce_2D">
+<code class="descname">enforce_2D</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/fss.html#FSS.enforce_2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.fss.FSS.enforce_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Both data grids need to be 2D.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.stats.misc_stats">
+<span id="evac-stats-misc-stats-module"></span><h2>evac.stats.misc_stats module<a class="headerlink" href="#module-evac.stats.misc_stats" title="Permalink to this headline">¶</a></h2>
+<p>Scripts involving statistics or data manipulation here.</p>
+<dl class="function">
+<dt id="evac.stats.misc_stats.DE_xyz">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">DE_xyz</code><span class="sig-paren">(</span><em>nc0</em>, <em>nc1</em>, <em>t_idx</em>, <em>energy</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#DE_xyz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.DE_xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computation for difference kinetic energy (DKE).
+Sums DKE over the 3D space, returns a time series.</p>
+<p>Destaggering is not enabled as it introduces
+computational cost that is of miniscule value considering
+the magnitudes of output values.</p>
+<p>Inputs:</p>
+<p>nc0     :   netCDF file
+nc1     :   netCDF file
+t_idx   :   times indices to difference
+energy  :   kinetic or total
+<a href="#id1"><span class="problematic" id="id2">*</span></a>args   :   to catch lower/upper boundary which isn&#8217;t relevant here</p>
+<p>Outputs:</p>
+<p>data    :   time series.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.DE_z">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">DE_z</code><span class="sig-paren">(</span><em>nc0</em>, <em>nc1</em>, <em>t</em>, <em>energy</em>, <em>lower</em>, <em>upper</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#DE_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.DE_z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computation for difference kinetic energy (DKE).
+Sums DKE over all levels between lower and upper,
+for each grid point, and returns a 2D array.</p>
+<p>Destaggering is not enabled as it introduces
+computational cost that is of miniscule value considering
+the magnitudes of output values.</p>
+<p>Method finds levels nearest lower/upper hPa and sums between
+them inclusively.</p>
+<p>Inputs:</p>
+<p>nc0     :   netCDF file
+nc1     :   netCDF file
+t       :   times index to difference
+energy  :   kinetic or total
+lower   :   lowest level, hPa
+upper   :   highest level, hPa</p>
+<p>Outputs:</p>
+<p>data    :   2D array.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.DKE_power_spectrum">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">DKE_power_spectrum</code><span class="sig-paren">(</span><em>data</em>, <em>dx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#DKE_power_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.DKE_power_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return power spectrum of DKE/DTE at time(s) for wavelengths.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.compute_bool_thresh">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">compute_bool_thresh</code><span class="sig-paren">(</span><em>arr</em>, <em>overunder</em>, <em>threshold</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#compute_bool_thresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.compute_bool_thresh" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>arr</strong> (<em>N.ndarray</em>) &#8211; field of data</li>
+<li><strong>overunder</strong> (<em>str</em>) &#8211; One of the following:
+&#8216;over&#8217;,&#8217;under&#8217;,&#8217;overeq&#8217;,&#8217;undereq&#8217;,&#8217;equal&#8217;</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.compute_contingency">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">compute_contingency</code><span class="sig-paren">(</span><em>fcst_arr</em>, <em>obs_arr</em>, <em>thresh</em>, <em>overunder</em>, <em>fmt='tuple'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#compute_contingency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.compute_contingency" title="Permalink to this definition">¶</a></dt>
+<dd><p>a = observed and forecast
+b = forecast but not observed
+c = observed but not forecast
+d = neither observed nor forecast</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fcst_arr</strong> (<em>N.ndarray</em>) &#8211; forecast array</li>
+<li><strong>obs_arr</strong> (<em>N.ndarray</em>) &#8211; verification array, same 2D dimensions as fcst_arr</li>
+<li><strong>thresh</strong> (<em>float</em>) &#8211; threshold</li>
+<li><strong>overunder</strong> (<em>str</em>) &#8211; One of the following:
+&#8216;over&#8217;,&#8217;under&#8217;,&#8217;overeq&#8217;,&#8217;undereq&#8217;,&#8217;equal&#8217;</li>
+<li><strong>fmt</strong> (<em>str</em><em>,</em><em>optional</em>) &#8211; If tuple, the output is a,b,c,d.
+If &#8216;array&#8217;, the output is a numpy
+array - not implemented yet.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.compute_diff_energy">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">compute_diff_energy</code><span class="sig-paren">(</span><em>ptype</em>, <em>energy</em>, <em>files</em>, <em>times</em>, <em>upper=None</em>, <em>lower=None</em>, <em>d_save=True</em>, <em>d_return=True</em>, <em>d_fname='diff_energy_data'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#compute_diff_energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.compute_diff_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method computes difference kinetic energy (DKE)
+or different total energy (DTE, including temp)
+between WRFout files for a given depth of the
+atmosphere, at given time intervals</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ptype</strong> &#8211; &#8216;2D&#8217; or &#8216;3D&#8217;.
+&#8216;2D&#8217; integrates vertically between lower and
+upper hPa and creates a time series.
+&#8216;3D&#8217; integrates over the 3D space (again between
+the upper and lower bounds) and creates 2D arrays.</li>
+<li><strong>energy</strong> &#8211; &#8216;DKE&#8217; or &#8216;DTE&#8217;</li>
+<li><strong>upper</strong> &#8211; upper limit of vertical integration</li>
+<li><strong>lower</strong> &#8211; lower limit of vertical integration</li>
+<li><strong>files</strong> &#8211; abs paths to all wrfout files</li>
+<li><strong>times</strong> &#8211; times for computations - tuple format</li>
+<li><strong>d_save</strong> &#8211; save dictionary to folder (path to folder)</li>
+<li><strong>d_return</strong> &#8211; return dictionary (True or False)</li>
+<li><strong>d_fname</strong> &#8211; custom filename</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">N.ndarray &#8211; time series or list of 2D arrays</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.gauss_kern">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">gauss_kern</code><span class="sig-paren">(</span><em>size</em>, <em>sizey=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#gauss_kern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.gauss_kern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Taken from scipy cookbook online.
+Returns a normalized 2D gauss kernel array for convolutions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.gauss_smooth">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">gauss_smooth</code><span class="sig-paren">(</span><em>data</em>, <em>n</em>, <em>ny=None</em>, <em>pad=1</em>, <em>pad_values=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#gauss_smooth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.gauss_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Taken from scipy cookbook online.
+Blur the data by convolving with a gaussian kernel of typical
+size n. The optional keyword argument ny allows for a different
+size in the y direction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>N.ndarray</em>) &#8211; data (2D only?)</li>
+<li><strong>pad</strong> (<em>bool</em>) &#8211; put zeros on edge of length n so that output
+array equals input array size.</li>
+<li><strong>pad_values</strong> (<em>int</em><em>,</em><em>float</em>) &#8211; if pad, then use this value to fill edges.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.max_filter">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">max_filter</code><span class="sig-paren">(</span><em>data</em>, <em>size=11</em>, <em>shape='circle'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#max_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.max_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>blah</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.rank_hist">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">rank_hist</code><span class="sig-paren">(</span><em>obdata</em>, <em>ensdata</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#rank_hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.rank_hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>obdata  :   (N.ndarray) - T x surface observations (T = no. of times)
+ensdata :   (N.ndarray) - T x N x float, ensemble analyses for N members</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.std">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">std</code><span class="sig-paren">(</span><em>ncfiles</em>, <em>vrbl</em>, <em>utc=False</em>, <em>level=False</em>, <em>other=False</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find standard deviation in along axis of ensemble
+members. Returns matrix x-y for plotting</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.stats.misc_stats.std_ttest">
+<code class="descclassname">evac.stats.misc_stats.</code><code class="descname">std_ttest</code><span class="sig-paren">(</span><em>ncfiles1</em>, <em>ncfiles2</em>, <em>vrbl</em>, <em>utc=False</em>, <em>level=False</em>, <em>other=False</em>, <em>th=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/misc_stats.html#std_ttest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.misc_stats.std_ttest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find standard deviation in along axis of ensemble
+members. Returns matrix x-y for plotting. Returns sig test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.stats.objectbased">
+<span id="evac-stats-objectbased-module"></span><h2>evac.stats.objectbased module<a class="headerlink" href="#module-evac.stats.objectbased" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Refactor this and sal.py</li>
+</ul>
+</dd>
+</dl>
+<dl class="class">
+<dt id="evac.stats.objectbased.ObjectBased">
+<em class="property">class </em><code class="descclassname">evac.stats.objectbased.</code><code class="descname">ObjectBased</code><span class="sig-paren">(</span><em>Wctrl_fpath</em>, <em>Wmod_fpath</em>, <em>vrbl=False</em>, <em>utc=False</em>, <em>lv=False</em>, <em>accum_hr=False</em>, <em>radar_datadir=False</em>, <em>thresh=False</em>, <em>footprint=500</em>, <em>ctrl_fmt='obs'</em>, <em>mod_fmt='WRF'</em>, <em>dx=False</em>, <em>dy=False</em>, <em>f=0.06666666666666667</em>, <em>datafmt=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.active_px">
+<code class="descname">active_px</code><span class="sig-paren">(</span><em>data='ctrl'</em>, <em>fmt='pc'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.active_px"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.active_px" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of pixels included in chosen dataset&#8217;s objects.
+data is set to &#8216;ctrl&#8217; or &#8216;mod&#8217;.
+Expressed as percentage.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_L1">
+<code class="descname">compute_L1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_L1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_L1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_L2">
+<code class="descname">compute_L2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_L2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_L2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_V">
+<code class="descname">compute_V</code><span class="sig-paren">(</span><em>dic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_V"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_V" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_amplitude">
+<code class="descname">compute_amplitude</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_d">
+<code class="descname">compute_d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_d" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_location">
+<code class="descname">compute_location</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_location" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_r">
+<code class="descname">compute_r</code><span class="sig-paren">(</span><em>dic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_r" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_structure">
+<code class="descname">compute_structure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_structure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.get_radar_verif">
+<code class="descname">get_radar_verif</code><span class="sig-paren">(</span><em>utc</em>, <em>datapath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.get_radar_verif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.get_radar_verif" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.identify_objects">
+<code class="descname">identify_objects</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.identify_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.identify_objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.object_operators">
+<code class="descname">object_operators</code><span class="sig-paren">(</span><em>dic</em>, <em>typ=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.object_operators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.object_operators" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.vector_diff_km">
+<code class="descname">vector_diff_km</code><span class="sig-paren">(</span><em>v1</em>, <em>v2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.vector_diff_km"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.vector_diff_km" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="evac.stats.objectbased.ObjectBased.vrbl">
+<code class="descname">vrbl</code><em class="property"> = None</em><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.vrbl" title="Permalink to this definition">¶</a></dt>
+<dd><p>fig, ax = plt.subplots(1)
+ax.pcolor(self.C[&#8216;data&#8217;])
+fig.savefig(&#8216;/home/jrlawson/public_html/bowecho/SALtests/obs_pcolor.png&#8217;)
+plt.close(fig)
+fig, ax = plt.subplots(1)
+ax.pcolor(self.M[&#8216;data&#8217;])
+fig.savefig(&#8216;/home/jrlawson/public_html/bowecho/SALtests/mod_pcolor.png&#8217;)
+plt.close(fig)
+import pdb; pdb.set_trace()</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.stats.probscores">
+<span id="evac-stats-probscores-module"></span><h2>evac.stats.probscores module<a class="headerlink" href="#module-evac.stats.probscores" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.stats.probscores.ProbScores">
+<em class="property">class </em><code class="descclassname">evac.stats.probscores.</code><code class="descname">ProbScores</code><span class="sig-paren">(</span><em>og=None</em>, <em>pfg=None</em>, <em>xa=None</em>, <em>xfs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.cdf_">
+<code class="descname">cdf_</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.cdf_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.cdf_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_briar">
+<code class="descname">compute_briar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_briar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_briar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_bss">
+<code class="descname">compute_bss</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_bss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_bss" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_crps">
+<code class="descname">compute_crps</code><span class="sig-paren">(</span><em>threshs</em>, <em>mean=True</em>, <em>QC=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_crps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_crps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Needs observation array (m x n)
+Needs ensemble forecast array (e x m x n) where</p>
+<blockquote>
+<div>e = number of ensemble members</div></blockquote>
+<p>xa     :   observation
+xfs    :   forecasts for N ensemble members
+Px is the probability that ob is less or equal to fcst</p>
+<blockquote>
+<div><ul class="simple">
+<li>loop through all probs from 0 to 100 %</li>
+</ul>
+</div></blockquote>
+<p>threshs is a numpy array of the levels to apply to the data</p>
+<p>Discretising using <a class="reference external" href="https://www.kaggle.com/c/how-much-did-it-rain#evaluation">https://www.kaggle.com/c/how-much-did-it-rain#evaluation</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_crps_old">
+<code class="descname">compute_crps_old</code><span class="sig-paren">(</span><em>mean=True</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_crps_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_crps_old" title="Permalink to this definition">¶</a></dt>
+<dd><p>Some inspiration from:
+<a class="reference external" href="https://github.com/TheClimateCorporation/properscoring.git">https://github.com/TheClimateCorporation/properscoring.git</a>
+CRPS (Continuous Ranked Probability Score)
+Measures distance between prob forecast and truth.</p>
+<p>Needs observation array (m x n)
+Needs ensemble forecast array (e x m x n) where</p>
+<blockquote>
+<div>e = number of ensemble members</div></blockquote>
+<p>xa     :   observation
+xfs    :   forecasts for N ensemble members
+rho    :   PDF forecast</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_poutl">
+<code class="descname">compute_poutl</code><span class="sig-paren">(</span><em>E</em>, <em>obs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_poutl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_poutl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Percentage of outliers.</p>
+<p>E       :   Ensemble class instance
+obs     :   observation array the same 2D size.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.compute_rps">
+<code class="descname">compute_rps</code><span class="sig-paren">(</span><em>thresholds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_rps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_rps" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>thresholds</strong> &#8211; 1D list/array, and in same order
+of first dimension of pfg.</li>
+<li><strong>self.pfg</strong> &#8211; 3D array: [probability index,lat,lon]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note:
+RPSg is the grid-point RPS.
+RPS is the area-average (ranked probability score)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.heaviside">
+<code class="descname">heaviside</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.heaviside"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.heaviside" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.probscores.ProbScores.rank_hist">
+<code class="descname">rank_hist</code><span class="sig-paren">(</span><em>obdata</em>, <em>ensdata</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.rank_hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.rank_hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for rank histogram over 3D.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.stats.roc">
+<span id="evac-stats-roc-module"></span><h2>evac.stats.roc module<a class="headerlink" href="#module-evac.stats.roc" title="Permalink to this headline">¶</a></h2>
+<p>Relative Operative Statistics.</p>
+<p>Mixin of deterministic and probabilistic scores. Can be used to generate a
+2x2 contingency table for ensembles.</p>
+<dl class="class">
+<dt id="evac.stats.roc.ROC">
+<em class="property">class </em><code class="descclassname">evac.stats.roc.</code><code class="descname">ROC</code><span class="sig-paren">(</span><em>nens=None</em>, <em>pf=None</em>, <em>ob=None</em>, <em>ensemble=None</em>, <em>obs_array=None</em>, <em>thresholds=None</em>, <em>overunder=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/roc.html#ROC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.roc.ROC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.stats.detscores.DetScores" title="evac.stats.detscores.DetScores"><code class="xref py py-class docutils literal"><span class="pre">evac.stats.detscores.DetScores</span></code></a>, <a class="reference internal" href="#evac.stats.probscores.ProbScores" title="evac.stats.probscores.ProbScores"><code class="xref py py-class docutils literal"><span class="pre">evac.stats.probscores.ProbScores</span></code></a></p>
+<dl class="method">
+<dt id="evac.stats.roc.ROC.compute_roc_contingency">
+<code class="descname">compute_roc_contingency</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/roc.html#ROC.compute_roc_contingency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.roc.ROC.compute_roc_contingency" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.roc.ROC.compute_roca">
+<code class="descname">compute_roca</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/roc.html#ROC.compute_roca"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.roc.ROC.compute_roca" title="Permalink to this definition">¶</a></dt>
+<dd><p>Area under ROC curve.</p>
+<p>TODO.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.roc.ROC.compute_rocas">
+<code class="descname">compute_rocas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/roc.html#ROC.compute_rocas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.roc.ROC.compute_rocas" title="Permalink to this definition">¶</a></dt>
+<dd><p>ROC area skill score.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.stats.sal">
+<span id="evac-stats-sal-module"></span><h2>evac.stats.sal module<a class="headerlink" href="#module-evac.stats.sal" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Make subclass of ObjectBased.</li>
+</ul>
+</dd>
+</dl>
+<dl class="class">
+<dt id="evac.stats.sal.SAL">
+<em class="property">class </em><code class="descclassname">evac.stats.sal.</code><code class="descname">SAL</code><span class="sig-paren">(</span><em>Wctrl_fpath</em>, <em>Wmod_fpath</em>, <em>vrbl=False</em>, <em>utc=False</em>, <em>lv=False</em>, <em>accum_hr=False</em>, <em>radar_datadir=False</em>, <em>thresh=False</em>, <em>footprint=500</em>, <em>ctrl_fmt='obs'</em>, <em>mod_fmt='WRF'</em>, <em>dx=False</em>, <em>dy=False</em>, <em>f=0.06666666666666667</em>, <em>datafmt=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.stats.sal.SAL.active_px">
+<code class="descname">active_px</code><span class="sig-paren">(</span><em>data='ctrl'</em>, <em>fmt='pc'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.active_px"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.active_px" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of pixels included in chosen dataset&#8217;s objects.
+data is set to &#8216;ctrl&#8217; or &#8216;mod&#8217;.
+Expressed as percentage.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.compute_L1">
+<code class="descname">compute_L1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.compute_L1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.compute_L1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.compute_L2">
+<code class="descname">compute_L2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.compute_L2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.compute_L2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.compute_V">
+<code class="descname">compute_V</code><span class="sig-paren">(</span><em>dic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.compute_V"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.compute_V" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.compute_amplitude">
+<code class="descname">compute_amplitude</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.compute_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.compute_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.compute_d">
+<code class="descname">compute_d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.compute_d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.compute_d" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.compute_location">
+<code class="descname">compute_location</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.compute_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.compute_location" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.compute_r">
+<code class="descname">compute_r</code><span class="sig-paren">(</span><em>dic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.compute_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.compute_r" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.compute_structure">
+<code class="descname">compute_structure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.compute_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.compute_structure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.get_radar_verif">
+<code class="descname">get_radar_verif</code><span class="sig-paren">(</span><em>utc</em>, <em>datapath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.get_radar_verif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.get_radar_verif" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.identify_objects">
+<code class="descname">identify_objects</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.identify_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.identify_objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.object_operators">
+<code class="descname">object_operators</code><span class="sig-paren">(</span><em>dic</em>, <em>typ=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.object_operators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.object_operators" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.sal.SAL.vector_diff_km">
+<code class="descname">vector_diff_km</code><span class="sig-paren">(</span><em>v1</em>, <em>v2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/sal.html#SAL.vector_diff_km"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.sal.SAL.vector_diff_km" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="evac.stats.sal.SAL.vrbl">
+<code class="descname">vrbl</code><em class="property"> = None</em><a class="headerlink" href="#evac.stats.sal.SAL.vrbl" title="Permalink to this definition">¶</a></dt>
+<dd><p>fig, ax = plt.subplots(1)
+ax.pcolor(self.C[&#8216;data&#8217;])
+fig.savefig(&#8216;/home/jrlawson/public_html/bowecho/SALtests/obs_pcolor.png&#8217;)
+plt.close(fig)
+fig, ax = plt.subplots(1)
+ax.pcolor(self.M[&#8216;data&#8217;])
+fig.savefig(&#8216;/home/jrlawson/public_html/bowecho/SALtests/mod_pcolor.png&#8217;)
+plt.close(fig)
+import pdb; pdb.set_trace()</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.stats">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-evac.stats" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -66,13 +899,33 @@ relevant for meteorology.</p>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">evac.stats package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-evac.stats.briar">evac.stats.briar module</a></li>
+<li><a class="reference internal" href="#module-evac.stats.casati">evac.stats.casati module</a></li>
+<li><a class="reference internal" href="#module-evac.stats.detscores">evac.stats.detscores module</a></li>
+<li><a class="reference internal" href="#module-evac.stats.diffenergy">evac.stats.diffenergy module</a></li>
+<li><a class="reference internal" href="#module-evac.stats.forecastvalue">evac.stats.forecastvalue module</a></li>
+<li><a class="reference internal" href="#module-evac.stats.fss">evac.stats.fss module</a></li>
+<li><a class="reference internal" href="#module-evac.stats.misc_stats">evac.stats.misc_stats module</a></li>
+<li><a class="reference internal" href="#module-evac.stats.objectbased">evac.stats.objectbased module</a></li>
+<li><a class="reference internal" href="#module-evac.stats.probscores">evac.stats.probscores module</a></li>
+<li><a class="reference internal" href="#module-evac.stats.roc">evac.stats.roc module</a></li>
+<li><a class="reference internal" href="#module-evac.stats.sal">evac.stats.sal module</a></li>
+<li><a class="reference internal" href="#module-evac.stats">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="evac.html">evac package</a><ul>
-      <li>Previous: <a href="evac.plot.xsection.html" title="previous chapter"><cite>plot.xsection</cite></a></li>
-      <li>Next: <a href="evac.stats.casati.html" title="next chapter"><cite>stats.casati</cite></a></li>
+      <li>Previous: <a href="evac.plot.html" title="previous chapter">evac.plot package</a></li>
+      <li>Next: <a href="evac.stoch.html" title="next chapter">evac.stoch package</a></li>
   </ul></li>
   </ul></li>
 </ul>

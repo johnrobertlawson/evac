@@ -1,16 +1,102 @@
-`plot`
-=======
+evac.plot package
+=================
 
-Plotting functions and objects that mostly wrap matplotlib.
+Submodules
+----------
 
-.. toctree::
-    evac.plot.birdseye
-    evac.plot.clicker
-    evac.plot.colourtables
-    evac.plot.figure
-    evac.plot.heatmap
-    evac.plot.map
-    evac.plot.scales
-    evac.plot.skewt
-    evac.plot.timeseries
-    evac.plot.xsection
+evac.plot.birdseye module
+-------------------------
+
+.. automodule:: evac.plot.birdseye
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.plot.clicker module
+------------------------
+
+.. automodule:: evac.plot.clicker
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.plot.colourtables module
+-----------------------------
+
+.. automodule:: evac.plot.colourtables
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.plot.figure module
+-----------------------
+
+.. automodule:: evac.plot.figure
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.plot.heatmap module
+------------------------
+
+.. automodule:: evac.plot.heatmap
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.plot.map module
+--------------------
+
+.. automodule:: evac.plot.map
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.plot.performance module
+----------------------------
+
+.. automodule:: evac.plot.performance
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.plot.scales module
+-----------------------
+
+.. automodule:: evac.plot.scales
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.plot.skewt module
+----------------------
+
+.. automodule:: evac.plot.skewt
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.plot.timeseries module
+---------------------------
+
+.. automodule:: evac.plot.timeseries
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.plot.xsection module
+-------------------------
+
+.. automodule:: evac.plot.xsection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: evac.plot
+    :members:
+    :undoc-members:
+    :show-inheritance:

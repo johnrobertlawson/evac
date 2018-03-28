@@ -52,7 +52,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<div class="viewcode-block" id="TimeSeries"><a class="viewcode-back" href="../../../evac.plot.timeseries.html#evac.plot.timeseries.TimeSeries">[docs]</a><span class="k">class</span> <span class="nc">TimeSeries</span><span class="p">:</span>
+<div class="viewcode-block" id="TimeSeries"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.timeseries.TimeSeries">[docs]</a><span class="k">class</span> <span class="nc">TimeSeries</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ensemble</span><span class="p">,</span><span class="n">latlon</span><span class="p">,</span><span class="n">locname</span><span class="p">):</span>
         <span class="c1"># This is a list of instances</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ensemble</span> <span class="o">=</span> <span class="n">ensemble</span>
@@ -60,7 +60,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lon</span> <span class="o">=</span> <span class="n">latlon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">locname</span> <span class="o">=</span> <span class="n">locname</span>
 
-<div class="viewcode-block" id="TimeSeries.meteogram"><a class="viewcode-back" href="../../../evac.plot.timeseries.html#evac.plot.timeseries.TimeSeries.meteogram">[docs]</a>    <span class="k">def</span> <span class="nf">meteogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">outdir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ncf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="TimeSeries.meteogram"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.timeseries.TimeSeries.meteogram">[docs]</a>    <span class="k">def</span> <span class="nf">meteogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">outdir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ncf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                         <span class="n">nct</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">dom</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 

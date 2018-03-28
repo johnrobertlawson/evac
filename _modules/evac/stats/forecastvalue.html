@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.stats.forecastvalue &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.stats.forecastvalue</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+
+<span class="kn">from</span> <span class="nn">evac.utils.exceptions</span> <span class="k">import</span> <span class="n">FormatError</span><span class="p">,</span> <span class="n">NonsenseError</span>
+<span class="kn">from</span> <span class="nn">evac.stats.detscores</span> <span class="k">import</span> <span class="n">DetScores</span>
+
+<div class="viewcode-block" id="ForecastValue"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.forecastvalue.ForecastValue">[docs]</a><span class="k">class</span> <span class="nc">ForecastValue</span><span class="p">(</span><span class="n">DetScores</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">CLs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Compute FV, forecast value, as Buizza 2001.</span>
+
+<span class="sd">        Example that returns FV for exceeding 0.1 units (e.g., QPF)</span>
+<span class="sd">        using the default range of cost/loss ratios:</span>
+<span class="sd">            FV = ForecastValue(fcst_arr=arr1,obs_arr=arr2,thresh=0.l,</span>
+<span class="sd">                                overunder=&#39;over&#39;)</span>
+
+<span class="sd">        Then, access the FV for a given cost/loss ratio with:</span>
+<span class="sd">            FV.get(0.02)</span>
+
+<span class="sd">        This will return None is the cost/lost ratio doesn&#39;t exist.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            CLs (N.ndarray, tuple, list)    :   Cost-loss ratios to compute</span>
+<span class="sd">                                                    FV as function of each ratio</span>
+<span class="sd">            ``args``,``kwargs``             :   Arguments sent to the superclass</span>
+<span class="sd">                                                    to compute 2x2 contigency.</span>
+<span class="sd">                                                    Use keywords, that&#39;s best.</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># super(DetScores,self).__init__(*args,**kwargs)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pod</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pfd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pfd</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pcli</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pcli</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_kss</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">CLs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">CLs</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">1.01</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">CLs</span><span class="p">,(</span><span class="nb">int</span><span class="p">,</span><span class="nb">float</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">)):</span>
+            <span class="n">CLs</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">CLs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FormatError</span><span class="p">(</span><span class="s2">&quot;CLs argument must be one of the following: </span><span class="se">\n</span><span class="s2">&quot;</span>
+                              <span class="s2">&quot;int, float, N.ndarray, tuple, list.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CLs</span> <span class="o">=</span> <span class="n">CLs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">FVs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">cl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">CLs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FVs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_FV</span><span class="p">(</span><span class="n">cl</span><span class="p">))</span>
+
+<div class="viewcode-block" id="ForecastValue.compute_FV"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.forecastvalue.ForecastValue.compute_FV">[docs]</a>    <span class="k">def</span> <span class="nf">compute_FV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cl</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Compute FV.</span>
+
+<span class="sd">        Note the variable &quot;x&quot; is the minimum of C/L ratio and P_cli.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cl (float)  :   Cost/loss ratio</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># For ease of reading</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cl</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">pcli</span><span class="p">)</span>
+
+        <span class="c1"># Eq. 26 in Buizza 2001</span>
+        <span class="n">FV</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kss</span> <span class="o">-</span> <span class="p">(</span>
+            <span class="c1"># Numerator</span>
+            <span class="p">(</span> <span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">pod</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pcli</span><span class="o">-</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pfd</span><span class="o">*</span><span class="p">(</span><span class="n">cl</span><span class="o">-</span><span class="n">x</span><span class="p">))</span> <span class="p">)</span><span class="o">/</span>
+            <span class="c1"># Denominator</span>
+            <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pcli</span><span class="o">*</span><span class="n">cl</span><span class="p">))</span>
+        <span class="p">)</span>
+
+        <span class="c1"># FV2 = self.kss - ( (1-self.pod)*(</span>
+                        <span class="c1"># (self.pcli-cl)/</span>
+                        <span class="c1"># (cl*(1-self.pcli))) )</span>
+
+        <span class="k">return</span> <span class="n">FV</span></div>
+
+<div class="viewcode-block" id="ForecastValue.get_FV"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.forecastvalue.ForecastValue.get_FV">[docs]</a>    <span class="k">def</span> <span class="nf">get_FV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cl</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the FV for a given cost/loss ratio, otherwise None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">clidx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CLs</span> <span class="o">==</span> <span class="n">cl</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">clidx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">FV</span><span class="p">[</span><span class="n">clidx</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">clidx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No C/L ratio found for that cl value&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NonsenseError</span><span class="p">(</span><span class="s2">&quot;C/L ratio is ambiguous.&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

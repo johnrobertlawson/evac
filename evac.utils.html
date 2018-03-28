@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>utils &#8212; evac 0.1.0 documentation</title>
+    <title>evac.utils package &#8212; evac 0.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,8 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="utils.defaults" href="evac.utils.defaults.html" />
-    <link rel="prev" title="stoch.perturbations" href="evac.stoch.perturbations.html" />
+    <link rel="prev" title="evac.stoch package" href="evac.stoch.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -43,22 +42,924 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="utils">
-<h1><cite>utils</cite><a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h1>
-<p>Utilities for ensembles that don&#8217;t fit into other folders.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="evac.utils.defaults.html"><cite>utils.defaults</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.utils.evac_numbers.html"><cite>utils.evac_numbers</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.utils.evac_types.html"><cite>utils.evac_types</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.utils.exceptions.html"><cite>utils.exceptions</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.utils.get_data.html"><cite>utils.get_data</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.utils.gis_tools.html"><cite>utils.gis_tools</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.utils.met_constants.html"><cite>utils.met_constants</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.utils.misc_tools.html"><cite>utils.misc_tools</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.utils.reproject_tools.html"><cite>utils.reproject_tools</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.utils.unix_tools.html"><cite>utils.unix_tools</cite></a></li>
+  <div class="section" id="evac-utils-package">
+<h1>evac.utils package<a class="headerlink" href="#evac-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-evac.utils.defaults">
+<span id="evac-utils-defaults-module"></span><h2>evac.utils.defaults module<a class="headerlink" href="#module-evac.utils.defaults" title="Permalink to this headline">¶</a></h2>
+<p>Default settings that are used when the user does not specify their own.</p>
+<dl class="class">
+<dt id="evac.utils.defaults.Defaults">
+<em class="property">class </em><code class="descclassname">evac.utils.defaults.</code><code class="descname">Defaults</code><a class="reference internal" href="_modules/evac/utils/defaults.html#Defaults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.defaults.Defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.utils.evac_numbers">
+<span id="evac-utils-evac-numbers-module"></span><h2>evac.utils.evac_numbers module<a class="headerlink" href="#module-evac.utils.evac_numbers" title="Permalink to this headline">¶</a></h2>
+<p>Scripts to check the nature of numbers.</p>
+<dl class="function">
+<dt id="evac.utils.evac_numbers.check_type">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">check_type</code><span class="sig-paren">(</span><em>n</em>, <em>typ</em>, <em>allow_array=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#check_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.check_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return true if input n is a given &#8216;type&#8217;. If n is an array, it
+checks if the dtype of the array matches the type. If the array is
+made up of many types, it raises an error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>n</strong> &#8211; Any object (N.ndarray, int, N.int32, N.float64...)</li>
+<li><strong>typ</strong> (<em>str</em>) &#8211; &#8216;int&#8217; is any type or dtype resembling an integer
+&#8216;float&#8217; is any type or dtype resembling a float</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>TODO: raise error if array has more than one dtype.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.has_floats">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">has_floats</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#has_floats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.has_floats" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.has_integers">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">has_integers</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#has_integers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.has_integers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.has_numbers">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">has_numbers</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#has_numbers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.has_numbers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.is_array">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">is_array</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#is_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.is_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.is_float">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">is_float</code><span class="sig-paren">(</span><em>n</em>, <em>allow_array=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#is_float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.is_float" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.is_integer">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">is_integer</code><span class="sig-paren">(</span><em>n</em>, <em>allow_array=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#is_integer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.is_integer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_numbers.is_number">
+<code class="descclassname">evac.utils.evac_numbers.</code><code class="descname">is_number</code><span class="sig-paren">(</span><em>n</em>, <em>allow_array=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_numbers.html#is_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_numbers.is_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-evac.utils.evac_types">
+<span id="evac-utils-evac-types-module"></span><h2>evac.utils.evac_types module<a class="headerlink" href="#module-evac.utils.evac_types" title="Permalink to this headline">¶</a></h2>
+<p>Custom type checks.</p>
+<dl class="function">
+<dt id="evac.utils.evac_types.enforce_same_dimensions">
+<code class="descclassname">evac.utils.evac_types.</code><code class="descname">enforce_same_dimensions</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_types.html#enforce_same_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_types.enforce_same_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.evac_types.is_list">
+<code class="descclassname">evac.utils.evac_types.</code><code class="descname">is_list</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/evac_types.html#is_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.evac_types.is_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-evac.utils.exceptions">
+<span id="evac-utils-exceptions-module"></span><h2>evac.utils.exceptions module<a class="headerlink" href="#module-evac.utils.exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Custom exceptions.</p>
+<dl class="exception">
+<dt id="evac.utils.exceptions.FormatError">
+<em class="property">exception </em><code class="descclassname">evac.utils.exceptions.</code><code class="descname">FormatError</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/exceptions.html#FormatError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.exceptions.FormatError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.utils.exceptions.PrettyException" title="evac.utils.exceptions.PrettyException"><code class="xref py py-class docutils literal"><span class="pre">evac.utils.exceptions.PrettyException</span></code></a></p>
+<p>Data is the wrong format or shape.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="evac.utils.exceptions.NonsenseError">
+<em class="property">exception </em><code class="descclassname">evac.utils.exceptions.</code><code class="descname">NonsenseError</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/exceptions.html#NonsenseError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.exceptions.NonsenseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.utils.exceptions.PrettyException" title="evac.utils.exceptions.PrettyException"><code class="xref py py-class docutils literal"><span class="pre">evac.utils.exceptions.PrettyException</span></code></a></p>
+<p>Data or argument doesn&#8217;t make any sense.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="evac.utils.exceptions.PrettyException">
+<em class="property">exception </em><code class="descclassname">evac.utils.exceptions.</code><code class="descname">PrettyException</code><span class="sig-paren">(</span><em>message</em>, <em>color=False</em>, <em>bold=False</em>, <em>underline=False</em>, <em>formatargs=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/exceptions.html#PrettyException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.exceptions.PrettyException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<p>Subclassed error that prints real pretty.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="evac.utils.exceptions.QCError">
+<em class="property">exception </em><code class="descclassname">evac.utils.exceptions.</code><code class="descname">QCError</code><span class="sig-paren">(</span><em>error='Quality Control error.'</em>, <em>pass_idx=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/exceptions.html#QCError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.exceptions.QCError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.utils.exceptions.PrettyException" title="evac.utils.exceptions.PrettyException"><code class="xref py py-class docutils literal"><span class="pre">evac.utils.exceptions.PrettyException</span></code></a></p>
+<p>Data has failed a quality control check.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="evac.utils.exceptions.WRFError">
+<em class="property">exception </em><code class="descclassname">evac.utils.exceptions.</code><code class="descname">WRFError</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/exceptions.html#WRFError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.exceptions.WRFError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.utils.exceptions.PrettyException" title="evac.utils.exceptions.PrettyException"><code class="xref py py-class docutils literal"><span class="pre">evac.utils.exceptions.PrettyException</span></code></a></p>
+<p>WRF run has broken somewhere.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.utils.get_data">
+<span id="evac-utils-get-data-module"></span><h2>evac.utils.get_data module<a class="headerlink" href="#module-evac.utils.get_data" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="evac.utils.get_data.RUC_URL">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">RUC_URL</code><span class="sig-paren">(</span><em>utc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#RUC_URL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.RUC_URL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns URL to download RUC file from nomads.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.RUC_fname">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">RUC_fname</code><span class="sig-paren">(</span><em>utc</em>, <em>filetype='grib'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#RUC_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.RUC_fname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns RUC filename for date.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.RUC_version">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">RUC_version</code><span class="sig-paren">(</span><em>utc</em>, <em>fname=False</em>, <em>URL=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#RUC_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.RUC_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the version/fname of RUC file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.getgefs">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">getgefs</code><span class="sig-paren">(</span><em>dates</em>, <em>download=1</em>, <em>split=1</em>, <em>lowres=0</em>, <em>custom_ens=0</em>, <em>control=1</em>, <em>coord='latlon'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#getgefs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.getgefs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This script downloads all variables for GEFS R2 reforecasts.
+All runs are initialised at 0000 UTC.</p>
+<p>Inputs (all optional unless stated):
+dates       :   YYYYMMDD, list of strings (mandatory)
+download    :   whether to download the data
+split       :   whether to split up the data
+lowres      :   whether to download times after T+190
+custom_ens  :   a custom list of perturbation ensemble members
+control     :   whether to download the control member
+coord       :   latlon/gaussian grid</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.getgfs">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">getgfs</code><span class="sig-paren">(</span><em>dates</em>, <em>hours</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#getgfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.getgfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads GFS analysis data.</p>
+<p>Inputs:
+dates       :   List of strings, YYYYMMDD
+hours       :   List of strings, HH</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.getnam">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">getnam</code><span class="sig-paren">(</span><em>dates</em>, <em>hours</em>, <em>datatype</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#getnam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.getnam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads NAM analysis and forecast data.</p>
+<p>Inputs:
+dates       :   List of strings, YYYYMMDD
+hours       :   List of strings, HH
+datatype    :   analysis or forecast.</p>
+<p>Optional arguments for forecasts via kwargs:
+tmax        :   maximum forecast time to download (inclusive)
+tint        :   internal (hr) between fetched forecasts</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.get_data.getruc">
+<code class="descclassname">evac.utils.get_data.</code><code class="descname">getruc</code><span class="sig-paren">(</span><em>utc</em>, <em>ncpath='./'</em>, <em>convert2nc=False</em>, <em>duplicate=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/get_data.html#getruc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.get_data.getruc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-evac.utils.gis_tools">
+<span id="evac-utils-gis-tools-module"></span><h2>evac.utils.gis_tools module<a class="headerlink" href="#module-evac.utils.gis_tools" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="evac.utils.gis_tools.TimeSfcLatLon">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">TimeSfcLatLon</code><span class="sig-paren">(</span><em>nc</em>, <em>varlist</em>, <em>times</em>, <em>latslons='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#TimeSfcLatLon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.TimeSfcLatLon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.check_same_dimensions">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">check_same_dimensions</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#check_same_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.check_same_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*args</strong> &#8211; A number of N.ndarray types</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if all arrays have the same size.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.check_vertical_coordinate">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">check_vertical_coordinate</code><span class="sig-paren">(</span><em>level</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#check_vertical_coordinate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.check_vertical_coordinate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check to see what type of level is requested by user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.closest">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">closest</code><span class="sig-paren">(</span><em>arr</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#closest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.closest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find index of closest value.
+Only working on 1D array right now.</p>
+<p>Inputs:
+val     :   required value
+arr     :   array of values</p>
+<p>Output:</p>
+<p>idx     :   index of closest value</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.closest_datetime">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">closest_datetime</code><span class="sig-paren">(</span><em>times</em>, <em>t</em>, <em>round=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#closest_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.closest_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find closest value in list of datetimes.
+Return index of closest.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>times</strong> (<em>list</em><em>,</em><em>tuple</em>) &#8211; collection of datetimes.</li>
+<li><strong>t</strong> (<em>datetime.datetime</em>) &#8211; required time</li>
+<li><strong>round</strong> (<em>bool</em><em>,</em><em>str</em>) &#8211; If False, return closest index only.
+If &#8216;afterinc&#8217;, return index of first time after t.
+(If closest time is identical to t, return that index)
+If &#8216;afterexc&#8217;, same, but if closest time = t, return one after.
+If &#8216;beforeinc&#8217;, return index of last time before t.
+(If closest time is identical to t, return that index)
+If &#8216;beforeexc&#8217;, same, but if closest time = t, return one before.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Index of times requests
+dtss[idx] (int): Number of seconds difference between the two.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">idx (int)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.combine_wind_components">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">combine_wind_components</code><span class="sig-paren">(</span><em>u</em>, <em>v</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#combine_wind_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.combine_wind_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.convert_tuple_to_dntimes">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">convert_tuple_to_dntimes</code><span class="sig-paren">(</span><em>times</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#convert_tuple_to_dntimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.convert_tuple_to_dntimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert tuple or tuple of tuples to datenum date format.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.convert_velocity_units">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">convert_velocity_units</code><span class="sig-paren">(</span><em>V</em>, <em>conversion</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#convert_velocity_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.convert_velocity_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a velocity from one unit to another.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>V</strong> &#8211; a number (int, float, array)</li>
+<li><strong>convert</strong> &#8211; &#8216;ms_kt&#8217; converts the output from m/s to knots.
+&#8216;ms_mph&#8217; converts from m/s to mph.
+&#8216;kt_ms&#8217; converts from knots to m/s.
+&#8216;kt_mph&#8217; converts from knots to mph.
+&#8216;mph_kt&#8217; converts from mph to knots.
+&#8216;mph_ms&#8217; converts from mph to m/s.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.csvprocess">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">csvprocess</code><span class="sig-paren">(</span><em>data</em>, <em>names</em>, <em>convert=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#csvprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.csvprocess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.datetime_to_timetuple">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">datetime_to_timetuple</code><span class="sig-paren">(</span><em>utc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#datetime_to_timetuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.datetime_to_timetuple" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.decompose_wind">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">decompose_wind</code><span class="sig-paren">(</span><em>wspd</em>, <em>wdir</em>, <em>wdir_fmt='deg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#decompose_wind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.decompose_wind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn a wind speed and direction into u and v components.</p>
+<p>Uses meteorological convention - so a westerly wind is 270.</p>
+<p>TODO: Add option to use bearings (westerly wind is 90) or mathematical
+(i.e., zero begins at 3 o&#8217;clock)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wspd</strong> &#8211; Wind speed. Can be float, integer, or N.ndarray</li>
+<li><strong>wdir</strong> &#8211; Wind direction. Can be float, integer, or N.ndarray.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Optional:</dt>
+<dd>wdir_fmt    :   wdir is degrees by default (&#8216;deg&#8217;). Use &#8216;rad&#8217; to use radians.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.determine_model">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">determine_model</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#determine_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.determine_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return model depending on naming convention.</p>
+<p>If no model exists, return false.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.dewpoint">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">dewpoint</code><span class="sig-paren">(</span><em>T</em>, <em>RH</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#dewpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.dewpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.dstack_loop">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">dstack_loop</code><span class="sig-paren">(</span><em>data</em>, <em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#dstack_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.dstack_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to stack numpy array (data) into &#8216;stack&#8217; object (obj).
+If obj doesn&#8217;t exist, then initialise it
+If obj does exist, stack data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.dstack_loop_v2">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">dstack_loop_v2</code><span class="sig-paren">(</span><em>data</em>, <em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#dstack_loop_v2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.dstack_loop_v2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Need to set obj = 0 at start of loop in master script</p>
+<p>Tries to stack numpy array (data) into &#8216;stack&#8217; object (obj).
+If obj doesn&#8217;t exist, then initialise it
+If obj does exist, stack data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.dt_from_fnames">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">dt_from_fnames</code><span class="sig-paren">(</span><em>f1</em>, <em>f2</em>, <em>model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#dt_from_fnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.dt_from_fnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Work out time difference between two data files
+from their naming scheme.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f1</strong><strong>,</strong><strong>f2</strong> (<em>str</em>) &#8211; filename, with or without extension</li>
+<li><strong>model</strong> (<em>str</em>) &#8211; model used to generate data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Difference between files, in seconds.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.ensure_datenum">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">ensure_datenum</code><span class="sig-paren">(</span><em>times</em>, <em>fmt='int'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#ensure_datenum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.ensure_datenum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure times are in list-of-datenums format.
+If not, convert them.</p>
+<p>Possibilities:
+times = 123456                                      #1
+times = (123456,)                                   #2
+times = (123456,234567)                             #3
+times = (2011,12,1,18,0,0)                          #4
+times = ((2011,12,1,18,0,0),(2011,12,2,6,0,0))      #5</p>
+<dl class="docutils">
+<dt>fmt</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">whether to return list of integers or an integer</span><dd>&#8216;int&#8217; or &#8216;list&#8217;</dd>
+</dl>
+<p>Output:
+dntimes = (123456,) or (123456,234567)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.ensure_datetime">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">ensure_datetime</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#ensure_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.ensure_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Possibilities:
+times = 123456                                      #1
+times = (123456,)                                   #2
+times = (123456,234567)                             #3
+times = (2011,12,1,18,0,0)                          #4
+times = ((2011,12,1,18,0,0),(2011,12,2,6,0,0))      #5
+times = datetime.datetime                           #6
+times = (datetime.datetime, datetime.datetime)      #7</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.ensure_timetuple">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">ensure_timetuple</code><span class="sig-paren">(</span><em>times</em>, <em>fmt='single'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#ensure_timetuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.ensure_timetuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>MAke sure time(s) are in six-item tuple format
+(YYYY,MM,DD,HH,MM,SS)</p>
+<dl class="docutils">
+<dt>fmt</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">whether to return a list of tuples or single tuple.</span><dd>&#8216;list&#8217; or &#8216;single&#8217;</dd>
+</dl>
+<p>Possibilities:
+times = 123456                                      #1
+times = (123456,)                                   #2
+times = (123456,234567)                             #3
+times = (2011,12,1,18,0,0)                          #4
+times = ((2011,12,1,18,0,0),(2011,12,2,6,0,0))      #5</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.find_time_index">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">find_time_index</code><span class="sig-paren">(</span><em>wrftime</em>, <em>reqtimetuple</em>, <em>tupleformat=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#find_time_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.find_time_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.generate_colours">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">generate_colours</code><span class="sig-paren">(</span><em>M</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#generate_colours"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.generate_colours" title="Permalink to this definition">¶</a></dt>
+<dd><p>M       :   Matplotlib instance
+n       :   number of colours you want</p>
+<p>Returns</p>
+<p>Usage: when cycling over n plots, the colour should
+be colourlist[n].</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.generate_image_loop">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">generate_image_loop</code><span class="sig-paren">(</span><em>dom='d03'</em>, <em>fpath='./'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#generate_image_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.generate_image_loop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.generate_times">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">generate_times</code><span class="sig-paren">(</span><em>idate</em>, <em>fdate</em>, <em>interval</em>, <em>fmt='timetuple'</em>, <em>inclusive=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#generate_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.generate_times" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>itime</strong> (<em>list</em><em>,</em><em>tuple</em>) &#8211; Start date/time. Format is
+YYYY,MM,DD,HH,MM,SS (calendar.timegm).</li>
+<li><strong>ftime</strong> (<em>list</em><em>,</em><em>tuple</em>) &#8211; End date/time. Same format as itime.</li>
+<li><strong>interval</strong> (<em>int</em>) &#8211; interval between output times, in seconds.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of times in datenum format.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.getXY">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">getXY</code><span class="sig-paren">(</span><em>lats</em>, <em>lons</em>, <em>ptlat</em>, <em>ptlon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#getXY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.getXY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output is lat, lon so y,x</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.get_cross_section">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">get_cross_section</code><span class="sig-paren">(</span><em>Alat</em>, <em>Alon</em>, <em>Blat</em>, <em>Blon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#get_cross_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.get_cross_section" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.get_latlon_idx">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">get_latlon_idx</code><span class="sig-paren">(</span><em>lats</em>, <em>lons</em>, <em>lat</em>, <em>lon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#get_latlon_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.get_latlon_idx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.get_level_naming">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">get_level_naming</code><span class="sig-paren">(</span><em>va</em>, <em>lv</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#get_level_naming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.get_level_naming" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.get_netcdf_naming">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">get_netcdf_naming</code><span class="sig-paren">(</span><em>model</em>, <em>t</em>, <em>dom=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#get_netcdf_naming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.get_netcdf_naming" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default:
+wrfout files don&#8217;t have an extension
+other files have .nc extension (convert first)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.get_sequence">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">get_sequence</code><span class="sig-paren">(</span><em>x</em>, <em>sos=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#get_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.get_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a sequence (tuple or list) for iteration.
+Avoids an error for strings/integers.
+SoS = 1 enables the check for a sequence of sequences (list of dates)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.gettopo">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">gettopo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#gettopo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.gettopo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.haversine_baker">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">haversine_baker</code><span class="sig-paren">(</span><em>lon1</em>, <em>lat1</em>, <em>lon2</em>, <em>lat2</em>, <em>radians=False</em>, <em>earth_rad=6371.227</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#haversine_baker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.haversine_baker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows to calculate geographical distance
+using the haversine formula.
+:param lon1: longitude of the first set of locations
+:type lon1: numpy.ndarray
+:param lat1: latitude of the frist set of locations
+:type lat1: numpy.ndarray
+:param lon2: longitude of the second set of locations
+:type lon2: numpy.float64
+:param lat2: latitude of the second set of locations
+:type lat2: numpy.float64
+:keyword radians: states if locations are given in terms of radians
+:type radians: bool
+:keyword earth_rad: radius of the earth in km
+:type earth_rad: float
+:returns: geographical distance in km
+:rtype: numpy.ndarray</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.hgt_from_sigma">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">hgt_from_sigma</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#hgt_from_sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.hgt_from_sigma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.interp2point">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">interp2point</code><span class="sig-paren">(</span><em>data</em>, <em>lat_loc</em>, <em>lon_loc</em>, <em>lat</em>, <em>lon</em>, <em>lvidx=0</em>, <em>xyidx=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#interp2point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.interp2point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.interp_latlon">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">interp_latlon</code><span class="sig-paren">(</span><em>data</em>, <em>lat</em>, <em>lon</em>, <em>lats</em>, <em>lons</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#interp_latlon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.interp_latlon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.latlon_1D">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">latlon_1D</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#latlon_1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.latlon_1D" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.load_data">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">load_data</code><span class="sig-paren">(</span><em>folder</em>, <em>fname</em>, <em>format='pickle'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load array from file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.lookup_time">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">lookup_time</code><span class="sig-paren">(</span><em>str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#lookup_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.lookup_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.make_subplot_label">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">make_subplot_label</code><span class="sig-paren">(</span><em>ax</em>, <em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#make_subplot_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.make_subplot_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.netcdf_files_in">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">netcdf_files_in</code><span class="sig-paren">(</span><em>folder</em>, <em>dom=1</em>, <em>init_time=0</em>, <em>model='auto'</em>, <em>return_model=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#netcdf_files_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.netcdf_files_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hunt through given folder to find the right netcdf file for data.
+Return ncpath (absolute path to file) and model (RUC, WRF, etc).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>folder</strong> &#8211; Absolute path to directory</li>
+<li><strong>dom</strong> &#8211; specify domain. None specified if zero.</li>
+<li><strong>init_time</strong> &#8211; initialisation time. Can be tuple or datenum.
+If zero, then folder must contain one unambiguous file.</li>
+<li><strong>model</strong> &#8211; Default: automatically detect the type of netcdf file
+(RUC data, wrfout file, etc)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Absolute path to file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ncpath</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.p_interpol">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">p_interpol</code><span class="sig-paren">(</span><em>dom</em>, <em>var</em>, <em>ncfolder</em>, <em>datestr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#p_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.p_interpol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.padded_times">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">padded_times</code><span class="sig-paren">(</span><em>timeseq</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#padded_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.padded_times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.return_subdomain">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">return_subdomain</code><span class="sig-paren">(</span><em>data</em>, <em>lats</em>, <em>lons</em>, <em>Nlim</em>, <em>Elim</em>, <em>Slim</em>, <em>Wlim</em>, <em>fmt='latlon'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#return_subdomain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.return_subdomain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns smaller domain of data and lats/lons based
+on specified limits.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.save_data">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">save_data</code><span class="sig-paren">(</span><em>data</em>, <em>folder</em>, <em>fname</em>, <em>format='pickle'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#save_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.save_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save array to file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.string_from_time">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">string_from_time</code><span class="sig-paren">(</span><em>usage</em>, <em>t</em>, <em>dom=0</em>, <em>strlen=0</em>, <em>conven=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#string_from_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.string_from_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>conven  :   convection of MM/DD versus DD/MM</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.thinned_barbs">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">thinned_barbs</code><span class="sig-paren">(</span><em>pres</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#thinned_barbs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.thinned_barbs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.timetuple_to_datetime">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">timetuple_to_datetime</code><span class="sig-paren">(</span><em>utc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#timetuple_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.timetuple_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.vstack_loop">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">vstack_loop</code><span class="sig-paren">(</span><em>data</em>, <em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#vstack_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.vstack_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Need to set obj = 0 at start of loop in master script</p>
+<p>Tries to stack numpy array (data) into &#8216;stack&#8217; object (obj).
+If obj doesn&#8217;t exist, then initialise it
+If obj does exist, stack data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.wrfout_files_in">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">wrfout_files_in</code><span class="sig-paren">(</span><em>folders</em>, <em>dom=0</em>, <em>init_time='notset'</em>, <em>descend=1</em>, <em>avoid=0</em>, <em>unambiguous=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#wrfout_files_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.wrfout_files_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hunt through given folder(s) to find all occurrences of wrfout
+files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>folders</strong> &#8211; list of absolute paths to directories</li>
+<li><strong>dom</strong> &#8211; specify domain. None specified if zero.</li>
+<li><strong>init_time</strong> &#8211; tuple of initialisation time</li>
+<li><strong>descend</strong> &#8211; boolean: go into subfolders</li>
+<li><strong>avoid</strong> &#8211; string of filenames. if a subfolder contains
+the string, do not descend into this one.</li>
+<li><strong>unambiguous</strong> &#8211; only return a single absolute path, else throw
+an Exception.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of absolute paths to wrfout files</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">wrfouts</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.xs_distance">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">xs_distance</code><span class="sig-paren">(</span><em>Alat</em>, <em>Alon</em>, <em>Blat</em>, <em>Blon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#xs_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.xs_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-evac.utils.met_constants">
+<span id="evac-utils-met-constants-module"></span><h2>evac.utils.met_constants module<a class="headerlink" href="#module-evac.utils.met_constants" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-evac.utils.misc_tools">
+<span id="evac-utils-misc-tools-module"></span><h2>evac.utils.misc_tools module<a class="headerlink" href="#module-evac.utils.misc_tools" title="Permalink to this headline">¶</a></h2>
+<p>Miscellaneous functions like decorators.</p>
+<dl class="function">
+<dt id="evac.utils.misc_tools.loop_me">
+<code class="descclassname">evac.utils.misc_tools.</code><code class="descname">loop_me</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/misc_tools.html#loop_me"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.misc_tools.loop_me" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO: a decorator function that loops an existing function
+over all arguments passed.</p>
+<p>args should be a list of 1D numpy arrays, tuples, or lists</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.misc_tools.time_me">
+<code class="descclassname">evac.utils.misc_tools.</code><code class="descname">time_me</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/misc_tools.html#time_me"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.misc_tools.time_me" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for timing functions.</p>
+<p>Usage:</p>
+<p>&#64;time_me
+def function():</p>
+<blockquote>
+<div>pass</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.utils.reproject_tools">
+<span id="evac-utils-reproject-tools-module"></span><h2>evac.utils.reproject_tools module<a class="headerlink" href="#module-evac.utils.reproject_tools" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.utils.reproject_tools.HRRR_native_grid">
+<em class="property">class </em><code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">HRRR_native_grid</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#HRRR_native_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.HRRR_native_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.utils.reproject_tools.WRF_native_grid" title="evac.utils.reproject_tools.WRF_native_grid"><code class="xref py py-class docutils literal"><span class="pre">evac.utils.reproject_tools.WRF_native_grid</span></code></a></p>
+<p>AS WRF_native_grid, but with some info about operational HRRR.</p>
+<dl class="method">
+<dt id="evac.utils.reproject_tools.HRRR_native_grid.load_attrs">
+<code class="descname">load_attrs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#HRRR_native_grid.load_attrs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.HRRR_native_grid.load_attrs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Over-riden from parent.</p>
+<p>TODO: get rid of this and just load from HRRR object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.utils.reproject_tools.HRRR_native_grid.load_wrfout">
+<code class="descname">load_wrfout</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#HRRR_native_grid.load_wrfout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.HRRR_native_grid.load_wrfout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Over-riden from parent.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="evac.utils.reproject_tools.VerifGrid">
+<em class="property">class </em><code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">VerifGrid</code><span class="sig-paren">(</span><em>W</em>, <em>nx</em>, <em>ny</em>, <em>xy1D=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#VerifGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.VerifGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>The verification grid should be inside the 1 km domain.</p>
+<p>Roughly 5 km res?</p>
+<p>W is the 1 km WRFOut instance</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="evac.utils.reproject_tools.WRF_native_grid">
+<em class="property">class </em><code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">WRF_native_grid</code><span class="sig-paren">(</span><em>fpath</em>, <em>resolution='i'</em>, <em>xy1D=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#WRF_native_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.WRF_native_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.utils.reproject_tools.WRF_native_grid.combine_scopes">
+<code class="descname">combine_scopes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#WRF_native_grid.combine_scopes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.WRF_native_grid.combine_scopes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put kwargs dictionary into self&#8217;s namespace</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.utils.reproject_tools.WRF_native_grid.generate_basemap">
+<code class="descname">generate_basemap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#WRF_native_grid.generate_basemap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.WRF_native_grid.generate_basemap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.utils.reproject_tools.WRF_native_grid.load_attrs">
+<code class="descname">load_attrs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#WRF_native_grid.load_attrs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.WRF_native_grid.load_attrs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.utils.reproject_tools.WRF_native_grid.load_corners">
+<code class="descname">load_corners</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#WRF_native_grid.load_corners"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.WRF_native_grid.load_corners" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.utils.reproject_tools.WRF_native_grid.load_wrfout">
+<code class="descname">load_wrfout</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#WRF_native_grid.load_wrfout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.WRF_native_grid.load_wrfout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.reproject_tools.create_WRFgrid">
+<code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">create_WRFgrid</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#create_WRFgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.create_WRFgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs an instance of WRF_native_grid to return the vitals.</p>
+<p>f   -   absolute path to wrfout file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.reproject_tools.create_new_grid">
+<code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">create_new_grid</code><span class="sig-paren">(</span><em>Nlim=None</em>, <em>Elim=None</em>, <em>Slim=None</em>, <em>Wlim=None</em>, <em>proj='merc'</em>, <em>lat_ts=None</em>, <em>resolution='i'</em>, <em>nx=None</em>, <em>ny=None</em>, <em>tlat1=30.0</em>, <em>tlat2=60.0</em>, <em>cen_lat=None</em>, <em>cen_lon=None</em>, <em>lats=None</em>, <em>lons=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#create_new_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.create_new_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new domain for interpolating to, for instance.</p>
+<p>The following are mandatory arguments for mercator (&#8216;merc&#8217;):
+Nlim,Elim,Slim,Wlim = lat/lon/lat/lon limits for north/east/south/west respectively
+lat_ts = latitude of true scale?
+nx,ny = number of points in the x/y direction respectively</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.reproject_tools.reproject">
+<code class="descclassname">evac.utils.reproject_tools.</code><code class="descname">reproject</code><span class="sig-paren">(</span><em>data_orig</em>, <em>xx_orig=False</em>, <em>yy_orig=False</em>, <em>lats_orig=False</em>, <em>lons_orig=False</em>, <em>newgrid=False</em>, <em>xx_new=False</em>, <em>yy_new=False</em>, <em>method='linear'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/reproject_tools.html#reproject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.reproject_tools.reproject" title="Permalink to this definition">¶</a></dt>
+<dd><p>data_orig               -   N.ndarray of original data (2D?)
+xx_orig,yy_orig         -   x-/y-axis indices of original data straight out a m(lons,lats)
+lats_orig,lons_orig     -   lats/lons of original data (shape?)
+newgrid                 -   basemap class classobject</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.utils.unix_tools">
+<span id="evac-utils-unix-tools-module"></span><h2>evac.utils.unix_tools module<a class="headerlink" href="#module-evac.utils.unix_tools" title="Permalink to this headline">¶</a></h2>
+<p>Utility scripts to help with directory, file, etc issues</p>
+<dl class="function">
+<dt id="evac.utils.unix_tools.bridge">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">bridge</code><span class="sig-paren">(</span><em>command</em>, <em>frompath</em>, <em>topath</em>, <em>catch_overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#bridge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.bridge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy, move, soft-link.</p>
+<p>Args:</p>
+<dl class="docutils">
+<dt>command</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(str) - must be one of &#8220;copy&#8221;, &#8220;softlink&#8221;,</span><dd>&#8220;move&#8221;.</dd>
+</dl>
+<p>frompath    :   (str,Path) - absolute path to origin directory or file
+topath      :   (str,Path) - absolute path to destination directory or</p>
+<blockquote>
+<div>file. If topath is only a directory, the link will
+be the same filename as the origin.</div></blockquote>
+<dl class="docutils">
+<dt>catch_overwrite</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(bool) - if True, raise Exception if</span><dd>topath already exists</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.bridge_multi">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">bridge_multi</code><span class="sig-paren">(</span><em>orders</em>, <em>fromlist=False</em>, <em>todir=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#bridge_multi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.bridge_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Soft-link, copy, or move multiple items.</p>
+<p>Args:
+orders      :   dictionary with the following layout:</p>
+<blockquote>
+<div>dict( (frompath,topath)=cmd)
+If orders is string, treat it as command,
+and require arguments fromlist and todir.</div></blockquote>
+<p>where</p>
+<p>cmd is &#8216;copy&#8217;,&#8217;softlink&#8217;, or &#8216;move&#8217;
+frompath/topath is absolute path of origin/destination</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.dir_from_naming">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">dir_from_naming</code><span class="sig-paren">(</span><em>root</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#dir_from_naming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.dir_from_naming" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate file path from arguments</p>
+<p>Inputs:
+root    :    file path base
+args     :    list of arguments to join as separate folders</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.edit_namelist">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">edit_namelist</code><span class="sig-paren">(</span><em>f</em>, <em>sett</em>, <em>newval</em>, <em>absolute=False</em>, <em>doms=1</em>, <em>samealldoms=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#edit_namelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.edit_namelist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.enforce_pathobj">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">enforce_pathobj</code><span class="sig-paren">(</span><em>obj</em>, <em>path_type='posix'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#enforce_pathobj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.enforce_pathobj" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.softlink">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">softlink</code><span class="sig-paren">(</span><em>frompath</em>, <em>topath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#softlink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.softlink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arguments must be path objects or strings.</p>
+<p>Args:</p>
+<p>frompath    :   (str,Path) - absolute path to origin directory or file
+topath      :   (str,Path) - absolute path to destination directory or</p>
+<blockquote>
+<div>file. If topath is only a directory, the link will
+be the same filename as the origin.</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.ssh_client">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">ssh_client</code><span class="sig-paren">(</span><em>ky</em>, <em>domain</em>, <em>username</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#ssh_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.ssh_client" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.trycreate">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">trycreate</code><span class="sig-paren">(</span><em>loc</em>, <em>parents=True</em>, <em>exist_ok=True</em>, <em>loc_is_dir=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#trycreate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.trycreate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Args:</p>
+<dl class="docutils">
+<dt>loc</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(Path,str) - path-like object or string to directory</span><dd>or file. If loc is a directory, this method will attempt to
+create a folder if it doesn&#8217;t already exist. If loc is
+a file, its parent directory will be treated as loc.</dd>
+</dl>
+<p>parents  :   (bool) - if True, then equivalent to mkdir -p &lt;/path/&gt;
+exist_ok    :   (bool) - if True, then warnings are ignored about folder already</p>
+<blockquote>
+<div>existing.</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.unix_tools.wowprint">
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">wowprint</code><span class="sig-paren">(</span><em>message</em>, <em>color='red'</em>, <em>bold=True</em>, <em>underline=False</em>, <em>formatargs=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#wowprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.wowprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print with colour/bold colorasis on certain things!</p>
+<dl class="docutils">
+<dt>message</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(str) - string with any colorasised</span><dd>item surrounded by two asterisks on both
+sides. These are replaced.</dd>
+<dt>color</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(str,bool) - the colour of the colorasised</span><dd>text. If False, don&#8217;t colorasise.</dd>
+</dl>
+<p>Usage:</p>
+<p>wowprint(&#8220;The program <strong>prog</strong> is broken&#8221;,color=&#8217;red&#8217;)
+wowprint(&#8220;The program {} is broken&#8221;,formatargs=(&#8216;prog&#8217;,),color=&#8217;blue&#8217;,</p>
+<blockquote>
+<div>underline=True)</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-evac.utils" title="Permalink to this headline">¶</a></h2>
+<p>Add any <a href="#id1"><span class="problematic" id="id2">*</span></a>_tools modules to utils namespace
+to make it easier to import.</p>
 </div>
 </div>
 
@@ -67,13 +968,31 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">evac.utils package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-evac.utils.defaults">evac.utils.defaults module</a></li>
+<li><a class="reference internal" href="#module-evac.utils.evac_numbers">evac.utils.evac_numbers module</a></li>
+<li><a class="reference internal" href="#module-evac.utils.evac_types">evac.utils.evac_types module</a></li>
+<li><a class="reference internal" href="#module-evac.utils.exceptions">evac.utils.exceptions module</a></li>
+<li><a class="reference internal" href="#module-evac.utils.get_data">evac.utils.get_data module</a></li>
+<li><a class="reference internal" href="#module-evac.utils.gis_tools">evac.utils.gis_tools module</a></li>
+<li><a class="reference internal" href="#module-evac.utils.met_constants">evac.utils.met_constants module</a></li>
+<li><a class="reference internal" href="#module-evac.utils.misc_tools">evac.utils.misc_tools module</a></li>
+<li><a class="reference internal" href="#module-evac.utils.reproject_tools">evac.utils.reproject_tools module</a></li>
+<li><a class="reference internal" href="#module-evac.utils.unix_tools">evac.utils.unix_tools module</a></li>
+<li><a class="reference internal" href="#module-evac.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="evac.html">evac package</a><ul>
-      <li>Previous: <a href="evac.stoch.perturbations.html" title="previous chapter"><cite>stoch.perturbations</cite></a></li>
-      <li>Next: <a href="evac.utils.defaults.html" title="next chapter"><cite>utils.defaults</cite></a></li>
+      <li>Previous: <a href="evac.stoch.html" title="previous chapter">evac.stoch package</a></li>
   </ul></li>
   </ul></li>
 </ul>

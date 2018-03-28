@@ -1,13 +1,46 @@
-`stoch`
-=======
+evac.stoch package
+==================
 
-Functions to create stochastic and fractal perturbations for
-ensembles. See also stochWRF:
+Submodules
+----------
 
-www.github.com/johnrobertlawson/stochWRF.git
+evac.stoch.fractal_tools module
+-------------------------------
 
-.. toctree::
-    evac.stoch.fractal_tools
-    evac.stoch.ifsfractal
-    evac.stoch.lovejoy_fractal
-    evac.stoch.perturbations
+.. automodule:: evac.stoch.fractal_tools
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.stoch.ifsfractal module
+----------------------------
+
+.. automodule:: evac.stoch.ifsfractal
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.stoch.lovejoy_fractal module
+---------------------------------
+
+.. automodule:: evac.stoch.lovejoy_fractal
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+evac.stoch.perturbations module
+-------------------------------
+
+.. automodule:: evac.stoch.perturbations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: evac.stoch
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -57,7 +57,7 @@
     <span class="c1"># pdb.set_trace()</span>
     <span class="c1"># return jet_tbl</span>
 
-<div class="viewcode-block" id="RdBufloat"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.RdBufloat">[docs]</a><span class="k">def</span> <span class="nf">RdBufloat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="RdBufloat"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.RdBufloat">[docs]</a><span class="k">def</span> <span class="nf">RdBufloat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">valrange</span> <span class="o">=</span> <span class="n">args</span>
     <span class="c1"># Will define a colortable that keeps zero as white</span>
     <span class="n">length</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">valrange</span><span class="p">)</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">valrange</span><span class="p">)</span>
@@ -78,7 +78,7 @@
 
 
 
-<div class="viewcode-block" id="rain1"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.rain1">[docs]</a><span class="k">def</span> <span class="nf">rain1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="rain1"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.rain1">[docs]</a><span class="k">def</span> <span class="nf">rain1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">rain_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">)),</span>
         <span class="s1">&#39;green&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">),</span>
@@ -88,7 +88,7 @@
     <span class="n">rain_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;RAIN_COLTBL&#39;</span><span class="p">,</span><span class="n">rain_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">rain_coltbl</span></div>
 
-<div class="viewcode-block" id="snow1"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.snow1">[docs]</a><span class="k">def</span> <span class="nf">snow1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="snow1"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.snow1">[docs]</a><span class="k">def</span> <span class="nf">snow1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">snow_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">)),</span>
         <span class="s1">&#39;green&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">),</span>
@@ -98,7 +98,7 @@
     <span class="n">snow_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;SNOW_COLTBL&#39;</span><span class="p">,</span><span class="n">snow_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">snow_coltbl</span></div>
 
-<div class="viewcode-block" id="mixprecip1"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.mixprecip1">[docs]</a><span class="k">def</span> <span class="nf">mixprecip1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="mixprecip1"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.mixprecip1">[docs]</a><span class="k">def</span> <span class="nf">mixprecip1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">mix_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">1.00</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">)),</span>
         <span class="s1">&#39;green&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">),</span>
@@ -108,7 +108,7 @@
     <span class="n">mix_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;MIX_COLTBL&#39;</span><span class="p">,</span><span class="n">mix_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mix_coltbl</span></div>
 
-<div class="viewcode-block" id="grays"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.grays">[docs]</a><span class="k">def</span> <span class="nf">grays</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="grays"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.grays">[docs]</a><span class="k">def</span> <span class="nf">grays</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">grays_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)),</span>
         <span class="s1">&#39;green&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">),</span>
@@ -118,7 +118,7 @@
     <span class="n">grays_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;GRAYS_COLTBL&#39;</span><span class="p">,</span><span class="n">grays_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">grays_coltbl</span></div>
 
-<div class="viewcode-block" id="snow2"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.snow2">[docs]</a><span class="k">def</span> <span class="nf">snow2</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="snow2"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.snow2">[docs]</a><span class="k">def</span> <span class="nf">snow2</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">snowf_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.06</span><span class="p">,</span> <span class="mf">0.81</span><span class="p">,</span> <span class="mf">0.81</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.51</span><span class="p">,</span> <span class="mf">0.51</span><span class="p">),</span>
@@ -173,7 +173,7 @@
     <span class="n">snowf_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;SNOWF_COLTBL&#39;</span><span class="p">,</span><span class="n">snowf_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">snowf_coltbl</span></div>
 
-<div class="viewcode-block" id="reflect"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.reflect">[docs]</a><span class="k">def</span> <span class="nf">reflect</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="reflect"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.reflect">[docs]</a><span class="k">def</span> <span class="nf">reflect</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">reflect_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.000</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.067</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.133</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">),</span>
@@ -225,13 +225,13 @@
     <span class="n">reflect_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;REFLECT_COLTBL&#39;</span><span class="p">,</span><span class="n">reflect_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">reflect_coltbl</span></div>
 
-<div class="viewcode-block" id="universal_reflect"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.universal_reflect">[docs]</a><span class="k">def</span> <span class="nf">universal_reflect</span><span class="p">():</span>
+<div class="viewcode-block" id="universal_reflect"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.universal_reflect">[docs]</a><span class="k">def</span> <span class="nf">universal_reflect</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Map a number to a colour.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="ncdc_modified_ISU"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.ncdc_modified_ISU">[docs]</a><span class="k">def</span> <span class="nf">ncdc_modified_ISU</span><span class="p">(</span><span class="n">nlvs</span><span class="p">):</span>
+<div class="viewcode-block" id="ncdc_modified_ISU"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.ncdc_modified_ISU">[docs]</a><span class="k">def</span> <span class="nf">ncdc_modified_ISU</span><span class="p">(</span><span class="n">nlvs</span><span class="p">):</span>
     <span class="n">cmap_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:((</span><span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.0000</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">),</span>
@@ -284,7 +284,7 @@
     <span class="n">mod_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;mod_cref&#39;</span><span class="p">,</span><span class="n">cmap_dict</span><span class="p">,</span><span class="n">nlvs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mod_coltbl</span></div>
 
-<div class="viewcode-block" id="reflect_ncdc"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.reflect_ncdc">[docs]</a><span class="k">def</span> <span class="nf">reflect_ncdc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="reflect_ncdc"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.reflect_ncdc">[docs]</a><span class="k">def</span> <span class="nf">reflect_ncdc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
 
 
 
@@ -337,7 +337,7 @@
     <span class="n">reflect_ncdc_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;REFLECT_NCDC_COLTBL&#39;</span><span class="p">,</span><span class="n">reflect_ncdc_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">reflect_ncdc_coltbl</span></div>
 
-<div class="viewcode-block" id="irsat"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.irsat">[docs]</a><span class="k">def</span> <span class="nf">irsat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="irsat"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.irsat">[docs]</a><span class="k">def</span> <span class="nf">irsat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">irsat_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.000</span><span class="p">,</span> <span class="mf">1.000</span><span class="p">,</span> <span class="mf">0.294</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.067</span><span class="p">,</span> <span class="mf">1.000</span><span class="p">,</span> <span class="mf">1.000</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.133</span><span class="p">,</span> <span class="mf">0.804</span><span class="p">,</span> <span class="mf">0.804</span><span class="p">),</span>
@@ -383,7 +383,7 @@
     <span class="n">irsat_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;IRSAT_COLTBL&#39;</span><span class="p">,</span><span class="n">irsat_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">irsat_coltbl</span></div>
 
-<div class="viewcode-block" id="bw_irsat"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.bw_irsat">[docs]</a><span class="k">def</span> <span class="nf">bw_irsat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="bw_irsat"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.bw_irsat">[docs]</a><span class="k">def</span> <span class="nf">bw_irsat</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">bw_irsat_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.000</span><span class="p">,</span> <span class="mf">1.000</span><span class="p">,</span> <span class="mf">1.000</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">1.000</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">)),</span>
         <span class="s1">&#39;green&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.000</span><span class="p">,</span> <span class="mf">1.000</span><span class="p">,</span> <span class="mf">1.000</span><span class="p">),</span>
@@ -394,7 +394,7 @@
     <span class="k">return</span> <span class="n">bw_irsat_coltbl</span></div>
 
 
-<div class="viewcode-block" id="precip1"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.precip1">[docs]</a><span class="k">def</span> <span class="nf">precip1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="precip1"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.precip1">[docs]</a><span class="k">def</span> <span class="nf">precip1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">precip_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.000</span><span class="p">,</span> <span class="mf">1.000</span><span class="p">,</span> <span class="mf">1.000</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.004</span><span class="p">,</span> <span class="mf">0.914</span><span class="p">,</span> <span class="mf">0.914</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.012</span><span class="p">,</span> <span class="mf">0.812</span><span class="p">,</span> <span class="mf">0.812</span><span class="p">),</span>
@@ -461,7 +461,7 @@
     <span class="n">precip_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;PRECIP_COLTBL&#39;</span><span class="p">,</span><span class="n">precip_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">precip_coltbl</span></div>
 
-<div class="viewcode-block" id="dewpoint1"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.dewpoint1">[docs]</a><span class="k">def</span> <span class="nf">dewpoint1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="dewpoint1"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.dewpoint1">[docs]</a><span class="k">def</span> <span class="nf">dewpoint1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">dwp_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.60</span><span class="p">,</span> <span class="mf">0.60</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.70</span><span class="p">,</span> <span class="mf">0.70</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.40</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">),</span>
@@ -499,7 +499,7 @@
     <span class="n">dwp_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;DWP_COLTBL&#39;</span><span class="p">,</span><span class="n">dwp_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">dwp_coltbl</span>         </div>
 
-<div class="viewcode-block" id="sftemp"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.sftemp">[docs]</a><span class="k">def</span> <span class="nf">sftemp</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="sftemp"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.sftemp">[docs]</a><span class="k">def</span> <span class="nf">sftemp</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">sfc_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.17</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">),</span>
@@ -546,7 +546,7 @@
     <span class="n">sfc_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;SFC_COLTBL&#39;</span><span class="p">,</span><span class="n">sfc_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sfc_coltbl</span></div>
 
-<div class="viewcode-block" id="thetae"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.thetae">[docs]</a><span class="k">def</span> <span class="nf">thetae</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="thetae"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.thetae">[docs]</a><span class="k">def</span> <span class="nf">thetae</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="n">thte_cdict</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span>    <span class="p">((</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">),</span>
                 <span class="p">(</span><span class="mf">0.17</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">),</span>
@@ -592,7 +592,7 @@
     <span class="n">thte_coltbl</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s1">&#39;THTE_COLTBL&#39;</span><span class="p">,</span><span class="n">thte_cdict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">thte_coltbl</span></div>
 
-<div class="viewcode-block" id="PkBlfloat"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.PkBlfloat">[docs]</a><span class="k">def</span> <span class="nf">PkBlfloat</span><span class="p">(</span><span class="n">datarange</span><span class="p">):</span>
+<div class="viewcode-block" id="PkBlfloat"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.PkBlfloat">[docs]</a><span class="k">def</span> <span class="nf">PkBlfloat</span><span class="p">(</span><span class="n">datarange</span><span class="p">):</span>
    <span class="n">distance</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">datarange</span><span class="p">)</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">datarange</span><span class="p">)</span>
    <span class="n">zeroloc</span> <span class="o">=</span> <span class="mi">0</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">datarange</span><span class="p">)</span>
    <span class="n">pct</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">zeroloc</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
@@ -732,7 +732,7 @@
 
 
 
-<div class="viewcode-block" id="PuRdBlfloat"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.PuRdBlfloat">[docs]</a><span class="k">def</span> <span class="nf">PuRdBlfloat</span><span class="p">(</span><span class="n">datarange</span><span class="p">):</span>
+<div class="viewcode-block" id="PuRdBlfloat"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.PuRdBlfloat">[docs]</a><span class="k">def</span> <span class="nf">PuRdBlfloat</span><span class="p">(</span><span class="n">datarange</span><span class="p">):</span>
    <span class="n">distance</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">datarange</span><span class="p">)</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">datarange</span><span class="p">)</span>
    <span class="n">zeroloc</span> <span class="o">=</span> <span class="mi">0</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">datarange</span><span class="p">)</span>
    <span class="n">pct</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">zeroloc</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
@@ -804,7 +804,7 @@
    <span class="k">return</span> <span class="n">PuRdBl_coltbl</span></div>
 
 
-<div class="viewcode-block" id="RdBuWH"><a class="viewcode-back" href="../../../evac.plot.colourtables.html#evac.plot.colourtables.RdBuWH">[docs]</a><span class="k">def</span> <span class="nf">RdBuWH</span><span class="p">():</span>
+<div class="viewcode-block" id="RdBuWH"><a class="viewcode-back" href="../../../evac.plot.html#evac.plot.colourtables.RdBuWH">[docs]</a><span class="k">def</span> <span class="nf">RdBuWH</span><span class="p">():</span>
    <span class="n">RdBuWH_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;blue&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3803921639919281</span><span class="p">,</span> <span class="mf">0.3803921639919281</span><span class="p">),</span>
                           <span class="p">(</span><span class="mf">0.10000000000000002</span><span class="p">,</span> <span class="mf">0.67450982332229614</span><span class="p">,</span> <span class="mf">0.67450982332229614</span><span class="p">),</span> 
                           <span class="p">(</span><span class="mf">0.20000000000000004</span><span class="p">,</span> <span class="mf">0.76470589637756348</span><span class="p">,</span> <span class="mf">0.76470589637756348</span><span class="p">),</span> 

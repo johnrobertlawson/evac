@@ -59,7 +59,7 @@
 
 <span class="kn">from</span> <span class="nn">evac.datafiles.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
 
-<div class="viewcode-block" id="compute_bool_thresh"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.compute_bool_thresh">[docs]</a><span class="k">def</span> <span class="nf">compute_bool_thresh</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="n">overunder</span><span class="p">,</span><span class="n">threshold</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_bool_thresh"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.compute_bool_thresh">[docs]</a><span class="k">def</span> <span class="nf">compute_bool_thresh</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="n">overunder</span><span class="p">,</span><span class="n">threshold</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Args:</span>
 <span class="sd">        arr (N.ndarray) :   field of data</span>
@@ -75,7 +75,7 @@
     <span class="n">bool_arr</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">OU</span><span class="p">[</span><span class="n">overunder</span><span class="p">](</span><span class="n">arr</span><span class="p">,</span><span class="n">threshold</span><span class="p">),</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">bool_arr</span></div>
 
-<div class="viewcode-block" id="compute_contingency"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.compute_contingency">[docs]</a><span class="k">def</span> <span class="nf">compute_contingency</span><span class="p">(</span><span class="n">fcst_arr</span><span class="p">,</span><span class="n">obs_arr</span><span class="p">,</span><span class="n">thresh</span><span class="p">,</span><span class="n">overunder</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;tuple&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_contingency"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.compute_contingency">[docs]</a><span class="k">def</span> <span class="nf">compute_contingency</span><span class="p">(</span><span class="n">fcst_arr</span><span class="p">,</span><span class="n">obs_arr</span><span class="p">,</span><span class="n">thresh</span><span class="p">,</span><span class="n">overunder</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;tuple&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    a = observed and forecast</span>
 <span class="sd">    b = forecast but not observed</span>
@@ -105,7 +105,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.std">[docs]</a><span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="n">ncfiles</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">other</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="std"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.std">[docs]</a><span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="n">ncfiles</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">other</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find standard deviation in along axis of ensemble</span>
 <span class="sd">    members. Returns matrix x-y for plotting</span>
@@ -126,7 +126,7 @@
     <span class="n">std</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">all_members</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">std</span></div>
 
-<div class="viewcode-block" id="std_ttest"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.std_ttest">[docs]</a><span class="k">def</span> <span class="nf">std_ttest</span><span class="p">(</span><span class="n">ncfiles1</span><span class="p">,</span><span class="n">ncfiles2</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">other</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">th</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="std_ttest"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.std_ttest">[docs]</a><span class="k">def</span> <span class="nf">std_ttest</span><span class="p">(</span><span class="n">ncfiles1</span><span class="p">,</span><span class="n">ncfiles2</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">other</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">th</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find standard deviation in along axis of ensemble</span>
 <span class="sd">    members. Returns matrix x-y for plotting. Returns sig test</span>
@@ -165,7 +165,7 @@
 
     <span class="k">return</span> <span class="n">std_ave</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">std_ave</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tstat</span><span class="p">,</span> <span class="n">pvalue</span></div>
 
-<div class="viewcode-block" id="gauss_kern"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.gauss_kern">[docs]</a><span class="k">def</span> <span class="nf">gauss_kern</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">sizey</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="gauss_kern"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.gauss_kern">[docs]</a><span class="k">def</span> <span class="nf">gauss_kern</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">sizey</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Taken from scipy cookbook online.</span>
 <span class="sd">    Returns a normalized 2D gauss kernel array for convolutions &quot;&quot;&quot;</span>
@@ -178,7 +178,7 @@
     <span class="n">g</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">)</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">sizey</span><span class="p">)))</span>
     <span class="k">return</span> <span class="n">g</span> <span class="o">/</span> <span class="n">g</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="gauss_smooth"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.gauss_smooth">[docs]</a><span class="k">def</span> <span class="nf">gauss_smooth</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pad_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="p">:</span>
+<div class="viewcode-block" id="gauss_smooth"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.gauss_smooth">[docs]</a><span class="k">def</span> <span class="nf">gauss_smooth</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pad_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Taken from scipy cookbook online.</span>
 <span class="sd">    Blur the data by convolving with a gaussian kernel of typical</span>
@@ -209,7 +209,7 @@
             <span class="n">dataproc</span><span class="p">[</span><span class="n">dataproc</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span><span class="p">(</span><span class="n">dataproc</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="max_filter"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.max_filter">[docs]</a><span class="k">def</span> <span class="nf">max_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="s1">&#39;circle&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="max_filter"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.max_filter">[docs]</a><span class="k">def</span> <span class="nf">max_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="s1">&#39;circle&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    blah</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -226,7 +226,7 @@
     <span class="n">output</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">maximum_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">footprint</span><span class="o">=</span><span class="n">footprint</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">output</span></div>
 
-<div class="viewcode-block" id="compute_diff_energy"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.compute_diff_energy">[docs]</a><span class="k">def</span> <span class="nf">compute_diff_energy</span><span class="p">(</span><span class="n">ptype</span><span class="p">,</span><span class="n">energy</span><span class="p">,</span><span class="n">files</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_diff_energy"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.compute_diff_energy">[docs]</a><span class="k">def</span> <span class="nf">compute_diff_energy</span><span class="p">(</span><span class="n">ptype</span><span class="p">,</span><span class="n">energy</span><span class="p">,</span><span class="n">files</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">d_save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">d_return</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">d_fname</span><span class="o">=</span><span class="s1">&#39;diff_energy_data&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This method computes difference kinetic energy (DKE)</span>
@@ -323,7 +323,7 @@
         <span class="c1">#self.json_data(DATA,d_save,d_fname)</span>
         <span class="k">return</span> <span class="n">DATA</span></div>
 
-<div class="viewcode-block" id="DE_xyz"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.DE_xyz">[docs]</a><span class="k">def</span> <span class="nf">DE_xyz</span><span class="p">(</span><span class="n">nc0</span><span class="p">,</span><span class="n">nc1</span><span class="p">,</span><span class="n">t_idx</span><span class="p">,</span><span class="n">energy</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="DE_xyz"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.DE_xyz">[docs]</a><span class="k">def</span> <span class="nf">DE_xyz</span><span class="p">(</span><span class="n">nc0</span><span class="p">,</span><span class="n">nc1</span><span class="p">,</span><span class="n">t_idx</span><span class="p">,</span><span class="n">energy</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computation for difference kinetic energy (DKE).</span>
 <span class="sd">    Sums DKE over the 3D space, returns a time series.</span>
@@ -375,7 +375,7 @@
         <span class="n">DKE</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DKE_hr</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">DKE</span></div>
 
-<div class="viewcode-block" id="DE_z"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.DE_z">[docs]</a><span class="k">def</span> <span class="nf">DE_z</span><span class="p">(</span><span class="n">nc0</span><span class="p">,</span><span class="n">nc1</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">energy</span><span class="p">,</span><span class="n">lower</span><span class="p">,</span><span class="n">upper</span><span class="p">):</span>
+<div class="viewcode-block" id="DE_z"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.DE_z">[docs]</a><span class="k">def</span> <span class="nf">DE_z</span><span class="p">(</span><span class="n">nc0</span><span class="p">,</span><span class="n">nc1</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">energy</span><span class="p">,</span><span class="n">lower</span><span class="p">,</span><span class="n">upper</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computation for difference kinetic energy (DKE).</span>
 <span class="sd">    Sums DKE over all levels between lower and upper,</span>
@@ -478,7 +478,7 @@
 
     <span class="k">return</span> <span class="n">DKE</span></div>
 
-<div class="viewcode-block" id="DKE_power_spectrum"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.DKE_power_spectrum">[docs]</a><span class="k">def</span> <span class="nf">DKE_power_spectrum</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">dx</span><span class="p">):</span>
+<div class="viewcode-block" id="DKE_power_spectrum"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.DKE_power_spectrum">[docs]</a><span class="k">def</span> <span class="nf">DKE_power_spectrum</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">dx</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return power spectrum of DKE/DTE at time(s) for wavelengths.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -487,7 +487,7 @@
     <span class="c1"># step = 1/dx</span>
     <span class="kn">import</span> <span class="nn">pdb</span><span class="p">;</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="rank_hist"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.rank_hist">[docs]</a><span class="k">def</span> <span class="nf">rank_hist</span><span class="p">(</span><span class="n">obdata</span><span class="p">,</span><span class="n">ensdata</span><span class="p">):</span>
+<div class="viewcode-block" id="rank_hist"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.misc_stats.rank_hist">[docs]</a><span class="k">def</span> <span class="nf">rank_hist</span><span class="p">(</span><span class="n">obdata</span><span class="p">,</span><span class="n">ensdata</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    obdata  :   (N.ndarray) - T x surface observations (T = no. of times)</span>
 <span class="sd">    ensdata :   (N.ndarray) - T x N x float, ensemble analyses for N members</span>

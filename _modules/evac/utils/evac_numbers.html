@@ -48,7 +48,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 
-<div class="viewcode-block" id="check_type"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.check_type">[docs]</a><span class="k">def</span> <span class="nf">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">typ</span><span class="p">,</span><span class="n">allow_array</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="check_type"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.evac_numbers.check_type">[docs]</a><span class="k">def</span> <span class="nf">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">typ</span><span class="p">,</span><span class="n">allow_array</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Return true if input n is a given &#39;type&#39;. If n is an array, it</span>
 <span class="sd">    checks if the dtype of the array matches the type. If the array is</span>
 <span class="sd">    made up of many types, it raises an error.</span>
@@ -79,25 +79,25 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span></div>
 
-<div class="viewcode-block" id="is_array"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.is_array">[docs]</a><span class="k">def</span> <span class="nf">is_array</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="is_array"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.evac_numbers.is_array">[docs]</a><span class="k">def</span> <span class="nf">is_array</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="is_integer"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.is_integer">[docs]</a><span class="k">def</span> <span class="nf">is_integer</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">allow_array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="is_integer"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.evac_numbers.is_integer">[docs]</a><span class="k">def</span> <span class="nf">is_integer</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">allow_array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="s1">&#39;int&#39;</span><span class="p">,</span><span class="n">allow_array</span><span class="o">=</span><span class="n">allow_array</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="has_integers"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.has_integers">[docs]</a><span class="k">def</span> <span class="nf">has_integers</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="has_integers"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.evac_numbers.has_integers">[docs]</a><span class="k">def</span> <span class="nf">has_integers</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="s1">&#39;int&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="has_floats"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.has_floats">[docs]</a><span class="k">def</span> <span class="nf">has_floats</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="has_floats"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.evac_numbers.has_floats">[docs]</a><span class="k">def</span> <span class="nf">has_floats</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="s1">&#39;float&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="is_float"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.is_float">[docs]</a><span class="k">def</span> <span class="nf">is_float</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">allow_array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="is_float"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.evac_numbers.is_float">[docs]</a><span class="k">def</span> <span class="nf">is_float</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">allow_array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="s1">&#39;float&#39;</span><span class="p">,</span><span class="n">allow_array</span><span class="o">=</span><span class="n">allow_array</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="is_number"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.is_number">[docs]</a><span class="k">def</span> <span class="nf">is_number</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">allow_array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="is_number"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.evac_numbers.is_number">[docs]</a><span class="k">def</span> <span class="nf">is_number</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">allow_array</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="s1">&#39;int_or_float&#39;</span><span class="p">,</span><span class="n">allow_array</span><span class="o">=</span><span class="n">allow_array</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="has_numbers"><a class="viewcode-back" href="../../../evac.utils.evac_numbers.html#evac.utils.evac_numbers.has_numbers">[docs]</a><span class="k">def</span> <span class="nf">has_numbers</span><span class="p">(</span><span class="n">n</span><span class="p">,):</span>
+<div class="viewcode-block" id="has_numbers"><a class="viewcode-back" href="../../../evac.utils.html#evac.utils.evac_numbers.has_numbers">[docs]</a><span class="k">def</span> <span class="nf">has_numbers</span><span class="p">(</span><span class="n">n</span><span class="p">,):</span>
     <span class="k">return</span> <span class="n">check_type</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="s1">&#39;int_or_float&#39;</span><span class="p">)</span></div>
 </pre></div>
 

@@ -71,7 +71,7 @@
 
 <span class="n">debug_get</span> <span class="o">=</span> <span class="mi">0</span>
 
-<div class="viewcode-block" id="WRFOut"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut">[docs]</a><span class="k">class</span> <span class="nc">WRFOut</span><span class="p">(</span><span class="n">NC</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut">[docs]</a><span class="k">class</span> <span class="nc">WRFOut</span><span class="p">(</span><span class="n">NC</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An instance of WRFOut contains all the methods that are used to</span>
@@ -132,7 +132,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">Nlim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Elim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Slim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Wlim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_limits</span><span class="p">()</span>
 
-<div class="viewcode-block" id="WRFOut.get_dimensions"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">get_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;em_real&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.get_dimensions"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get_dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">get_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;em_real&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">t_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;west_east&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;south_north&#39;</span><span class="p">])</span>
@@ -150,7 +150,7 @@
 
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="WRFOut.em_real_init"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.em_real_init">[docs]</a>    <span class="k">def</span> <span class="nf">em_real_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.em_real_init"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.em_real_init">[docs]</a>    <span class="k">def</span> <span class="nf">em_real_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Grab the 2D arrays of the wrfout file.</span>
 
@@ -172,11 +172,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">truelat2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">TRUELAT2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="WRFOut.ideal_init"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.ideal_init">[docs]</a>    <span class="k">def</span> <span class="nf">ideal_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.ideal_init"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.ideal_init">[docs]</a>    <span class="k">def</span> <span class="nf">ideal_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="WRFOut.wrftime_to_datenum"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.wrftime_to_datenum">[docs]</a>    <span class="k">def</span> <span class="nf">wrftime_to_datenum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;timegm&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.wrftime_to_datenum"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.wrftime_to_datenum">[docs]</a>    <span class="k">def</span> <span class="nf">wrftime_to_datenum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;timegm&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert wrf&#39;s weird Times variable to datenum or datetime.</span>
 
@@ -201,7 +201,7 @@
         <span class="k">return</span> <span class="n">wrf_times_epoch</span></div>
 
 
-<div class="viewcode-block" id="WRFOut.get_time_idx"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_time_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_time_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utcs</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.get_time_idx"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get_time_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_time_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utcs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get closest index to desired time</span>
 
@@ -220,7 +220,7 @@
         <span class="k">return</span> <span class="n">N</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tidx</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="WRFOut.check_compute"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.check_compute">[docs]</a>    <span class="k">def</span> <span class="nf">check_compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.check_compute"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.check_compute">[docs]</a>    <span class="k">def</span> <span class="nf">check_compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;This method returns the required variables</span>
 <span class="sd">        that need to be loaded from the netCDF file.</span>
 
@@ -236,7 +236,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="WRFOut.return_tidx_range"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.return_tidx_range">[docs]</a>    <span class="k">def</span> <span class="nf">return_tidx_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utc0</span><span class="p">,</span><span class="n">utc1</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.return_tidx_range"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.return_tidx_range">[docs]</a>    <span class="k">def</span> <span class="nf">return_tidx_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utc0</span><span class="p">,</span><span class="n">utc1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Give a start and end time. Returns an array of</span>
 <span class="sd">        all indices. Useful for self.get() to return an</span>
@@ -247,7 +247,7 @@
         <span class="k">return</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">idx0</span><span class="p">,</span><span class="n">idx1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="WRFOut.get"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="WRFOut.get"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">smooth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">other</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get data.</span>
@@ -372,7 +372,7 @@
 
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="WRFOut.load"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.load"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fetch netCDF data for a given variable, for given time, level,</span>
 <span class="sd">        latitude, and longitude indices.</span>
@@ -404,7 +404,7 @@
         <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="WRFOut.create_slice"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.create_slice">[docs]</a>    <span class="k">def</span> <span class="nf">create_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">dim_names</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.create_slice"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.create_slice">[docs]</a>    <span class="k">def</span> <span class="nf">create_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">dim_names</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create slices from indices of level, time, lat, lon.</span>
 <span class="sd">        False mean pick all indices.</span>
@@ -453,7 +453,7 @@
 
         <span class="k">return</span> <span class="n">sl</span></div>
 
-<div class="viewcode-block" id="WRFOut.check_destagger"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.check_destagger">[docs]</a>    <span class="k">def</span> <span class="nf">check_destagger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.check_destagger"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.check_destagger">[docs]</a>    <span class="k">def</span> <span class="nf">check_destagger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Looks up dimensions of netCDF file without loading data.</span>
 
 <span class="sd">        Returns dimension number that requires destaggering</span>
@@ -466,11 +466,11 @@
 
         <span class="k">return</span> <span class="n">stag_dim</span></div>
 
-<div class="viewcode-block" id="WRFOut.get_dims"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_dims">[docs]</a>    <span class="k">def</span> <span class="nf">get_dims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.get_dims"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get_dims">[docs]</a>    <span class="k">def</span> <span class="nf">get_dims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var</span><span class="p">):</span>
         <span class="n">dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">dimensions</span>
         <span class="k">return</span> <span class="n">dims</span></div>
 
-<div class="viewcode-block" id="WRFOut.destagger"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.destagger">[docs]</a>    <span class="k">def</span> <span class="nf">destagger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">ax</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.destagger"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.destagger">[docs]</a>    <span class="k">def</span> <span class="nf">destagger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">ax</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Destagger data which needs it doing.</span>
 
 <span class="sd">        Theta always has unstaggered points in all three spatial dimensions (axes=1,2,3).</span>
@@ -514,7 +514,7 @@
             <span class="n">data_unstag</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">sl0</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="n">sl1</span><span class="p">])</span>
             <span class="k">return</span> <span class="n">data_unstag</span></div>
 
-<div class="viewcode-block" id="WRFOut.return_tbl"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.return_tbl">[docs]</a>    <span class="k">def</span> <span class="nf">return_tbl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.return_tbl"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.return_tbl">[docs]</a>    <span class="k">def</span> <span class="nf">return_tbl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a dictionary to look up method for computing a variable</span>
 <span class="sd">        Todos:</span>
@@ -561,7 +561,7 @@
         <span class="k">return</span> <span class="n">tbl</span></div>
 
     <span class="c1"># def compute(self,vrbl,tidx,lvidx,lonidx,latidx,other,lookup=0):</span>
-<div class="viewcode-block" id="WRFOut.compute"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">lookup</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.compute"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="p">,</span><span class="n">lvidx</span><span class="p">,</span><span class="n">lonidx</span><span class="p">,</span><span class="n">latidx</span><span class="p">,</span><span class="n">other</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">lookup</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Look up method needed to return array of data</span>
 <span class="sd">        for required variable.</span>
 
@@ -586,7 +586,7 @@
 
 
 
-<div class="viewcode-block" id="WRFOut.compute_ave"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.compute_ave">[docs]</a>    <span class="k">def</span> <span class="nf">compute_ave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">,</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.compute_ave"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.compute_ave">[docs]</a>    <span class="k">def</span> <span class="nf">compute_ave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">va</span><span class="p">,</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute average values for variable in layer.</span>
 
@@ -606,7 +606,7 @@
         <span class="n">vc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_vcs</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="WRFOut.make_4D"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.make_4D">[docs]</a>    <span class="k">def</span> <span class="nf">make_4D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">datain</span><span class="p">,</span><span class="n">vrbl</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">missing_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.make_4D"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.make_4D">[docs]</a>    <span class="k">def</span> <span class="nf">make_4D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">datain</span><span class="p">,</span><span class="n">vrbl</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">missing_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        If vrbl, look up the wrfout file&#39;s variable dimensions and</span>
 <span class="sd">        adjust accordingly to get into 4D structure. If not vrbl,</span>
@@ -626,7 +626,7 @@
         <span class="c1"># import pdb; pdb.set_trace()</span>
         <span class="k">return</span> <span class="n">dataout</span></div>
 
-<div class="viewcode-block" id="WRFOut.get_missing_axes"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_missing_axes">[docs]</a>    <span class="k">def</span> <span class="nf">get_missing_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dims</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.get_missing_axes"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get_missing_axes">[docs]</a>    <span class="k">def</span> <span class="nf">get_missing_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dims</span><span class="p">):</span>
         <span class="n">axes</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="s2">&quot;Time&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span><span class="mi">2</span><span class="p">:</span><span class="s2">&quot;south&quot;</span><span class="p">,</span><span class="mi">3</span><span class="p">:</span><span class="s2">&quot;west&quot;</span><span class="p">}</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -637,7 +637,7 @@
 
         <span class="k">return</span> <span class="n">missing</span></div>
 
-<div class="viewcode-block" id="WRFOut.check_vcs"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.check_vcs">[docs]</a>    <span class="k">def</span> <span class="nf">check_vcs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">,</span><span class="n">exception</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.check_vcs"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.check_vcs">[docs]</a>    <span class="k">def</span> <span class="nf">check_vcs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z1</span><span class="p">,</span><span class="n">z2</span><span class="p">,</span><span class="n">exception</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check the vertical coordinate systems</span>
 
@@ -656,12 +656,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">vc1</span></div>
 
-<div class="viewcode-block" id="WRFOut.get_XY"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_XY">[docs]</a>    <span class="k">def</span> <span class="nf">get_XY</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.get_XY"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get_XY">[docs]</a>    <span class="k">def</span> <span class="nf">get_XY</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return grid indices for lat/lon pair.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="WRFOut.get_limited_domain"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_limited_domain">[docs]</a>    <span class="k">def</span> <span class="nf">get_limited_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">da</span><span class="p">,</span><span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">return_array</span><span class="o">=</span><span class="s1">&#39;idx&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.get_limited_domain"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get_limited_domain">[docs]</a>    <span class="k">def</span> <span class="nf">get_limited_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">da</span><span class="p">,</span><span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">return_array</span><span class="o">=</span><span class="s1">&#39;idx&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return smaller array of lats, lons depending on</span>
 <span class="sd">        input dictionary of N, E, S, W limits.</span>
@@ -702,7 +702,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid selection for return_array.&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">Exception</span></div>
 
-<div class="viewcode-block" id="WRFOut.get_latlon_idx"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_latlon_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_latlon_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.get_latlon_idx"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get_latlon_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_latlon_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
         <span class="n">latidx</span><span class="p">,</span> <span class="n">lonidx</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_latlon_idx</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">,</span>
                                     <span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span>
         <span class="c1"># coords = N.unravel_index(N.argmin((lat-self.lats)**2+</span>
@@ -711,15 +711,15 @@
         <span class="c1"># return [int(c) for c in coords]</span>
         <span class="k">return</span> <span class="n">latidx</span><span class="p">,</span> <span class="n">lonidx</span></div>
 
-<div class="viewcode-block" id="WRFOut.get_lat_idx"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_lat_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_lat_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.get_lat_idx"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get_lat_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_lat_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">):</span>
         <span class="n">lat_idx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="o">-</span><span class="n">lat</span><span class="p">)</span> <span class="o">==</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="o">-</span><span class="n">lat</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">())[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">lat_idx</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WRFOut.get_lon_idx"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_lon_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_lon_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.get_lon_idx"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get_lon_idx">[docs]</a>    <span class="k">def</span> <span class="nf">get_lon_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
         <span class="n">lon_idx</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="o">-</span><span class="n">lon</span><span class="p">)</span> <span class="o">==</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="o">-</span><span class="n">lon</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">())[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">lon_idx</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WRFOut.get_p"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_p">[docs]</a>    <span class="k">def</span> <span class="nf">get_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lonidx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">latidx</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.get_p"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get_p">[docs]</a>    <span class="k">def</span> <span class="nf">get_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">tidx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">lonidx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">latidx</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return an pressure level isosurface of given variable.</span>
 <span class="sd">        Interpolation is linear so watch out.</span>
@@ -771,7 +771,7 @@
             <span class="c1"># return self.make_4D(dataout)</span>
         <span class="k">return</span> <span class="n">dataout</span></div>
 
-<div class="viewcode-block" id="WRFOut.interp_to_p_fortran"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.interp_to_p_fortran">[docs]</a>    <span class="k">def</span> <span class="nf">interp_to_p_fortran</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">config</span><span class="p">,</span><span class="n">nc_path</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">lv</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.interp_to_p_fortran"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.interp_to_p_fortran">[docs]</a>    <span class="k">def</span> <span class="nf">interp_to_p_fortran</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">config</span><span class="p">,</span><span class="n">nc_path</span><span class="p">,</span><span class="n">var</span><span class="p">,</span><span class="n">lv</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Uses p_interp fortran code to put data onto a pressure</span>
 <span class="sd">        level specified.</span>
 
@@ -833,7 +833,7 @@
                 <span class="n">nameout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="k">break</span>
 
-<div class="viewcode-block" id="WRFOut.get_limits"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut.get_limits">[docs]</a>    <span class="k">def</span> <span class="nf">get_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WRFOut.get_limits"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.wrfout.WRFOut.get_limits">[docs]</a>    <span class="k">def</span> <span class="nf">get_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">Nlim</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats1D</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">Elim</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons1D</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">Slim</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats1D</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>

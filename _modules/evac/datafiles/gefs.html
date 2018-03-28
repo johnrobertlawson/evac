@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>evac.datafiles.hrrr &#8212; evac 0.1.0 documentation</title>
+    <title>evac.datafiles.gefs &#8212; evac 0.1.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -41,19 +41,22 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for evac.datafiles.hrrr</h1><div class="highlight"><pre>
+  <h1>Source code for evac.datafiles.gefs</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">.gribfile</span> <span class="k">import</span> <span class="n">GribFile</span>
 
-<div class="viewcode-block" id="HRRR"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.hrrr.HRRR">[docs]</a><span class="k">class</span> <span class="nc">HRRR</span><span class="p">(</span><span class="n">GribFile</span><span class="p">):</span>
+<div class="viewcode-block" id="GEFS"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gefs.GEFS">[docs]</a><span class="k">class</span> <span class="nc">GEFS</span><span class="p">(</span><span class="n">GribFile</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialise HRRR object, a child of GribFile,</span>
+        <span class="sd">&quot;&quot;&quot;Initialise GEFS object, a child of GribFile,</span>
 <span class="sd">        grandchild of DataFile.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HRRR.lookup_vrbl"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.hrrr.HRRR.lookup_vrbl">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_vrbl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">):</span>
+<div class="viewcode-block" id="GEFS.lookup_vrbl"><a class="viewcode-back" href="../../../evac.datafiles.html#evac.datafiles.gefs.GEFS.lookup_vrbl">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_vrbl</span><span class="p">(</span><span class="n">self1</span><span class="p">,</span><span class="n">vrbl</span><span class="p">):</span>
         <span class="n">LOOKUP</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">LOOKUP</span><span class="p">[</span><span class="s1">&#39;accum_precip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span><span class="s1">&#39;Total Precipitation&#39;</span><span class="p">,</span><span class="s1">&#39;idx&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">}</span>
+        <span class="c1">#LOOKUP[&#39;accum_precip&#39;] = {&#39;key&#39;:&#39;&#39;,&#39;idx&#39;:0}</span>
+        <span class="n">LOOKUP</span><span class="p">[</span><span class="s1">&#39;Td2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span><span class="s1">&#39;2 metre dewpoint temperature&#39;</span><span class="p">,</span><span class="s1">&#39;idx&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+        <span class="n">LOOKUP</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span><span class="s1">&#39;Temperature&#39;</span><span class="p">,</span><span class="s1">&#39;level&#39;</span><span class="p">:</span><span class="s1">&#39;2000&#39;</span><span class="p">,</span><span class="s1">&#39;idx&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+        <span class="n">LOOKUP</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span><span class="s1">&#39;Temperature&#39;</span><span class="p">,</span><span class="s1">&#39;idx&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
 
         <span class="k">return</span> <span class="n">LOOKUP</span><span class="p">[</span><span class="n">vrbl</span><span class="p">][</span><span class="s1">&#39;key&#39;</span><span class="p">],</span> <span class="n">LOOKUP</span><span class="p">[</span><span class="n">vrbl</span><span class="p">][</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span></div></div>
 </pre></div>

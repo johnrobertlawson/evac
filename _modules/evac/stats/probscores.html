@@ -51,7 +51,7 @@
 <span class="sd">&quot;&quot;&quot;Probabilistic scores, using Buizza 2001, MWR.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ProbScores"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores">[docs]</a><span class="k">class</span> <span class="nc">ProbScores</span><span class="p">:</span>
+<div class="viewcode-block" id="ProbScores"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.probscores.ProbScores">[docs]</a><span class="k">class</span> <span class="nc">ProbScores</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">og</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pfg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">xa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">xfs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set up probability scores. User must specify</span>
@@ -74,21 +74,21 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span>
 
-<div class="viewcode-block" id="ProbScores.compute_briar"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_briar">[docs]</a>    <span class="k">def</span> <span class="nf">compute_briar</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="ProbScores.compute_briar"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.probscores.ProbScores.compute_briar">[docs]</a>    <span class="k">def</span> <span class="nf">compute_briar</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="n">Ng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">og</span><span class="o">.</span><span class="n">size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">og</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">og</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pfg</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="n">BS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">Ng</span><span class="p">)</span> <span class="o">*</span> <span class="n">N</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">pfg</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">og</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">BS</span></div>
 
-<div class="viewcode-block" id="ProbScores.compute_bss"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_bss">[docs]</a>    <span class="k">def</span> <span class="nf">compute_bss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbScores.compute_bss"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.probscores.ProbScores.compute_bss">[docs]</a>    <span class="k">def</span> <span class="nf">compute_bss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;TODO</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">BS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_briar</span><span class="p">()</span>
         <span class="n">BSS</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="ProbScores.compute_rps"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_rps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_rps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">thresholds</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbScores.compute_rps"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.probscores.ProbScores.compute_rps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_rps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">thresholds</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Arguments:</span>
 <span class="sd">            thresholds  : 1D list/array, and in same order</span>
@@ -119,14 +119,14 @@
         <span class="k">assert</span> <span class="n">RPS1</span> <span class="o">==</span> <span class="n">RPS2</span>
         <span class="k">return</span> <span class="n">RPS2</span></div>
 
-<div class="viewcode-block" id="ProbScores.rank_hist"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.rank_hist">[docs]</a>    <span class="k">def</span> <span class="nf">rank_hist</span><span class="p">(</span><span class="n">obdata</span><span class="p">,</span><span class="n">ensdata</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbScores.rank_hist"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.probscores.ProbScores.rank_hist">[docs]</a>    <span class="k">def</span> <span class="nf">rank_hist</span><span class="p">(</span><span class="n">obdata</span><span class="p">,</span><span class="n">ensdata</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wrapper for rank histogram over 3D.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="ProbScores.compute_poutl"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_poutl">[docs]</a>    <span class="k">def</span> <span class="nf">compute_poutl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">E</span><span class="p">,</span><span class="n">obs</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbScores.compute_poutl"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.probscores.ProbScores.compute_poutl">[docs]</a>    <span class="k">def</span> <span class="nf">compute_poutl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">E</span><span class="p">,</span><span class="n">obs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Percentage of outliers.</span>
 
 <span class="sd">        E       :   Ensemble class instance</span>
@@ -134,7 +134,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="ProbScores.compute_crps"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_crps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">threshs</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">QC</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbScores.compute_crps"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.probscores.ProbScores.compute_crps">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">threshs</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">QC</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Needs observation array (m x n)</span>
 <span class="sd">        Needs ensemble forecast array (e x m x n) where</span>
@@ -200,7 +200,7 @@
         <span class="c1"># Decompose? What about uncertainty</span>
 
     <span class="c1"># def compute_crps(self,xfs,xa):</span>
-<div class="viewcode-block" id="ProbScores.compute_crps_old"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.compute_crps_old">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps_old</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbScores.compute_crps_old"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.probscores.ProbScores.compute_crps_old">[docs]</a>    <span class="k">def</span> <span class="nf">compute_crps_old</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Some inspiration from:</span>
 <span class="sd">        https://github.com/TheClimateCorporation/properscoring.git</span>
@@ -327,14 +327,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">crps</span></div>
 
-<div class="viewcode-block" id="ProbScores.heaviside"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.heaviside">[docs]</a>    <span class="k">def</span> <span class="nf">heaviside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="ProbScores.heaviside"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.probscores.ProbScores.heaviside">[docs]</a>    <span class="k">def</span> <span class="nf">heaviside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
         <span class="c1"># if x &lt; 0:</span>
             <span class="c1"># return 0</span>
         <span class="c1"># else:</span>
             <span class="c1"># return 1</span>
         <span class="k">return</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="ProbScores.cdf_"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores.cdf_">[docs]</a>    <span class="k">def</span> <span class="nf">cdf_</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<div class="viewcode-block" id="ProbScores.cdf_"><a class="viewcode-back" href="../../../evac.stats.html#evac.stats.probscores.ProbScores.cdf_">[docs]</a>    <span class="k">def</span> <span class="nf">cdf_</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="k">pass</span></div></div>
 </pre></div>
 

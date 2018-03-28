@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.derived.vrbl &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.derived.vrbl</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Subclass of numpy ndarray. Vrbl holds a 4D array for a variable</span>
+<span class="sd">in the dimensions (time, level, lats, lons), similarly to WRF output.</span>
+
+<span class="sd">The subclassing allows attachment of methods that compute derived fields</span>
+<span class="sd">(e.g. vorticity) and inspection of metadata (dimension names etc.).</span>
+
+<span class="sd">Example:</span>
+
+<span class="sd">arr = Dataset(&#39;wrfout.nc&#39;).variables[&#39;T&#39;][0,0,:,:]</span>
+
+<span class="sd">gives you a normal numpy array. To get a Vrbl() subclass, go via</span>
+<span class="sd">a `datafiles/` module, for instance:</span>
+
+<span class="sd">arr = WRFOut(&#39;wrfout.nc&#39;).get(&#39;T&#39;,utc=0,lv=0)</span>
+
+<span class="sd">This, when completed, will give a Vrbl array with attributes such as</span>
+<span class="sd">dimensions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+
+<div class="viewcode-block" id="Vrbl"><a class="viewcode-back" href="../../../evac.derived.html#evac.derived.vrbl.Vrbl">[docs]</a><span class="k">class</span> <span class="nc">Vrbl</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="c1">#def __new__(cls,*args,**kwargs):</span>
+        <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span><span class="n">arr</span><span class="p">):</span>
+            <span class="c1">#return N.ndarray.__new__(cls,*args,**kwargs)</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+
+            <span class="c1"># This is where we&#39;d add attributes to our subclass instance</span>
+            <span class="c1"># obj.attr = kwarg1</span>
+
+            <span class="k">return</span> <span class="n">obj</span>
+
+        <span class="k">def</span> <span class="nf">__array_finalize__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">obj</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; This is always called (by superclass).</span>
+
+<span class="sd">            1. If constructed explicitly, obj type is None</span>
+<span class="sd">            2. If constructed via casting (e.g., N.view), obj type is N.ndarray</span>
+<span class="sd">            3. If constructed via slicing, obj type is the class Vrbl.</span>
+
+<span class="sd">            In case #2, we return a superclass (subject to change...)</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Add attributes from __new__ call</span>
+            <span class="c1"># self.attr = getattr(obj,&#39;attr&#39;,None)</span>
+
+            <span class="c1"># All attributes go here.</span>
+            <span class="c1"># self.dims = self.get_dims()</span>
+
+<div class="viewcode-block" id="Vrbl.holder"><a class="viewcode-back" href="../../../evac.derived.html#evac.derived.vrbl.Vrbl.holder">[docs]</a>        <span class="k">def</span> <span class="nf">holder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">pass</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
