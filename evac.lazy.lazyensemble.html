@@ -47,7 +47,7 @@
 <span id="evac-lazy-lazyensemble-module"></span><h1>evac.lazy.lazyensemble module<a class="headerlink" href="#module-evac.lazy.lazyensemble" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="evac.lazy.lazyensemble.LazyEnsemble">
-<em class="property">class </em><code class="descclassname">evac.lazy.lazyensemble.</code><code class="descname">LazyEnsemble</code><span class="sig-paren">(</span><em>path_to_exedir</em>, <em>path_to_datadir</em>, <em>path_to_namelistdir</em>, <em>path_to_icbcdir</em>, <em>path_to_outdir</em>, <em>path_to_batch</em>, <em>initutc</em>, <em>sched='slurm'</em>, <em>path_to_rundir=False</em>, <em>delete_exe_copy=False</em>, <em>ndoms=1</em>, <em>nmems=0</em>, <em>membernames=False</em>, <em>endutc=False</em>, <em>runsec=False</em>, <em>nl_per_member=True</em>, <em>nl_suffix='name'</em>, <em>icbcs=None</em>, <em>dryrun=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">evac.lazy.lazyensemble.</code><code class="descname">LazyEnsemble</code><span class="sig-paren">(</span><em>path_to_exedir</em>, <em>path_to_datadir</em>, <em>path_to_namelistdir</em>, <em>path_to_icdir</em>, <em>path_to_lbcdir</em>, <em>path_to_outdir</em>, <em>path_to_batch</em>, <em>initutc</em>, <em>sched='slurm'</em>, <em>path_to_rundir=False</em>, <em>delete_exe_copy=False</em>, <em>ndoms=1</em>, <em>nmems=0</em>, <em>membernames=False</em>, <em>endutc=False</em>, <em>runsec=False</em>, <em>nl_per_member=True</em>, <em>nl_suffix='name'</em>, <em>icbcs=None</em>, <em>dryrun=False</em>, <em>rename_d01_ics=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Generate ensemble by running multiple WRF runs simulataneously.
 This is done by creating temporary folder and linking/copying.
@@ -60,6 +60,34 @@ to path_to_rundir, using default names.</p>
 <p>Parent script should be run via batch submission. The procedure is:</p>
 <p>L = LazyEnsemble(<a href="#id1"><span class="problematic" id="id2">*</span></a>args,**kwargs)
 L.run_all_members()</p>
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.aa_test">
+<code class="descname">aa_test</code><span class="sig-paren">(</span><em>param1</em>, <em>param2=2</em>, <em>param3=('hi'</em>, <em>'there')</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.aa_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.aa_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example of docstring on the __init__ method.</p>
+<p>The __init__ method may be documented in either the class level
+docstring, or as a docstring on the __init__ method itself.</p>
+<p>Either form is acceptable, but the two should not be mixed. Choose one
+convention to document the __init__ method and be consistent with it.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not include the <cite>self</cite> parameter in the <code class="docutils literal"><span class="pre">Args</span></code> section.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>param1</strong> (<em>str</em>) &#8211; Description of <cite>param1</cite>.</li>
+<li><strong>param2</strong> (<code class="xref py py-obj docutils literal"><span class="pre">int</span></code>, optional) &#8211; Description of <cite>param2</cite>. Multiple
+lines are supported.</li>
+<li><strong>param3</strong> (<em>list</em><em>(</em><em>str</em><em>)</em><em></em>) &#8211; Description of <cite>param3</cite>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="evac.lazy.lazyensemble.LazyEnsemble.batchscript_for_member">
 <code class="descname">batchscript_for_member</code><span class="sig-paren">(</span><em>member</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.batchscript_for_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.batchscript_for_member" title="Permalink to this definition">¶</a></dt>
@@ -122,6 +150,19 @@ first occurence in the file that matches.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.get_paths_to_input">
+<code class="descname">get_paths_to_input</code><span class="sig-paren">(</span><em>userinput</em>, <em>opt</em>, <em>fname_warning=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.get_paths_to_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.get_paths_to_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logic to add absolute paths of ICs or LBCs to the dictionary.</p>
+<p>Args:</p>
+<p>userinput   :   ics or lbcs from __init__.
+opt         :   (str) - &#8216;ics&#8217; or &#8216;lbcs&#8217;
+fname_warning   :   (bool) - if True, raise Exception if</p>
+<blockquote>
+<div>the IC/LBC files do not follow the
+convention for the wrf run directory</div></blockquote>
+</dd></dl>
+
+<dl class="method">
 <dt id="evac.lazy.lazyensemble.LazyEnsemble.namelist_for_member">
 <code class="descname">namelist_for_member</code><span class="sig-paren">(</span><em>member</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.namelist_for_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.namelist_for_member" title="Permalink to this definition">¶</a></dt>
 <dd><p>Edit parts of the namelist</p>
@@ -168,7 +209,7 @@ kwargs      :   keyword arguments passed to run_wrf_member.</p>
 
 <dl class="method">
 <dt id="evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member">
-<code class="descname">run_wrf_member</code><span class="sig-paren">(</span><em>member</em>, <em>prereqs</em>, <em>cpus=1</em>, <em>nodes=1</em>, <em>sleep=30</em>, <em>firstwait=3600</em>, <em>maxtime=86400</em>, <em>check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.run_wrf_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run_wrf_member</code><span class="sig-paren">(</span><em>member</em>, <em>prereqs</em>, <em>cpus=1</em>, <em>nodes=1</em>, <em>sleep=30</em>, <em>firstwait=3600</em>, <em>maxtime=86400</em>, <em>check=False</em>, <em>rename_dict={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.run_wrf_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit a wrf run to batch scheduler.</p>
 <p>member  :   (str) - name of member to run</p>
 </dd></dl>
