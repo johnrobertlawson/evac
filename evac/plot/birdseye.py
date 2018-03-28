@@ -25,22 +25,26 @@ from evac.plot.scales import Scales
 import evac.stats as stats
 
 class BirdsEye(Figure):
-    def __init__(self,ax=None,fig=None,ideal=False,
+    def __init__(self,ax=None,fig=None,ideal=False,proj=None,
                  mplargs=[],mplkwargs={}):
         """ Setting ideal to True removes the geography (e.g. for idealised
         plots)
         """
-        super(BirdsEye,self).__init__(ax=ax,fig=fig,mplargs=mplargs,
-                                      mplkwargs=mplkwargs)
+        self.proj = proj
         self.ideal = ideal
 
-    def plot2D(self,data,fname,outdir,plottype='contourf',
+        super(BirdsEye,self).__init__(ax=ax,fig=fig,mplargs=mplargs,
+                                      mplkwargs=mplkwargs)
+
+    def plot2D(self,data,fname=False,outdir=False,plottype='contourf',
                     save=True,smooth=1,lats=False,lons=False,
                     clvs=False,cmap=False,title=False,cb=True,
-                    locations=False,m=False,x=False,y=False,
+                    locations=False,m=False,x=None,y=None,
                     Nlim=False,Elim=False,Slim=False,Wlim=False,
                     color='k',inline=False,cblabel=False,ideal=False,
-                    drawcounties=False,mplargs=[],mplkwargs={}):
+                    drawcounties=False,mplargs=[],mplkwargs={},
+                    extend=False,nx=None,ny=None,cen_lat=None,cen_lon=None,
+                    lat_ts=None,W=None):
 
         """
         Generic method that plots any matrix of data on a map
@@ -61,6 +65,12 @@ class BirdsEye(Figure):
                                 Format: locations = {'label':(lat,lon),etc}
         :type locations:        dict
         """
+        mplkwargs['levels'] = clvs
+        mplkwargs['cmap'] = cmap
+        # WRFOut instance for help plotting.
+        self.W = W
+        if save:
+            assert (fname is not False) and (outdir is not False)
         # INITIALISE
         self.data = data
         if self.ideal:
@@ -72,8 +82,17 @@ class BirdsEye(Figure):
             self.x = N.arange(len(data[0,:]))
 
         # Can all this be moved into Figure() or whatever?
-        elif x is False and y is False:
-            if m is False:
+    # def basemap_from_newgrid(self,Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
+                    # lat_ts=None,resolution='i',nx=None,ny=None,
+                    # tlat1=30.0,tlat2=60.0,cen_lat=None,cen_lon=None,
+                    # lllon=None,lllat=None,urlat=None,urlon=None,
+                    # drawcounties=False):
+        # self.basemap_from_newgrid(Nlim=Nlim,Elim=Elim,Slim=Slim,Wlim=Wlim,xx=x,yy=y,
+                                # drawcounties=drawcounties,nx=nx,ny=ny,lons=lons,lats=lats,
+                                # lat_ts=lat_ts)
+
+        elif (not x) and (not y):
+            if (not m):
                 if not Nlim:
                     self.bmap,self.x,self.y = self.basemap_setup(smooth=smooth,lats=lats,
                                                         lons=lons,drawcounties=drawcounties)#ax=self.ax)
@@ -81,6 +100,7 @@ class BirdsEye(Figure):
                     self.bmap,self.x,self.y = self.basemap_setup(smooth=smooth,lats=lats,
                                                         lons=lons,Nlim=Nlim,Elim=Elim,
                                                         Slim=Slim,Wlim=Wlim,drawcounties=drawcounties)
+
             else:
                 self.bmap = m
                 self.x, self.y = self.bmap(lons,lats)
@@ -96,21 +116,30 @@ class BirdsEye(Figure):
         if plottype == 'contour':
             mplkwargs['colors'] = color
             mplkwargs['inline'] = inline
+            # This won't work in Python 3
+            # f1 = self.bmap.contour(*mplargs,**mplkwargs)
+            # Fixed:
             f1 = self.bmap.contour(*mplargs,**mplkwargs)
+            # This is repeated below
+            
             if inline:
                 plt.clabel(f1,inline=True,fmt='%d',color='black',fontsize=9)
         elif plottype == 'contourf':
             if isinstance(extend,str):
-                plotkwargs['extend'] = extend
-            f1 = self.bmap.contourf(*plotargs,**plotkwargs)
+                mplkwargs['extend'] = extend
+            # f1 = self.bmap.contourf(*mplargs,**mplkwargs)
+            f1 = self.ax.contourf(*mplargs,**mplkwargs)
         elif plottype == 'pcolor':
-            f1 = self.bmap.pcolor(*plotargs,**plotkwargs)
+            # f1 = self.bmap.pcolor(*mplargs,**mplkwargs)
+            f1 = self.ax.pcolor(*mplargs,**mplkwargs)
         elif plottype == 'pcolormesh':
-            f1 = self.bmap.pcolormesh(*plotargs,**plotkwargs)
+            # f1 = self.bmap.pcolormesh(*mplargs,**mplkwargs)
+            f1 = self.ax.pcolormesh(*mplargs,**mplkwargs)
         elif plottype == 'scatter':
-            f1 = self.bmap.scatter(*plotargs,**plotkwargs)
+            # f1 = self.bmap.scatter(*mplargs,**mplkwargs)
+            f1 = self.ax.scatter(*mplargs,**mplkwargs)
         # elif plottype == 'quiver':
-            # f1 = self.bmap.quiver(*plotargs,**plotkwargs)
+            # f1 = self.bmap.quiver(*mplargs,**mplkwargs)
         else:
             print("Specify correct plot type.")
             raise Exception
@@ -139,7 +168,7 @@ class BirdsEye(Figure):
             cb1.set_label(cblabel)
         if save:
             self.save(outdir,fname)
-        plt.close(self.fig)
+            plt.close(self.fig)
 
     def plot_locations(self,locations):
         for k,v in locations.items():

@@ -4,7 +4,7 @@ Can use .TS files (?)
 Can use model output.
 
 """
-from .wrfout import WRFOut
+from evac.datafiles.wrfout import WRFOut
 import matplotlib.pyplot as plt
 import os
 

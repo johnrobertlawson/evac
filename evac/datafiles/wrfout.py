@@ -23,7 +23,7 @@ import datetime
 import evac.utils as utils
 import evac.utils.met_constants as mc
 from WEM.postWRF.postWRF.ncfile import NC
-import evac.derived._derived as derived
+import evac.derived.derived as derived
 
 debug_get = 0
 
@@ -516,7 +516,8 @@ class WRFOut(NC):
 
         return tbl
 
-    def compute(self,vrbl,tidx,lvidx,lonidx,latidx,other,lookup=0):
+    # def compute(self,vrbl,tidx,lvidx,lonidx,latidx,other,lookup=0):
+    def compute(self,vrbl,tidx,lvidx,lonidx,latidx,other=False,lookup=False):
         """ Look up method needed to return array of data
         for required variable.
 
@@ -533,7 +534,9 @@ class WRFOut(NC):
         if lookup:
             response = lookup in tbl
         else:
-            response = tbl[vrbl](tidx,lvidx,lonidx,latidx,other)
+            # response = tbl[vrbl](tidx,lvidx,lonidx,latidx,other)
+            # Edited to pass in self to derived functions.
+            response = tbl[vrbl](self,tidx,lvidx,lonidx,latidx,other)
         return response
 
 

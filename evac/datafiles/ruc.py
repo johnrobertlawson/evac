@@ -20,10 +20,10 @@ import calendar
 import sys
 #sys.path.append('/home/jrlawson/gitprojects/')
 import evac.utils as utils
-import evac.utils.metconstants as mc
+import evac.utils.met_constants as mc
 from evac.plot.figure import Figure
 from evac.utils.defaults import Defaults
-from .wrfout import WRFOut
+from evac.datafiles.wrfout import WRFOut
 
 
 

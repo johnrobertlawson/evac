@@ -4,4 +4,4 @@
 Functions to compute derived meteorological fields.
 
 .. toctree::
-    evac.derived._derived
+    evac.derived.derived

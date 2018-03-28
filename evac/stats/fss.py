@@ -5,7 +5,7 @@ import scipy.ndimage.filters
 
 from evac.utils.exceptions import FormatError
 
-class self.FSS():
+class FSS:
     def __init__(self,data_fcst,data_obs,itime=False,ftime=False,
                 lv=False,thresholds=(0.5,1,2,4,8),ns=None,
                 ns_step=4):
@@ -36,7 +36,7 @@ class self.FSS():
         for data in (self.data_obs,self.data_fcst):
             shp = data.shape
             if len(shp) == 2:
-                pass 
+                pass
             elif len(shp) == 3:
                 if shp[0] == 0:
                     data = data[0,:,:]
@@ -50,7 +50,7 @@ class self.FSS():
     def do_grid_check(self,):
         """ Make sure grids are identical size.
         """
-        self.ydim, self.xdim = self.data_fcst.shape 
+        self.ydim, self.xdim = self.data_fcst.shape
         if self.data_obs.shape != (self.ydim,self.xdim):
             raise FormatError("Obs and forecast data not same size.")
         return

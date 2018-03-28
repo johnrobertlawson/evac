@@ -12,8 +12,8 @@ import datetime
 import numpy as N
 
 import evac.utils as utils
-from .wrfout import WRFOut
-from .gefs import GEFS
+from evac.datafiles.wrfout import WRFOut
+from evac.datafiles.gefs import GEFS
 
 # Dummy variable in place of proper subclass of WRFOut
 AuxWRFOut = object
@@ -65,7 +65,8 @@ class Ensemble:
         self.debug = debug
         self.fileformat = fileformat
         self.ctrl = ctrl
-        self.rootdir = rootdir
+        # Remove any trailing slash!
+        self.rootdir = rootdir.rstrip("/")
         self.initutc = initutc
         self.doms = doms
         self.fmt = fmt
@@ -83,6 +84,11 @@ class Ensemble:
         self.members, self.fdt = self.get_members(f_prefix=f_prefix)
         self.nmems = len(self.member_names)
         self.nperts = self.nmems - self.isctrl
+
+        # Check to see if the ensemble isn't just an empty list!
+        if self.nmems == 0:
+            print("Files not found.")
+            raise Exception
 
         # Get start and end of whole dataset (inclusive)
         self.filetimes = self.list_of_filetimes(arb=True)
@@ -178,12 +184,13 @@ class Ensemble:
                 elif isinstance(f_prefix,(list,tuple)):
                     files = [f for f in files if f.startswith(f_prefix[domn])]
                 if main_fname in files:
-                    # pdb.set_trace()
+                    print("Found",main_fname,"in",dirname)
                     dsp =  dirname.split('/')
                     rsp = self.rootdir.split('/')
 
                     # The following logic merges subdir names
                     # e.g. ensemble grouped twice by perturbation type?
+                    # pdb.set_trace()
                     if dsp[:-1] == rsp:
                         member = dirname.split('/')[-1]
                     elif dsp[:-2] == rsp:
@@ -597,3 +604,43 @@ class Ensemble:
         # pdb.set_trace()
 
         return t, tidx
+
+    def get_limits(self,dom=1,fmt='dict'):
+        """ Return the limits of the domain.
+
+        Args:
+
+        dom     :   (int) - domain number to return
+        fmt     :   (str) - format to return data.
+                    If 'dict', dictionary.
+        """
+        W = self.arbitrary_pick(dataobj=True,dom=dom)
+        if fmt is 'dict':
+            return {'Nlim':W.Nlim,
+                    'Elim':W.Elim,
+                    'Slim':W.Slim,
+                    'Wlim':W.Wlim,}
+        else:
+            raise Exception
+
+    def get_latlons(self,dom=1):
+        W = self.arbitrary_pick(dataobj=True,dom=dom)
+        return W.lats, W.lons
+
+    # def get_xx_yy(self,dom=1):
+        # W = self.arbitrary_pick(dataobj=True,dom=dom)
+        # return W.xx, W.yy
+
+    def get_nx_ny(self,dom=1):
+        W = self.arbitrary_pick(dataobj=True,dom=dom)
+        # return W.nx, W.ny
+        return W.x_dim, W.y_dim
+
+    def get_cenlatlons(self,dom=1):
+        W = self.arbitrary_pick(dataobj=True,dom=dom)
+        return W.cen_lat, W.cen_lon
+
+
+        
+
+        

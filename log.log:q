@@ -1,0 +1,11 @@
+[master 003fa58] Updates docs
+ 2 files changed, 162 insertions(+)
+ create mode 100644 log.log:q
+To ssh://git@github.com/johnrobertlawson/evac.git
+ ! [rejected]        HEAD -> master (fetch first)
+error: failed to push some refs to 'ssh://git@github.com/johnrobertlawson/evac.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first merge the remote changes (e.g.,
+hint: 'git pull') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.

@@ -135,20 +135,46 @@ class Figure:
         CB.set_label(label)
         self.save(fpath,fname,tight=False)
 
-    def basemap_from_newgrid(self,Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
+    def basemap_from_newgrid(self,Nlim=None,Elim=None,Slim=None,Wlim=None,proj=None,
                     lat_ts=None,resolution='i',nx=None,ny=None,
                     tlat1=30.0,tlat2=60.0,cen_lat=None,cen_lon=None,
                     lllon=None,lllat=None,urlat=None,urlon=None,
-                    drawcounties=False):
+                    drawcounties=False,xx=None,yy=None,
+                    lats=None,lons=None):
         """Wrapper for utility method.
         """
         # m,lons,lats,xx,yy = utils.create_new_grid(*args,**kwargs)
         # return m, lons, lats, xx[0,:], yy[:,0]
+        if isinstance(proj,str):
+            self.proj = proj
+        elif not hasattr(self,'proj'):
+            self.proj = 'merc'
+
+        if nx is None:
+            if xx is None:
+                if lons is None:
+                    raise Exception("Need to give either nx/ny or xx/yy")
+                else:
+                    if lons.ndim == 2:
+                        ny,nx = lons.shape
+                    else:
+                        nx = len(lons)
+                        ny = len(lats)
+            
+            else:
+                ny,nx = xx.shape
+
+        # for merc
+        # if None in (Nlim,Elim,Slim,Wlim,lat_ts,nx,ny):
+
+        # def create_new_grid(Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
+                    # lat_ts=None,resolution='i',nx=None,ny=None,
+                    # tlat1=30.0,tlat2=60.0,cen_lat=None,cen_lon=None,):
         self.m, self.lons, self.lats, self.xx, self.yy = utils.create_new_grid(
-                    Nlim=Nlim,Elim=Elim,Slim=Slim,Wlim=Wlim,proj=proj,
+                    Nlim=Nlim,Elim=Elim,Slim=Slim,Wlim=Wlim,proj=self.proj,
                     lat_ts=lat_ts,resolution=resolution,nx=nx,ny=ny,
-                    tlat1=tlat1,tlat2=tlat2,cen_lat=cen_lat,cen_lon=cen_lon,
-                    lllon=lllon,lllat=lllat,urlat=urlat,urlon=urlon)
+                    tlat1=tlat1,tlat2=tlat2,cen_lat=cen_lat,cen_lon=cen_lon,)
+                    # lllon=lllon,lllat=lllat,urlat=urlat,urlon=urlon)
         self.m.drawcoastlines()
         self.m.drawstates()
         self.m.drawcountries()
@@ -156,40 +182,41 @@ class Figure:
             self.m.readshapefile(drawcounties,'counties')
         return
 
-    def basemap_setup(self,smooth=1,lats=False,lons=False,proj='merc',
+    def basemap_setup(self,smooth=1,lats=False,lons=False,proj=None,
                         Nlim=False,Elim=False,Slim=False,Wlim=False,
-                        drawcounties=False):
+                        drawcounties=False,res='i'):
         """
         TODO:
         Merge with above method.
         Needs rewriting to include limited domains based on lats/lons.
         Currently, assuming whole domain is plotted.
         """
+        # if hasattr(self,'proj'):
+            # assert proj == self.proj
 
-        # Fetch settings
-        if self.use_defaults:
-            basemap_res = self.D.basemap_res
-
-        if proj=='lcc':
+        if self.proj=='lcc':
             width_m = self.W.dx*(self.W.x_dim-1)
             height_m = self.W.dy*(self.W.y_dim-1)
 
             m = Basemap(
-                projection=proj,width=width_m,height=height_m,
+                projection=self.proj,width=width_m,height=height_m,
                 lon_0=self.W.cen_lon,lat_0=self.W.cen_lat,lat_1=self.W.truelat1,
-                lat_2=self.W.truelat2,resolution=basemap_res,area_thresh=500,
+                lat_2=self.W.truelat2,resolution=res,area_thresh=500,
                 ax=self.ax)
 
-        elif proj=='merc':
-            if self.W and not Nlim and not isinstance(lats,N.ndarray):
+        elif self.proj=='merc':
+            if hasattr(self,'W') and not Nlim and not isinstance(lats,N.ndarray):
                 Nlim,Elim,Slim,Wlim = self.W.get_limits()
             elif Nlim==False:
                 Nlim = lats.max()
                 Slim = lats.min()
                 Elim = lons.max()
                 Wlim = lons.min()
+            else:
+                # raise Exception
+                pass
 
-            m = Basemap(projection=proj,
+            m = Basemap(projection=self.proj,
                         llcrnrlat=Slim,
                         llcrnrlon=Wlim,
                         urcrnrlat=Nlim,
@@ -197,6 +224,8 @@ class Figure:
                         lat_ts=(Nlim-Slim)/2.0,
                         resolution='l',
                         ax=self.ax)
+        else:
+            raise Exception
 
         m.drawcoastlines()
         m.drawstates()
@@ -210,9 +239,12 @@ class Figure:
         # Default should be a tenth of width of plot, rounded to sig fig
 
         # s = slice(None,None,smooth)
-        if self.W and not isinstance(lats,N.ndarray):
-            x,y = m(self.W.lons,self.W.lats)
-        else:
-            x,y = m(*N.meshgrid(lons,lats))
+        # if hasattr(self,'W') and not isinstance(lats,N.ndarray):
+        if hasattr(self,'W'):
+            if self.W is not None:
+                x,y = m(self.W.lons,self.W.lats)
+            else:
+                x,y = m(*N.meshgrid(lons,lats))
+                # x,y = m(N.meshgrid(lons,lats))
         # pdb.set_trace()
         return m, x, y

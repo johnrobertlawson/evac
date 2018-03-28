@@ -9,7 +9,7 @@ import scipy.integrate as integrate
 
 import evac.utils as utils
 from evac.utils import met_constants as mc
-import WEM.postWRF.postWRF._skewt2 as sT
+#import WEM.postWRF.postWRF._skewt2 as sT
 
 """
 ROWS:

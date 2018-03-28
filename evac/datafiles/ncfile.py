@@ -2,7 +2,7 @@ from netCDF4 import Dataset
 
 from .datafile import DataFile
 
-class NC(DataFile):
+class NCFile(DataFile):
     def __init__(self,fpath):
         """Generic netCDF import.
 

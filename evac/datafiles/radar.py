@@ -8,11 +8,21 @@ Todos:
         Probably using the __next__ built-in.
     * Remove redundant basemap generation method.
 """
+import os
+import pdb
+import calendar
+import glob
 
-from .pngfile import PNGFile
+import scipy
+import numpy as N
+
+from evac.datafiles.pngfile import PNGFile
+import evac.utils as utils
+import evac.plot.colourtables as ct
+from evac.plot.birdseye import BirdsEye
 
 class Radar(PNGFile):
-    def __init__(self,utc,datapath):
+    def __init__(self,utc,datapath,proj='merc'):
         """
         Composite radar archive data from mesonet.agron.iastate.edu.
 
@@ -21,6 +31,7 @@ class Radar(PNGFile):
             wldpath (str)       :   Absolute path to .wld file
             fmt (str)           :   format of data - N0Q or N0R
         """
+        self.proj = proj
         self.utc = utc
         fname_root = self.get_radar_fname()
 
@@ -161,9 +172,15 @@ class Radar(PNGFile):
 
     def plot_radar(self,outdir=False,fig=False,ax=False,fname=False,Nlim=False,
                     Elim=False, Slim=False,Wlim=False,cb=True,
-                    drawcounties=False):
+                    drawcounties=False,save='auto'):
         """
         Plot radar data.
+
+        Args:
+
+        save        :   (str,bool) - If 'auto', saving will only occur if
+                        fig and ax are not specified.
+                        If True, the figure is saved; if False, not.
         """
         # if not fig:
             # fig, ax = plt.subplots()
@@ -171,18 +188,17 @@ class Radar(PNGFile):
         #lons, lats = self.m.makegrid(self.xlen,self.ylen)
         if isinstance(Nlim,float):
             data, lats, lons = self.get_subdomain(Nlim,Elim,Slim,Wlim)
-            # x,y = self.m(lons,lats)
         else:
             data = self.data
             lats = self.lats #flip lats upside down?
             lons = self.lons
             # x,y = self.m(*N.meshgrid(lons,lats))
 
+        # xx,uy = self.m(lons,lats)
         # x,y = self.m(*N.meshgrid(lons,lats))
         # x,y = self.m(*N.meshgrid(lons,lats[::-1]))
 
         # Custom colorbar
-        from . import colourtables as ct
         radarcmap = ct.reflect_ncdc(self.clvs)
         # radarcmap = ct.ncdc_modified_ISU(self.clvs)
 
@@ -199,17 +215,18 @@ class Radar(PNGFile):
         if not fname:
             tstr = utils.string_from_time('output',self.utc)
             fname = 'verif_radar_{0}.png'.format(tstr)
-        F = BirdsEye(fig=fig,ax=ax)
+        F = BirdsEye(fig=fig,ax=ax,proj=self.proj)
         if cb:
             cb = 'horizontal'
-        if (fig is not False) and (ax is not False):
-            save = False
-        else:
-            save = True
+        if save is 'auto':
+            if (fig is not False) and (ax is not False):
+                save = False
+            else:
+                save = True
         F.plot2D(dBZ,fname,outdir=outdir,lats=lats,lons=lons,
                     cmap=radarcmap,clvs=N.arange(5,90,5),
                     cb=cb,cblabel='Composite reflectivity (dBZ)',
-                    drawcounties=drawcounties,save=save)
+                    drawcounties=drawcounties,save=save,lat_ts=50.0,)
         # im = self.ax.contourf(x,y,dBZ,alpha=0.5,cmap=radarcmap,
                                 # levels=N.arange(5.0,90.5,0.5))
         # outpath = os.path.join(outdir,fname)

@@ -7,10 +7,10 @@ import collections
 import pdb
 
 # from figure import Figure
-from . import colourtables as ct
-from .scales import Scales
-from .figure import Figure
-from .defaults import Defaults
+import evac.plot.colourtables as ct
+from evac.plot.scales import Scales
+from evac.plot.figure import Figure
+from evac.utils.defaults import Defaults
 
 class Clicker(Figure):
     # def __init__(self,config,wrfout,ax=0):

@@ -9,8 +9,8 @@ import scipy.ndimage as ndimage
 import scipy.ndimage.filters as filters
 import matplotlib.pyplot as plt
 
-from .wrfout import WRFOut
-from .obs import Radar
+from evac.datafiles.wrfout import WRFOut
+from evac.datafiles.radar import Radar
 
 class SAL(object):
     def __init__(self,Wctrl_fpath,Wmod_fpath,vrbl=False,utc=False,lv=False,
@@ -91,14 +91,14 @@ class SAL(object):
 
     def get_radar_verif(self,utc,datapath):
         RADAR = Radar(utc,datapath)
-        Nlim, Elim, Slim, Wlim = self.M['WRFOut'].get_limits() 
+        Nlim, Elim, Slim, Wlim = self.M['WRFOut'].get_limits()
         wlats = self.M['WRFOut'].lats1D
         wlons = self.M['WRFOut'].lons1D
         data, lats, lons = RADAR.get_subdomain(Nlim,Elim,Slim,Wlim)
         dBZ = RADAR.get_dBZ(data)
         dBZ_flip = N.flipud(dBZ)
         from scipy.interpolate import RectBivariateSpline as RBS
-        rbs = RBS(lats[::-1],lons,dBZ_flip) 
+        rbs = RBS(lats[::-1],lons,dBZ_flip)
         dBZ_interp = rbs(wlats,wlons,)#grid=True)
         # import pdb; pdb.set_trace()
         # fig, ax = plt.subplots(1)
@@ -163,7 +163,7 @@ class SAL(object):
     def compute_r(self,dic):
         Rn_sum = 0
         for k,v in list(dic['objects'].items()):
-            Rn_sum += v['Rn'] * self.vector_diff_km(dic['x_CoM'],v['CoM']) 
+            Rn_sum += v['Rn'] * self.vector_diff_km(dic['x_CoM'],v['CoM'])
         try:
             r = Rn_sum / dic['R_tot']
         except ZeroDivisionError:

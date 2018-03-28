@@ -1,0 +1,138 @@
+# On branch master
+nothing to commit, working directory clean
+Everything up-to-date
+Running Sphinx v1.5.1
+loading pickled environment... done
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 0 source files that are out of date
+updating environment: 0 added, 5 changed, 0 removed
+reading sources... [ 20%] evac.datafiles.wrfout
+reading sources... [ 40%] evac.derived
+reading sources... [ 60%] evac.stats.objectbased
+reading sources... [ 80%] evac.stats.sal
+reading sources... [100%] evac.stoch.fractal_tools
+Total time: 0.0
+
+/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/matplotlib/__init__.py:1405: UserWarning: 
+This call to matplotlib.use() has no effect because the backend has already
+been chosen; matplotlib.use() must be called *before* pylab, matplotlib.pyplot,
+or matplotlib.backends is imported for the first time.
+
+  warnings.warn(_use_error_msg)
+/home/john.lawson/gits/evac/docs/source/evac.datafiles.wrfout.rst:2: WARNING: Title underline too short.
+
+`datafiles.wrfout`
+=======
+/home/john.lawson/gits/evac/evac/datafiles/wrfout.py:docstring of evac.datafiles.wrfout.WRFOut.get:23: ERROR: Unexpected indentation.
+/home/john.lawson/gits/evac/evac/datafiles/wrfout.py:docstring of evac.datafiles.wrfout.WRFOut.return_tbl:3: ERROR: Unexpected indentation.
+/home/john.lawson/gits/evac/docs/source/evac.derived.rst:2: WARNING: Title underline too short.
+
+`derived`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.derived.rst:6: WARNING: toctree contains reference to nonexisting document 'evac.derived._derived'
+/home/john.lawson/gits/evac/docs/source/evac.stats.objectbased.rst:2: WARNING: Title underline too short.
+
+`stats.objectbased`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.stats.sal.rst:2: WARNING: Title underline too short.
+
+`stats.sal`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.stoch.fractal_tools.rst:2: WARNING: Title underline too short.
+
+`stoch.fractal_tools`
+=======
+/home/john.lawson/gits/evac/docs/source/evac.stoch.fractal_tools.rst:5: WARNING: autodoc: failed to import module 'evac.stoch.fractal_tools'; the following exception was raised:
+Traceback (most recent call last):
+  File "/home/john.lawson/anaconda3/envs/python35/lib/python3.5/site-packages/Sphinx-1.5.1-py3.5.egg/sphinx/ext/autodoc.py", line 547, in import_object
+    __import__(self.modname)
+  File "/home/john.lawson/gits/evac/evac/stoch/fractal_tools.py", line 249, in <module>
+    centre = N.zeros([l,l])
+TypeError: 'float' object cannot be interpreted as an integer
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... /home/john.lawson/gits/evac/docs/source/evac.derived.derived.rst:: WARNING: document isn't included in any toctree
+/home/john.lawson/gits/evac/docs/source/evac.stats.diffenergy.rst:: WARNING: document isn't included in any toctree
+done
+preparing documents... done
+writing output... [ 10%] evac
+writing output... [ 20%] evac.datafiles
+writing output... [ 30%] evac.datafiles.wrfout
+writing output... [ 40%] evac.derived
+writing output... [ 50%] evac.stats
+writing output... [ 60%] evac.stats.objectbased
+writing output... [ 70%] evac.stats.sal
+writing output... [ 80%] evac.stoch
+writing output... [ 90%] evac.stoch.fractal_tools
+writing output... [100%] index
+
+generating indices... genindex py-modindex
+highlighting module code... [  1%] evac.lazy.ideal_profiles
+highlighting module code... [  3%] evac.datafiles.ruc
+highlighting module code... [  5%] evac.datafiles.mrms
+highlighting module code... [  7%] evac.plot.timeseries
+highlighting module code... [  9%] evac.utils.reproject_tools
+highlighting module code... [ 11%] evac.datafiles.radar
+highlighting module code... [ 13%] evac.datafiles.obs
+highlighting module code... [ 15%] evac.utils.get_data
+highlighting module code... [ 17%] evac.plot.heatmap
+highlighting module code... [ 19%] evac.stats.probscores
+highlighting module code... [ 21%] evac.datafiles.pngfile
+highlighting module code... [ 23%] evac.stats.roc
+highlighting module code... [ 25%] evac.stoch.perturbations
+highlighting module code... [ 26%] evac.stats.diffenergy
+highlighting module code... [ 28%] evac.plot.map
+highlighting module code... [ 30%] evac.stats.objectbased
+highlighting module code... [ 32%] evac.datafiles.gribfile
+highlighting module code... [ 34%] evac.stats.detscores
+highlighting module code... [ 36%] evac.datafiles.ensemble
+highlighting module code... [ 38%] evac.datafiles.hrrr
+highlighting module code... [ 40%] evac.stats.casati
+highlighting module code... [ 42%] evac.datafiles.spclsr
+highlighting module code... [ 44%] evac.stoch.ifsfractal
+highlighting module code... [ 46%] evac.plot.birdseye
+highlighting module code... [ 48%] evac.utils.gis_tools
+highlighting module code... [ 50%] evac.plot.colourtables
+highlighting module code... [ 51%] evac.utils.unix_tools
+highlighting module code... [ 53%] evac.datafiles.datafile
+highlighting module code... [ 55%] evac.utils.misc_tools
+highlighting module code... [ 57%] evac.datafiles.stageiv
+highlighting module code... [ 59%] evac.datafiles.ncfile
+highlighting module code... [ 61%] evac.plot.figure
+highlighting module code... [ 63%] evac.utils.evac_numbers
+highlighting module code... [ 65%] evac.datafiles.csvfile
+highlighting module code... [ 67%] evac.plot.xsection
+highlighting module code... [ 69%] evac.plot.axes
+highlighting module code... [ 71%] evac.stats.misc_stats
+highlighting module code... [ 73%] evac.datafiles.wrfout
+highlighting module code... [ 75%] evac.plot.skewt
+highlighting module code... [ 76%] evac.utils.exceptions
+highlighting module code... [ 78%] evac.plot.clicker
+highlighting module code... [ 80%] evac.datafiles.ecmwf
+highlighting module code... [ 82%] evac.stoch.lovejoy_fractal
+highlighting module code... [ 84%] evac.utils.evac_types
+highlighting module code... [ 86%] evac.stats.sal
+highlighting module code... [ 88%] evac.stats.fss
+highlighting module code... [ 90%] evac.lazy.lazywrf
+highlighting module code... [ 92%] evac.derived.derived
+highlighting module code... [ 94%] evac.plot.scales
+highlighting module code... [ 96%] evac.utils.defaults
+highlighting module code... [ 98%] evac.datafiles.binaryfile
+highlighting module code... [100%] evac.datafiles.stormevents
+
+writing additional pages... search
+copying static files... done
+copying extra files... done
+dumping search index in English (code: en) ... done
+dumping object inventory... done
+build succeeded, 11 warnings.
+
+Build finished. The HTML pages are in ../../evac_docs/html.
+[gh-pages 4371c71] Doc html push
+ 10 files changed, 1077 insertions(+), 16 deletions(-)
+ create mode 100644 _modules/evac/stats/objectbased.html
+ create mode 100644 _modules/evac/stats/sal.html
+ rewrite objects.inv (97%)
+ rewrite searchindex.js (98%)
+To ssh://git@github.com/johnrobertlawson/evac.git
+   fd4059a..4371c71  HEAD -> gh-pages
