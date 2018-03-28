@@ -12,7 +12,8 @@ try:
 except ImportError:
     print("Module paramiko unavailable. Ignoring import.")
 
-def bridge_multi(orders,fromlist=False,todir=False):
+def bridge_multi(orders,fromlist=False,todir=False,
+                    return_newlist=False):
     """
     Soft-link, copy, or move multiple items.
 
@@ -27,6 +28,8 @@ def bridge_multi(orders,fromlist=False,todir=False):
     cmd is 'copy','softlink', or 'move'
     frompath/topath is absolute path of origin/destination
 
+    return_newlist (bool): if True, return a list with the new absolute
+                                path of all files.
     """
     # Get into correct format
     if isinstance(orders,str):
@@ -36,11 +39,16 @@ def bridge_multi(orders,fromlist=False,todir=False):
         for f in fromlist:
             orders[(f,todir)] = cmd
 
+    newlist = []
     for (frompath,topath),cmd in orders.items():
-        bridge(cmd,frompath,topath)
-    return
+        newf = bridge(cmd,frompath,topath,return_newpath=True)
+        newlist.append(newf)
 
-def bridge(command,frompath,topath,catch_overwrite=False):
+    if return_newlist:
+        return newlist
+
+def bridge(command,frompath,topath,catch_overwrite=False,
+                return_newpath=False):
     """ Copy, move, soft-link.
 
     Args:
@@ -53,6 +61,7 @@ def bridge(command,frompath,topath,catch_overwrite=False):
                     be the same filename as the origin.
     catch_overwrite     :   (bool) - if True, raise Exception if
                             topath already exists
+    return_newpath (bool): if True, return the new absolute path of the file
     """
 
     # Use path-like objects
@@ -77,16 +86,18 @@ def bridge(command,frompath,topath,catch_overwrite=False):
         raise NonsenseError("The command variable **{}** is invalid".format(
                         command),color='red')
     assert topath.exists()
-    return
+
+    if return_newpath:
+        return topath
 
 def wowprint(message,color='red',bold=True,underline=False,formatargs=False):
-    """ Print with colour/bold colorasis on certain things!
+    """ Print with colour/bold emphasis on certain things!
    
-    message      :   (str) - string with any colorasised
+    message      :   (str) - string with any emphasised
                     item surrounded by two asterisks on both
                     sides. These are replaced.
-    color        :   (str,bool) - the colour of the colorasised
-                    text. If False, don't colorasise.
+    color        :   (str,bool) - the colour of the emphasised
+                    text. If False, don't emphasise.
     
     Usage:
     

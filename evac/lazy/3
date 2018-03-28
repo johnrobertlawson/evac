@@ -195,7 +195,7 @@ class LazyEnsemble:
         utils.wowprint("Ensemble **created!**",color='purple',bold=True)
         utils.wowprint("Now do **run_all_members()**.",color='yellow',bold=True)
         
-    def get_paths_to_input(self,userinput,opt,fname_warning=False):
+    def get_paths_to_input(self,userinput,opt,fname_warning=True):
         """ Logic to add absolute paths of ICs or LBCs to the dictionary.
         
         
@@ -374,11 +374,6 @@ class LazyEnsemble:
                         end_minute=self.endutc.minute,
                         end_second=self.endutc.second,
 
-                        run_days = 0,
-                        run_hours = 0,
-                        run_minutes = 0,
-                        run_seconds = self.runsec,
-
                         # We'll assume the output directory is just default
                         # history_outname would change where the wrfout goes
         )
@@ -443,7 +438,7 @@ class LazyEnsemble:
     def run_wrf_member(self,member,prereqs,cpus=1,nodes=1,
                         sleep=30,firstwait=3600,
                         maxtime=(24*3600),check=False,
-                        rename_dict=None,merge_lbcs=False):
+                        rename_dict=None):
         """ Submit a wrf run to batch scheduler.
 
         member  :   (str) - name of member to run
@@ -481,14 +476,10 @@ class LazyEnsemble:
 
         # Copy ICBC data if not done manually
         
-        newic_list = utils.bridge_multi(self.members[member]['ics'],
-                            return_newlist=True)
-        newlbc_list = utils.bridge_multi(self.members[member]['lbcs'],
-                            return_newlist=True)
-
-        if merge_lbcs:
-            utils.merge_netcdfs(rundir/'wrfbdy_d01',
-                            filelist=newlbc_list)
+        utils.bridge_multi(self.members[member]['ics'])
+        
+        if self.lbcdir is not None:
+            utils.bridge_multi('softlink',self.members[member]['lbcs'],rundir)
 
         # Rename files in the rundir that match a glob
         # There must only be one match, obviously.

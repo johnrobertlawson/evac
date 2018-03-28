@@ -1,5 +1,4 @@
 #import scipy.ndimage as nd
-from netCDF4 import Dataset
 import calendar
 import collections
 import fnmatch
@@ -12,10 +11,13 @@ import glob
 import pickle
 import datetime
 import heapq
+import xarray
 
 import matplotlib as M
 import numpy as N
+from netCDF4 import Dataset
 
+from . import unix_tools #as unix_tools
 #from . import unix_tools
 #from . import get_data
 
@@ -618,8 +620,8 @@ def string_from_time(usage,t,dom=0,strlen=0,conven=0,**kwargs):
         if not dom:
             print("No domain specified; using domain #1.")
             dom = 1
-        strg = ('wrfout_d0' + str(dom) +
-               '{0:04d}-{1:02d}-{2:02d}_{3:02d}:{4:02d}:{5:02d}'.format(*t))
+        strg = ('wrfout_d{:02d}_{:04d}-{:02d}-{:02d}_{:02d}:{:02d}:{:02d}'.format(
+                                            dom,*t))
     elif usage == 'ruc':
         # This depends on the RUC version? Will break?
         strg = ('ruc2_252_{0:04d}{1:02d}{2:02d}_' +
@@ -1343,3 +1345,49 @@ def check_same_dimensions(*args):
     for arr in args:
         shps.append(arr.shape)
     return all([a == arr[0] for a in arr])
+
+def merge_netcdfs(outpath,filelist=None,globpath=None):
+    """ Merge numerous netcdf files.
+
+    Args:
+        filelist (list,tuple): Absolute paths to all netcdf files.
+        globpath (str): Absolute path with glob search
+        outpath (str): Absolute path to merged file.
+    """
+    print("Merging netCDF files...")
+
+    if filelist is None:
+        assert globpath is not None
+        gp = unix_tools.enforce_pathobj(globpath)
+        globdir = gp.parent
+        filelist = globdir.glob(gp.name)
+
+    # Make sure paths are strings
+    fl = [str(f) for f in filelist]
+
+    xnc = [xarray.open_dataset(nc) for nc in fl]
+    merged = xarray.concat(xnc, 'Time')
+    # merged = xarray.concat(xnc, 'forecast_time')
+    merged.to_netcdf(str(outpath))
+    print("Completed merge; saved to {}".format(outpath))
+    return
+
+def pretty_fhr(fhr,in_fmt='hours',out_fmt=1):
+    """ Returns a pretty time stamp suitable for looping plots
+    over numerous forecast times.
+
+    Args:
+        fhr: offset from initialisation time (units given by in_fmt).
+        in_fmt (str): 'hours', 'minutes', or 'seconds'
+        out_fmt (int): selects the format of the output string.
+                        out_fmt=1 is "{h}h_{mm}m"
+    """
+    if in_fmt is 'hours':
+        fhr = fhr * 60
+    else:
+        raise Exception("Not implemented yet.")
+
+    if out_fmt == 1:
+        h,m = divmod(in_fmt,60)
+        outstr = '{:d}h_{:02d}min'.format(h,m)
+    return outstr

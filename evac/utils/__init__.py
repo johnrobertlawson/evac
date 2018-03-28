@@ -7,8 +7,8 @@ to make it easier to import.
 # from .exceptions import *
 # from ._fractal_tools import *
 # from .get_data import *
-from .gis_tools import *
+from evac.utils.gis_tools import *
 # from .met_constants import *
-from .misc_tools import *
-from .reproject_tools import *
-from .unix_tools import *
+from evac.utils.misc_tools import *
+from evac.utils.reproject_tools import *
+from evac.utils.unix_tools import *

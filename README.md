@@ -33,6 +33,7 @@ Thanks to weirdness with pygrib, it is recommended you install the following in 
 * scipy
 * matplotlib
 * basemap
+* xarray
 
 ## Where do I start?
 
