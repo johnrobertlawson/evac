@@ -1,0 +1,599 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>evac.lazy.lazyensemble &#8212; evac 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for evac.lazy.lazyensemble</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">PosixPath</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+
+<span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">evac.lazy.lazywrf</span> <span class="k">import</span> <span class="n">LazyWRF</span>
+<span class="kn">from</span> <span class="nn">evac.utils.exceptions</span> <span class="k">import</span> <span class="n">WRFError</span><span class="p">,</span> <span class="n">PrettyException</span>
+
+<div class="viewcode-block" id="LazyEnsemble"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble">[docs]</a><span class="k">class</span> <span class="nc">LazyEnsemble</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate ensemble by running multiple WRF runs simulataneously.</span>
+<span class="sd">    This is done by creating temporary folder and linking/copying.</span>
+<span class="sd">    Efficiency improvements from Monte Flora.</span>
+
+<span class="sd">    Will not work on Windows systems due to hardcoded PosixPath.</span>
+
+<span class="sd">    User must specify either endutc or runsec.</span>
+
+<span class="sd">    The initial and boundary conditions are copied from path_to_icbcdir</span>
+<span class="sd">    to path_to_rundir, using default names.</span>
+
+<span class="sd">    Member names, if automatically created, are &quot;mem01&quot;, &quot;mem02&quot;, etc</span>
+
+<span class="sd">    Parent script should be run via batch submission. The procedure is:</span>
+
+<span class="sd">    L = LazyEnsemble(*args,**kwargs)</span>
+<span class="sd">    L.run_all_members()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path_to_exedir</span><span class="p">,</span><span class="n">path_to_datadir</span><span class="p">,</span> <span class="n">path_to_namelistdir</span><span class="p">,</span>
+                    <span class="n">path_to_icbcdir</span><span class="p">,</span><span class="n">path_to_outdir</span><span class="p">,</span><span class="n">path_to_batch</span><span class="p">,</span><span class="n">initutc</span><span class="p">,</span>
+                    <span class="n">sched</span><span class="o">=</span><span class="s1">&#39;slurm&#39;</span><span class="p">,</span><span class="n">path_to_rundir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delete_exe_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">ndoms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nmems</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">membernames</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">endutc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">runsec</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">nl_per_member</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">nl_suffix</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="n">icbcs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dryrun</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Note that WRF can run with initial and boundary conditions from</span>
+<span class="sd">        only the parent domain (d01).</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        path_to_exedir      :   (str) - directory of compiled WRF executables</span>
+<span class="sd">        path_to_datadir     :   (str) - directory where wrfout and other data</span>
+<span class="sd">                                will be saved.</span>
+<span class="sd">        path_to_namelistdir :   (str) - directory containing namelist(s)</span>
+<span class="sd">                                templates or full versions.</span>
+<span class="sd">        path_to_icbcdir     :   (str) - directory with initial and boundary</span>
+<span class="sd">                                condition files</span>
+<span class="sd">        path_to_outdir      :   (str) - where to move wrfout files to</span>
+<span class="sd">        path_to_batch       :   (str) - absolute path to *.job script</span>
+<span class="sd">                                for slurm - not sure about rocks etc</span>
+<span class="sd">        initutc             :   (datetime.datetime) - initialisation time</span>
+
+<span class="sd">        path_to_rundir      :   (str, optional) - directory where wrf.exe will</span>
+<span class="sd">                                be copied to,</span>
+<span class="sd">                                and rsl.error files will be generated.</span>
+<span class="sd">                                By default, this is the datadir.</span>
+<span class="sd">                                If running multiple ensembles, it is</span>
+<span class="sd">                                faster to have permanant folders for each</span>
+<span class="sd">                                ensemble, rather than spinning up and</span>
+<span class="sd">                                deleting wrf.exe)</span>
+<span class="sd">        sched               :   (str, optional) - job scheduler.</span>
+<span class="sd">                                Only implemented for slurm right now</span>
+<span class="sd">        delete_exe_copy     :   (bool, optional) - whether the .exe files</span>
+<span class="sd">                                will be deleted after the run is finished.</span>
+<span class="sd">                                The default is no, as numerous ensembles</span>
+<span class="sd">                                can use the same run folders, potentially.</span>
+<span class="sd">        ndoms               :   (int) - number of domains</span>
+<span class="sd">        nmems               :   (int) - number of members. If zero,</span>
+<span class="sd">                                try counting length of membernames.</span>
+<span class="sd">        membernames         :   (list,tuple) - list of strings for</span>
+<span class="sd">                                member names. If False, use automatic</span>
+<span class="sd">        endutc              :   (datetime.datetime) - time to end simulation</span>
+<span class="sd">        runsec              :   (int) - seconds of simulation time</span>
+<span class="sd">        nl_per_member       :   (bool) - if True, each member has their</span>
+<span class="sd">                                own namelist file in path_to_namelistdir,</span>
+<span class="sd">                                where each member&#39;s namelist is the file</span>
+<span class="sd">                                namelist.input.&lt;nl_suffix&gt; - see next</span>
+<span class="sd">        nl_suffix           :   (str) - if &#39;name&#39;, the suffix will be the</span>
+<span class="sd">                                member name (either passed in or automatically</span>
+<span class="sd">                                generated).</span>
+<span class="sd">        icbcs               :   (dict,list,bool) - dictionary of {member:filenames}</span>
+<span class="sd">                                where &#39;filenames&#39; are a list/tuple of initial</span>
+<span class="sd">                                and boundary condition files, copied to rundir.</span>
+<span class="sd">                                If a list, this is used for each ensemble member</span>
+<span class="sd">                                from a folder within the icbc_dir.</span>
+<span class="sd">                                If True, it looks for the default names</span>
+<span class="sd">                                in subfolders of icbc_dir</span>
+<span class="sd">                                if &#39;all&#39;, it copies everything from default folders.</span>
+<span class="sd">        dryrun              :   (bool) - if True, don&#39;t delete any files</span>
+<span class="sd">                                or submit any runs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check - must have either number of members or a list of names</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">membernames</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">nmems</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># we need one of these optional arguments to compute run time</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">endutc</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">runsec</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Specific endutc or runsec.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">runsec</span><span class="p">:</span>
+            <span class="n">endutc</span> <span class="o">=</span> <span class="n">initutc</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">runsec</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">endutc</span><span class="p">:</span>
+            <span class="n">runsec</span> <span class="o">=</span> <span class="p">(</span><span class="n">endutc</span> <span class="o">-</span> <span class="n">initutc</span><span class="p">)</span><span class="o">.</span><span class="n">seconds</span>
+            <span class="k">assert</span> <span class="n">runsec</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">endutc</span> <span class="o">=</span> <span class="n">endutc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runsec</span> <span class="o">=</span> <span class="n">runsec</span>
+
+        <span class="c1"># PATH OBJECTS - see pathlib documentation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exedir</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_exedir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_datadir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">namelistdir</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_namelistdir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icbcdir</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_icbcdir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outdir</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_outdir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batchscript</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_batch</span><span class="p">)</span>
+
+        <span class="c1"># Shortcut for accessing the script name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batchname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batchscript</span><span class="o">.</span><span class="n">name</span>
+        <span class="c1"># By default, the run directory is where the data will end up</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path_to_rundir</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="n">path_to_rundir</span> <span class="o">=</span> <span class="n">path_to_datadir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrfrundir</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_rundir</span><span class="p">)</span>
+
+        <span class="c1"># Time of initialisation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span> <span class="o">=</span> <span class="n">initutc</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sched</span> <span class="o">=</span> <span class="n">sched</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dryrun</span> <span class="o">=</span> <span class="n">dryrun</span>
+
+        <span class="c1"># Number of domains</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndoms</span> <span class="o">=</span> <span class="n">ndoms</span>
+
+        <span class="c1"># Options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_exe_copy</span> <span class="o">=</span> <span class="n">delete_exe_copy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nl_per_member</span> <span class="o">=</span> <span class="n">nl_per_member</span>
+
+        <span class="c1"># INIT PROCEDURE</span>
+        <span class="c1"># Get member names</span>
+        <span class="k">if</span> <span class="n">membernames</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nmems</span> <span class="o">=</span> <span class="n">nmems</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">membernames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mem</span><span class="si">{:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span>
+                                <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nmems</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">membernames</span> <span class="o">=</span> <span class="n">membernames</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nmems</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">membernames</span><span class="p">)</span>
+
+        <span class="c1"># Lookup dictionary of all members</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalog_members</span><span class="p">()</span>
+
+        <span class="c1"># Gather ICs, LBCs</span>
+        <span class="c1"># Each file that needs to be copied is in a list </span>
+        <span class="c1">#   within [&#39;icbcs&#39;] for each member</span>
+
+        <span class="c1"># if icbcs is a dictionary, copy filenames for each member</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">icbcs</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">icbcs</span><span class="p">[</span><span class="n">member</span><span class="p">],(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="s1">&#39;icbcs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">icbcs</span><span class="p">[</span><span class="n">member</span><span class="p">]</span>
+
+        <span class="c1"># Use the same files for each member</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">icbcs</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="s1">&#39;icbcs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">icbcs</span>
+
+        <span class="c1"># Use default naming</span>
+        <span class="k">elif</span> <span class="n">icbcs</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">fnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wrfinput_d</span><span class="si">{:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nmems</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span>
+                        <span class="s1">&#39;wrfbdy_d</span><span class="si">{:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nmems</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">membernames</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="s1">&#39;icbcs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">icbcdir</span> <span class="o">/</span> <span class="n">member</span>
+        <span class="k">elif</span> <span class="n">icbcs</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">glb</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">icbcdir</span> <span class="o">/</span> <span class="n">member</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="s1">&#39;icbcs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">glb</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PrettyException</span><span class="p">(</span><span class="s2">&quot;icbcs setting **</span><span class="si">{}</span><span class="s2">** is not valid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                                    <span class="n">icbcs</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+
+        <span class="c1"># TO DO - how to automate nests too</span>
+        <span class="c1"># For now, everything in same folder.</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">wowprint</span><span class="p">(</span><span class="s2">&quot;Ensemble **created!**&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span><span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">wowprint</span><span class="p">(</span><span class="s2">&quot;Now do **run_all_members()**.&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">,</span><span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LazyEnsemble.catalog_members"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.catalog_members">[docs]</a>    <span class="k">def</span> <span class="nf">catalog_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot; Create the members dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">mem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">membernames</span><span class="p">:</span>
+            <span class="n">mem_datadir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadir</span> <span class="o">/</span> <span class="n">mem</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">trycreate</span><span class="p">(</span><span class="n">mem_datadir</span><span class="p">)</span>
+
+            <span class="n">mem_rundir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrfrundir</span> <span class="o">/</span> <span class="n">mem</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">trycreate</span><span class="p">(</span><span class="n">mem_rundir</span><span class="p">)</span>
+
+            <span class="n">members</span><span class="p">[</span><span class="n">mem</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;datadir&#39;</span><span class="p">:</span><span class="n">mem_datadir</span><span class="p">,</span>
+                                    <span class="s1">&#39;rundir&#39;</span><span class="p">:</span><span class="n">mem_rundir</span><span class="p">,}</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">members</span></div>
+
+<div class="viewcode-block" id="LazyEnsemble.print_readme"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.print_readme">[docs]</a>    <span class="k">def</span> <span class="nf">print_readme</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save a pretty-printed README file to a given directory.</span>
+
+<span class="sd">        Optional argument will print namelist.input</span>
+
+<span class="sd">        Maybe this could be a decorator method that logs this data for each</span>
+<span class="sd">        ensemble member.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="LazyEnsemble.edit_batchscript"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.edit_batchscript">[docs]</a>    <span class="k">def</span> <span class="nf">edit_batchscript</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">linekey</span><span class="p">,</span><span class="n">newline</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Replace a line from the submission script</span>
+<span class="sd">        that matches a key (linekey) with newline.</span>
+
+<span class="sd">        linekey must be unambiguous, otherwise it will change the</span>
+<span class="sd">        first occurence in the file that matches.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">fs</span> <span class="o">=</span> <span class="n">fpath</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="n">flines</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="n">the_idx</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">linekey</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+            <span class="c1"># This is the line number to insert at</span>
+            <span class="n">the_idx</span> <span class="o">=</span> <span class="n">linekey</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flines</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">linekey</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">the_idx</span> <span class="o">=</span> <span class="n">idx</span>
+        <span class="n">fs</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">the_idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flines</span><span class="p">[</span><span class="n">the_idx</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newline</span><span class="p">)</span>
+            <span class="n">nameout</span> <span class="o">=</span> <span class="n">fpath</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,)</span><span class="c1">#1)</span>
+            <span class="n">nameout</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">flines</span><span class="p">)</span>
+            <span class="n">nameout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Setting&quot;</span><span class="p">,</span><span class="n">linekey</span><span class="p">,</span><span class="s2">&quot;not found in script.&quot;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="LazyEnsemble.batchscript_for_member"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.batchscript_for_member">[docs]</a>    <span class="k">def</span> <span class="nf">batchscript_for_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Edit parts of the batch submission script.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">jobname</span> <span class="o">=</span> <span class="s1">&#39;wrf_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+        <span class="n">path_to_err</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrfrundir</span> <span class="o">/</span> <span class="n">member</span> <span class="o">/</span> <span class="n">jobname</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s1">&#39;.err&#39;</span><span class="p">)</span>
+        <span class="n">path_to_out</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrfrundir</span> <span class="o">/</span> <span class="n">member</span> <span class="o">/</span> <span class="n">jobname</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s1">&#39;.out&#39;</span><span class="p">)</span>
+        <span class="n">path_to_wrfexe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrfrundir</span> <span class="o">/</span> <span class="n">member</span> <span class="o">/</span> <span class="s1">&#39;wrf.exe&#39;</span>
+        <span class="c1">#command = f&#39;time srun {path_to_wrfexe})&#39;</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;time srun </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path_to_wrfexe</span><span class="p">)</span>
+        <span class="n">rundir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="s1">&#39;rundir&#39;</span><span class="p">]</span>
+        <span class="n">batchpath</span> <span class="o">=</span> <span class="n">rundir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">batchname</span>
+        <span class="n">cpu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpus_per_job</span>
+
+        <span class="c1"># Need to change tasks per node?</span>
+        <span class="c1">#tn = self.tasks_per_job</span>
+
+        <span class="c1"># First, changing the job name.</span>
+        <span class="c1"># Note the print literals marked with &quot;f&quot; from Python 3.6)</span>
+        <span class="c1"># changes = dict(&quot;#SBATCH -J&quot; = f&quot;#SBATCH -J {jobname}&quot;,</span>
+        <span class="n">changes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;#SBATCH -J&quot;</span> <span class="p">:</span> <span class="s2">&quot;#SBATCH -J </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">jobname</span><span class="p">),</span>
+
+        <span class="c1"># Next, the output and error files</span>
+                <span class="s2">&quot;#SBATCH -o&quot;</span> <span class="p">:</span> <span class="s2">&quot;#SBATCH -o </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path_to_err</span><span class="p">),</span>
+                <span class="s2">&quot;#SBATCH -e&quot;</span> <span class="p">:</span> <span class="s2">&quot;#SBATCH -e </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path_to_out</span><span class="p">),</span>
+        <span class="c1"># Next the cpu/node settings</span>
+                <span class="c1">#f&quot;#SBATCH --ntasks-per-node&quot; = &quot;#SBATCH --ntasks-per-node={tn}&quot;,</span>
+                <span class="s2">&quot;#SBATCH -n&quot;</span> <span class="p">:</span> <span class="s2">&quot;#SBATCH -n </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cpu</span><span class="p">),</span>
+        <span class="c1"># Make sure we&#39;re in the right directory</span>
+                <span class="s2">&quot;cd&quot;</span> <span class="p">:</span> <span class="s2">&quot;cd </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rundir</span><span class="p">),</span>
+        <span class="c1"># Next the wrf submit command</span>
+                <span class="o">-</span><span class="mi">1</span> <span class="p">:</span> <span class="n">command</span><span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">newline</span> <span class="ow">in</span> <span class="n">changes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edit_batchscript</span><span class="p">(</span><span class="n">batchpath</span><span class="p">,</span><span class="n">key</span><span class="p">,</span><span class="n">newline</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="LazyEnsemble.namelist_for_member"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.namelist_for_member">[docs]</a>    <span class="k">def</span> <span class="nf">namelist_for_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Edit parts of the namelist</span>
+
+<span class="sd">        start/end year, month, day, hour, minute, second</span>
+
+<span class="sd">        Use multiplied notation by number of domains (self.ndoms)</span>
+
+<span class="sd">        Assume that everything else in namelist is correct for member</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nlpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="s1">&#39;rundir&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="s1">&#39;namelist.input&#39;</span>
+
+        <span class="n">changes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">start_year</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                        <span class="n">start_month</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                        <span class="n">start_day</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                        <span class="n">start_hour</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
+                        <span class="n">start_minute</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span>
+                        <span class="n">start_second</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="o">.</span><span class="n">second</span><span class="p">,</span>
+
+                        <span class="n">end_year</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">endutc</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                        <span class="n">end_month</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">endutc</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                        <span class="n">end_day</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">endutc</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                        <span class="n">end_hour</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">endutc</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
+                        <span class="n">end_minute</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">endutc</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span>
+                        <span class="n">end_second</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">endutc</span><span class="o">.</span><span class="n">second</span><span class="p">,</span>
+
+                        <span class="c1"># We&#39;ll assume the output directory is just default</span>
+                        <span class="c1"># history_outname would change where the wrfout goes</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">newline</span> <span class="ow">in</span> <span class="n">changes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">edit_namelist</span><span class="p">(</span><span class="n">nlpath</span><span class="p">,</span><span class="n">key</span><span class="p">,</span><span class="n">newline</span><span class="p">,</span><span class="n">doms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndoms</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LazyEnsemble.run_all_members"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.run_all_members">[docs]</a>    <span class="k">def</span> <span class="nf">run_all_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">prereqs</span><span class="p">,</span><span class="n">first</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Automatically submit all jobs to the scheduler.</span>
+<span class="sd">        See run_wrf_member() and check_complete() for keyword arguments.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">        prereqs :   (dict) - a dictionary containing prerequisite files</span>
+<span class="sd">                    needed in rundir. use this format:</span>
+
+<span class="sd">                    dict( path_to_file = cmd)</span>
+
+<span class="sd">                    where path_to_file is the absolute path to</span>
+<span class="sd">                    the file in question (as str or Path obj) and</span>
+<span class="sd">                    cmd is from [&#39;copy&#39;,&#39;move&#39;,&#39;softlink&#39;].</span>
+
+<span class="sd">                    Don&#39;t include initial, boundary conditions (these are</span>
+<span class="sd">                    different for every member and are copied automatically)</span>
+<span class="sd">                    or namelist files (ditto).</span>
+<span class="sd">        first       :   (int) - only run the first x members</span>
+<span class="sd">        kwargs      :   keyword arguments passed to run_wrf_member.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Do we need parallelisation?</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        from multiprocessing import Process, Lock</span>
+
+<span class="sd">        def f(l, i):</span>
+<span class="sd">            l.acquire()</span>
+<span class="sd">            try:</span>
+<span class="sd">                print(&#39;hello world&#39;, i)</span>
+<span class="sd">            finally:</span>
+<span class="sd">                l.release()</span>
+
+<span class="sd">        if __name__ == &#39;__main__&#39;:</span>
+<span class="sd">            lock = Lock()</span>
+
+<span class="sd">            for num in range(10):</span>
+
+<span class="sd">                Process(target=f, args=(lock, num)).start()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+        <span class="c1"># Set up threads.</span>
+
+        <span class="k">if</span> <span class="n">first</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="c1"># Submit these in parallel...</span>
+        <span class="k">for</span> <span class="n">nmem</span><span class="p">,</span><span class="n">member</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">run_wrf_member</span><span class="p">(</span><span class="n">member</span><span class="p">,</span><span class="n">prereqs</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">first</span> <span class="o">==</span> <span class="n">nmem</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exiting due to test.&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+        <span class="c1"># Generate README for each dir?</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="LazyEnsemble.run_wrf_member"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member">[docs]</a>    <span class="k">def</span> <span class="nf">run_wrf_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">,</span><span class="n">prereqs</span><span class="p">,</span><span class="n">cpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">nodes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">sleep</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">firstwait</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>
+                        <span class="n">maxtime</span><span class="o">=</span><span class="p">(</span><span class="mi">24</span><span class="o">*</span><span class="mi">3600</span><span class="p">),</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Submit a wrf run to batch scheduler.</span>
+
+<span class="sd">        member  :   (str) - name of member to run</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cpus_per_job</span> <span class="o">=</span> <span class="n">cpus</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes_per_job</span> <span class="o">=</span> <span class="n">nodes</span>
+
+        <span class="c1"># These two may well be identical.</span>
+        <span class="n">rundir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="s1">&#39;rundir&#39;</span><span class="p">]</span>
+        <span class="n">datadir</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="s1">&#39;datadir&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Get dictionary in correct format for bridge_multi</span>
+        <span class="n">PRQs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">prereqs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">PRQs</span><span class="p">[(</span><span class="n">k</span><span class="p">,</span><span class="n">rundir</span><span class="p">)]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="c1"># Copy, link, move everything needed to rundir</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">bridge_multi</span><span class="p">(</span><span class="n">PRQs</span><span class="p">)</span>
+
+        <span class="c1"># Make sure wrf.exe is executable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_permissions</span><span class="p">((</span><span class="n">rundir</span> <span class="o">/</span> <span class="s1">&#39;wrf.exe&#39;</span><span class="p">),</span><span class="mi">755</span><span class="p">)</span>
+
+        <span class="c1"># Copy, edit batch script</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">bridge</span><span class="p">(</span><span class="s1">&#39;copy&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">batchscript</span><span class="p">,</span><span class="n">rundir</span><span class="p">)</span>
+        <span class="c1"># use self.cpus_per_job and self.nodes_per_job?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batchscript_for_member</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+
+        <span class="c1"># Copy, edit namelist</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">nl_per_member</span><span class="p">:</span>
+            <span class="n">frompath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">namelistdir</span> <span class="o">/</span> <span class="s1">&#39;namelist.input&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Implement this!&quot;</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">bridge</span><span class="p">(</span><span class="s1">&#39;copy&#39;</span><span class="p">,</span><span class="n">frompath</span><span class="p">,</span><span class="n">rundir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">namelist_for_member</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
+
+        <span class="c1"># Copy ICBC data</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">bridge_multi</span><span class="p">(</span><span class="s1">&#39;copy&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="s1">&#39;icbcs&#39;</span><span class="p">],</span><span class="n">rundir</span><span class="p">)</span>
+
+        <span class="c1"># Submit script</span>
+        <span class="n">batchloc</span> <span class="o">=</span> <span class="n">datadir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">batchname</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;sbatch </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">batchloc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dryrun</span><span class="p">:</span>
+            <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Exiting - dry run.&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+        <span class="c1"># Monitor processes</span>
+        <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_complete</span><span class="p">(</span><span class="n">member</span><span class="p">,</span><span class="n">sleep</span><span class="o">=</span><span class="n">sleep</span><span class="p">,</span><span class="n">firstwait</span><span class="o">=</span><span class="n">firstwait</span><span class="p">,</span>
+                            <span class="n">maxtime</span><span class="o">=</span><span class="n">maxtime</span><span class="p">)</span></div>
+        <span class="c1"># Create README?</span>
+
+        <span class="c1"># Clean up files</span>
+
+        
+
+<div class="viewcode-block" id="LazyEnsemble.cleanup"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">folder</span><span class="p">,</span><span class="n">files</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Deletes files in given directory that match a glob.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        folder      :   (path-like object) - this is where to clean up.</span>
+<span class="sd">        files       :   (str,list,tuple) - a list of strings, or a string,</span>
+<span class="sd">                        to match glob. For instance, &quot;rsl*&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">files</span><span class="p">,]</span>
+
+        <span class="c1"># Search for these files</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="n">folder</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dryrun</span><span class="p">:</span>
+                    <span class="n">utils</span><span class="o">.</span><span class="n">wowprint</span><span class="p">(</span><span class="s2">&quot;Pretend deleting **</span><span class="si">{}</span><span class="s2">**.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
+                                    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># This means delete!</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="LazyEnsemble.check_complete"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.check_complete">[docs]</a>    <span class="k">def</span> <span class="nf">check_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">member</span><span class="p">,</span><span class="n">raise_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sleep</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">firstwait</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>
+                        <span class="n">maxtime</span><span class="o">=</span><span class="p">(</span><span class="mi">24</span><span class="o">*</span><span class="mi">3600</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot; Check ensemble member to see if wrf run has finished.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        True if WRF exits successfully.</span>
+<span class="sd">        False if not (and if raise_error is False, otherwise Exception)</span>
+<span class="sd">        Does not exit, if maxtime is N.inf and if WRF does not exit</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">        raise_error     :   (bool) - if True, pass a WRFError as return</span>
+<span class="sd">                            if WRF breaks.</span>
+<span class="sd">        sleep           :   (int) - number of seconds to wait between checks</span>
+<span class="sd">        firstwait       :   (int) - number of seconds to wait after submission</span>
+<span class="sd">                            before checks</span>
+<span class="sd">        maxtime         :   (int) - number of seconds after which the</span>
+<span class="sd">                            method will assume the member&#39;s run has died.</span>
+<span class="sd">                            If this is infinity, script will NEVER DIE!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Don&#39;t bother wasting resources etc checking for a run to finish</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">firstwait</span><span class="p">)</span>
+        <span class="n">elapsed</span> <span class="o">=</span> <span class="n">firstwait</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">rsl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="s1">&#39;rundir&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="s1">&#39;rsl.error.0000&#39;</span>
+            <span class="c1">#tailrsl = subprocess.Popen(f&#39;tail {rsl}&#39;,shell=True,</span>
+            <span class="n">tailrsl</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s1">&#39;tail </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rsl</span><span class="p">),</span><span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                        <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+            <span class="n">tailoutput</span> <span class="o">=</span> <span class="n">tailrsl</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">b</span><span class="s2">&quot;SUCCESS COMPLETE WRF&quot;</span> <span class="ow">in</span> <span class="n">tailoutput</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WRF has finished; moving to next case.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Need to check if job has died! If so, kill script, warn user</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">)</span> <span class="c1"># Try again in x sec</span>
+                <span class="n">elapsed</span> <span class="o">+=</span> <span class="n">sleep</span>
+                <span class="c1"># Check if we&#39;ve passed the maxtime</span>
+                <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;</span> <span class="n">maxtime</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">raise_error</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">WRFError</span><span class="p">(</span><span class="s2">&quot;WRF run assumed dead. Exiting.&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="LazyEnsemble.run_real_member"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.run_real_member">[docs]</a>    <span class="k">def</span> <span class="nf">run_real_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot; Submit real.exe to batch scheduler.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="LazyEnsemble.ensure_permissions"><a class="viewcode-back" href="../../../evac.lazy.html#evac.lazy.lazyensemble.LazyEnsemble.ensure_permissions">[docs]</a>    <span class="k">def</span> <span class="nf">ensure_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">,</span><span class="n">perm_decimal</span><span class="o">=</span><span class="mi">755</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Makes sure the scheduler can run the executable at fpath.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">perm_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:03d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">perm_decimal</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">perm_str</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+
+        <span class="c1"># fpath.chmod(&#39;0o{}&#39;.format(perm))</span>
+        <span class="c1"># fpath.chmod(oct(perm_decimal))</span>
+        <span class="n">fpath</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">perm_decimal</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Changed permissions for </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">perm_str</span><span class="p">))</span>
+        <span class="k">return</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, John Lawson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

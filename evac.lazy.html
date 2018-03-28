@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>lazy &#8212; evac 0.1.0 documentation</title>
+    <title>evac.lazy package &#8212; evac 0.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,8 +26,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="lazy.lazywrf" href="evac.lazy.lazywrf.html" />
-    <link rel="prev" title="derived" href="evac.derived.html" />
+    <link rel="next" title="plot" href="evac.plot.html" />
+    <link rel="prev" title="derived.derived" href="evac.derived.derived.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -43,14 +43,591 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="lazy">
-<h1><cite>lazy</cite><a class="headerlink" href="#lazy" title="Permalink to this headline">¶</a></h1>
-<p>Automation of ensemble creation.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="evac.lazy.lazywrf.html"><cite>lazy.lazywrf</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="evac.lazy.ideal_profiles.html"><cite>lazy.ideal_profiles</cite></a></li>
+  <div class="section" id="evac-lazy-package">
+<h1>evac.lazy package<a class="headerlink" href="#evac-lazy-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-evac.lazy.ideal_profiles">
+<span id="evac-lazy-ideal-profiles-module"></span><h2>evac.lazy.ideal_profiles module<a class="headerlink" href="#module-evac.lazy.ideal_profiles" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.lazy.ideal_profiles.Profile">
+<em class="property">class </em><code class="descclassname">evac.lazy.ideal_profiles.</code><code class="descname">Profile</code><span class="sig-paren">(</span><em>z</em>, <em>fdir</em>, <em>zL=False</em>, <em>E=2000</em>, <em>m=4.0</em>, <em>hodotype='curved'</em>, <em>n=1</em>, <em>V=12.0</em>, <em>PW=30</em>, <em>thT=343</em>, <em>tT=213</em>, <em>th0=300</em>, <em>qv0=0.016</em>, <em>Us=25</em>, <em>fname='profile'</em>, <em>H=14500</em>, <em>zT=14000</em>, <em>RH=0.9</em>, <em>zs=3000</em>, <em>method='MW01'</em>, <em>k2P=96500</em>, <em>k2T=296.65</em>, <em>k2Td=296.15</em>, <em>k2z=250</em>, <em>offset_spd=0</em>, <em>offset_dir=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.MWtemphum">
+<code class="descname">MWtemphum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.MWtemphum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.MWtemphum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.MWwind">
+<code class="descname">MWwind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.MWwind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.MWwind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.PPP">
+<code class="descname">PPP</code><span class="sig-paren">(</span><em>Z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.PPP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.PPP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.P_to_z">
+<code class="descname">P_to_z</code><span class="sig-paren">(</span><em>T</em>, <em>Pa</em>, <em>refPa=100000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.P_to_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.P_to_z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert pressure to altitude.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>T</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>array_like</em>) &#8211; Dry-bulb temperature. If array, must be identical to Pa in size</li>
+<li><strong>Pa</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>array_like</em>) &#8211; Pressure (Pa). If array, must be identical to T in size</li>
+<li><strong>refPa</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>optional</em>) &#8211; Reference pressure (Pa).</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>z</strong> &#8211; Height(s) above ground level (m), same size as Pa, T.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float, array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.RH_invert_RV">
+<code class="descname">RH_invert_RV</code><span class="sig-paren">(</span><em>P</em>, <em>T</em>, <em>RV</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.RH_invert_RV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.RH_invert_RV" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.buoyancy">
+<code class="descname">buoyancy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.buoyancy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.buoyancy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parcel buoyancy profile, or Eq. (A1) in MW01.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>b</strong> (<em>array_like</em>) &#8211; Atmospheric profile of buoyancy.</li>
+<li><strong>qv</strong> (<em>array_like</em>) &#8211; Atmospheric profile of mixing ratio</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.calc_RH">
+<code class="descname">calc_RH</code><span class="sig-paren">(</span><em>z</em>, <em>ztr=12000.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.calc_RH"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.calc_RH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.calc_U">
+<code class="descname">calc_U</code><span class="sig-paren">(</span><em>z</em>, <em>us</em>, <em>zs=3000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.calc_U"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.calc_U" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.calc_theta">
+<code class="descname">calc_theta</code><span class="sig-paren">(</span><em>z</em>, <em>ztr=12000.0</em>, <em>theta0=300.0</em>, <em>thetatr=343</em>, <em>Ttr=213</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.calc_theta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.calc_theta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_Lv">
+<code class="descname">compute_Lv</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_Lv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_Lv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_P_at_z">
+<code class="descname">compute_P_at_z</code><span class="sig-paren">(</span><em>Pbot</em>, <em>T</em>, <em>r</em>, <em>dz</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_P_at_z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_P_at_z" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_P_levels">
+<code class="descname">compute_P_levels</code><span class="sig-paren">(</span><em>zz</em>, <em>theta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_P_levels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_P_levels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_RH">
+<code class="descname">compute_RH</code><span class="sig-paren">(</span><em>Td</em>, <em>T</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_RH"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_RH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_TL">
+<code class="descname">compute_TL</code><span class="sig-paren">(</span><em>TK</em>, <em>rh</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_TL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_TL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_TLCL">
+<code class="descname">compute_TLCL</code><span class="sig-paren">(</span><em>Td</em>, <em>T</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_TLCL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_TLCL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_T_invert_thetae">
+<code class="descname">compute_T_invert_thetae</code><span class="sig-paren">(</span><em>thetae</em>, <em>P</em>, <em>r</em>, <em>TLCL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_T_invert_thetae"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_T_invert_thetae" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_T_with_LCL">
+<code class="descname">compute_T_with_LCL</code><span class="sig-paren">(</span><em>P</em>, <em>PLCL</em>, <em>TLCL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_T_with_LCL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_T_with_LCL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_Td">
+<code class="descname">compute_Td</code><span class="sig-paren">(</span><em>T</em>, <em>RH</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_Td"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_Td" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_Tstar">
+<code class="descname">compute_Tstar</code><span class="sig-paren">(</span><em>TK</em>, <em>e</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_Tstar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_Tstar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_Tv">
+<code class="descname">compute_Tv</code><span class="sig-paren">(</span><em>T</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_Tv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_Tv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_drybulb">
+<code class="descname">compute_drybulb</code><span class="sig-paren">(</span><em>theta</em>, <em>P</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_drybulb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_drybulb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_e">
+<code class="descname">compute_e</code><span class="sig-paren">(</span><em>Td=None</em>, <em>es=None</em>, <em>RH=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_e"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_e" title="Permalink to this definition">¶</a></dt>
+<dd><p>RH is decimal.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_es">
+<code class="descname">compute_es</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_es"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_es" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximation for saturation water pressure of water.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_qs">
+<code class="descname">compute_qs</code><span class="sig-paren">(</span><em>es</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_qs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_qs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_rv">
+<code class="descname">compute_rv</code><span class="sig-paren">(</span><em>p</em>, <em>Td=None</em>, <em>RH=None</em>, <em>T=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_rv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_rv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_std_P">
+<code class="descname">compute_std_P</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_std_P"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_std_P" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute pressure in the tropopause as a function
+of height, for a standard atmosphere.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_theta">
+<code class="descname">compute_theta</code><span class="sig-paren">(</span><em>thetae</em>, <em>r</em>, <em>TLCL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_theta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_theta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_theta_2">
+<code class="descname">compute_theta_2</code><span class="sig-paren">(</span><em>P</em>, <em>T</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_theta_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_theta_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_thetae">
+<code class="descname">compute_thetae</code><span class="sig-paren">(</span><em>T</em>, <em>r</em>, <em>P</em>, <em>Td=None</em>, <em>RH=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_thetae"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_thetae" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_thetae_2">
+<code class="descname">compute_thetae_2</code><span class="sig-paren">(</span><em>theta</em>, <em>r</em>, <em>TLCL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_thetae_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_thetae_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_thetae_3">
+<code class="descname">compute_thetae_3</code><span class="sig-paren">(</span><em>theta</em>, <em>P</em>, <em>Td</em>, <em>T</em>, <em>r</em>, <em>TL=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_thetae_3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_thetae_3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_thetae_4">
+<code class="descname">compute_thetae_4</code><span class="sig-paren">(</span><em>T</em>, <em>p</em>, <em>r</em>, <em>TL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_thetae_4"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_thetae_4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_thetae_profile">
+<code class="descname">compute_thetae_profile</code><span class="sig-paren">(</span><em>TK</em>, <em>p</em>, <em>r</em>, <em>RH</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_thetae_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_thetae_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bolton&#8217;s theta E profile.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>TK</strong> (<em>int</em><em>, </em><em>float</em>) &#8211; Temp at initial level (K)</li>
+<li><strong>p</strong> (<em>int</em><em>, </em><em>float</em>) &#8211; Pressure at initial level (Pa)</li>
+<li><strong>r</strong> (<em>int</em><em>, </em><em>float</em>) &#8211; Mixing ratio at initial level (g/kg?)</li>
+<li><strong>RH</strong> (<em>int</em><em>, </em><em>float</em>) &#8211; RH...where? (percent)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_thetaep">
+<code class="descname">compute_thetaep</code><span class="sig-paren">(</span><em>p</em>, <em>r</em>, <em>T</em>, <em>RH</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_thetaep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_thetaep" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_thetapert">
+<code class="descname">compute_thetapert</code><span class="sig-paren">(</span><em>B</em>, <em>T</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_thetapert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_thetapert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.compute_w">
+<code class="descname">compute_w</code><span class="sig-paren">(</span><em>T</em>, <em>P</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.compute_w"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.compute_w" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.create_textfile">
+<code class="descname">create_textfile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.create_textfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.create_textfile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.get_stdP">
+<code class="descname">get_stdP</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.get_stdP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.get_stdP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.get_stdT">
+<code class="descname">get_stdT</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.get_stdT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.get_stdT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.plot_skewT">
+<code class="descname">plot_skewT</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.plot_skewT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.plot_skewT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.wind">
+<code class="descname">wind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.wind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.wind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wind profiles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>u, v</strong> &#8211; Arrays of u and v profiles</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array-like</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.ideal_profiles.Profile.z_to_P">
+<code class="descname">z_to_P</code><span class="sig-paren">(</span><em>T</em>, <em>z</em>, <em>refPa=100000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.z_to_P"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.z_to_P" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert altitude to pressure.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.lazy.lazyensemble">
+<span id="evac-lazy-lazyensemble-module"></span><h2>evac.lazy.lazyensemble module<a class="headerlink" href="#module-evac.lazy.lazyensemble" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble">
+<em class="property">class </em><code class="descclassname">evac.lazy.lazyensemble.</code><code class="descname">LazyEnsemble</code><span class="sig-paren">(</span><em>path_to_exedir</em>, <em>path_to_datadir</em>, <em>path_to_namelistdir</em>, <em>path_to_icbcdir</em>, <em>path_to_outdir</em>, <em>path_to_batch</em>, <em>initutc</em>, <em>sched='slurm'</em>, <em>path_to_rundir=False</em>, <em>delete_exe_copy=False</em>, <em>ndoms=1</em>, <em>nmems=0</em>, <em>membernames=False</em>, <em>endutc=False</em>, <em>runsec=False</em>, <em>nl_per_member=True</em>, <em>nl_suffix='name'</em>, <em>icbcs=None</em>, <em>dryrun=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Generate ensemble by running multiple WRF runs simulataneously.
+This is done by creating temporary folder and linking/copying.
+Efficiency improvements from Monte Flora.</p>
+<p>Will not work on Windows systems due to hardcoded PosixPath.</p>
+<p>User must specify either endutc or runsec.</p>
+<p>The initial and boundary conditions are copied from path_to_icbcdir
+to path_to_rundir, using default names.</p>
+<p>Member names, if automatically created, are &#8220;mem01&#8221;, &#8220;mem02&#8221;, etc</p>
+<p>Parent script should be run via batch submission. The procedure is:</p>
+<p>L = LazyEnsemble(<a href="#id1"><span class="problematic" id="id2">*</span></a>args,**kwargs)
+L.run_all_members()</p>
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.batchscript_for_member">
+<code class="descname">batchscript_for_member</code><span class="sig-paren">(</span><em>member</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.batchscript_for_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.batchscript_for_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edit parts of the batch submission script.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.catalog_members">
+<code class="descname">catalog_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.catalog_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.catalog_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the members dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.check_complete">
+<code class="descname">check_complete</code><span class="sig-paren">(</span><em>member</em>, <em>raise_error=False</em>, <em>sleep=30</em>, <em>firstwait=3600</em>, <em>maxtime=86400</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.check_complete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.check_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check ensemble member to see if wrf run has finished.</p>
+<p>Returns:
+True if WRF exits successfully.
+False if not (and if raise_error is False, otherwise Exception)
+Does not exit, if maxtime is N.inf and if WRF does not exit</p>
+<p>Args:
+raise_error     :   (bool) - if True, pass a WRFError as return</p>
+<blockquote>
+<div>if WRF breaks.</div></blockquote>
+<p>sleep           :   (int) - number of seconds to wait between checks
+firstwait       :   (int) - number of seconds to wait after submission</p>
+<blockquote>
+<div>before checks</div></blockquote>
+<dl class="docutils">
+<dt>maxtime</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(int) - number of seconds after which the</span><dd>method will assume the member&#8217;s run has died.
+If this is infinity, script will NEVER DIE!</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.cleanup">
+<code class="descname">cleanup</code><span class="sig-paren">(</span><em>folder</em>, <em>files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes files in given directory that match a glob.</p>
+<p>Args:</p>
+<p>folder      :   (path-like object) - this is where to clean up.
+files       :   (str,list,tuple) - a list of strings, or a string,</p>
+<blockquote>
+<div>to match glob. For instance, &#8220;rsl*&#8221;.</div></blockquote>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.edit_batchscript">
+<em class="property">static </em><code class="descname">edit_batchscript</code><span class="sig-paren">(</span><em>fpath</em>, <em>linekey</em>, <em>newline</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.edit_batchscript"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.edit_batchscript" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace a line from the submission script
+that matches a key (linekey) with newline.</p>
+<p>linekey must be unambiguous, otherwise it will change the
+first occurence in the file that matches.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.ensure_permissions">
+<code class="descname">ensure_permissions</code><span class="sig-paren">(</span><em>fpath</em>, <em>perm_decimal=755</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.ensure_permissions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.ensure_permissions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes sure the scheduler can run the executable at fpath.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.namelist_for_member">
+<code class="descname">namelist_for_member</code><span class="sig-paren">(</span><em>member</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.namelist_for_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.namelist_for_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edit parts of the namelist</p>
+<p>start/end year, month, day, hour, minute, second</p>
+<p>Use multiplied notation by number of domains (self.ndoms)</p>
+<p>Assume that everything else in namelist is correct for member</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.print_readme">
+<code class="descname">print_readme</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.print_readme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.print_readme" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a pretty-printed README file to a given directory.</p>
+<p>Optional argument will print namelist.input</p>
+<p>Maybe this could be a decorator method that logs this data for each
+ensemble member.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.run_all_members">
+<code class="descname">run_all_members</code><span class="sig-paren">(</span><em>prereqs</em>, <em>first=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.run_all_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.run_all_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically submit all jobs to the scheduler.
+See run_wrf_member() and check_complete() for keyword arguments.</p>
+<p>Args:
+prereqs :   (dict) - a dictionary containing prerequisite files</p>
+<blockquote>
+<div><p>needed in rundir. use this format:</p>
+<p>dict( path_to_file = cmd)</p>
+<p>where path_to_file is the absolute path to
+the file in question (as str or Path obj) and
+cmd is from [&#8216;copy&#8217;,&#8217;move&#8217;,&#8217;softlink&#8217;].</p>
+<p>Don&#8217;t include initial, boundary conditions (these are
+different for every member and are copied automatically)
+or namelist files (ditto).</p>
+</div></blockquote>
+<p>first       :   (int) - only run the first x members
+kwargs      :   keyword arguments passed to run_wrf_member.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.run_real_member">
+<code class="descname">run_real_member</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.run_real_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.run_real_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit real.exe to batch scheduler.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member">
+<code class="descname">run_wrf_member</code><span class="sig-paren">(</span><em>member</em>, <em>prereqs</em>, <em>cpus=1</em>, <em>nodes=1</em>, <em>sleep=30</em>, <em>firstwait=3600</em>, <em>maxtime=86400</em>, <em>check=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.run_wrf_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit a wrf run to batch scheduler.</p>
+<p>member  :   (str) - name of member to run</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.lazy.lazywrf">
+<span id="evac-lazy-lazywrf-module"></span><h2>evac.lazy.lazywrf module<a class="headerlink" href="#module-evac.lazy.lazywrf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="evac.lazy.lazywrf.LazyWRF">
+<em class="property">class </em><code class="descclassname">evac.lazy.lazywrf.</code><code class="descname">LazyWRF</code><span class="sig-paren">(</span><em>path_to_WRF</em>, <em>path_to_wrfout</em>, <em>submit_fname</em>, <em>submit_ideal_fname=False</em>, <em>path_to_storage=False</em>, <em>submit_real_fname=False</em>, <em>path_to_WPS=False</em>, <em>path_to_atmos=False</em>, <em>path_to_soil=False</em>, <em>sched='slurm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Designed for running multiple runs from the same folder.</p>
+<p>For parallel ensemble generation, use LazyEnsemble child class.</p>
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.add_new_namelist">
+<code class="descname">add_new_namelist</code><span class="sig-paren">(</span><em>suffix</em>, <em>section</em>, <em>sett</em>, <em>newval</em>, <em>quoted</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.add_new_namelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.add_new_namelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds new namelist setting at end of section, before
+the backslash.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.copy_files">
+<code class="descname">copy_files</code><span class="sig-paren">(</span><em>fromfolder</em>, <em>tofolder</em>, <em>matchfs=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.copy_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.copy_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move wrfout files to folder.
+Create folder if it doesn&#8217;t exist</p>
+<p>Move .TS files if they exist
+Copy namelist.input to that folder.
+Copy rsl.error.0000 to the folder.</p>
+<p>Input(s):
+args = names of folder tree, in order of depth.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.copy_namelist">
+<code class="descname">copy_namelist</code><span class="sig-paren">(</span><em>suffix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.copy_namelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.copy_namelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends current time to namelist to create backup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.edit_namelist">
+<code class="descname">edit_namelist</code><span class="sig-paren">(</span><em>suffix</em>, <em>sett</em>, <em>newval</em>, <em>maxdom=1</em>, <em>quoted=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.edit_namelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.edit_namelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method edits namelist.wps or namelist.input.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>suffix</strong> &#8211; which namelist needs changing</li>
+<li><strong>sett</strong> &#8211; setting that needs changing</li>
+<li><strong>newval</strong> &#8211; its new value -&gt; currently replaces whole line</li>
+<li><strong>maxdom</strong> &#8211; number of domains to edit
+(this is relevant for multiple columns?)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="evac.lazy.lazywrf.LazyWRF.generate_date">
+<em class="property">static </em><code class="descname">generate_date</code><span class="sig-paren">(</span><em>date</em>, <em>outstyle='wps'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.generate_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.generate_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates date string for namelist files.</p>
+<p>Input:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.go">
+<code class="descname">go</code><span class="sig-paren">(</span><em>casestr</em>, <em>IC</em>, <em>experiment</em>, <em>ensnames</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.go"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.go" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inputs: (all folder names)
+casestr     :   string of case study initialisation date/time
+IC          :   initial condition model
+experiment  :   dictionary. Key: ensemble type (ICBC,STCH,MXMP)</p>
+<blockquote>
+<div><blockquote>
+<div>-initial condition/boundary condition
+-stochastic kinetic energy backscatter
+-mixed model parameterisations</div></blockquote>
+<dl class="docutils">
+<dt>Value...</dt>
+<dd>-model configuration (CTRL) for ICBC
+-initial condition model/ens member for others</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>ensnames</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">list of ensemble member names</span><dd><ul class="first last simple">
+<li>e.g. c00,p01,p02</li>
+</ul>
+</dd>
+</dl>
+<p><a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs include:
+WPS_only    :   stop after linking met_em files to WRF folder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.go_GEFSR2">
+<code class="descname">go_GEFSR2</code><span class="sig-paren">(</span><em>ensns</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.go_GEFSR2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.go_GEFSR2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs WPS, WRF for one set of initial conditions
+and settings based on the GEFSR2 model.</p>
+<p>Inputs:
+ensns   :   names of ensemble member</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.init_WPS">
+<code class="descname">init_WPS</code><span class="sig-paren">(</span><em>soilVtable_fname='Vtable.GFS_soilonly'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.init_WPS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.init_WPS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.link_to_IC_Vtable">
+<code class="descname">link_to_IC_Vtable</code><span class="sig-paren">(</span><em>IC</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.link_to_IC_Vtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.link_to_IC_Vtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.link_to_IC_data">
+<code class="descname">link_to_IC_data</code><span class="sig-paren">(</span><em>IC</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.link_to_IC_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.link_to_IC_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inputs:
+<a href="#id5"><span class="problematic" id="id6">*</span></a>args   :   e.g. ensemble member</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.link_to_met_em">
+<code class="descname">link_to_met_em</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.link_to_met_em"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.link_to_met_em" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.link_to_soil_Vtable">
+<code class="descname">link_to_soil_Vtable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.link_to_soil_Vtable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.link_to_soil_Vtable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.link_to_soil_data">
+<code class="descname">link_to_soil_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.link_to_soil_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.link_to_soil_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.remove_namelist_line">
+<code class="descname">remove_namelist_line</code><span class="sig-paren">(</span><em>suffix</em>, <em>sett</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.remove_namelist_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.remove_namelist_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.return_namelist_path">
+<code class="descname">return_namelist_path</code><span class="sig-paren">(</span><em>suffix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.return_namelist_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.return_namelist_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives path to namelist depending on suffix argument.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.run_exe">
+<code class="descname">run_exe</code><span class="sig-paren">(</span><em>exe</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.run_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.run_exe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run WPS executables, then check to see if it failed.
+If not, return True to proceed.</p>
+<p>Input:
+exe     :   .exe file name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.lazy.lazywrf.LazyWRF.submit_job">
+<code class="descname">submit_job</code><span class="sig-paren">(</span><em>waitmin=10</em>, <em>sleepmin=5</em>, <em>wrf_only=False</em>, <em>first_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazywrf.html#LazyWRF.submit_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazywrf.LazyWRF.submit_job" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-evac.lazy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-evac.lazy" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -59,13 +636,25 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">evac.lazy package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-evac.lazy.ideal_profiles">evac.lazy.ideal_profiles module</a></li>
+<li><a class="reference internal" href="#module-evac.lazy.lazyensemble">evac.lazy.lazyensemble module</a></li>
+<li><a class="reference internal" href="#module-evac.lazy.lazywrf">evac.lazy.lazywrf module</a></li>
+<li><a class="reference internal" href="#module-evac.lazy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="evac.html">evac package</a><ul>
-      <li>Previous: <a href="evac.derived.html" title="previous chapter"><cite>derived</cite></a></li>
-      <li>Next: <a href="evac.lazy.lazywrf.html" title="next chapter"><cite>lazy.lazywrf</cite></a></li>
+      <li>Previous: <a href="evac.derived.derived.html" title="previous chapter"><cite>derived.derived</cite></a></li>
+      <li>Next: <a href="evac.plot.html" title="next chapter"><cite>plot</cite></a></li>
   </ul></li>
   </ul></li>
 </ul>
