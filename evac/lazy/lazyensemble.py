@@ -384,7 +384,11 @@ class LazyEnsemble:
         )
 
         for key,newline in changes.items():
-            utils.edit_namelist(nlpath,key,newline,doms=self.ndoms)
+            if key.startswith('run'):
+                doms = 1
+            else:
+                doms = self.ndoms
+            utils.edit_namelist(nlpath,key,newline,doms=doms)
 
     def run_all_members(self,prereqs,first=None,**kwargs):
         """ Automatically submit all jobs to the scheduler.
