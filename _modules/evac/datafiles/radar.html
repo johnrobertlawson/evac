@@ -43,17 +43,7 @@
         
         
   <h1>Source code for evac.datafiles.radar</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; Radar download, manipulation, and plotting.</span>
-
-<span class="sd">This uses composite reflectivity data stored on Iowa State Univ.</span>
-<span class="sd">servers.</span>
-
-<span class="sd">Todos:</span>
-<span class="sd">    * Allow different inheritance depending on the data format.</span>
-<span class="sd">        Probably using the __next__ built-in.</span>
-<span class="sd">    * Remove redundant basemap generation method.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pdb</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
 <span class="kn">import</span> <span class="nn">glob</span>
@@ -67,6 +57,41 @@
 <span class="kn">from</span> <span class="nn">evac.plot.birdseye</span> <span class="k">import</span> <span class="n">BirdsEye</span>
 
 <div class="viewcode-block" id="Radar"><a class="viewcode-back" href="../../../evac.datafiles.radar.html#evac.datafiles.radar.Radar">[docs]</a><span class="k">class</span> <span class="nc">Radar</span><span class="p">(</span><span class="n">PNGFile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Radar data download, manipulation, and plotting via :any:`evac.plot.birdseye`.</span>
+
+<span class="sd">    This uses composite reflectivity data stored on Iowa State Univ.</span>
+<span class="sd">    servers.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        Acquire and plot radar data on a limited domain::</span>
+
+<span class="sd">            from evac.datafiles.radar import Radar</span>
+<span class="sd">            import datetime</span>
+
+<span class="sd">            utc = datetime.datetime(2017,4,4,21,30,0)</span>
+<span class="sd">            limdict = dict(Nlim=45.0,Elim=-90.0,Slim=35.0,Wlim=-100.0)</span>
+<span class="sd">            radardir = &#39;/path/to/radar/data&#39;</span>
+
+<span class="sd">            fig,ax = plt.subplots(1)</span>
+<span class="sd">            R = Radar(utc,radardir)</span>
+<span class="sd">            R.get_subdomain(**limdict,overwrite=True)</span>
+<span class="sd">            R.plot_radar(fig=fig,ax=ax,drawcounties=True)</span>
+<span class="sd">            fig.savefig(&#39;/path/to/save.png&#39;)</span>
+
+<span class="sd">    Note that, if the radar data does not exist in radardir, it will be </span>
+<span class="sd">    downloaded automatically.</span>
+
+<span class="sd">    Todos:</span>
+<span class="sd">        * Allow different inheritance depending on the data format.</span>
+<span class="sd">            Probably using the __next__ built-in.</span>
+<span class="sd">        * Remove redundant basemap generation method and integrate with</span>
+<span class="sd">            any new cartopy plotting scripts in :any:`evac.plot.birdseye`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        utc (datetime.datetime): Time of radar data in UTC.</span>
+<span class="sd">        datapath: Absolute path to folder with radar data.</span>
+<span class="sd">        proj: Projection for plotting.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">utc</span><span class="p">,</span><span class="n">datapath</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="s1">&#39;merc&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Composite radar archive data from mesonet.agron.iastate.edu.</span>
