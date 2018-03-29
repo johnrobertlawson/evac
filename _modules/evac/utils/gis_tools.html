@@ -43,7 +43,6 @@
             
   <h1>Source code for evac.utils.gis_tools</h1><div class="highlight"><pre>
 <span></span><span class="c1">#import scipy.ndimage as nd</span>
-<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">fnmatch</span>
@@ -56,10 +55,13 @@
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">heapq</span>
+<span class="kn">import</span> <span class="nn">xarray</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">M</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
 
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">unix_tools</span> <span class="c1">#as unix_tools</span>
 <span class="c1">#from . import unix_tools</span>
 <span class="c1">#from . import get_data</span>
 
@@ -662,8 +664,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dom</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No domain specified; using domain #1.&quot;</span><span class="p">)</span>
             <span class="n">dom</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">strg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;wrfout_d0&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dom</span><span class="p">)</span> <span class="o">+</span>
-               <span class="s1">&#39;</span><span class="si">{0:04d}</span><span class="s1">-</span><span class="si">{1:02d}</span><span class="s1">-</span><span class="si">{2:02d}</span><span class="s1">_</span><span class="si">{3:02d}</span><span class="s1">:</span><span class="si">{4:02d}</span><span class="s1">:</span><span class="si">{5:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
+        <span class="n">strg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;wrfout_d</span><span class="si">{:02d}</span><span class="s1">_</span><span class="si">{:04d}</span><span class="s1">-</span><span class="si">{:02d}</span><span class="s1">-</span><span class="si">{:02d}</span><span class="s1">_</span><span class="si">{:02d}</span><span class="s1">:</span><span class="si">{:02d}</span><span class="s1">:</span><span class="si">{:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                            <span class="n">dom</span><span class="p">,</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
     <span class="k">elif</span> <span class="n">usage</span> <span class="o">==</span> <span class="s1">&#39;ruc&#39;</span><span class="p">:</span>
         <span class="c1"># This depends on the RUC version? Will break?</span>
         <span class="n">strg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;ruc2_252_</span><span class="si">{0:04d}{1:02d}{2:02d}</span><span class="s1">_&#39;</span> <span class="o">+</span>
@@ -1387,6 +1389,52 @@
     <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
         <span class="n">shps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">a</span> <span class="o">==</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="merge_netcdfs"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.merge_netcdfs">[docs]</a><span class="k">def</span> <span class="nf">merge_netcdfs</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span><span class="n">filelist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">globpath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Merge numerous netcdf files.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filelist (list,tuple): Absolute paths to all netcdf files.</span>
+<span class="sd">        globpath (str): Absolute path with glob search</span>
+<span class="sd">        outpath (str): Absolute path to merged file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Merging netCDF files...&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">filelist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">globpath</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">gp</span> <span class="o">=</span> <span class="n">unix_tools</span><span class="o">.</span><span class="n">enforce_pathobj</span><span class="p">(</span><span class="n">globpath</span><span class="p">)</span>
+        <span class="n">globdir</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">parent</span>
+        <span class="n">filelist</span> <span class="o">=</span> <span class="n">globdir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">gp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="c1"># Make sure paths are strings</span>
+    <span class="n">fl</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">]</span>
+
+    <span class="n">xnc</span> <span class="o">=</span> <span class="p">[</span><span class="n">xarray</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span> <span class="k">for</span> <span class="n">nc</span> <span class="ow">in</span> <span class="n">fl</span><span class="p">]</span>
+    <span class="n">merged</span> <span class="o">=</span> <span class="n">xarray</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">xnc</span><span class="p">,</span> <span class="s1">&#39;Time&#39;</span><span class="p">)</span>
+    <span class="c1"># merged = xarray.concat(xnc, &#39;forecast_time&#39;)</span>
+    <span class="n">merged</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">outpath</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Completed merge; saved to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outpath</span><span class="p">))</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="pretty_fhr"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.pretty_fhr">[docs]</a><span class="k">def</span> <span class="nf">pretty_fhr</span><span class="p">(</span><span class="n">fhr</span><span class="p">,</span><span class="n">in_fmt</span><span class="o">=</span><span class="s1">&#39;hours&#39;</span><span class="p">,</span><span class="n">out_fmt</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns a pretty time stamp suitable for looping plots</span>
+<span class="sd">    over numerous forecast times.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fhr: offset from initialisation time (units given by in_fmt).</span>
+<span class="sd">        in_fmt (str): &#39;hours&#39;, &#39;minutes&#39;, or &#39;seconds&#39;</span>
+<span class="sd">        out_fmt (int): selects the format of the output string.</span>
+<span class="sd">                        out_fmt=1 is &quot;{h}h_{mm}m&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">in_fmt</span> <span class="ow">is</span> <span class="s1">&#39;hours&#39;</span><span class="p">:</span>
+        <span class="n">fhr</span> <span class="o">=</span> <span class="n">fhr</span> <span class="o">*</span> <span class="mi">60</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Not implemented yet.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">out_fmt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">h</span><span class="p">,</span><span class="n">m</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">in_fmt</span><span class="p">,</span><span class="mi">60</span><span class="p">)</span>
+        <span class="n">outstr</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1">h_</span><span class="si">{:02d}</span><span class="s1">min&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">m</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">outstr</span></div>
 </pre></div>
 
           </div>

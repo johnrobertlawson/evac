@@ -56,7 +56,8 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Module paramiko unavailable. Ignoring import.&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="bridge_multi"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.bridge_multi">[docs]</a><span class="k">def</span> <span class="nf">bridge_multi</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span><span class="n">fromlist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">todir</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="bridge_multi"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.bridge_multi">[docs]</a><span class="k">def</span> <span class="nf">bridge_multi</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span><span class="n">fromlist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">todir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">return_newlist</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Soft-link, copy, or move multiple items.</span>
 
@@ -71,6 +72,8 @@
 <span class="sd">    cmd is &#39;copy&#39;,&#39;softlink&#39;, or &#39;move&#39;</span>
 <span class="sd">    frompath/topath is absolute path of origin/destination</span>
 
+<span class="sd">    return_newlist (bool): if True, return a list with the new absolute</span>
+<span class="sd">                                path of all files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get into correct format</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
@@ -80,11 +83,16 @@
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fromlist</span><span class="p">:</span>
             <span class="n">orders</span><span class="p">[(</span><span class="n">f</span><span class="p">,</span><span class="n">todir</span><span class="p">)]</span> <span class="o">=</span> <span class="n">cmd</span>
 
+    <span class="n">newlist</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="p">(</span><span class="n">frompath</span><span class="p">,</span><span class="n">topath</span><span class="p">),</span><span class="n">cmd</span> <span class="ow">in</span> <span class="n">orders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">bridge</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span><span class="n">frompath</span><span class="p">,</span><span class="n">topath</span><span class="p">)</span>
-    <span class="k">return</span></div>
+        <span class="n">newf</span> <span class="o">=</span> <span class="n">bridge</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span><span class="n">frompath</span><span class="p">,</span><span class="n">topath</span><span class="p">,</span><span class="n">return_newpath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">newlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">newf</span><span class="p">)</span>
 
-<div class="viewcode-block" id="bridge"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.bridge">[docs]</a><span class="k">def</span> <span class="nf">bridge</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="n">frompath</span><span class="p">,</span><span class="n">topath</span><span class="p">,</span><span class="n">catch_overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">return_newlist</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">newlist</span></div>
+
+<div class="viewcode-block" id="bridge"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.bridge">[docs]</a><span class="k">def</span> <span class="nf">bridge</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="n">frompath</span><span class="p">,</span><span class="n">topath</span><span class="p">,</span><span class="n">catch_overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">return_newpath</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Copy, move, soft-link.</span>
 
 <span class="sd">    Args:</span>
@@ -97,6 +105,7 @@
 <span class="sd">                    be the same filename as the origin.</span>
 <span class="sd">    catch_overwrite     :   (bool) - if True, raise Exception if</span>
 <span class="sd">                            topath already exists</span>
+<span class="sd">    return_newpath (bool): if True, return the new absolute path of the file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Use path-like objects</span>
@@ -121,16 +130,18 @@
         <span class="k">raise</span> <span class="n">NonsenseError</span><span class="p">(</span><span class="s2">&quot;The command variable **</span><span class="si">{}</span><span class="s2">** is invalid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">command</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">topath</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
-    <span class="k">return</span></div>
+
+    <span class="k">if</span> <span class="n">return_newpath</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">topath</span></div>
 
 <div class="viewcode-block" id="wowprint"><a class="viewcode-back" href="../../../evac.utils.unix_tools.html#evac.utils.unix_tools.wowprint">[docs]</a><span class="k">def</span> <span class="nf">wowprint</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">underline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">formatargs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Print with colour/bold colorasis on certain things!</span>
+    <span class="sd">&quot;&quot;&quot; Print with colour/bold emphasis on certain things!</span>
 <span class="sd">   </span>
-<span class="sd">    message      :   (str) - string with any colorasised</span>
+<span class="sd">    message      :   (str) - string with any emphasised</span>
 <span class="sd">                    item surrounded by two asterisks on both</span>
 <span class="sd">                    sides. These are replaced.</span>
-<span class="sd">    color        :   (str,bool) - the colour of the colorasised</span>
-<span class="sd">                    text. If False, don&#39;t colorasise.</span>
+<span class="sd">    color        :   (str,bool) - the colour of the emphasised</span>
+<span class="sd">                    text. If False, don&#39;t emphasise.</span>
 <span class="sd">    </span>
 <span class="sd">    Usage:</span>
 <span class="sd">    </span>

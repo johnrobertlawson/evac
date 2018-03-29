@@ -427,6 +427,25 @@ using the haversine formula.
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="evac.utils.gis_tools.merge_netcdfs">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">merge_netcdfs</code><span class="sig-paren">(</span><em>outpath</em>, <em>filelist=None</em>, <em>globpath=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#merge_netcdfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.merge_netcdfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge numerous netcdf files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filelist</strong> (<em>list</em><em>,</em><em>tuple</em>) &#8211; Absolute paths to all netcdf files.</li>
+<li><strong>globpath</strong> (<em>str</em>) &#8211; Absolute path with glob search</li>
+<li><strong>outpath</strong> (<em>str</em>) &#8211; Absolute path to merged file.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="evac.utils.gis_tools.netcdf_files_in">
 <code class="descclassname">evac.utils.gis_tools.</code><code class="descname">netcdf_files_in</code><span class="sig-paren">(</span><em>folder</em>, <em>dom=1</em>, <em>init_time=0</em>, <em>model='auto'</em>, <em>return_model=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#netcdf_files_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.netcdf_files_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hunt through given folder to find the right netcdf file for data.
@@ -464,6 +483,27 @@ If zero, then folder must contain one unambiguous file.</li>
 <dt id="evac.utils.gis_tools.padded_times">
 <code class="descclassname">evac.utils.gis_tools.</code><code class="descname">padded_times</code><span class="sig-paren">(</span><em>timeseq</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#padded_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.padded_times" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.pretty_fhr">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">pretty_fhr</code><span class="sig-paren">(</span><em>fhr</em>, <em>in_fmt='hours'</em>, <em>out_fmt=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#pretty_fhr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.pretty_fhr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pretty time stamp suitable for looping plots
+over numerous forecast times.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fhr</strong> &#8211; offset from initialisation time (units given by in_fmt).</li>
+<li><strong>in_fmt</strong> (<em>str</em>) &#8211; &#8216;hours&#8217;, &#8216;minutes&#8217;, or &#8216;seconds&#8217;</li>
+<li><strong>out_fmt</strong> (<em>int</em>) &#8211; selects the format of the output string.
+out_fmt=1 is &#8220;{h}h_{mm}m&#8221;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="evac.utils.gis_tools.return_subdomain">

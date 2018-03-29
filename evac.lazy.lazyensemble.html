@@ -47,7 +47,7 @@
 <span id="evac-lazy-lazyensemble-module"></span><h1>evac.lazy.lazyensemble module<a class="headerlink" href="#module-evac.lazy.lazyensemble" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="evac.lazy.lazyensemble.LazyEnsemble">
-<em class="property">class </em><code class="descclassname">evac.lazy.lazyensemble.</code><code class="descname">LazyEnsemble</code><span class="sig-paren">(</span><em>path_to_exedir</em>, <em>path_to_datadir</em>, <em>path_to_namelistdir</em>, <em>path_to_icdir</em>, <em>path_to_lbcdir</em>, <em>path_to_outdir</em>, <em>path_to_batch</em>, <em>initutc</em>, <em>sched='slurm'</em>, <em>path_to_rundir=False</em>, <em>delete_exe_copy=False</em>, <em>ndoms=1</em>, <em>nmems=0</em>, <em>membernames=False</em>, <em>endutc=False</em>, <em>runsec=False</em>, <em>nl_per_member=True</em>, <em>nl_suffix='name'</em>, <em>icbcs=None</em>, <em>dryrun=False</em>, <em>rename_d01_ics=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">evac.lazy.lazyensemble.</code><code class="descname">LazyEnsemble</code><span class="sig-paren">(</span><em>path_to_exedir</em>, <em>path_to_datadir</em>, <em>path_to_namelistdir</em>, <em>path_to_icdir</em>, <em>path_to_lbcdir</em>, <em>path_to_outdir</em>, <em>path_to_batch</em>, <em>initutc</em>, <em>sched='slurm'</em>, <em>path_to_rundir=False</em>, <em>delete_exe_copy=False</em>, <em>ndoms=1</em>, <em>nmems=0</em>, <em>membernames=False</em>, <em>endutc=False</em>, <em>runsec=False</em>, <em>nl_per_member=True</em>, <em>nl_suffix='name'</em>, <em>ics=None</em>, <em>lbcs=None</em>, <em>dryrun=False</em>, <em>rename_d01_ics=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Generate ensemble by running multiple WRF runs simulataneously.
 This is done by creating temporary folder and linking/copying.
@@ -143,15 +143,15 @@ that matches a key (linekey) with newline.</p>
 first occurence in the file that matches.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="evac.lazy.lazyensemble.LazyEnsemble.ensure_permissions">
-<code class="descname">ensure_permissions</code><span class="sig-paren">(</span><em>fpath</em>, <em>perm_decimal=755</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.ensure_permissions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.ensure_permissions" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">ensure_permissions</code><span class="sig-paren">(</span><em>fpath</em>, <em>perm_decimal=755</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.ensure_permissions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.ensure_permissions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes sure the scheduler can run the executable at fpath.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="evac.lazy.lazyensemble.LazyEnsemble.get_paths_to_input">
-<code class="descname">get_paths_to_input</code><span class="sig-paren">(</span><em>userinput</em>, <em>opt</em>, <em>fname_warning=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.get_paths_to_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.get_paths_to_input" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_paths_to_input</code><span class="sig-paren">(</span><em>userinput</em>, <em>opt</em>, <em>fname_warning=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.get_paths_to_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.get_paths_to_input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Logic to add absolute paths of ICs or LBCs to the dictionary.</p>
 <p>Args:</p>
 <p>userinput   :   ics or lbcs from __init__.
@@ -209,7 +209,7 @@ kwargs      :   keyword arguments passed to run_wrf_member.</p>
 
 <dl class="method">
 <dt id="evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member">
-<code class="descname">run_wrf_member</code><span class="sig-paren">(</span><em>member</em>, <em>prereqs</em>, <em>cpus=1</em>, <em>nodes=1</em>, <em>sleep=30</em>, <em>firstwait=3600</em>, <em>maxtime=86400</em>, <em>check=False</em>, <em>rename_dict={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.run_wrf_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run_wrf_member</code><span class="sig-paren">(</span><em>member</em>, <em>prereqs</em>, <em>cpus=1</em>, <em>nodes=1</em>, <em>sleep=30</em>, <em>firstwait=3600</em>, <em>maxtime=86400</em>, <em>check=False</em>, <em>rename_dict=None</em>, <em>merge_lbcs=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.run_wrf_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.run_wrf_member" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit a wrf run to batch scheduler.</p>
 <p>member  :   (str) - name of member to run</p>
 </dd></dl>

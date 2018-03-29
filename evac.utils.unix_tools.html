@@ -47,7 +47,7 @@
 <p>Utility scripts to help with directory, file, etc issues</p>
 <dl class="function">
 <dt id="evac.utils.unix_tools.bridge">
-<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">bridge</code><span class="sig-paren">(</span><em>command</em>, <em>frompath</em>, <em>topath</em>, <em>catch_overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#bridge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.bridge" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">bridge</code><span class="sig-paren">(</span><em>command</em>, <em>frompath</em>, <em>topath</em>, <em>catch_overwrite=False</em>, <em>return_newpath=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#bridge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.bridge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy, move, soft-link.</p>
 <p>Args:</p>
 <dl class="docutils">
@@ -63,11 +63,12 @@ be the same filename as the origin.</div></blockquote>
 <dt>catch_overwrite</dt>
  <span class="classifier-delimiter">:</span> <span class="classifier">(bool) - if True, raise Exception if</span><dd>topath already exists</dd>
 </dl>
+<p>return_newpath (bool): if True, return the new absolute path of the file</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="evac.utils.unix_tools.bridge_multi">
-<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">bridge_multi</code><span class="sig-paren">(</span><em>orders</em>, <em>fromlist=False</em>, <em>todir=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#bridge_multi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.bridge_multi" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">evac.utils.unix_tools.</code><code class="descname">bridge_multi</code><span class="sig-paren">(</span><em>orders</em>, <em>fromlist=False</em>, <em>todir=False</em>, <em>return_newlist=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#bridge_multi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.bridge_multi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Soft-link, copy, or move multiple items.</p>
 <p>Args:
 orders      :   dictionary with the following layout:</p>
@@ -78,6 +79,10 @@ and require arguments fromlist and todir.</div></blockquote>
 <p>where</p>
 <p>cmd is &#8216;copy&#8217;,&#8217;softlink&#8217;, or &#8216;move&#8217;
 frompath/topath is absolute path of origin/destination</p>
+<dl class="docutils">
+<dt>return_newlist (bool): if True, return a list with the new absolute</dt>
+<dd>path of all files.</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -135,13 +140,13 @@ exist_ok    :   (bool) - if True, then warnings are ignored about folder already
 <dl class="function">
 <dt id="evac.utils.unix_tools.wowprint">
 <code class="descclassname">evac.utils.unix_tools.</code><code class="descname">wowprint</code><span class="sig-paren">(</span><em>message</em>, <em>color='red'</em>, <em>bold=True</em>, <em>underline=False</em>, <em>formatargs=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/unix_tools.html#wowprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.unix_tools.wowprint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print with colour/bold colorasis on certain things!</p>
+<dd><p>Print with colour/bold emphasis on certain things!</p>
 <dl class="docutils">
 <dt>message</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">(str) - string with any colorasised</span><dd>item surrounded by two asterisks on both
+ <span class="classifier-delimiter">:</span> <span class="classifier">(str) - string with any emphasised</span><dd>item surrounded by two asterisks on both
 sides. These are replaced.</dd>
 <dt>color</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">(str,bool) - the colour of the colorasised</span><dd>text. If False, don&#8217;t colorasise.</dd>
+ <span class="classifier-delimiter">:</span> <span class="classifier">(str,bool) - the colour of the emphasised</span><dd>text. If False, don&#8217;t emphasise.</dd>
 </dl>
 <p>Usage:</p>
 <p>wowprint(&#8220;The program <strong>prog</strong> is broken&#8221;,color=&#8217;red&#8217;)
