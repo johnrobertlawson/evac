@@ -42,14 +42,8 @@
           <div class="body" role="main">
             
   <h1>Source code for evac.datafiles.ensemble</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; Ensemble of forecasts.</span>
-
-<span class="sd">Todos:</span>
-<span class="sd">    * Change from ensemble of WRFOut files to any sort of datafile.</span>
-<span class="sd">    * Consistency with method names (e.g., get() )</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">pdb</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 
@@ -60,38 +54,52 @@
 <span class="kn">from</span> <span class="nn">evac.datafiles.gefs</span> <span class="k">import</span> <span class="n">GEFS</span>
 
 <span class="c1"># Dummy variable in place of proper subclass of WRFOut</span>
-<span class="n">AuxWRFOut</span> <span class="o">=</span> <span class="nb">object</span>
+<span class="c1"># AuxWRFOut = object</span>
 
 <div class="viewcode-block" id="Ensemble"><a class="viewcode-back" href="../../../evac.datafiles.ensemble.html#evac.datafiles.ensemble.Ensemble">[docs]</a><span class="k">class</span> <span class="nc">Ensemble</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rootdir</span><span class="p">,</span><span class="n">initutc</span><span class="p">,</span><span class="n">doms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">ctrl</span><span class="o">=</span><span class="s1">&#39;ctrl&#39;</span><span class="p">,</span><span class="n">aux</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">model</span><span class="o">=</span><span class="s1">&#39;wrf&#39;</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;em_real&#39;</span><span class="p">,</span><span class="n">f_prefix</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">ncf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">onefolder</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fileformat</span><span class="o">=</span><span class="s1">&#39;netcdf&#39;</span><span class="p">,</span>
-        <span class="n">gefsformat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Class containing all ensemble members. Default is a</span>
-<span class="sd">            deterministic forecast (i.e. ensemble of one control member).</span>
-<span class="sd">            Each ensemble member needs to have a separate folder (named</span>
-<span class="sd">            as the ensemble member&#39;s name), but different domains can be</span>
-<span class="sd">            within a single member&#39;s folder.</span>
+    <span class="sd">&quot;&quot;&quot; Class containing an ensemble of (netCDF, WRF) forecasts.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            rootdir (str):  Directory at root of datafiles</span>
-<span class="sd">            initutc (datetime.datetime): Initialization time</span>
-<span class="sd">            doms (int, optional): Number of domains</span>
-<span class="sd">            ctrl (bool, optional): Whether ensemble has control member</span>
-<span class="sd">            aux (bool, dict, optional): Dictionary lists, per domain, data</span>
-<span class="sd">                files that contain additional variables and each</span>
-<span class="sd">                file&#39;s prefix. Default is False (no auxiliary files).</span>
-<span class="sd">                Not implemented yet.</span>
-<span class="sd">            enstype (str, optional): Type of ensemble. Default is for</span>
-<span class="sd">                Weather Research and Forecast (WRF) model.</span>
-<span class="sd">            fmt (str, optional): The type of simulations. Default is</span>
-<span class="sd">                real-world simulations (em_real from WRF).</span>
-<span class="sd">            f_prefix (tuple, optional): Tuple of prefixes for each</span>
-<span class="sd">                ensemble member&#39;s main data files. Must be length /doms/.</span>
-<span class="sd">                The string &#39;default&#39; will look for the wrfout_d0* string.</span>
-<span class="sd">                Set None for a method to determine</span>
-<span class="sd">                the file name using default outputs from e.g. WRF.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    A deterministic forecast (i.e. ensemble of one control member) can</span>
+<span class="sd">    be created by using one member. </span>
+<span class="sd">    </span>
+<span class="sd">    Each ensemble member needs to have a separate folder (named</span>
+<span class="sd">    as the ensemble member&#39;s name), but different domains can be</span>
+<span class="sd">    within a single member&#39;s folder.</span>
+
+<span class="sd">    Todos:</span>
+<span class="sd">        * Change from ensemble of WRFOut files to any sort of datafile.</span>
+<span class="sd">        * Consistency with method names (e.g., get() )</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        To load a 5-D array of 10-m wind at the second time::</span>
+<span class="sd">            </span>
+<span class="sd">            from evac.datafiles.ensemble import Ensemble</span>
+<span class="sd">            E = Ensemble()</span>
+<span class="sd">            E.get(&#39;wind10&#39;,utc=1)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        rootdir (str):  Directory at root of datafiles</span>
+<span class="sd">        initutc (datetime.datetime): Initialization time</span>
+<span class="sd">        doms (int, optional): Number of domains</span>
+<span class="sd">        ctrl (bool, optional): Whether ensemble has control member</span>
+<span class="sd">        aux (bool, dict, optional): Dictionary lists, per domain, data</span>
+<span class="sd">            files that contain additional variables and each</span>
+<span class="sd">            file&#39;s prefix. Default is False (no auxiliary files).</span>
+<span class="sd">            Not implemented yet.</span>
+<span class="sd">        enstype (str, optional): Type of ensemble. Default is for</span>
+<span class="sd">            Weather Research and Forecast (WRF) model.</span>
+<span class="sd">        fmt (str, optional): The type of simulations. Default is</span>
+<span class="sd">            real-world simulations (em_real from WRF).</span>
+<span class="sd">        f_prefix (tuple, optional): Tuple of prefixes for each</span>
+<span class="sd">            ensemble member&#39;s main data files. Must be length /doms/.</span>
+<span class="sd">            The string &#39;default&#39; will look for the wrfout_d0* string.</span>
+<span class="sd">            Set None for a method to determine</span>
+<span class="sd">            the file name using default outputs from e.g. WRF.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rootdir</span><span class="p">,</span><span class="n">initutc</span><span class="p">,</span><span class="n">doms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">ctrl</span><span class="o">=</span><span class="s1">&#39;ctrl&#39;</span><span class="p">,</span><span class="n">aux</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="s1">&#39;wrf&#39;</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;em_real&#39;</span><span class="p">,</span><span class="n">f_prefix</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span><span class="n">loadobj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">ncf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">onefolder</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">fileformat</span><span class="o">=</span><span class="s1">&#39;netcdf&#39;</span><span class="p">,</span>
+                <span class="n">gefsformat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;wrf&#39;</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File type is wrfout.&quot;</span><span class="p">)</span>
@@ -199,9 +207,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;gefs&#39;</span><span class="p">:</span>
-            <span class="n">members</span><span class="p">,</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gefs_members</span><span class="p">(</span><span class="n">f_prefix</span><span class="o">=</span><span class="n">f_prefix</span><span class="p">)</span>
+            <span class="n">members</span><span class="p">,</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gefs_members</span><span class="p">()</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;wrf&#39;</span><span class="p">:</span>
-            <span class="n">members</span><span class="p">,</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrf_members</span><span class="p">(</span><span class="n">f_prefix</span><span class="o">=</span><span class="n">f_prefix</span><span class="p">)</span>
+            <span class="n">members</span><span class="p">,</span><span class="n">fdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_wrf_members</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span>
         <span class="k">return</span> <span class="n">members</span><span class="p">,</span> <span class="n">fdt</span></div>
@@ -313,7 +321,7 @@
         <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># This will break with subset of members, times, a/b grib files...</span>
         <span class="n">allmembers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c00&#39;</span><span class="p">,]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;p</span><span class="si">{0:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">21</span><span class="p">)]</span>
-        <span class="n">allfiles</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ncroot</span><span class="p">,</span><span class="s1">&#39;ge*&#39;</span><span class="p">))</span>
+        <span class="n">allfiles</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rootdir</span><span class="p">,</span><span class="s1">&#39;ge*&#39;</span><span class="p">))</span>
         <span class="n">alltimes</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">390</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">ens</span> <span class="ow">in</span> <span class="n">allmembers</span><span class="p">:</span>
