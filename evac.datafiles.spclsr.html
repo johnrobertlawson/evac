@@ -50,11 +50,30 @@
         
   <div class="section" id="module-evac.datafiles.spclsr">
 <span id="evac-datafiles-spclsr-module"></span><h1>evac.datafiles.spclsr module<a class="headerlink" href="#module-evac.datafiles.spclsr" title="Permalink to this headline">¶</a></h1>
-<p>Local storm reports from SPC site.</p>
 <dl class="class">
 <dt id="evac.datafiles.spclsr.SPCLSR">
-<em class="property">class </em><code class="descclassname">evac.datafiles.spclsr.</code><code class="descname">SPCLSR</code><span class="sig-paren">(</span><em>utc</em>, <em>datadir</em>, <em>wind=True</em>, <em>hail=True</em>, <em>torn=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/spclsr.html#SPCLSR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.spclsr.SPCLSR" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">evac.datafiles.spclsr.</code><code class="descname">SPCLSR</code><span class="sig-paren">(</span><em>utc</em>, <em>datapath</em>, <em>wind=True</em>, <em>hail=True</em>, <em>torn=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/spclsr.html#SPCLSR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.spclsr.SPCLSR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="evac.datafiles.csvfile.html#evac.datafiles.csvfile.CSVFile" title="evac.datafiles.csvfile.CSVFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.csvfile.CSVFile</span></code></a></p>
+<p>Local storm reports from SPC site.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>Work out the timing convention? Do we even need a <cite>utc</cite> argument?</li>
+</ul>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>utc</strong> (<em>datetime.datetime</em>) &#8211; Time, but how does this work?!</li>
+<li><strong>datapath</strong> &#8211; Absolute path to data CSV file.</li>
+<li><strong>wind</strong><strong>,</strong><strong>hail</strong><strong>,</strong><strong>torn</strong> (<em>bool</em>) &#8211; If <cite>True</cite>, use these data.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="evac.datafiles.spclsr.SPCLSR.plot_reports">
 <code class="descname">plot_reports</code><span class="sig-paren">(</span><em>fig=False</em>, <em>ax=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/spclsr.html#SPCLSR.plot_reports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.spclsr.SPCLSR.plot_reports" title="Permalink to this definition">¶</a></dt>

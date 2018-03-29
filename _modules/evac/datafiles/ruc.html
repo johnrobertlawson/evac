@@ -43,13 +43,7 @@
         
         
   <h1>Source code for evac.datafiles.ruc</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">RUC/RAP data will probably need to be cut down to fit the WRF domain</span>
-<span class="sd">it is compared to.</span>
-
-<span class="sd">This script should inherit WRFOut and override the &#39;get&#39; command.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
+<span></span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">M</span>
 <span class="n">M</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
@@ -75,13 +69,15 @@
 <span class="n">debug_get</span> <span class="o">=</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="RUC"><a class="viewcode-back" href="../../../evac.datafiles.ruc.html#evac.datafiles.ruc.RUC">[docs]</a><span class="k">class</span> <span class="nc">RUC</span><span class="p">(</span><span class="n">WRFOut</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">,</span><span class="n">wrfdir</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Args:</span>
-<span class="sd">            config  :   configuration settings</span>
-<span class="sd">            t       :   time, datenum format</span>
-<span class="sd">            wrfdir  :   if picked, domain is cut down</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Subclass of :class:`~evac.datafiles.wrfout.WRFOut` for RUC/RAP data.</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        * RUC/RAP data can be cut down to fit a given WRF domain?</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fpath: Absolute path to RAP/RUC data file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fpath</span> <span class="o">=</span> <span class="n">fpath</span>
         <span class="c1"># import pdb; pdb.set_trace()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nc</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fpath</span><span class="p">)</span>
@@ -125,26 +121,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">z_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">z</span><span class="p">])</span>
         <span class="k">del</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span>
 
-        <span class="k">if</span> <span class="n">wrfdir</span><span class="p">:</span>
-            <span class="c1"># It means all data should be cut to this size</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colocate_WRF_map</span><span class="p">(</span><span class="n">wrfdir</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lats2D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_2D_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lons2D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_2D_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_lat_lon</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">y_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">x_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">)</span>
-            <span class="c1">#self.lats1D = self.lats[:,self.lats.shape[1]/2]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lats1D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span>
-            <span class="c1">#self.lons1D = self.lons[self.lons.shape[0]/2,:]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lons1D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Leave the dimensions the way they were</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">y_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">x_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        
         <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;RUC file loaded from </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fpath</span><span class="p">)))</span>
-        <span class="c1"># import pdb; pdb.set_trace()</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="RUC.cut_to_wrf"><a class="viewcode-back" href="../../../evac.datafiles.ruc.html#evac.datafiles.ruc.RUC.cut_to_wrf">[docs]</a>    <span class="k">def</span> <span class="nf">cut_to_wrf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wrfpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Cut down domain to match a WRF file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            wrfpath: Absolute path to WRF file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># It means all data should be cut to this size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colocate_WRF_map</span><span class="p">(</span><span class="n">wrfpath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lats2D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_2D_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lons2D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_2D_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cut_lat_lon</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lats</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lons</span><span class="p">)</span>
+        <span class="c1">#self.lats1D = self.lats[:,self.lats.shape[1]/2]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lats1D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span>
+        <span class="c1">#self.lons1D = self.lons[self.lons.shape[0]/2,:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lons1D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons</span>
+        <span class="k">return</span></div>
 
 <div class="viewcode-block" id="RUC.get_utc_time"><a class="viewcode-back" href="../../../evac.datafiles.ruc.html#evac.datafiles.ruc.RUC.get_utc_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_utc_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rawtime</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;datenum&#39;</span><span class="p">):</span>
         <span class="n">utc</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">rawtime</span><span class="p">,</span><span class="s1">&#39;%m/</span><span class="si">%d</span><span class="s1">/%Y (%H:%M)&#39;</span><span class="p">)</span>

@@ -50,13 +50,25 @@
         
   <div class="section" id="module-evac.datafiles.ruc">
 <span id="evac-datafiles-ruc-module"></span><h1>evac.datafiles.ruc module<a class="headerlink" href="#module-evac.datafiles.ruc" title="Permalink to this headline">¶</a></h1>
-<p>RUC/RAP data will probably need to be cut down to fit the WRF domain
-it is compared to.</p>
-<p>This script should inherit WRFOut and override the &#8216;get&#8217; command.</p>
 <dl class="class">
 <dt id="evac.datafiles.ruc.RUC">
-<em class="property">class </em><code class="descclassname">evac.datafiles.ruc.</code><code class="descname">RUC</code><span class="sig-paren">(</span><em>fpath</em>, <em>wrfdir=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">evac.datafiles.ruc.</code><code class="descname">RUC</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut" title="evac.datafiles.wrfout.WRFOut"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.wrfout.WRFOut</span></code></a></p>
+<p>Subclass of <a class="reference internal" href="evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut" title="evac.datafiles.wrfout.WRFOut"><code class="xref py py-class docutils literal"><span class="pre">WRFOut</span></code></a> for RUC/RAP data.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>RUC/RAP data can be cut down to fit a given WRF domain?</li>
+</ul>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fpath</strong> &#8211; Absolute path to RAP/RUC data file.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="evac.datafiles.ruc.RUC.basemap_setup">
 <code class="descname">basemap_setup</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.basemap_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.basemap_setup" title="Permalink to this definition">¶</a></dt>
@@ -105,6 +117,20 @@ depending of specified limits</p>
 <code class="descname">cut_lat_lon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.cut_lat_lon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.cut_lat_lon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a smaller array of data
 depending of specified limits</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.datafiles.ruc.RUC.cut_to_wrf">
+<code class="descname">cut_to_wrf</code><span class="sig-paren">(</span><em>wrfpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/ruc.html#RUC.cut_to_wrf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.ruc.RUC.cut_to_wrf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cut down domain to match a WRF file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wrfpath</strong> &#8211; Absolute path to WRF file.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
