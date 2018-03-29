@@ -51,8 +51,19 @@
   <div class="section" id="module-evac.derived.derived">
 <span id="evac-derived-derived-module"></span><h1>evac.derived.derived module<a class="headerlink" href="#module-evac.derived.derived" title="Permalink to this headline">¶</a></h1>
 <p>For computing derived variables from existing fields.</p>
-<p>TODO: steal a lot of these from WRFOut.
-TODO: there might be some overlap from stats.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>Steal a lot of these from WRFOut.</li>
+<li>There might be some overlap from stats.</li>
+<li><dl class="first docutils">
+<dt>Resolve the API. Do all functions start with a parent to inherit</dt>
+<dd>from? What if the user wants to call without the parent (e.g.,
+using arrays of data that already exist)?</dd>
+</dl>
+</li>
+</ul>
+</div>
 <p>For every class, parent is the class from which to &#8220;inherit&#8221; from.</p>
 <dl class="function">
 <dt id="evac.derived.derived.cold_pool_depth">
@@ -383,6 +394,34 @@ along that axis.</p>
 <dt id="evac.derived.derived.compute_total_deformation">
 <code class="descclassname">evac.derived.derived.</code><code class="descname">compute_total_deformation</code><span class="sig-paren">(</span><em>parent</em>, <em>U</em>, <em>V</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_total_deformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_total_deformation" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.derived.derived.compute_updraught_helicity">
+<code class="descclassname">evac.derived.derived.</code><code class="descname">compute_updraught_helicity</code><span class="sig-paren">(</span><em>parent</em>, <em>u</em>, <em>v</em>, <em>w</em>, <em>dz=None</em>, <em>z=None</em>, <em>z0=2000</em>, <em>z1=5000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/derived.html#compute_updraught_helicity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.derived.compute_updraught_helicity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Eq. 11 &amp; 12 from Kain et al 2008, WAF.</p>
+<p>Requires either z or dz to be specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>u</strong><strong>,</strong><strong>v</strong><strong>,</strong><strong>w</strong> (<em>N.ndarray</em>) &#8211; 3-D fields of wind, all same size.</li>
+<li><strong>dz</strong> (<em>N.ndarray</em>) &#8211; 1-D vector of difference in z</li>
+<li><strong>z</strong> (<em>N.ndarray</em>) &#8211; 1-D vector height above ground level (m)</li>
+<li><strong>z0</strong> (<em>int</em><em>,</em><em>float</em><em>,</em><em>optional</em>) &#8211; bottom level in m</li>
+<li><strong>z1</strong> (<em>int</em><em>,</em><em>float</em><em>,</em><em>optional</em>) &#8211; top level in m</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>Not sure if this works.</li>
+</ul>
+</div>
+</dd></dl>
 
 <dl class="function">
 <dt id="evac.derived.derived.compute_vappres">

@@ -56,69 +56,72 @@
 <span class="kn">from</span> <span class="nn">evac.utils</span> <span class="k">import</span> <span class="n">met_constants</span> <span class="k">as</span> <span class="n">mc</span>
 <span class="c1">#import WEM.postWRF.postWRF._skewt2 as sT</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">ROWS:</span>
-<span class="sd">line 1 is surface information</span>
-<span class="sd">lines 2 onwards is a point in profile</span>
+<div class="viewcode-block" id="Profile"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile">[docs]</a><span class="k">class</span> <span class="nc">Profile</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Class for generating idealised profiles for WRF runs.</span>
 
-<span class="sd">COLUMNS:</span>
-<span class="sd">column 1 is surface pressure (hPa) for row 1</span>
-<span class="sd">--- set this as 1000.00.</span>
-<span class="sd">otherwise it is height (m) for rows 2 onwards</span>
-<span class="sd">--- increasing in height with row number</span>
+<span class="sd">    This script is in need of a lot of work...</span>
 
-<span class="sd">column 2 is potential temperature (K)</span>
-<span class="sd">--- set row 1 as 300.0 K as reference, probably</span>
+<span class="sd">    Todo:</span>
+<span class="sd">        * Everything.</span>
 
-<span class="sd">column 3 is vapour mixing ratio (g/kg)</span>
-<span class="sd">--- set row 1 as 14.00 g/kg, for instance</span>
+<span class="sd">    ROWS:</span>
+<span class="sd">    line 1 is surface information</span>
+<span class="sd">    lines 2 onwards is a point in profile</span>
 
-<span class="sd">column 4 is U wind (m/s)</span>
-<span class="sd">--- no row 1</span>
+<span class="sd">    COLUMNS:</span>
+<span class="sd">    column 1 is surface pressure (hPa) for row 1</span>
+<span class="sd">    --- set this as 1000.00.</span>
+<span class="sd">    otherwise it is height (m) for rows 2 onwards</span>
+<span class="sd">    --- increasing in height with row number</span>
 
-<span class="sd">column 5 is V wind (m/s)</span>
-<span class="sd">--- no row 1</span>
+<span class="sd">    column 2 is potential temperature (K)</span>
+<span class="sd">    --- set row 1 as 300.0 K as reference, probably</span>
 
-<span class="sd">METHODS FOR PROFILE GENERATION</span>
-<span class="sd">Temp:</span>
-<span class="sd">    - Weisman and Klemp</span>
-<span class="sd">    etc</span>
-<span class="sd">Wind:</span>
-<span class="sd">    - Blah</span>
+<span class="sd">    column 3 is vapour mixing ratio (g/kg)</span>
+<span class="sd">    --- set row 1 as 14.00 g/kg, for instance</span>
 
-<span class="sd">Dewpoint:</span>
-<span class="sd">    - Blah</span>
+<span class="sd">    column 4 is U wind (m/s)</span>
+<span class="sd">    --- no row 1</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    column 5 is V wind (m/s)</span>
+<span class="sd">    --- no row 1</span>
 
-<div class="viewcode-block" id="Profile"><a class="viewcode-back" href="../../../evac.lazy.ideal_profiles.html#evac.lazy.ideal_profiles.Profile">[docs]</a><span class="k">class</span> <span class="nc">Profile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="sd">    METHODS FOR PROFILE GENERATION</span>
+<span class="sd">    Temp:</span>
+<span class="sd">        - Weisman and Klemp</span>
+<span class="sd">        etc</span>
+<span class="sd">    Wind:</span>
+<span class="sd">        - Blah</span>
+
+<span class="sd">    Dewpoint:</span>
+<span class="sd">        - Blah</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        z (N.ndarray)       :   Altitude above ground level (metres)</span>
+<span class="sd">        zL (int,float)      :   LCL (metres AGL)</span>
+<span class="sd">        E (int, float)      :   Specified CAPE</span>
+<span class="sd">        m (int, float)      :   Profile compression parameter</span>
+<span class="sd">        hodotype (str)      :   Hodograph type {&#39;straight&#39;,&#39;curved&#39;}</span>
+<span class="sd">        n (int)             :   Curvature parameter</span>
+<span class="sd">        V (int, float)      :   Maximum wind (m/s); overall vert. shear</span>
+<span class="sd">        fdir (str)          :   Directory for output file</span>
+<span class="sd">        PW (float,int,optional) :   Precip. water (mm)</span>
+<span class="sd">        fname (str, optional)   :   Filename for output</span>
+<span class="sd">        H (int, float, optional)    :   Vertical scale parameter</span>
+<span class="sd">        zT (int, float, optional)   :   Height of the tropopause (m).</span>
+<span class="sd">                                            Must be in z</span>
+<span class="sd">        RH (float, optional)    : Relative humidity above LCL (as a decimal)</span>
+<span class="sd">        method  (str)       :   {&#39;MW01,} Paper from which to create profile</span>
+<span class="sd">        k2P (int, float, optional)  :   Pressure at &quot;model level 2&quot;, Pa</span>
+<span class="sd">        k2T, k2Td (int, float, optional)    :   Drybumb, dewpoint at &quot;model level 2&quot;, C</span>
+<span class="sd">        offset_spd, offset_dir (int, float) :   Speed and direction of background flow</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">fdir</span><span class="p">,</span><span class="n">zL</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">E</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span><span class="n">m</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">hodotype</span><span class="o">=</span><span class="s1">&#39;curved&#39;</span><span class="p">,</span>
                     <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">V</span><span class="o">=</span><span class="mf">12.0</span><span class="p">,</span><span class="n">PW</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">thT</span><span class="o">=</span><span class="mi">343</span><span class="p">,</span><span class="n">tT</span><span class="o">=</span><span class="mi">213</span><span class="p">,</span><span class="n">th0</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span><span class="n">qv0</span><span class="o">=</span><span class="mi">16</span><span class="n">E</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="n">Us</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
                     <span class="n">fname</span><span class="o">=</span><span class="s1">&#39;profile&#39;</span><span class="p">,</span><span class="n">H</span><span class="o">=</span><span class="mi">14500</span><span class="p">,</span><span class="n">zT</span><span class="o">=</span><span class="mi">14000</span><span class="p">,</span><span class="n">RH</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span><span class="n">zs</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
                     <span class="n">method</span><span class="o">=</span><span class="s1">&#39;MW01&#39;</span><span class="p">,</span><span class="n">k2P</span><span class="o">=</span><span class="mi">96500</span><span class="p">,</span><span class="n">k2T</span><span class="o">=</span><span class="mf">296.65</span><span class="p">,</span><span class="n">k2Td</span><span class="o">=</span><span class="mf">296.15</span><span class="p">,</span>
                     <span class="n">k2z</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span><span class="n">offset_spd</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">offset_dir</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create profile text file.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            z (N.ndarray)       :   Altitude above ground level (metres)</span>
-<span class="sd">            zL (int,float)      :   LCL (metres AGL)</span>
-<span class="sd">            E (int, float)      :   Specified CAPE</span>
-<span class="sd">            m (int, float)      :   Profile compression parameter</span>
-<span class="sd">            hodotype (str)      :   Hodograph type {&#39;straight&#39;,&#39;curved&#39;}</span>
-<span class="sd">            n (int)             :   Curvature parameter</span>
-<span class="sd">            V (int, float)      :   Maximum wind (m/s); overall vert. shear</span>
-<span class="sd">            fdir (str)          :   Directory for output file</span>
-<span class="sd">            PW (float,int,optional) :   Precip. water (mm)</span>
-<span class="sd">            fname (str, optional)   :   Filename for output</span>
-<span class="sd">            H (int, float, optional)    :   Vertical scale parameter</span>
-<span class="sd">            zT (int, float, optional)   :   Height of the tropopause (m).</span>
-<span class="sd">                                                Must be in z</span>
-<span class="sd">            RH (float, optional)    : Relative humidity above LCL (as a decimal)</span>
-<span class="sd">            method  (str)       :   {&#39;MW01,} Paper from which to create profile</span>
-<span class="sd">            k2P (int, float, optional)  :   Pressure at &quot;model level 2&quot;, Pa</span>
-<span class="sd">            k2T, k2Td (int, float, optional)    :   Drybumb, dewpoint at &quot;model level 2&quot;, C</span>
-<span class="sd">            offset_spd, offset_dir (int, float) :   Speed and direction of background flow</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># if zT not in z:</span>
             <span class="c1"># raise Exception(&quot;Height of the tropopause must be&quot;</span>
                                 <span class="c1"># &quot;in array of altitudes.&quot;)</span>

@@ -54,6 +54,78 @@
 <dt id="evac.lazy.ideal_profiles.Profile">
 <em class="property">class </em><code class="descclassname">evac.lazy.ideal_profiles.</code><code class="descname">Profile</code><span class="sig-paren">(</span><em>z</em>, <em>fdir</em>, <em>zL=False</em>, <em>E=2000</em>, <em>m=4.0</em>, <em>hodotype='curved'</em>, <em>n=1</em>, <em>V=12.0</em>, <em>PW=30</em>, <em>thT=343</em>, <em>tT=213</em>, <em>th0=300</em>, <em>qv0=0.016</em>, <em>Us=25</em>, <em>fname='profile'</em>, <em>H=14500</em>, <em>zT=14000</em>, <em>RH=0.9</em>, <em>zs=3000</em>, <em>method='MW01'</em>, <em>k2P=96500</em>, <em>k2T=296.65</em>, <em>k2Td=296.15</em>, <em>k2z=250</em>, <em>offset_spd=0</em>, <em>offset_dir=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class for generating idealised profiles for WRF runs.</p>
+<p>This script is in need of a lot of work...</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>Everything.</li>
+</ul>
+</div>
+<p>ROWS:
+line 1 is surface information
+lines 2 onwards is a point in profile</p>
+<p>COLUMNS:
+column 1 is surface pressure (hPa) for row 1
+&#8212; set this as 1000.00.
+otherwise it is height (m) for rows 2 onwards
+&#8212; increasing in height with row number</p>
+<p>column 2 is potential temperature (K)
+&#8212; set row 1 as 300.0 K as reference, probably</p>
+<p>column 3 is vapour mixing ratio (g/kg)
+&#8212; set row 1 as 14.00 g/kg, for instance</p>
+<p>column 4 is U wind (m/s)
+&#8212; no row 1</p>
+<p>column 5 is V wind (m/s)
+&#8212; no row 1</p>
+<p>METHODS FOR PROFILE GENERATION
+Temp:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Weisman and Klemp</li>
+</ul>
+<p>etc</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>Wind:</dt>
+<dd><ul class="first last simple">
+<li>Blah</li>
+</ul>
+</dd>
+<dt>Dewpoint:</dt>
+<dd><ul class="first last simple">
+<li>Blah</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>z</strong> (<em>N.ndarray</em>) &#8211; Altitude above ground level (metres)</li>
+<li><strong>zL</strong> (<em>int</em><em>,</em><em>float</em>) &#8211; LCL (metres AGL)</li>
+<li><strong>E</strong> (<em>int</em><em>, </em><em>float</em>) &#8211; Specified CAPE</li>
+<li><strong>m</strong> (<em>int</em><em>, </em><em>float</em>) &#8211; Profile compression parameter</li>
+<li><strong>hodotype</strong> (<em>str</em>) &#8211; Hodograph type {&#8216;straight&#8217;,&#8217;curved&#8217;}</li>
+<li><strong>n</strong> (<em>int</em>) &#8211; Curvature parameter</li>
+<li><strong>V</strong> (<em>int</em><em>, </em><em>float</em>) &#8211; Maximum wind (m/s); overall vert. shear</li>
+<li><strong>fdir</strong> (<em>str</em>) &#8211; Directory for output file</li>
+<li><strong>PW</strong> (<em>float</em><em>,</em><em>int</em><em>,</em><em>optional</em>) &#8211; Precip. water (mm)</li>
+<li><strong>fname</strong> (<em>str</em><em>, </em><em>optional</em>) &#8211; Filename for output</li>
+<li><strong>H</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>optional</em>) &#8211; Vertical scale parameter</li>
+<li><strong>zT</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>optional</em>) &#8211; Height of the tropopause (m).
+Must be in z</li>
+<li><strong>RH</strong> (<em>float</em><em>, </em><em>optional</em>) &#8211; Relative humidity above LCL (as a decimal)</li>
+<li><strong>method</strong> (<em>str</em>) &#8211; {&#8216;MW01,} Paper from which to create profile</li>
+<li><strong>k2P</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>optional</em>) &#8211; Pressure at &#8220;model level 2&#8221;, Pa</li>
+<li><strong>k2Td</strong> (<em>k2T</em><em>,</em><em></em>) &#8211; Drybumb, dewpoint at &#8220;model level 2&#8221;, C</li>
+<li><strong>offset_dir</strong> (<em>offset_spd</em><em>,</em><em></em>) &#8211; Speed and direction of background flow</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="evac.lazy.ideal_profiles.Profile.MWtemphum">
 <code class="descname">MWtemphum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/ideal_profiles.html#Profile.MWtemphum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.ideal_profiles.Profile.MWtemphum" title="Permalink to this definition">¶</a></dt>

@@ -54,17 +54,92 @@
 <dt id="evac.lazy.lazyensemble.LazyEnsemble">
 <em class="property">class </em><code class="descclassname">evac.lazy.lazyensemble.</code><code class="descname">LazyEnsemble</code><span class="sig-paren">(</span><em>path_to_exedir</em>, <em>path_to_datadir</em>, <em>path_to_namelistdir</em>, <em>path_to_icdir</em>, <em>path_to_lbcdir</em>, <em>path_to_outdir</em>, <em>path_to_batch</em>, <em>initutc</em>, <em>sched='slurm'</em>, <em>path_to_rundir=False</em>, <em>delete_exe_copy=False</em>, <em>ndoms=1</em>, <em>nmems=0</em>, <em>membernames=False</em>, <em>endutc=False</em>, <em>runsec=False</em>, <em>nl_per_member=True</em>, <em>nl_suffix='name'</em>, <em>ics=None</em>, <em>lbcs=None</em>, <em>dryrun=False</em>, <em>rename_d01_ics=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Generate ensemble by running multiple WRF runs simulataneously.
-This is done by creating temporary folder and linking/copying.
-Efficiency improvements from Monte Flora.</p>
-<p>Will not work on Windows systems due to hardcoded PosixPath.</p>
+<p>Generate ensemble by running multiple WRF runs simulataneously.</p>
+<p>This is done by creating temporary folder and linking/copying, with
+efficiency improvements from Monte Flora. Will not work on Windows systems
+as it stands, due to hardcoded PosixPath.</p>
 <p>User must specify either endutc or runsec.</p>
 <p>The initial and boundary conditions are copied from path_to_icbcdir
 to path_to_rundir, using default names.</p>
 <p>Member names, if automatically created, are &#8220;mem01&#8221;, &#8220;mem02&#8221;, etc</p>
+<p class="rubric">Example</p>
 <p>Parent script should be run via batch submission. The procedure is:</p>
-<p>L = LazyEnsemble(<a href="#id1"><span class="problematic" id="id2">*</span></a>args,**kwargs)
-L.run_all_members()</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">LazyEnsemble</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">L</span><span class="o">.</span><span class="n">run_all_members</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Note that WRF can run with initial and boundary conditions from
+only the parent domain (d01).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path_to_exedir</strong> &#8211; (str) - directory of compiled WRF executables</li>
+<li><strong>path_to_datadir</strong> &#8211; (str) - directory where wrfout and other data
+will be saved.</li>
+<li><strong>path_to_namelistdir</strong> &#8211; (str) - directory containing namelist(s)
+templates or full versions.</li>
+<li><strong>path_to_icdir</strong> &#8211; (str,bool) - directory with initial conditions
+If False, don&#8217;t copy any ICs.</li>
+<li><strong>path_to_lbcdir</strong> &#8211; (str,bool) - directory with boundary conditions
+If False, don&#8217;t copy any LBCss.</li>
+<li><strong>path_to_outdir</strong> &#8211; (str) - where to move wrfout files to</li>
+<li><strong>path_to_batch</strong> &#8211; (str) - absolute path to <a href="#id1"><span class="problematic" id="id2">*</span></a>.job script
+for slurm - not sure about rocks etc</li>
+<li><strong>initutc</strong> &#8211; (datetime.datetime) - initialisation time</li>
+<li><strong>path_to_rundir</strong> &#8211; (str, optional) - directory where wrf.exe will
+be copied to,
+and rsl.error files will be generated.
+By default, this is the datadir.
+If running multiple ensembles, it is
+faster to have permanant folders for each
+ensemble, rather than spinning up and
+deleting wrf.exe)</li>
+<li><strong>sched</strong> &#8211; (str, optional) - job scheduler.
+Only implemented for slurm right now</li>
+<li><strong>delete_exe_copy</strong> &#8211; (bool, optional) - whether the .exe files
+will be deleted after the run is finished.
+The default is no, as numerous ensembles
+can use the same run folders, potentially.</li>
+<li><strong>ndoms</strong> &#8211; (int) - number of domains</li>
+<li><strong>nmems</strong> &#8211; (int) - number of members. If zero,
+try counting length of membernames.</li>
+<li><strong>membernames</strong> &#8211; (list,tuple) - list of strings for
+member names. If False, use automatic</li>
+<li><strong>endutc</strong> &#8211; (datetime.datetime) - time to end simulation</li>
+<li><strong>runsec</strong> &#8211; (int) - seconds of simulation time</li>
+<li><strong>nl_per_member</strong> &#8211; (bool) - if True, each member has their
+own namelist file in path_to_namelistdir,
+where each member&#8217;s namelist is the file
+namelist.input.&lt;nl_suffix&gt; - see next</li>
+<li><strong>nl_suffix</strong> &#8211; (str) - if &#8216;name&#8217;, the suffix will be the
+member name (either passed in or automatically
+generated).</li>
+<li><strong>ics</strong><strong>,</strong><strong>lbcs</strong> &#8211; <p>(dict,list,bool) - filename of IC/LBC files.</p>
+<p>if dictionary, format is {member :{(from,to):cmd)
+where cmd is &#8220;move&#8221;, &#8220;copy&#8221;, or &#8220;softlink&#8221;, and
+to/from are the absolute paths</p>
+<p>If a list, this is used for each ensemble
+member from a folder within icdir and
+lbcdir, respectively.</p>
+<p>If True, it looks for the default names
+in subfolders of icdir and lbcdir</p>
+<p>if &#8216;all&#8217;, it copies everything from the
+default folders.</p>
+<p>if any other string, it glob-matches
+ics/lbcs and imports all matches.</p>
+</li>
+<li><strong>dryrun</strong> &#8211; (bool) - if True, don&#8217;t delete any files
+or submit any runs.</li>
+<li><strong>rename_d01_ics</strong> &#8211; (bool) - if True, rename d01 ICs to
+wrfinput_d01. Only works if only the
+d01 domain has ICs.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="evac.lazy.lazyensemble.LazyEnsemble.aa_test">
 <code class="descname">aa_test</code><span class="sig-paren">(</span><em>param1</em>, <em>param2=2</em>, <em>param3=('hi'</em>, <em>'there')</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/lazy/lazyensemble.html#LazyEnsemble.aa_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.lazy.lazyensemble.LazyEnsemble.aa_test" title="Permalink to this definition">¶</a></dt>

@@ -43,27 +43,17 @@
         
         
   <h1>Source code for evac.datafiles.wrfout</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Compute or load data from netCDF file.</span>
-
-<span class="sd">Dimensions of 4D variable X are X.dimensions:</span>
-<span class="sd">(Time,bottom_top,south_north,west_east_stag)</span>
-<span class="sd">Time, levels, latitude, longitude</span>
-
-<span class="sd">Todos:</span>
-<span class="sd">    * Move computation of derived variables to derive/ folder!</span>
-<span class="sd">    * Make method assign the returns to instance instead of returning.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
 <span class="kn">import</span> <span class="nn">pdb</span>
-<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
 <span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">scipy.interpolate</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">import</span> <span class="nn">scipy.interpolate</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
 
 <span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">import</span> <span class="nn">evac.utils.met_constants</span> <span class="k">as</span> <span class="nn">mc</span>
@@ -73,10 +63,36 @@
 <span class="n">debug_get</span> <span class="o">=</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="WRFOut"><a class="viewcode-back" href="../../../evac.datafiles.wrfout.html#evac.datafiles.wrfout.WRFOut">[docs]</a><span class="k">class</span> <span class="nc">WRFOut</span><span class="p">(</span><span class="n">NC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute or load data from netCDF file.</span>
 
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    An instance of WRFOut contains all the methods that are used to</span>
-<span class="sd">    access and process netCDF data.</span>
+<span class="sd">    Dimensions of 4D variable X are X.dimensions:</span>
+<span class="sd">    (Time,bottom_top,south_north,west_east_stag)</span>
+<span class="sd">    Time, levels, latitude, longitude</span>
+
+<span class="sd">    Derived quantities (e.g., vorticity) can be generated via calls</span>
+<span class="sd">    to :any:`evac.derived.derived` scripts.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        Generate a `WRFOut()` object with the following::</span>
+
+<span class="sd">            from evac.datafiles.wrfout import WRFOut</span>
+
+<span class="sd">            fpath = &#39;/path/to/wrfout_d01_2016-05-03_18:00:00&#39;</span>
+<span class="sd">            W = WRFOut(fpath)</span>
+<span class="sd">            # Get a 4-D array of U-wind data for all times, levels, etc</span>
+<span class="sd">            data = W.get(vrbl=&#39;U&#39;)</span>
+
+<span class="sd">    Todos:</span>
+<span class="sd">        * Move computation of derived variables to derive/ folder!</span>
+<span class="sd">        * Make method assign the returns to instance instead of returning.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fpath: Absolute path to WRF out file.</span>
+<span class="sd">        fmt (str): Choose `em_real`, `ideal`, depending on type of run.</span>
+<span class="sd">        ncks (bool): If `True`, the WRF data file has previously been</span>
+<span class="sd">            processed by the NCL &quot;kitchen sink&quot; utility to strip</span>
+<span class="sd">            unneeded variables/fields.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;em_real&#39;</span><span class="p">,</span><span class="n">ncks</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

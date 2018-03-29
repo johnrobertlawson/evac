@@ -50,10 +50,26 @@
         
   <div class="section" id="module-evac.datafiles.wrfout">
 <span id="evac-datafiles-wrfout-module"></span><h1>evac.datafiles.wrfout module<a class="headerlink" href="#module-evac.datafiles.wrfout" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="evac.datafiles.wrfout.WRFOut">
+<em class="property">class </em><code class="descclassname">evac.datafiles.wrfout.</code><code class="descname">WRFOut</code><span class="sig-paren">(</span><em>fpath</em>, <em>fmt='em_real'</em>, <em>ncks=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">WEM.postWRF.postWRF.ncfile.NC</span></code></p>
 <p>Compute or load data from netCDF file.</p>
 <p>Dimensions of 4D variable X are X.dimensions:
 (Time,bottom_top,south_north,west_east_stag)
 Time, levels, latitude, longitude</p>
+<p>Derived quantities (e.g., vorticity) can be generated via calls
+to <a class="reference internal" href="evac.derived.derived.html"><span class="doc">evac.derived.derived module</span></a> scripts.</p>
+<p class="rubric">Example</p>
+<p>Generate a <cite>WRFOut()</cite> object with the following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">evac.datafiles.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
+
+<span class="n">fpath</span> <span class="o">=</span> <span class="s1">&#39;/path/to/wrfout_d01_2016-05-03_18:00:00&#39;</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">WRFOut</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+<span class="c1"># Get a 4-D array of U-wind data for all times, levels, etc</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vrbl</span><span class="o">=</span><span class="s1">&#39;U&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="docutils">
 <dt>Todos:</dt>
 <dd><ul class="first last simple">
@@ -62,12 +78,21 @@ Time, levels, latitude, longitude</p>
 </ul>
 </dd>
 </dl>
-<dl class="class">
-<dt id="evac.datafiles.wrfout.WRFOut">
-<em class="property">class </em><code class="descclassname">evac.datafiles.wrfout.</code><code class="descname">WRFOut</code><span class="sig-paren">(</span><em>fpath</em>, <em>fmt='em_real'</em>, <em>ncks=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">WEM.postWRF.postWRF.ncfile.NC</span></code></p>
-<p>An instance of WRFOut contains all the methods that are used to
-access and process netCDF data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fpath</strong> &#8211; Absolute path to WRF out file.</li>
+<li><strong>fmt</strong> (<em>str</em>) &#8211; Choose <cite>em_real</cite>, <cite>ideal</cite>, depending on type of run.</li>
+<li><strong>ncks</strong> (<em>bool</em>) &#8211; If <cite>True</cite>, the WRF data file has previously been
+processed by the NCL &#8220;kitchen sink&#8221; utility to strip
+unneeded variables/fields.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="evac.datafiles.wrfout.WRFOut.check_compute">
 <code class="descname">check_compute</code><span class="sig-paren">(</span><em>vrbl</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/wrfout.html#WRFOut.check_compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.wrfout.WRFOut.check_compute" title="Permalink to this definition">¶</a></dt>

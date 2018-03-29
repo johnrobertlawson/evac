@@ -48,30 +48,8 @@
       <div class="content">
         
         
-  <div class="section" id="module-evac.derived.vrbl">
-<span id="evac-derived-vrbl-module"></span><h1>evac.derived.vrbl module<a class="headerlink" href="#module-evac.derived.vrbl" title="Permalink to this headline">¶</a></h1>
-<p>Subclass of numpy ndarray. Vrbl holds a 4D array for a variable
-in the dimensions (time, level, lats, lons), similarly to WRF output.</p>
-<p>The subclassing allows attachment of methods that compute derived fields
-(e.g. vorticity) and inspection of metadata (dimension names etc.).</p>
-<p>Example:</p>
-<p>arr = Dataset(&#8216;wrfout.nc&#8217;).variables[&#8216;T&#8217;][0,0,:,:]</p>
-<p>gives you a normal numpy array. To get a Vrbl() subclass, go via
-a <cite>datafiles/</cite> module, for instance:</p>
-<p>arr = WRFOut(&#8216;wrfout.nc&#8217;).get(&#8216;T&#8217;,utc=0,lv=0)</p>
-<p>This, when completed, will give a Vrbl array with attributes such as
-dimensions.</p>
-<dl class="class">
-<dt id="evac.derived.vrbl.Vrbl">
-<em class="property">class </em><code class="descclassname">evac.derived.vrbl.</code><code class="descname">Vrbl</code><a class="reference internal" href="_modules/evac/derived/vrbl.html#Vrbl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.vrbl.Vrbl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></p>
-<dl class="method">
-<dt id="evac.derived.vrbl.Vrbl.holder">
-<code class="descname">holder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/vrbl.html#Vrbl.holder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.vrbl.Vrbl.holder" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="evac-derived-vrbl-module">
+<h1>evac.derived.vrbl module<a class="headerlink" href="#evac-derived-vrbl-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

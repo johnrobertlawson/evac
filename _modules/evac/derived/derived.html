@@ -45,8 +45,12 @@
   <h1>Source code for evac.derived.derived</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot; For computing derived variables from existing fields.</span>
 
-<span class="sd">TODO: steal a lot of these from WRFOut.</span>
-<span class="sd">TODO: there might be some overlap from stats.</span>
+<span class="sd">Todo:</span>
+<span class="sd">    * Steal a lot of these from WRFOut.</span>
+<span class="sd">    * There might be some overlap from stats.</span>
+<span class="sd">    * Resolve the API. Do all functions start with a parent to inherit</span>
+<span class="sd">        from? What if the user wants to call without the parent (e.g.,</span>
+<span class="sd">        using arrays of data that already exist)? </span>
 
 <span class="sd">For every class, parent is the class from which to &quot;inherit&quot; from.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -930,6 +934,32 @@
     <span class="c1"># return wind_max_smooth</span>
 
     <span class="k">return</span> <span class="n">wind_max</span></div>
+
+<div class="viewcode-block" id="compute_updraught_helicity"><a class="viewcode-back" href="../../../evac.derived.derived.html#evac.derived.derived.compute_updraught_helicity">[docs]</a><span class="k">def</span> <span class="nf">compute_updraught_helicity</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">dz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">z0</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span><span class="n">z1</span><span class="o">=</span><span class="mi">5000</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Eq. 11 &amp; 12 from Kain et al 2008, WAF.</span>
+
+<span class="sd">    Requires either z or dz to be specified.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        u,v,w (N.ndarray)           :   3-D fields of wind, all same size.</span>
+<span class="sd">        dz (N.ndarray)              :   1-D vector of difference in z</span>
+<span class="sd">        z (N.ndarray)               :   1-D vector height above ground level (m)</span>
+<span class="sd">        z0 (int,float,optional)     :   bottom level in m</span>
+<span class="sd">        z1 (int,float,optional)     :   top level in m</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        * Not sure if this works.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">utils</span><span class="o">.</span><span class="n">enforce_same_dimensions</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+    
+    <span class="n">vort_z</span> <span class="o">=</span> <span class="n">compute_vorticity</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+    <span class="c1"># Need to do mid-point approximation here</span>
+    <span class="c1"># If dz, don&#39;t need to do anything.</span>
+    <span class="c1"># If z, need to do differences.</span>
+    <span class="n">UH</span> <span class="o">=</span> <span class="p">(</span><span class="n">vort_z</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span> <span class="o">*</span> <span class="n">dz</span>
+
+    <span class="c1"># Logic for smoothing?</span>
+    <span class="k">pass</span></div>
 </pre></div>
 
       </div>

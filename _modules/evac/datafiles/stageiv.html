@@ -43,30 +43,34 @@
         
         
   <h1>Source code for evac.datafiles.stageiv</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; STAGE IV precip data.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="k">import</span> <span class="n">Basemap</span>
 
-<span class="kn">from</span> <span class="nn">.gribfile</span> <span class="k">import</span> <span class="n">GribFile</span>
+<span class="kn">from</span> <span class="nn">evac.datafiles.gribfile</span> <span class="k">import</span> <span class="n">GribFile</span>
 
 <div class="viewcode-block" id="StageIV"><a class="viewcode-back" href="../../../evac.datafiles.stageiv.html#evac.datafiles.stageiv.StageIV">[docs]</a><span class="k">class</span> <span class="nc">StageIV</span><span class="p">(</span><span class="n">GribFile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Class that holds Stage IV verification data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dir_or_file: if directory, it scans for all files</span>
+<span class="sd">            If file, it loads that one file.</span>
+<span class="sd">        load_1h (bool): if True, load the hourly data files.</span>
+<span class="sd">        load_6h (bool): if True, load the six-hourly data files.</span>
+<span class="sd">        load_24h (bool): if True, load the daily data files.</span>
+<span class="sd">        loadobj (bool): if True, load the data as instances of </span>
+<span class="sd">            :class:`~evac.datafiles.gribfile.GribFile()`.</span>
+
+<span class="sd">    Todos:</span>
+<span class="sd">        * Check for 9999s (missing) or negative. Other codes</span>
+<span class="sd">        * Consistency: are we loading one or a group of files?</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dir_or_file</span><span class="p">,</span><span class="n">load_1h</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">load_6h</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">load_24h</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">loadobj</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;</span>
-<span class="sd">        Args:</span>
-<span class="sd">            dir_or_file         :   if directory, it scans for all files</span>
-<span class="sd">                                        If file, it loads that one file.</span>
-<span class="sd">        Todos:</span>
-<span class="sd">            * Check for 9999s (missing) or negative. Other codes</span>
-<span class="sd">            * Consistency: are we loading one or a group of files?</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">pygrib</span>

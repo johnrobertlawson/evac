@@ -43,15 +43,19 @@
         
         
   <h1>Source code for evac.datafiles.stormevents</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; NWS storm events from &lt;this website&gt;...</span>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
 
-<span class="sd">Todos:</span>
-<span class="sd">    * Move or remove redundant plotting method</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span> <span class="nn">.csvfile</span> <span class="k">import</span> <span class="n">CSVFile</span>
+<span class="kn">from</span> <span class="nn">evac.datafiles.csvfile</span> <span class="k">import</span> <span class="n">CSVFile</span>
 
 <div class="viewcode-block" id="StormEvents"><a class="viewcode-back" href="../../../evac.datafiles.stormevents.html#evac.datafiles.stormevents.StormEvents">[docs]</a><span class="k">class</span> <span class="nc">StormEvents</span><span class="p">(</span><span class="n">CSVFile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; NWS storm events from (which website?).</span>
+
+<span class="sd">    Todos:</span>
+<span class="sd">        * Move or remove redundant plotting method</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fpath: Absolute path to CSV file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">,):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,)</span><span class="c1">#missing=&#39;&#39;,filling_values=&#39;none&#39;)</span>

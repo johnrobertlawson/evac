@@ -50,11 +50,36 @@
         
   <div class="section" id="module-evac.datafiles.stageiv">
 <span id="evac-datafiles-stageiv-module"></span><h1>evac.datafiles.stageiv module<a class="headerlink" href="#module-evac.datafiles.stageiv" title="Permalink to this headline">¶</a></h1>
-<p>STAGE IV precip data.</p>
 <dl class="class">
 <dt id="evac.datafiles.stageiv.StageIV">
 <em class="property">class </em><code class="descclassname">evac.datafiles.stageiv.</code><code class="descname">StageIV</code><span class="sig-paren">(</span><em>dir_or_file</em>, <em>load_1h=True</em>, <em>load_6h=False</em>, <em>load_24h=False</em>, <em>loadobj=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile" title="evac.datafiles.gribfile.GribFile"><code class="xref py py-class docutils literal"><span class="pre">evac.datafiles.gribfile.GribFile</span></code></a></p>
+<p>Class that holds Stage IV verification data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dir_or_file</strong> &#8211; if directory, it scans for all files
+If file, it loads that one file.</li>
+<li><strong>load_1h</strong> (<em>bool</em>) &#8211; if True, load the hourly data files.</li>
+<li><strong>load_6h</strong> (<em>bool</em>) &#8211; if True, load the six-hourly data files.</li>
+<li><strong>load_24h</strong> (<em>bool</em>) &#8211; if True, load the daily data files.</li>
+<li><strong>loadobj</strong> (<em>bool</em>) &#8211; if True, load the data as instances of
+<a class="reference internal" href="evac.datafiles.gribfile.html#evac.datafiles.gribfile.GribFile" title="evac.datafiles.gribfile.GribFile"><code class="xref py py-class docutils literal"><span class="pre">GribFile()</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Check for 9999s (missing) or negative. Other codes</li>
+<li>Consistency: are we loading one or a group of files?</li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt id="evac.datafiles.stageiv.StageIV.arbitrary_pick">
 <code class="descname">arbitrary_pick</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/datafiles/stageiv.html#StageIV.arbitrary_pick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.datafiles.stageiv.StageIV.arbitrary_pick" title="Permalink to this definition">¶</a></dt>
