@@ -4,21 +4,19 @@ import pdb
 import numpy as N
 import scipy as S
 
-"""Probabilistic scores, using Buizza 2001, MWR.
-"""
-
 class ProbScores:
-    def __init__(self,og=None,pfg=None,xa=None,xfs=None):
-        """
-        Set up probability scores. User must specify
-        (og and pfg) or (xa and xfs).
+    """Probabilistic scores, using Buizza 2001, MWR.
 
-        Args:
-            self.og         :   (numpy.array) - True/False field (1D)
-            self.pfg        :   Prob. forecast of event (0.0-1.0)
-            self.xa         :   observation field (2D)
-            self.xfs        :   forecast fields (3D)
-        """
+    Note:
+        User must specify (og and pfg) or (xa and xfs).
+
+    Args:
+        self.og         :   (numpy.array) - True/False field (1D)
+        self.pfg        :   Prob. forecast of event (0.0-1.0)
+        self.xa         :   observation field (2D)
+        self.xfs        :   forecast fields (3D)
+    """
+    def __init__(self,og=None,pfg=None,xa=None,xfs=None):
         self.og = og
         self.pfg = pfg
         self.xa = xa

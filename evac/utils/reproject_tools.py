@@ -1,3 +1,14 @@
+""" A collection of classes and functions to reproject data.
+
+Todo:
+    * Rewrite using cartopy
+    * Can some of this be merged with :any:`~evac.utils.gis_tools`?
+    * These classes need to be put in their own file.
+    * Long term, we probably need a new directory, 'geog' or 'reproj',
+        which deals with reprojection, and gathers a lot of functions
+        and classes that are scattered around evac.
+    * Rewrite without any WEM imports.
+"""
 import os
 import pdb
 

@@ -1,4 +1,4 @@
-"""Scripts to check the nature of numbers.
+""" Functions that check the nature of numbers.
 """
 import pdb
 

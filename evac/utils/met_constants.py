@@ -1,3 +1,6 @@
+""" A collection of constants for use across `evac`.
+"""
+
 Tb = 300.0 # Base temperature
 Tz = 273.15 # 0 C in Kelvin
 L = 2.501e6 # Latent heat of vaporisation

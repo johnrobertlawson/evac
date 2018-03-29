@@ -5,28 +5,28 @@ from evac.utils.exceptions import FormatError, NonsenseError
 from evac.stats.detscores import DetScores
 
 class ForecastValue(DetScores):
+    """ Compute FV, forecast value, as Buizza 2001.
+
+    Example that returns FV for exceeding 0.1 units (e.g., QPF)
+    using the default range of cost/loss ratios:
+        FV = ForecastValue(fcst_arr=arr1,obs_arr=arr2,thresh=0.l,
+                            overunder='over')
+
+    Then, access the FV for a given cost/loss ratio with:
+        FV.get(0.02)
+
+    This will return None is the cost/lost ratio doesn't exist.
+
+    Todo:
+        * Shouldn't this be a mix-in of `ProbScores` and `DetScores`?
+
+    Args:
+        CLs (N.ndarray, tuple, list): Cost-loss ratios to compute
+            FV as function of each ratio
+        args,kwargs: Arguments sent to the superclass to compute 2x2 contigency.
+            It's probably best to use keywords (`kwargs`).
+    """
     def __init__(self,CLs=None,*args,**kwargs):
-        """ Compute FV, forecast value, as Buizza 2001.
-
-        Example that returns FV for exceeding 0.1 units (e.g., QPF)
-        using the default range of cost/loss ratios:
-            FV = ForecastValue(fcst_arr=arr1,obs_arr=arr2,thresh=0.l,
-                                overunder='over')
-
-        Then, access the FV for a given cost/loss ratio with:
-            FV.get(0.02)
-
-        This will return None is the cost/lost ratio doesn't exist.
-
-        Args:
-            CLs (N.ndarray, tuple, list)    :   Cost-loss ratios to compute
-                                                    FV as function of each ratio
-            ``args``,``kwargs``             :   Arguments sent to the superclass
-                                                    to compute 2x2 contigency.
-                                                    Use keywords, that's best.
-
-
-        """
         super().__init__(*args,**kwargs)
         # super(DetScores,self).__init__(*args,**kwargs)
         self.pod = self.compute_pod()

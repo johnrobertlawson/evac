@@ -1,3 +1,9 @@
+""" A collection of functions to download weather forecast/observed data.
+
+Todo:
+    * Integrate with :any:`evac.datafiles.obs` and other related things
+    * Clean up - it's pretty messy in here!
+"""
 import os
 import calendar
 import time

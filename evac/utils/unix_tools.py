@@ -1,5 +1,6 @@
-"""
-Utility scripts to help with directory, file, etc issues
+"""A collection of *nix utility scripts.
+
+These help with directory, file, etc issues.
 """
 
 import pdb

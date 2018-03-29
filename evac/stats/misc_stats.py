@@ -1,18 +1,19 @@
-"""
-Scripts involving statistics or data manipulation here.
-"""
+""" Functions that are not specifically deterministic/probabilistic.
 
-import numpy as N
+Todo:
+    * Move all DKE/DTE functions into :any:`~evac.stats.diffenergy`.
+"""
 import pdb
-import scipy
-import scipy.signal
 import itertools
 import time
 import os
 import operator
 
-import evac.utils.gis_tools as utils
+import numpy as N
+import scipy
+import scipy.signal
 
+import evac.utils.gis_tools as utils
 from evac.datafiles.wrfout import WRFOut
 
 def compute_bool_thresh(arr,overunder,threshold):

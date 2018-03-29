@@ -1,3 +1,12 @@
+""" A collection of functions that generate fractal arrays,
+suitable for stochastic perturbations, etc. Used for
+Lawson et al (in prep) stochastic paper.
+
+Todo:
+    * Make more than a collection of shitty scripts.
+    * Hide procedural stuff with a ``if __name__ == '__main__'`` block.
+"""
+
 import pdb
 import multiprocessing
 from multiprocessing import Queue, Process, Pool

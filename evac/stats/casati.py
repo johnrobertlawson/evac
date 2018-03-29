@@ -7,32 +7,32 @@ from scipy.ndimage.filters import uniform_filter
 from evac.utils.exceptions import QCError, FormatError
 
 class Casati:
-    def __init__(self,fcstdata,verifdata,thresholds=(0.5,1,4,16,64),
-                    store_all_arrays=True,recalibration=False):
-        """Casati et al. 2004, Meteorol. Appl.
+    """ Scale-aware verification scheme from Casati et al. 2004, Meteorol. Appl.
 
-        All data in SI units (mm). 
+    All data in SI units (mm). 
+    
+    Access attributes by a threshold then spatial key.
 
-        Attrs. all accessed by a threshold then spatial key.
-
-        e.g. 
-        self.SS[4][3] will return the skill score for 4 mm/hr threshold 
-            and the L=3 spatial scale (= 2**3 grid points)
-
-        Args:
-            fcstdata (N.ndarray)    :   forecast 2D array
-            verifdata (N.ndarray)   :   verification 2D array
-            thresholds (tuple,list,optional)    :   thresholds for stats
-            store_all_arrays (bool,optional)    :   If False, delete arrays
-                                                        to conserve memory.
-            recalibration (bool,optional)       :   whether to remove bias
-
-        Attributes:
+    Attributes:
         self.father, self.mother    :   wavelet decompositions (in do_BED)
         self.MSE, self.MSE_total    :   Mean Square Error (by scale and total)
         self.SS                     :   Skill score
 
-        """
+    Example:
+        self.SS[4][3] will return the skill score for 4 mm/hr threshold 
+            and the L=3 spatial scale (= 2**3 grid points)
+
+    Args:
+        fcstdata (N.ndarray)    :   forecast 2D array
+        verifdata (N.ndarray)   :   verification 2D array
+        thresholds (tuple,list,optional)    :   thresholds for stats
+        store_all_arrays (bool,optional)    :   If False, delete arrays
+            to conserve memory.
+        recalibration (bool,optional)       :   whether to remove bias
+
+    """
+    def __init__(self,fcstdata,verifdata,thresholds=(0.5,1,4,16,64),
+                    store_all_arrays=True,recalibration=False):
         self.thresholds = thresholds
         self.raw_fcstdata = fcstdata
         self.raw_verifdata = verifdata

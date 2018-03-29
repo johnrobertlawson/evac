@@ -1,3 +1,8 @@
+""" Fractal generator.
+
+Todo:
+    * Merge with `fractal_tools`.
+"""
 import pdb
 import multiprocessing
 from multiprocessing import Queue, Process, Pool

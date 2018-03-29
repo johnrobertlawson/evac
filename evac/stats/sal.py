@@ -1,10 +1,6 @@
-"""
-Todos:
-    * Make subclass of ObjectBased.
-"""
+import pdb
 
 import numpy as N
-import pdb
 import scipy.ndimage as ndimage
 import scipy.ndimage.filters as filters
 import matplotlib.pyplot as plt
@@ -12,7 +8,14 @@ import matplotlib.pyplot as plt
 from evac.datafiles.wrfout import WRFOut
 from evac.datafiles.radar import Radar
 
-class SAL(object):
+class SAL:
+    """ Structure-Amplitude-Location verification method.
+
+    From Wernli et al. with modifications from Lawson & Gallus.
+
+    Todo:
+        * Make subclass of ObjectBased.
+    """
     def __init__(self,Wctrl_fpath,Wmod_fpath,vrbl=False,utc=False,lv=False,
                     accum_hr=False,radar_datadir=False,thresh=False,
                     footprint=500,ctrl_fmt='obs',mod_fmt='WRF',dx=False,dy=False,

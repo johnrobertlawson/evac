@@ -6,11 +6,30 @@ import scipy.ndimage.filters
 from evac.utils.exceptions import FormatError
 
 class FSS:
+    """ Fractions Skill Score (from REF).
+
+    Note:
+        The forecast and observed data must be on the same 2D grid.
+
+    Todo:
+        * Implement itime/ftime?
+        * Implement automatic neighbourhood sizes (maxlen)
+        * Rename `ns` etc, it's confusing.
+
+    Args:
+        data_fcst (numpy.array): Array (2-D) of forecast data.
+        data_obs (numpy.array): Array (2-D) of observed data.
+        itime,ftime (datetime.datetime): Initial and final time (UTC).
+            Not implemented yet, as input data is 2D (single time)
+        ns (`list`-like): Neighbourhood sizes (as tuple, numpy.array, etc)
+        thresholds (`list`-like): Thresholds (in mm)
+        ns_step (int): Interval between neighbourhood, for when this is
+            automatically computed (i.e. ns is None).
+
+    """
     def __init__(self,data_fcst,data_obs,itime=False,ftime=False,
-                lv=False,thresholds=(0.5,1,2,4,8),ns=None,
+                thresholds=(0.5,1,2,4,8),ns=None,
                 ns_step=4):
-        """ Fcst and ob data needs to be on the same grid.
-        """
         self.data_fcst = data_fcst
         self.data_obs = data_obs
         self.thresholds = thresholds
@@ -21,9 +40,9 @@ class FSS:
         self.xdim = data
 
         # Neighbourhoods
-        if ns is None:
-            ns = N.arange(1,maxlen,ns_step)
-        self.ns = ns
+        # if ns is None:
+            # ns = N.arange(1,maxlen,ns_step)
+        # self.ns = ns
 
         # Computations
         self.compute_MSE()

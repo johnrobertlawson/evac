@@ -1,14 +1,18 @@
-""" Create time series of variable(s) for certain period at location.
-
-Can use .TS files (?)
-Can use model output.
-
-"""
-from evac.datafiles.wrfout import WRFOut
-import matplotlib.pyplot as plt
+import pdb
 import os
 
-class TimeSeries:
+import matplotlib.pyplot as plt
+
+from evac.plot.figure import Figure
+from evac.datafiles.wrfout import WRFOut
+
+class TimeSeries(Figure):
+    """ Create time series of variable(s) for certain period at location.
+
+    Can use .TS files (?)
+    Can use model output.
+
+    """
     def __init__(self,ensemble,latlon,locname):
         # This is a list of instances
         self.ensemble = ensemble

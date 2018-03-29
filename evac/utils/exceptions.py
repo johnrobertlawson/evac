@@ -1,4 +1,10 @@
 """Custom exceptions.
+
+Todo:
+    * Extend the functionality
+    * Make the wowprint() actually work
+    * https://github.com/UltimateHackers/hue
+
 """
 
 class PrettyException(Exception):

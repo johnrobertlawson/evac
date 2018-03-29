@@ -1,30 +1,32 @@
-"""Create cross-sections through WRF data.
+import pdb
+import os
 
-This can be time-height or distance-height.
-The height can be pressure, model, geometric, or geopotential
-
-The output can be saved to a pickle file.
-This can be useful for creating composites
-
-Input lat/lon can be either specified or from x,y co-ords
-calculated from manually clicking on a map with overlaid
-data (reflectivity, etc).
-"""
-
-# Imports
 import numpy as N
 from .figure import Figure
-import pdb
 import matplotlib.pyplot as plt
 
-import WEM.utils as utils
-from WEM.utils import metconstants as mc
-from .scales import Scales
-from .birdseye import BirdsEye
+# import WEM.utils as utils
+# from WEM.utils import metconstants as mc
+from evac.plot.scales import Scales
+from evac.plot.birdseye import BirdsEye
 # from defaults import Defaults
 
 class CrossSection(Figure):
+    """Create cross-sections through WRF data.
 
+    This can be time-height or distance-height.
+    The height can be pressure, model, geometric, or geopotential
+
+    The output can be saved to a pickle file.
+    This can be useful for creating composites
+
+    Input lat/lon can be either specified or from x,y co-ords
+    calculated from manually clicking on a map with overlaid
+    data (reflectivity, etc).
+
+    Todo:
+        * Make sure the refactoring from WEM is complete.
+    """
     def __init__(self,wrfout,latA=0,lonA=0,latB=0,lonB=0):
         super(CrossSection,self).__init__(wrfout)
 

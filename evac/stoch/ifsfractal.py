@@ -5,6 +5,15 @@ import scipy.ndimage.interpolation as INT
 from scipy.interpolate import RectBivariateSpline as RBS
 
 class IFSFractal(object):
+    """ Generate a fractal using the IFS algorithm.
+
+    Todo:
+        * Where did I get the inspiration from?!
+        * Not sure this has been tested.
+
+    Args:
+        arr: No idea. Sorry.
+    """
     def __init__(self,arr=False):
         self.arr = arr
         pass

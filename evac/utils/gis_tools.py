@@ -1,3 +1,9 @@
+""" A collection of geographical-related functions.
+
+Todo:
+    * Make sure other utils functions are imported explicitly, so
+        we can remove the star import in util's `__init__.py`.
+"""
 #import scipy.ndimage as nd
 import calendar
 import collections
@@ -11,15 +17,13 @@ import glob
 import pickle
 import datetime
 import heapq
-import xarray
 
+import xarray
 import matplotlib as M
 import numpy as N
 from netCDF4 import Dataset
 
-from . import unix_tools #as unix_tools
-#from . import unix_tools
-#from . import get_data
+import evac.utils.unix_tools as unix_tools
 
 def decompose_wind(wspd,wdir,wdir_fmt='deg'):
     """Turn a wind speed and direction into u and v components.

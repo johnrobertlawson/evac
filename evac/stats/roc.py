@@ -1,29 +1,28 @@
-"""Relative Operative Statistics.
-
-Mixin of deterministic and probabilistic scores. Can be used to generate a
-2x2 contingency table for ensembles.
-"""
 import pdb
 
 import numpy as N
 
-from .detscores import DetScores
-from .probscores import ProbScores
+from evac.stats.detscores import DetScores
+from evac.stats.probscores import ProbScores
 from evac.stats.misc_stats import compute_contingency
 
 class ROC(DetScores,ProbScores):
+    """Relative Operative Statistics.
+
+    Mixin of deterministic and probabilistic scores. Can be used to generate a
+    2x2 contingency table for ensembles.
+
+    Args:
+        nens        :   number of ensemble members
+        pf          :   probability of an event (1d array)
+        ob (bool)   :   whether it happened (1d array)
+        ensemble    :   Ensemble instance.
+        obs_array   :   2D array (lats,lons) for verification
+        threshold   :   float to create binary condition
+        overunder   :   operator for threshold.
+    """
     def __init__(self,nens=None,pf=None,ob=None,ensemble=None,
                     obs_array=None,thresholds=None,overunder=None):
-        """
-        Args:
-            nens        :   number of ensemble members
-            pf          :   probability of an event (1d array)
-            ob (bool)   :   whether it happened (1d array)
-            ensemble    :   Ensemble instance.
-            obs_array   :   2D array (lats,lons) for verification
-            threshold   :   float to create binary condition
-            overunder   :   operator for threshold.
-        """
         if nens is None and pf is None and ob is None:
             # Logic here to compute the arrays
             pass

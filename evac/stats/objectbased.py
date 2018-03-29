@@ -1,7 +1,3 @@
-"""
-Todos:
-    * Refactor this and sal.py
-"""
 import numpy as N
 import pdb
 import scipy.ndimage as ndimage
@@ -12,12 +8,16 @@ from evac.datafiles.wrfout import WRFOut
 from evac.datafiles.radar import Radar
 
 class ObjectBased:
+    """ Object-based verification superclass.
+
+    Todos:
+        * Refactor and link with :any:`~evac.stats.sal`.
+
+    """
     def __init__(self,Wctrl_fpath,Wmod_fpath,vrbl=False,utc=False,lv=False,
                     accum_hr=False,radar_datadir=False,thresh=False,
                     footprint=500,ctrl_fmt='obs',mod_fmt='WRF',dx=False,dy=False,
                     f=1/15.0,datafmt=False):
-        """Generate objects from data.
-        """
         # Set data formats for both inputs to override defaults
         if datafmt:
             ctrl_fmt = datafmt
