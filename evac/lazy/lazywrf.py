@@ -9,7 +9,7 @@ import evac.utils as utils
 class LazyWRF:
     """ Designed for running multiple runs from the same folder.
 
-    For parallel ensemble generation, use LazyEnsemble child class.
+    To be depreciated; for parallel ensemble generation, use :class:`~evac.lazy.lazyensemble`.
     """
     def __init__(self,path_to_WRF,path_to_wrfout,submit_fname,
                     submit_ideal_fname=False,path_to_storage=False,

@@ -1,12 +1,16 @@
-""" NWS storm events from <this website>...
+import pdb
 
-Todos:
-    * Move or remove redundant plotting method
-"""
-
-from .csvfile import CSVFile
+from evac.datafiles.csvfile import CSVFile
 
 class StormEvents(CSVFile):
+    """ NWS storm events from (which website?).
+
+    Todos:
+        * Move or remove redundant plotting method
+
+    Args:
+        fpath: Absolute path to CSV file.
+    """
     def __init__(self,fpath,):
         self.r = N.genfromtxt(fpath,dtype=None,
                 names=True,delimiter=',',)#missing='',filling_values='none')

@@ -1,24 +1,34 @@
-"""Subclass of numpy ndarray. Vrbl holds a 4D array for a variable
-in the dimensions (time, level, lats, lons), similarly to WRF output.
+import pdb
+import os
 
-The subclassing allows attachment of methods that compute derived fields
-(e.g. vorticity) and inspection of metadata (dimension names etc.).
-
-Example:
-
-arr = Dataset('wrfout.nc').variables['T'][0,0,:,:]
-
-gives you a normal numpy array. To get a Vrbl() subclass, go via
-a `datafiles/` module, for instance:
-
-arr = WRFOut('wrfout.nc').get('T',utc=0,lv=0)
-
-This, when completed, will give a Vrbl array with attributes such as
-dimensions.
-"""
 import numpy as N
 
 class Vrbl(N.ndarray):
+    """ Subclass of numpy ndarray that holds a 4D array for a variable.
+
+    The dimensions (time, level, lats, lons), similarly to WRF output.
+
+    The subclassing allows attachment of methods that compute derived fields
+    (e.g. vorticity) and inspection of metadata (dimension names etc.).
+
+    Example:
+        The standard `numpy` call::
+        
+            arr = Dataset('wrfout.nc').variables['T'][0,0,:,:]
+
+        gives you a normal numpy array. To get a Vrbl() subclass, go via
+        a `datafiles` module, for instance::
+
+            arr = WRFOut('wrfout.nc').get('T',utc=0,lv=0)
+
+        This, when completed, will give a Vrbl array with attributes such as
+        dimensions.
+
+    Todo:
+        * All the things.
+
+    """
+
         #def __new__(cls,*args,**kwargs):
         def __new__(cls,arr):
             #return N.ndarray.__new__(cls,*args,**kwargs)

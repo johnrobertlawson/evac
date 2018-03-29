@@ -11,69 +11,72 @@ import evac.utils as utils
 from evac.utils import met_constants as mc
 #import WEM.postWRF.postWRF._skewt2 as sT
 
-"""
-ROWS:
-line 1 is surface information
-lines 2 onwards is a point in profile
+class Profile:
+    """ Class for generating idealised profiles for WRF runs.
 
-COLUMNS:
-column 1 is surface pressure (hPa) for row 1
---- set this as 1000.00.
-otherwise it is height (m) for rows 2 onwards
---- increasing in height with row number
+    This script is in need of a lot of work...
 
-column 2 is potential temperature (K)
---- set row 1 as 300.0 K as reference, probably
+    Todo:
+        * Everything.
 
-column 3 is vapour mixing ratio (g/kg)
---- set row 1 as 14.00 g/kg, for instance
+    ROWS:
+    line 1 is surface information
+    lines 2 onwards is a point in profile
 
-column 4 is U wind (m/s)
---- no row 1
+    COLUMNS:
+    column 1 is surface pressure (hPa) for row 1
+    --- set this as 1000.00.
+    otherwise it is height (m) for rows 2 onwards
+    --- increasing in height with row number
 
-column 5 is V wind (m/s)
---- no row 1
+    column 2 is potential temperature (K)
+    --- set row 1 as 300.0 K as reference, probably
 
-METHODS FOR PROFILE GENERATION
-Temp:
-    - Weisman and Klemp
-    etc
-Wind:
-    - Blah
+    column 3 is vapour mixing ratio (g/kg)
+    --- set row 1 as 14.00 g/kg, for instance
 
-Dewpoint:
-    - Blah
+    column 4 is U wind (m/s)
+    --- no row 1
 
-"""
+    column 5 is V wind (m/s)
+    --- no row 1
 
-class Profile(object):
+    METHODS FOR PROFILE GENERATION
+    Temp:
+        - Weisman and Klemp
+        etc
+    Wind:
+        - Blah
+
+    Dewpoint:
+        - Blah
+
+    Args:
+        z (N.ndarray)       :   Altitude above ground level (metres)
+        zL (int,float)      :   LCL (metres AGL)
+        E (int, float)      :   Specified CAPE
+        m (int, float)      :   Profile compression parameter
+        hodotype (str)      :   Hodograph type {'straight','curved'}
+        n (int)             :   Curvature parameter
+        V (int, float)      :   Maximum wind (m/s); overall vert. shear
+        fdir (str)          :   Directory for output file
+        PW (float,int,optional) :   Precip. water (mm)
+        fname (str, optional)   :   Filename for output
+        H (int, float, optional)    :   Vertical scale parameter
+        zT (int, float, optional)   :   Height of the tropopause (m).
+                                            Must be in z
+        RH (float, optional)    : Relative humidity above LCL (as a decimal)
+        method  (str)       :   {'MW01,} Paper from which to create profile
+        k2P (int, float, optional)  :   Pressure at "model level 2", Pa
+        k2T, k2Td (int, float, optional)    :   Drybumb, dewpoint at "model level 2", C
+        offset_spd, offset_dir (int, float) :   Speed and direction of background flow
+    """
+
     def __init__(self,z,fdir,zL=False,E=2000,m=4.0,hodotype='curved',
                     n=1,V=12.0,PW=30,thT=343,tT=213,th0=300,qv0=16E-3,Us=25,
                     fname='profile',H=14500,zT=14000,RH=0.9,zs=3000,
                     method='MW01',k2P=96500,k2T=296.65,k2Td=296.15,
                     k2z=250,offset_spd=0,offset_dir=0):
-        """Create profile text file.
-
-        Args:
-            z (N.ndarray)       :   Altitude above ground level (metres)
-            zL (int,float)      :   LCL (metres AGL)
-            E (int, float)      :   Specified CAPE
-            m (int, float)      :   Profile compression parameter
-            hodotype (str)      :   Hodograph type {'straight','curved'}
-            n (int)             :   Curvature parameter
-            V (int, float)      :   Maximum wind (m/s); overall vert. shear
-            fdir (str)          :   Directory for output file
-            PW (float,int,optional) :   Precip. water (mm)
-            fname (str, optional)   :   Filename for output
-            H (int, float, optional)    :   Vertical scale parameter
-            zT (int, float, optional)   :   Height of the tropopause (m).
-                                                Must be in z
-            RH (float, optional)    : Relative humidity above LCL (as a decimal)
-            method  (str)       :   {'MW01,} Paper from which to create profile
-            k2P (int, float, optional)  :   Pressure at "model level 2", Pa
-            k2T, k2Td (int, float, optional)    :   Drybumb, dewpoint at "model level 2", C
-            offset_spd, offset_dir (int, float) :   Speed and direction of background flow
-        """
         # if zT not in z:
             # raise Exception("Height of the tropopause must be"
                                 # "in array of altitudes.")

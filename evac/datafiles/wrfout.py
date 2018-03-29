@@ -1,24 +1,14 @@
-"""Compute or load data from netCDF file.
-
-Dimensions of 4D variable X are X.dimensions:
-(Time,bottom_top,south_north,west_east_stag)
-Time, levels, latitude, longitude
-
-Todos:
-    * Move computation of derived variables to derive/ folder!
-    * Make method assign the returns to instance instead of returning.
-"""
-
-from netCDF4 import Dataset
 import sys
 import os
-import numpy as N
 import calendar
 import pdb
-import scipy.ndimage
 import collections
-import scipy.interpolate
 import datetime
+
+import numpy as N
+import scipy.interpolate
+import scipy.ndimage
+from netCDF4 import Dataset
 
 import evac.utils as utils
 import evac.utils.met_constants as mc
@@ -28,10 +18,36 @@ import evac.derived.derived as derived
 debug_get = 0
 
 class WRFOut(NC):
+    """Compute or load data from netCDF file.
 
-    """
-    An instance of WRFOut contains all the methods that are used to
-    access and process netCDF data.
+    Dimensions of 4D variable X are X.dimensions:
+    (Time,bottom_top,south_north,west_east_stag)
+    Time, levels, latitude, longitude
+
+    Derived quantities (e.g., vorticity) can be generated via calls
+    to :any:`evac.derived.derived` scripts.
+
+    Example:
+        Generate a `WRFOut()` object with the following::
+
+            from evac.datafiles.wrfout import WRFOut
+
+            fpath = '/path/to/wrfout_d01_2016-05-03_18:00:00'
+            W = WRFOut(fpath)
+            # Get a 4-D array of U-wind data for all times, levels, etc
+            data = W.get(vrbl='U')
+
+    Todos:
+        * Move computation of derived variables to derive/ folder!
+        * Make method assign the returns to instance instead of returning.
+
+    Args:
+        fpath: Absolute path to WRF out file.
+        fmt (str): Choose `em_real`, `ideal`, depending on type of run.
+        ncks (bool): If `True`, the WRF data file has previously been
+            processed by the NCL "kitchen sink" utility to strip
+            unneeded variables/fields.
+
     """
     def __init__(self,fpath,fmt='em_real',ncks=False):
         """

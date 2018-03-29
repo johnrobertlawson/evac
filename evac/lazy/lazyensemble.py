@@ -11,12 +11,11 @@ import evac.utils as utils
 from evac.utils.exceptions import WRFError, PrettyException
 
 class LazyEnsemble:
-    """
-    Generate ensemble by running multiple WRF runs simulataneously.
-    This is done by creating temporary folder and linking/copying.
-    Efficiency improvements from Monte Flora.
+    """ Generate ensemble by running multiple WRF runs simulataneously.
 
-    Will not work on Windows systems due to hardcoded PosixPath.
+    This is done by creating temporary folder and linking/copying, with 
+    efficiency improvements from Monte Flora. Will not work on Windows systems
+    as it stands, due to hardcoded PosixPath.
 
     User must specify either endutc or runsec.
 
@@ -25,26 +24,16 @@ class LazyEnsemble:
 
     Member names, if automatically created, are "mem01", "mem02", etc
 
-    Parent script should be run via batch submission. The procedure is:
+    Example:
+        Parent script should be run via batch submission. The procedure is::
 
-    L = LazyEnsemble(*args,**kwargs)
-    L.run_all_members()
+            L = LazyEnsemble(*args,**kwargs)
+            L.run_all_members()
 
-    """
-    def __init__(self,path_to_exedir,path_to_datadir, path_to_namelistdir,
-                    path_to_icdir,path_to_lbcdir,path_to_outdir,
-                    path_to_batch,initutc,
-                    sched='slurm',path_to_rundir=False,delete_exe_copy=False,
-                    ndoms=1,nmems=0,membernames=False,
-                    endutc=False,runsec=False,nl_per_member=True,
-                    nl_suffix='name',ics=None,lbcs=None,dryrun=False,
-                    rename_d01_ics=False):
-        """
-        Note that WRF can run with initial and boundary conditions from
-        only the parent domain (d01).
+    Note that WRF can run with initial and boundary conditions from
+    only the parent domain (d01).
 
-        Args:
-
+    Args:
         path_to_exedir      :   (str) - directory of compiled WRF executables
         path_to_datadir     :   (str) - directory where wrfout and other data
                                 will be saved.
@@ -111,7 +100,15 @@ class LazyEnsemble:
         rename_d01_ics      :   (bool) - if True, rename d01 ICs to
                                 wrfinput_d01. Only works if only the
                                 d01 domain has ICs.
-        """
+    """
+    def __init__(self,path_to_exedir,path_to_datadir, path_to_namelistdir,
+                    path_to_icdir,path_to_lbcdir,path_to_outdir,
+                    path_to_batch,initutc,
+                    sched='slurm',path_to_rundir=False,delete_exe_copy=False,
+                    ndoms=1,nmems=0,membernames=False,
+                    endutc=False,runsec=False,nl_per_member=True,
+                    nl_suffix='name',ics=None,lbcs=None,dryrun=False,
+                    rename_d01_ics=False):
         # Check - must have either number of members or a list of names
         assert isinstance(membernames,(list,tuple)) or (nmems > 0)
 

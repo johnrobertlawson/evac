@@ -1,7 +1,11 @@
 """ For computing derived variables from existing fields.
 
-TODO: steal a lot of these from WRFOut.
-TODO: there might be some overlap from stats.
+Todo:
+    * Steal a lot of these from WRFOut.
+    * There might be some overlap from stats.
+    * Resolve the API. Do all functions start with a parent to inherit
+        from? What if the user wants to call without the parent (e.g.,
+        using arrays of data that already exist)? 
 
 For every class, parent is the class from which to "inherit" from.
 """
@@ -885,3 +889,29 @@ def compute_strongest_wind(parent,tidx,lvidx,lonidx,latidx,other):
     # return wind_max_smooth
 
     return wind_max
+
+def compute_updraught_helicity(parent,u,v,w,dz=None,z=None,z0=2000,z1=5000):
+    """Eq. 11 & 12 from Kain et al 2008, WAF.
+
+    Requires either z or dz to be specified.
+
+    Args:
+        u,v,w (N.ndarray)           :   3-D fields of wind, all same size.
+        dz (N.ndarray)              :   1-D vector of difference in z
+        z (N.ndarray)               :   1-D vector height above ground level (m)
+        z0 (int,float,optional)     :   bottom level in m
+        z1 (int,float,optional)     :   top level in m
+
+    Todo:
+        * Not sure if this works.
+    """
+    utils.enforce_same_dimensions(u,v,w)
+    
+    vort_z = compute_vorticity(None,u,v)
+    # Need to do mid-point approximation here
+    # If dz, don't need to do anything.
+    # If z, need to do differences.
+    UH = (vort_z * w) * dz
+
+    # Logic for smoothing?
+    pass

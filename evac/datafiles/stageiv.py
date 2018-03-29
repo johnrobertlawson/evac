@@ -1,6 +1,3 @@
-""" STAGE IV precip data.
-"""
-
 import os
 import glob
 import datetime
@@ -8,20 +5,27 @@ import datetime
 import numpy as N
 from mpl_toolkits.basemap import Basemap
 
-from .gribfile import GribFile
+from evac.datafiles.gribfile import GribFile
 
 class StageIV(GribFile):
+    """ Class that holds Stage IV verification data.
+
+    Args:
+        dir_or_file: if directory, it scans for all files
+            If file, it loads that one file.
+        load_1h (bool): if True, load the hourly data files.
+        load_6h (bool): if True, load the six-hourly data files.
+        load_24h (bool): if True, load the daily data files.
+        loadobj (bool): if True, load the data as instances of 
+            :class:`~evac.datafiles.gribfile.GribFile()`.
+
+    Todos:
+        * Check for 9999s (missing) or negative. Other codes
+        * Consistency: are we loading one or a group of files?
+
+    """
     def __init__(self,dir_or_file,load_1h=True,load_6h=False,load_24h=False,
                     loadobj=False):
-        """"
-        Args:
-            dir_or_file         :   if directory, it scans for all files
-                                        If file, it loads that one file.
-        Todos:
-            * Check for 9999s (missing) or negative. Other codes
-            * Consistency: are we loading one or a group of files?
-
-        """
 
         try:
             import pygrib
