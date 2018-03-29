@@ -160,18 +160,20 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">rename_d01_ics</span> <span class="o">=</span> <span class="n">rename_d01_ics</span>
         
+        <span class="c1"># Time of initialisation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span> <span class="o">=</span> <span class="n">initutc</span>
+
         <span class="c1"># we need one of these optional arguments to compute run time</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">endutc</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">runsec</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Specific endutc or runsec.&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">runsec</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">runsec</span> <span class="o">=</span> <span class="n">runsec</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">endutc</span> <span class="o">=</span> <span class="n">initutc</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">runsec</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endutc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">runsec</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">endutc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">endutc</span> <span class="o">=</span> <span class="n">endutc</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">runsec</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endutc</span> <span class="o">-</span> <span class="n">initutc</span><span class="p">)</span><span class="o">.</span><span class="n">seconds</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">runsec</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endutc</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="p">)</span><span class="o">.</span><span class="n">seconds</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">runsec</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
-        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
         <span class="c1"># PATH OBJECTS - see pathlib documentation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exedir</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_exedir</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_datadir</span><span class="p">)</span>
@@ -196,9 +198,6 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path_to_rundir</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
             <span class="n">path_to_rundir</span> <span class="o">=</span> <span class="n">path_to_datadir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wrfrundir</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_rundir</span><span class="p">)</span>
-
-        <span class="c1"># Time of initialisation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">initutc</span> <span class="o">=</span> <span class="n">initutc</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sched</span> <span class="o">=</span> <span class="n">sched</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dryrun</span> <span class="o">=</span> <span class="n">dryrun</span>
@@ -539,7 +538,8 @@
 
         <span class="k">if</span> <span class="n">merge_lbcs</span><span class="p">:</span>
             <span class="n">wrfbdy_fpath</span> <span class="o">=</span> <span class="n">rundir</span><span class="o">/</span><span class="s1">&#39;wrfbdy_d01&#39;</span>
-            <span class="n">wrfbdy_fpath</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span> <span class="c1"># Delete!</span>
+            <span class="k">if</span> <span class="n">wrfbdy_fpath</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">wrfbdy_fpath</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span> <span class="c1"># Delete!</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">merge_netcdfs</span><span class="p">(</span><span class="n">wrfbdy_fpath</span><span class="p">,</span><span class="n">filelist</span><span class="o">=</span><span class="n">newlbc_list</span><span class="p">)</span>
 
         <span class="c1"># Rename files in the rundir that match a glob</span>
