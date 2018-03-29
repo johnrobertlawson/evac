@@ -54,6 +54,25 @@
 <dt id="evac.stats.probscores.ProbScores">
 <em class="property">class </em><code class="descclassname">evac.stats.probscores.</code><code class="descname">ProbScores</code><span class="sig-paren">(</span><em>og=None</em>, <em>pfg=None</em>, <em>xa=None</em>, <em>xfs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Probabilistic scores, using Buizza 2001, MWR.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">User must specify (og and pfg) or (xa and xfs).</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>self.og</strong> &#8211; (numpy.array) - True/False field (1D)</li>
+<li><strong>self.pfg</strong> &#8211; Prob. forecast of event (0.0-1.0)</li>
+<li><strong>self.xa</strong> &#8211; observation field (2D)</li>
+<li><strong>self.xfs</strong> &#8211; forecast fields (3D)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="evac.stats.probscores.ProbScores.cdf_">
 <code class="descname">cdf_</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.cdf_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.cdf_" title="Permalink to this definition">¶</a></dt>

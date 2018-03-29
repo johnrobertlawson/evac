@@ -49,21 +49,19 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">S</span>
 
-<span class="sd">&quot;&quot;&quot;Probabilistic scores, using Buizza 2001, MWR.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
 <div class="viewcode-block" id="ProbScores"><a class="viewcode-back" href="../../../evac.stats.probscores.html#evac.stats.probscores.ProbScores">[docs]</a><span class="k">class</span> <span class="nc">ProbScores</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">og</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pfg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">xa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">xfs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set up probability scores. User must specify</span>
-<span class="sd">        (og and pfg) or (xa and xfs).</span>
+    <span class="sd">&quot;&quot;&quot;Probabilistic scores, using Buizza 2001, MWR.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            self.og         :   (numpy.array) - True/False field (1D)</span>
-<span class="sd">            self.pfg        :   Prob. forecast of event (0.0-1.0)</span>
-<span class="sd">            self.xa         :   observation field (2D)</span>
-<span class="sd">            self.xfs        :   forecast fields (3D)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    Note:</span>
+<span class="sd">        User must specify (og and pfg) or (xa and xfs).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        self.og         :   (numpy.array) - True/False field (1D)</span>
+<span class="sd">        self.pfg        :   Prob. forecast of event (0.0-1.0)</span>
+<span class="sd">        self.xa         :   observation field (2D)</span>
+<span class="sd">        self.xfs        :   forecast fields (3D)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">og</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pfg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">xa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">xfs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">og</span> <span class="o">=</span> <span class="n">og</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pfg</span> <span class="o">=</span> <span class="n">pfg</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xa</span> <span class="o">=</span> <span class="n">xa</span>

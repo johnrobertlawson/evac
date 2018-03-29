@@ -43,7 +43,16 @@
         
         
   <h1>Source code for evac.stoch.fractal_tools</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pdb</span>
+<span></span><span class="sd">&quot;&quot;&quot; A collection of functions that generate fractal arrays,</span>
+<span class="sd">suitable for stochastic perturbations, etc. Used for</span>
+<span class="sd">Lawson et al (in prep) stochastic paper.</span>
+
+<span class="sd">Todo:</span>
+<span class="sd">    * Make more than a collection of shitty scripts.</span>
+<span class="sd">    * Hide procedural stuff with a ``if __name__ == &#39;__main__&#39;`` block.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pdb</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Pool</span>
 
