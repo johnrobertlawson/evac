@@ -42,12 +42,19 @@
           <div class="body" role="main">
             
   <h1>Source code for evac.datafiles.binaryfile</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; Any miscellaneous binary file.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">.datafile</span> <span class="k">import</span> <span class="n">DataFile</span>
+<span></span><span class="kn">from</span> <span class="nn">.datafile</span> <span class="k">import</span> <span class="n">DataFile</span>
 
 <div class="viewcode-block" id="BinaryFile"><a class="viewcode-back" href="../../../evac.datafiles.binaryfile.html#evac.datafiles.binaryfile.BinaryFile">[docs]</a><span class="k">class</span> <span class="nc">BinaryFile</span><span class="p">(</span><span class="n">DataFile</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Superclass for binary files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fpath: Absolute path to binary file. </span>
+
+<span class="sd">        Todo:</span>
+<span class="sd">            * Nothing yet</span>
+<span class="sd">            * Not using MRMS yet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span></div>
 </pre></div>
 
