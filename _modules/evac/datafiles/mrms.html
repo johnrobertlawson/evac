@@ -43,27 +43,31 @@
         
         
   <h1>Source code for evac.datafiles.mrms</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; Multi-radar, multi-sensor data. Converts from their custom</span>
-<span class="sd">binary data format.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">.binaryfile</span> <span class="k">import</span> <span class="n">BinaryFile</span>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">evac.datafiles.binaryfile</span> <span class="k">import</span> <span class="n">BinaryFile</span>
 
 <div class="viewcode-block" id="MRMS"><a class="viewcode-back" href="../../../evac.datafiles.mrms.html#evac.datafiles.mrms.MRMS">[docs]</a><span class="k">class</span> <span class="nc">MRMS</span><span class="p">(</span><span class="n">BinaryFile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Multi-radar, multi-sensor data. Converts from their custom</span>
+<span class="sd">    binary data format.</span>
+<span class="sd">    </span>
+<span class="sd">    Todo:</span>
+<span class="sd">        * A helper function to automatically generate file name</span>
+<span class="sd">            to load needs to be written.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fpath (str, optional): file path to data. If False, other</span>
+<span class="sd">            information must be presented to search for data (below).</span>
+<span class="sd">        rootdir (str, optional): if fpath is False, this is required</span>
+<span class="sd">            to search for data based on product and time</span>
+<span class="sd">        product (str, optional): if fpath is False, this is required</span>
+<span class="sd">            to find correct product. Pick from PRECIPRATE. etc</span>
+<span class="sd">        utc (datetime.datetime, optional): if fpath is False, this</span>
+<span class="sd">            is required to find data file for valid time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">rootdir</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">product</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">utc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A helper function to automatically generate file name</span>
-<span class="sd">        to load needs to be written.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            fpath (str, optional): file path to data. If False, other</span>
-<span class="sd">                information must be presented to search for data (below).</span>
-<span class="sd">            rootdir (str, optional): if fpath is False, this is required</span>
-<span class="sd">                to search for data based on product and time</span>
-<span class="sd">            product (str, optional): if fpath is False, this is required</span>
-<span class="sd">                to find correct product. Pick from PRECIPRATE...</span>
-<span class="sd">            utc (datetime.datetime, optional): if fpath is False, this</span>
-<span class="sd">                is required to find data file for valid time.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">fpath</span><span class="p">:</span>
             <span class="n">fpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_fpath</span><span class="p">(</span><span class="n">rootdir</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">utc</span><span class="p">)</span>
 

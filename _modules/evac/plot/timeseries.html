@@ -43,17 +43,21 @@
         
         
   <h1>Source code for evac.plot.timeseries</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; Create time series of variable(s) for certain period at location.</span>
-
-<span class="sd">Can use .TS files (?)</span>
-<span class="sd">Can use model output.</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">evac.datafiles.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<div class="viewcode-block" id="TimeSeries"><a class="viewcode-back" href="../../../evac.plot.timeseries.html#evac.plot.timeseries.TimeSeries">[docs]</a><span class="k">class</span> <span class="nc">TimeSeries</span><span class="p">:</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">evac.plot.figure</span> <span class="k">import</span> <span class="n">Figure</span>
+<span class="kn">from</span> <span class="nn">evac.datafiles.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
+
+<div class="viewcode-block" id="TimeSeries"><a class="viewcode-back" href="../../../evac.plot.timeseries.html#evac.plot.timeseries.TimeSeries">[docs]</a><span class="k">class</span> <span class="nc">TimeSeries</span><span class="p">(</span><span class="n">Figure</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create time series of variable(s) for certain period at location.</span>
+
+<span class="sd">    Can use .TS files (?)</span>
+<span class="sd">    Can use model output.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ensemble</span><span class="p">,</span><span class="n">latlon</span><span class="p">,</span><span class="n">locname</span><span class="p">):</span>
         <span class="c1"># This is a list of instances</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ensemble</span> <span class="o">=</span> <span class="n">ensemble</span>

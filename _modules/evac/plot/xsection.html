@@ -43,33 +43,35 @@
         
         
   <h1>Source code for evac.plot.xsection</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Create cross-sections through WRF data.</span>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
-<span class="sd">This can be time-height or distance-height.</span>
-<span class="sd">The height can be pressure, model, geometric, or geopotential</span>
-
-<span class="sd">The output can be saved to a pickle file.</span>
-<span class="sd">This can be useful for creating composites</span>
-
-<span class="sd">Input lat/lon can be either specified or from x,y co-ords</span>
-<span class="sd">calculated from manually clicking on a map with overlaid</span>
-<span class="sd">data (reflectivity, etc).</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="c1"># Imports</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 <span class="kn">from</span> <span class="nn">.figure</span> <span class="k">import</span> <span class="n">Figure</span>
-<span class="kn">import</span> <span class="nn">pdb</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="kn">import</span> <span class="nn">WEM.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">from</span> <span class="nn">WEM.utils</span> <span class="k">import</span> <span class="n">metconstants</span> <span class="k">as</span> <span class="n">mc</span>
-<span class="kn">from</span> <span class="nn">.scales</span> <span class="k">import</span> <span class="n">Scales</span>
-<span class="kn">from</span> <span class="nn">.birdseye</span> <span class="k">import</span> <span class="n">BirdsEye</span>
+<span class="c1"># import WEM.utils as utils</span>
+<span class="c1"># from WEM.utils import metconstants as mc</span>
+<span class="kn">from</span> <span class="nn">evac.plot.scales</span> <span class="k">import</span> <span class="n">Scales</span>
+<span class="kn">from</span> <span class="nn">evac.plot.birdseye</span> <span class="k">import</span> <span class="n">BirdsEye</span>
 <span class="c1"># from defaults import Defaults</span>
 
 <div class="viewcode-block" id="CrossSection"><a class="viewcode-back" href="../../../evac.plot.xsection.html#evac.plot.xsection.CrossSection">[docs]</a><span class="k">class</span> <span class="nc">CrossSection</span><span class="p">(</span><span class="n">Figure</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create cross-sections through WRF data.</span>
 
+<span class="sd">    This can be time-height or distance-height.</span>
+<span class="sd">    The height can be pressure, model, geometric, or geopotential</span>
+
+<span class="sd">    The output can be saved to a pickle file.</span>
+<span class="sd">    This can be useful for creating composites</span>
+
+<span class="sd">    Input lat/lon can be either specified or from x,y co-ords</span>
+<span class="sd">    calculated from manually clicking on a map with overlaid</span>
+<span class="sd">    data (reflectivity, etc).</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        * Make sure the refactoring from WEM is complete.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wrfout</span><span class="p">,</span><span class="n">latA</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">lonA</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">latB</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">lonB</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CrossSection</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">wrfout</span><span class="p">)</span>
 

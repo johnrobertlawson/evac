@@ -43,12 +43,16 @@
         
         
   <h1>Source code for evac.utils.defaults</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; Default settings that are used when the user does not specify their own.</span>
+<div class="viewcode-block" id="Defaults"><a class="viewcode-back" href="../../../evac.utils.defaults.html#evac.utils.defaults.Defaults">[docs]</a><span></span><span class="k">class</span> <span class="nc">Defaults</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Default settings that are used when the user does not specify their own.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Todo:</span>
+<span class="sd">        * Decide if `evac` will use a &quot;namelist&quot; style system...</span>
+<span class="sd">        * numpy.set_precision() </span>
 
-<div class="viewcode-block" id="Defaults"><a class="viewcode-back" href="../../../evac.utils.defaults.html#evac.utils.defaults.Defaults">[docs]</a><span class="k">class</span> <span class="nc">Defaults</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">font_prop</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;family&#39;</span><span class="p">:</span><span class="s1">&#39;sans-serif&#39;</span><span class="p">,</span><span class="s1">&#39;sans-serif&#39;</span><span class="p">:[</span><span class="s1">&#39;Liberation Sans&#39;</span><span class="p">],</span>
                           <span class="s1">&#39;weight&#39;</span><span class="p">:</span><span class="s1">&#39;normal&#39;</span><span class="p">,</span><span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="mi">14</span><span class="p">}</span>

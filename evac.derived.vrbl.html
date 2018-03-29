@@ -48,8 +48,41 @@
       <div class="content">
         
         
-  <div class="section" id="evac-derived-vrbl-module">
-<h1>evac.derived.vrbl module<a class="headerlink" href="#evac-derived-vrbl-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-evac.derived.vrbl">
+<span id="evac-derived-vrbl-module"></span><h1>evac.derived.vrbl module<a class="headerlink" href="#module-evac.derived.vrbl" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="evac.derived.vrbl.Vrbl">
+<em class="property">class </em><code class="descclassname">evac.derived.vrbl.</code><code class="descname">Vrbl</code><a class="reference internal" href="_modules/evac/derived/vrbl.html#Vrbl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.vrbl.Vrbl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></p>
+<p>Subclass of numpy ndarray that holds a 4D array for a variable.</p>
+<p>The dimensions (time, level, lats, lons), similarly to WRF output.</p>
+<p>The subclassing allows attachment of methods that compute derived fields
+(e.g. vorticity) and inspection of metadata (dimension names etc.).</p>
+<p class="rubric">Example</p>
+<p>The standard <cite>numpy</cite> call:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="s1">&#39;wrfout.nc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:,:]</span>
+</pre></div>
+</div>
+<p>gives you a normal numpy array. To get a Vrbl() subclass, go via
+a <cite>datafiles</cite> module, for instance:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="n">WRFOut</span><span class="p">(</span><span class="s1">&#39;wrfout.nc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">lv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This, when completed, will give a Vrbl array with attributes such as
+dimensions.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>All the things.</li>
+</ul>
+</div>
+<dl class="method">
+<dt id="evac.derived.vrbl.Vrbl.holder">
+<code class="descname">holder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/derived/vrbl.html#Vrbl.holder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.derived.vrbl.Vrbl.holder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 
 

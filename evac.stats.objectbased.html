@@ -48,8 +48,104 @@
       <div class="content">
         
         
-  <div class="section" id="evac-stats-objectbased-module">
-<h1>evac.stats.objectbased module<a class="headerlink" href="#evac-stats-objectbased-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-evac.stats.objectbased">
+<span id="evac-stats-objectbased-module"></span><h1>evac.stats.objectbased module<a class="headerlink" href="#module-evac.stats.objectbased" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="evac.stats.objectbased.ObjectBased">
+<em class="property">class </em><code class="descclassname">evac.stats.objectbased.</code><code class="descname">ObjectBased</code><span class="sig-paren">(</span><em>Wctrl_fpath</em>, <em>Wmod_fpath</em>, <em>vrbl=False</em>, <em>utc=False</em>, <em>lv=False</em>, <em>accum_hr=False</em>, <em>radar_datadir=False</em>, <em>thresh=False</em>, <em>footprint=500</em>, <em>ctrl_fmt='obs'</em>, <em>mod_fmt='WRF'</em>, <em>dx=False</em>, <em>dy=False</em>, <em>f=0.06666666666666667</em>, <em>datafmt=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Object-based verification superclass.</p>
+<dl class="docutils">
+<dt>Todos:</dt>
+<dd><ul class="first last simple">
+<li>Refactor and link with <code class="xref any docutils literal"><span class="pre">~evac.stats.sal</span></code>.</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.active_px">
+<code class="descname">active_px</code><span class="sig-paren">(</span><em>data='ctrl'</em>, <em>fmt='pc'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.active_px"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.active_px" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of pixels included in chosen dataset&#8217;s objects.
+data is set to &#8216;ctrl&#8217; or &#8216;mod&#8217;.
+Expressed as percentage.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_L1">
+<code class="descname">compute_L1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_L1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_L1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_L2">
+<code class="descname">compute_L2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_L2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_L2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_V">
+<code class="descname">compute_V</code><span class="sig-paren">(</span><em>dic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_V"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_V" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_amplitude">
+<code class="descname">compute_amplitude</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_d">
+<code class="descname">compute_d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_d" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_location">
+<code class="descname">compute_location</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_location" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_r">
+<code class="descname">compute_r</code><span class="sig-paren">(</span><em>dic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_r" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.compute_structure">
+<code class="descname">compute_structure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.compute_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.compute_structure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.get_radar_verif">
+<code class="descname">get_radar_verif</code><span class="sig-paren">(</span><em>utc</em>, <em>datapath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.get_radar_verif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.get_radar_verif" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.identify_objects">
+<code class="descname">identify_objects</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.identify_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.identify_objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.object_operators">
+<code class="descname">object_operators</code><span class="sig-paren">(</span><em>dic</em>, <em>typ=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.object_operators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.object_operators" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.objectbased.ObjectBased.vector_diff_km">
+<code class="descname">vector_diff_km</code><span class="sig-paren">(</span><em>v1</em>, <em>v2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/objectbased.html#ObjectBased.vector_diff_km"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.vector_diff_km" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="evac.stats.objectbased.ObjectBased.vrbl">
+<code class="descname">vrbl</code><em class="property"> = None</em><a class="headerlink" href="#evac.stats.objectbased.ObjectBased.vrbl" title="Permalink to this definition">¶</a></dt>
+<dd><p>fig, ax = plt.subplots(1)
+ax.pcolor(self.C[&#8216;data&#8217;])
+fig.savefig(&#8216;/home/jrlawson/public_html/bowecho/SALtests/obs_pcolor.png&#8217;)
+plt.close(fig)
+fig, ax = plt.subplots(1)
+ax.pcolor(self.M[&#8216;data&#8217;])
+fig.savefig(&#8216;/home/jrlawson/public_html/bowecho/SALtests/mod_pcolor.png&#8217;)
+plt.close(fig)
+import pdb; pdb.set_trace()</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
