@@ -64,9 +64,12 @@ within a single member&#8217;s folder.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<p>To load a 5-D array of 10-m wind at the second time:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">evac.datafiles.ensemble</span> <span class="k">import</span> <span class="n">Ensemble</span>
-<span class="n">E</span> <span class="o">=</span> <span class="n">Ensemble</span><span class="p">()</span>
+<p>To load a 5-D array of 10-m wind at the second time (and using defaults):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">evac.datafiles.ensemble</span> <span class="k">import</span> <span class="n">Ensemble</span>
+
+<span class="n">initutc</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">18</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">Ensemble</span><span class="p">(</span><span class="n">rootdir</span><span class="o">=</span><span class="s1">&#39;/path/to/data&#39;</span><span class="p">,</span><span class="n">initutc</span><span class="o">=</span><span class="n">initutc</span><span class="p">)</span>
 <span class="n">E</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wind10&#39;</span><span class="p">,</span><span class="n">utc</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -76,7 +79,7 @@ within a single member&#8217;s folder.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>rootdir</strong> (<em>str</em>) &#8211; Directory at root of datafiles</li>
-<li><strong>initutc</strong> (<em>datetime.datetime</em>) &#8211; Initialization time</li>
+<li><strong>initutc</strong> (<em>datetime.datetime</em>) &#8211; Initialization time (assumed UTC)</li>
 <li><strong>doms</strong> (<em>int</em><em>, </em><em>optional</em>) &#8211; Number of domains</li>
 <li><strong>ctrl</strong> (<em>bool</em><em>, </em><em>optional</em>) &#8211; Whether ensemble has control member</li>
 <li><strong>aux</strong> (<em>bool</em><em>, </em><em>dict</em><em>, </em><em>optional</em>) &#8211; Dictionary lists, per domain, data

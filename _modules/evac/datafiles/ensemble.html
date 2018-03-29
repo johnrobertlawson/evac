@@ -71,15 +71,18 @@
 <span class="sd">        * Consistency with method names (e.g., get() )</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        To load a 5-D array of 10-m wind at the second time::</span>
+<span class="sd">        To load a 5-D array of 10-m wind at the second time (and using defaults)::</span>
 <span class="sd">            </span>
+<span class="sd">            import datetime</span>
 <span class="sd">            from evac.datafiles.ensemble import Ensemble</span>
-<span class="sd">            E = Ensemble()</span>
+
+<span class="sd">            initutc = datetime.datetime(2016,3,31,18,0,0)</span>
+<span class="sd">            E = Ensemble(rootdir=&#39;/path/to/data&#39;,initutc=initutc)</span>
 <span class="sd">            E.get(&#39;wind10&#39;,utc=1)</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        rootdir (str):  Directory at root of datafiles</span>
-<span class="sd">        initutc (datetime.datetime): Initialization time</span>
+<span class="sd">        initutc (datetime.datetime): Initialization time (assumed UTC)</span>
 <span class="sd">        doms (int, optional): Number of domains</span>
 <span class="sd">        ctrl (bool, optional): Whether ensemble has control member</span>
 <span class="sd">        aux (bool, dict, optional): Dictionary lists, per domain, data</span>

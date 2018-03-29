@@ -42,16 +42,26 @@
           <div class="body" role="main">
             
   <h1>Source code for evac.datafiles.gefs</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">.gribfile</span> <span class="k">import</span> <span class="n">GribFile</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+
+<span class="kn">from</span> <span class="nn">evac.datafiles.gribfile</span> <span class="k">import</span> <span class="n">GribFile</span>
 
 <div class="viewcode-block" id="GEFS"><a class="viewcode-back" href="../../../evac.datafiles.gefs.html#evac.datafiles.gefs.GEFS">[docs]</a><span class="k">class</span> <span class="nc">GEFS</span><span class="p">(</span><span class="n">GribFile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Class to hold GEFS data (grib format).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fpath: Absolute path to GEFS file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fpath</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialise GEFS object, a child of GribFile,</span>
 <span class="sd">        grandchild of DataFile.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GEFS.lookup_vrbl"><a class="viewcode-back" href="../../../evac.datafiles.gefs.html#evac.datafiles.gefs.GEFS.lookup_vrbl">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_vrbl</span><span class="p">(</span><span class="n">self1</span><span class="p">,</span><span class="n">vrbl</span><span class="p">):</span>
+<div class="viewcode-block" id="GEFS.lookup_vrbl"><a class="viewcode-back" href="../../../evac.datafiles.gefs.html#evac.datafiles.gefs.GEFS.lookup_vrbl">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_vrbl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Table to find GEFS variable key from WRF-style codes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">LOOKUP</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1">#LOOKUP[&#39;accum_precip&#39;] = {&#39;key&#39;:&#39;&#39;,&#39;idx&#39;:0}</span>
         <span class="n">LOOKUP</span><span class="p">[</span><span class="s1">&#39;Td2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span><span class="s1">&#39;2 metre dewpoint temperature&#39;</span><span class="p">,</span><span class="s1">&#39;idx&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
