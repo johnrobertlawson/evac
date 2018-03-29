@@ -1383,7 +1383,7 @@ def pretty_fhr(fhr,in_fmt='hours',out_fmt=1):
 
     Todo:
         * Merge with :class:`~evac.utils.timetool`?
-        
+
     Args:
         fhr: offset from initialisation time (units given by in_fmt).
         in_fmt (str): 'hours', 'minutes', or 'seconds'
@@ -1397,5 +1397,5 @@ def pretty_fhr(fhr,in_fmt='hours',out_fmt=1):
 
     if out_fmt == 1:
         h,m = divmod(fhr,60)
-        outstr = '{:d}h_{:02d}min'.format(h,m)
+        outstr = '{:d}h_{:02d}min'.format(int(h),int(m))
     return outstr
