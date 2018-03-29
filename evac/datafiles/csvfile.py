@@ -1,8 +1,10 @@
-""" Comma separated value data type.
-"""
-
-from .datafile import DataFile
+from evac.datafiles.datafile import DataFile
 
 class CSVFile(DataFile):
-    def __init__(self,):
+    """ Comma separated value data type.
+
+    Args:
+        fpath: Absolute file path to the CSV file.
+    """
+    def __init__(self,fpath):
         super().__init__(fpath)

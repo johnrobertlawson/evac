@@ -13,13 +13,3 @@ class BinaryFile(DataFile):
     def __init__(self,fpath):
         super().__init__(fpath)
 
-    def example(self,ex):
-        """ Why is this not working?
-
-        Args:
-            ex: example variables
-
-        Returns:
-            None.
-        """
-        pass
