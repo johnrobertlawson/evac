@@ -1,7 +1,7 @@
 import pdb
 import os
 
-from evac.datafiels.binaryfile import BinaryFile
+from evac.datafiles.binaryfile import BinaryFile
 
 class MRMS(BinaryFile):
     """Multi-radar, multi-sensor data. Converts from their custom

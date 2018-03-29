@@ -29,34 +29,34 @@ class Vrbl(N.ndarray):
 
     """
 
-        #def __new__(cls,*args,**kwargs):
-        def __new__(cls,arr):
-            #return N.ndarray.__new__(cls,*args,**kwargs)
-            obj = N.asarray(arr).view(cls)
+    #def __new__(cls,*args,**kwargs):
+    def __new__(cls,arr):
+        #return N.ndarray.__new__(cls,*args,**kwargs)
+        obj = N.asarray(arr).view(cls)
 
-            # This is where we'd add attributes to our subclass instance
-            # obj.attr = kwarg1
+        # This is where we'd add attributes to our subclass instance
+        # obj.attr = kwarg1
 
-            return obj
+        return obj
 
-        def __array_finalize__(self,obj):
-            """ This is always called (by superclass).
+    def __array_finalize__(self,obj):
+        """ This is always called (by superclass).
 
-            1. If constructed explicitly, obj type is None
-            2. If constructed via casting (e.g., N.view), obj type is N.ndarray
-            3. If constructed via slicing, obj type is the class Vrbl.
+        1. If constructed explicitly, obj type is None
+        2. If constructed via casting (e.g., N.view), obj type is N.ndarray
+        3. If constructed via slicing, obj type is the class Vrbl.
 
-            In case #2, we return a superclass (subject to change...)
+        In case #2, we return a superclass (subject to change...)
 
-            """
-            if obj is None:
-                return
+        """
+        if obj is None:
+            return
 
-            # Add attributes from __new__ call
-            # self.attr = getattr(obj,'attr',None)
+        # Add attributes from __new__ call
+        # self.attr = getattr(obj,'attr',None)
 
-            # All attributes go here.
-            # self.dims = self.get_dims()
+        # All attributes go here.
+        # self.dims = self.get_dims()
 
-        def holder(self):
-            pass
+    def holder(self):
+        pass

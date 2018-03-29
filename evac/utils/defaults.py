@@ -7,7 +7,7 @@ class Defaults:
         * numpy.set_precision() 
 
     """
-     def __init__(self,):
+    def __init__(self,):
         self.domain = 1
         self.font_prop = {'family':'sans-serif','sans-serif':['Liberation Sans'],
                           'weight':'normal','size':14}
