@@ -12,3 +12,14 @@ class BinaryFile(DataFile):
             * Not using MRMS yet
         """
         super().__init__(fpath)
+
+    def example(self,ex):
+        """ Why is this not working?
+
+        Args:
+            ex: example variables
+
+        Returns:
+            None.
+        """
+        pass
