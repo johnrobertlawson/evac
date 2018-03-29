@@ -23,7 +23,8 @@ import matplotlib as M
 import numpy as N
 from netCDF4 import Dataset
 
-import evac.utils.unix_tools as unix_tools
+from . import unix_tools as unix_tools
+# import evac.utils.unix_tools as unix_tools
 
 def decompose_wind(wspd,wdir,wdir_fmt='deg'):
     """Turn a wind speed and direction into u and v components.

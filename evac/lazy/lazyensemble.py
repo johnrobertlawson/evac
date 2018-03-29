@@ -8,6 +8,7 @@ import time
 import numpy as N
 
 import evac.utils as utils
+from evac.utils.timetool import TimeTool
 from evac.utils.exceptions import WRFError, PrettyException
 
 class LazyEnsemble:
@@ -125,6 +126,7 @@ class LazyEnsemble:
             self.runsec = (self.endutc - initutc).seconds
             assert self.runsec > 0
 
+        pdb.set_trace()
         # PATH OBJECTS - see pathlib documentation
         self.exedir = PosixPath(path_to_exedir)
         self.datadir = PosixPath(path_to_datadir)
@@ -357,6 +359,9 @@ class LazyEnsemble:
         """
         nlpath = self.members[member]['rundir'] / 'namelist.input'
 
+        TT = TimeTool(seconds=self.runsec) 
+        run_days, run_hours, run_minutes, run_seconds = TT.reduce()
+
         changes = dict(start_year=self.initutc.year,
                         start_month=self.initutc.month,
                         start_day=self.initutc.day,
@@ -371,10 +376,10 @@ class LazyEnsemble:
                         end_minute=self.endutc.minute,
                         end_second=self.endutc.second,
 
-                        run_days = 0,
-                        run_hours = 0,
-                        run_minutes = 0,
-                        run_seconds = self.runsec,
+                        run_days = run_days,
+                        run_hours = run_hours,
+                        run_minutes = run_minutes,
+                        run_seconds = run_seconds,
 
                         # We'll assume the output directory is just default
                         # history_outname would change where the wrfout goes
@@ -488,8 +493,9 @@ class LazyEnsemble:
                             return_newlist=True)
 
         if merge_lbcs:
-            utils.merge_netcdfs(rundir/'wrfbdy_d01',
-                            filelist=newlbc_list)
+            wrfbdy_fpath = rundir/'wrfbdy_d01'
+            wrfbdy_fpath.unlink() # Delete!
+            utils.merge_netcdfs(wrfbdy_fpath,filelist=newlbc_list)
 
         # Rename files in the rundir that match a glob
         # There must only be one match, obviously.
