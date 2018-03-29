@@ -1,10 +1,19 @@
-""" Local storm reports from SPC site.
-"""
+import pdb
 
-from .csvfile import CSVFile
+from evac.datafiles.csvfile import CSVFile
 
 class SPCLSR(CSVFile):
-    def __init__(self,utc,datadir,wind=True,hail=True,torn=True):
+    """ Local storm reports from SPC site.
+
+    Todo:
+        * Work out the timing convention? Do we even need a `utc` argument?
+
+    Args:
+        utc (datetime.datetime): Time, but how does this work?!
+        datapath: Absolute path to data CSV file.
+        wind,hail,torn (bool): If `True`, use these data.
+    """
+    def __init__(self,utc,datapath,wind=True,hail=True,torn=True):
         self.utc = utc
         tt = utils.ensure_timetuple(utc)
         yr = str(tt[0])[-2:]
@@ -24,12 +33,12 @@ class SPCLSR(CSVFile):
             fname = '{0}{1}{2}_rpts_{3}.csv'.format(
                         yr,mth,day,threat)
             # Check to see if file exists
-            fpath = os.path.join(datadir,fname)
+            fpath = os.path.join(datapath,fname)
             scan = glob.glob(fpath)
             if len(scan) == 0:
                 url = 'http://www.spc.noaa.gov/climo/reports/'
                 cmd = 'wget {0}{1} -P {2}'.format(
-                                url,fname,datadir)
+                                url,fname,datapath)
                 os.system(cmd)
 
             if threat=='wind':

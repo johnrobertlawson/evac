@@ -1,9 +1,3 @@
-"""
-RUC/RAP data will probably need to be cut down to fit the WRF domain
-it is compared to.
-
-This script should inherit WRFOut and override the 'get' command.
-"""
 
 import os
 import matplotlib as M
@@ -30,13 +24,15 @@ from evac.datafiles.wrfout import WRFOut
 debug_get = 0
 
 class RUC(WRFOut):
-    def __init__(self,fpath,wrfdir=False):
-        """
-        Args:
-            config  :   configuration settings
-            t       :   time, datenum format
-            wrfdir  :   if picked, domain is cut down
-        """
+    """ Subclass of :class:`~evac.datafiles.wrfout.WRFOut` for RUC/RAP data.
+
+    Todo:
+        * RUC/RAP data can be cut down to fit a given WRF domain?
+
+    Args:
+        fpath: Absolute path to RAP/RUC data file.
+    """
+    def __init__(self,fpath):
         self.fpath = fpath
         # import pdb; pdb.set_trace()
         self.nc = Dataset(self.fpath)
@@ -80,26 +76,30 @@ class RUC(WRFOut):
         self.z_dim = len(self.nc.dimensions[z])
         del x,y,z
 
-        if wrfdir:
-            # It means all data should be cut to this size
-            self.limits = self.colocate_WRF_map(wrfdir)
-            self.lats2D = self.cut_2D_array(self.lats)
-            self.lons2D = self.cut_2D_array(self.lons)
-            self.lats, self.lons = self.cut_lat_lon()
-            self.y_dim = len(self.lats)
-            self.x_dim = len(self.lons)
-            #self.lats1D = self.lats[:,self.lats.shape[1]/2]
-            self.lats1D = self.lats
-            #self.lons1D = self.lons[self.lons.shape[0]/2,:]
-            self.lons1D = self.lons
-        else:
-            # Leave the dimensions the way they were
-            self.y_dim = self.lats.shape[0]
-            self.x_dim = self.lats.shape[1]
-
-        # import pdb; pdb.set_trace()
+        self.y_dim = self.lats.shape[0]
+        self.x_dim = self.lats.shape[1]
+        
         print(('RUC file loaded from {0}'.format(self.fpath)))
-        # import pdb; pdb.set_trace()
+        return
+
+    def cut_to_wrf(self,wrfpath):
+        """ Cut down domain to match a WRF file.
+
+        Args:
+            wrfpath: Absolute path to WRF file.
+        """
+        # It means all data should be cut to this size
+        self.limits = self.colocate_WRF_map(wrfpath)
+        self.lats2D = self.cut_2D_array(self.lats)
+        self.lons2D = self.cut_2D_array(self.lons)
+        self.lats, self.lons = self.cut_lat_lon()
+        self.y_dim = len(self.lats)
+        self.x_dim = len(self.lons)
+        #self.lats1D = self.lats[:,self.lats.shape[1]/2]
+        self.lats1D = self.lats
+        #self.lons1D = self.lons[self.lons.shape[0]/2,:]
+        self.lons1D = self.lons
+        return
 
     def get_utc_time(self,rawtime,fmt='datenum'):
         utc = time.strptime(rawtime,'%m/%d/%Y (%H:%M)')
