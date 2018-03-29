@@ -1,31 +1,29 @@
-""" This file contains colorbar scales for plotting.
-
-INPUTS
-
-va      :   variable to be plotted
-lv      :   level to be plotted
-
-OUTPUTS
-
-cm      :   colour map
-clvs    :   contour levels
-
-Level = 2000 indicates surface.
-
-Default settings are listed at the bottom.
-These can be overwritten in user's config file... somehow
-"""
 import pdb
+
 import matplotlib as M
 from matplotlib.colors import LinearSegmentedColormap
 import numpy as N
 import matplotlib.pyplot as plt
 
-from . import colourtables as ct
+import evac.plot.colourtables as ct
 import evac.utils as utils
 import evac.utils.evac_types as evac_types
 
 class Scales:
+    """ A class with `colorbar` scales for plotting.
+    Level = 2000 indicates surface.
+    Default settings are listed at the bottom.
+    These can be overwritten in user's config file... somehow
+
+    Args:
+        va      :   variable to be plotted
+        lv      :   level to be plotted
+
+    Attributes:
+        cm      :   colour map
+        clvs    :   contour levels
+
+    """
     def __init__(self,vrbl,lv=None,clvs=None):
         self.lv = lv
         self.A = self.get_dict_of_levels()

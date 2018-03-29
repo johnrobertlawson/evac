@@ -15,11 +15,12 @@ class Performance(Figure):
 
     If passing in stats, they should be:
 
-    POD     =   A/A+C
-    FAR     =   B/A+B
-    BIAS    =   (A+B)/(A+C)
-    CSI     =   A/(A+B+C)
-    SR      =   1- FAR
+    .. math::
+        POD     =   A/A+C
+        FAR     =   B/A+B
+        BIAS    =   (A+B)/(A+C)
+        CSI     =   A/(A+B+C)
+        SR      =   1- FAR
 
     Example:
         To maintain flexibility, the user should do the following
