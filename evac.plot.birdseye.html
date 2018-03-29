@@ -50,15 +50,48 @@
         
   <div class="section" id="module-evac.plot.birdseye">
 <span id="evac-plot-birdseye-module"></span><h1>evac.plot.birdseye module<a class="headerlink" href="#module-evac.plot.birdseye" title="Permalink to this headline">¶</a></h1>
-<p>Top-down 2D plots, which are so common in meteorology
-that they get their own file here.</p>
-<p>Subclass of Figure.</p>
-<p>TODO: multiple plots on same figure - like a &#8216;hold&#8217; - maybe by
-using set and get decorators. Or stopping save/close.</p>
 <dl class="class">
 <dt id="evac.plot.birdseye.BirdsEye">
 <em class="property">class </em><code class="descclassname">evac.plot.birdseye.</code><code class="descname">BirdsEye</code><span class="sig-paren">(</span><em>ax=None</em>, <em>fig=None</em>, <em>ideal=False</em>, <em>proj=None</em>, <em>mplargs=[]</em>, <em>mplkwargs={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/birdseye.html#BirdsEye"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.birdseye.BirdsEye" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="evac.plot.figure.html#evac.plot.figure.Figure" title="evac.plot.figure.Figure"><code class="xref py py-class docutils literal"><span class="pre">evac.plot.figure.Figure</span></code></a></p>
+<p>Top-down 2D plots.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li><dl class="first docutils">
+<dt>multiple plots on same figure - like a &#8216;hold&#8217; - maybe by</dt>
+<dd>using set and get decorators. Or stopping save/close.</dd>
+</dl>
+</li>
+<li>Massive rewrite with cartopy, now basemap is depreciated.</li>
+</ul>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong><strong>,</strong><strong>fig</strong> (<em>optional</em>) &#8211; If None (default), then a new figure/axis object
+will be created in the instance (via parent class
+<a class="reference internal" href="evac.plot.figure.html#evac.plot.figure.Figure" title="evac.plot.figure.Figure"><code class="xref py py-class docutils literal"><span class="pre">Figure</span></code></a>.</li>
+<li><strong>ideal</strong> (<em>bool</em>) &#8211; If True, options for an idealised plot will be used.
+For example, no lat/lon.</li>
+<li><strong>proj</strong> (<em>str</em><em>,</em><em>bool</em>) &#8211; If <cite>str</cite>, such as <cite>&#8216;merc&#8217;</cite>, this will set the
+instance&#8217;s plotting projection.</li>
+<li><strong>mplkwargs</strong> (<em>mplargs</em><em>,</em><em></em>) &#8211; Arguments to pass to matplotlib.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><dl class="docutils">
+<dt>A figure is generated (if no fig/ax is specified), or plotting (onto an</dt>
+<dd><p class="first last">existing figure).</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="evac.plot.birdseye.BirdsEye.do_contour_plot">
 <code class="descname">do_contour_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/birdseye.html#BirdsEye.do_contour_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.birdseye.BirdsEye.do_contour_plot" title="Permalink to this definition">¶</a></dt>

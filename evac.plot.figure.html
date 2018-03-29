@@ -50,11 +50,39 @@
         
   <div class="section" id="module-evac.plot.figure">
 <span id="evac-plot-figure-module"></span><h1>evac.plot.figure module<a class="headerlink" href="#module-evac.plot.figure" title="Permalink to this headline">¶</a></h1>
-<p>All figures are subclasses of Figure.</p>
 <dl class="class">
 <dt id="evac.plot.figure.Figure">
 <em class="property">class </em><code class="descclassname">evac.plot.figure.</code><code class="descname">Figure</code><span class="sig-paren">(</span><em>ax=None</em>, <em>fig=None</em>, <em>layout='normal'</em>, <em>mplargs=[]</em>, <em>mplkwargs={}</em>, <em>use_defaults=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Parent class for creating a figure in matplotlib.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li><dl class="first docutils">
+<dt>Rewrite (along with other plotting scripts) for cartopy, due to</dt>
+<dd>the depreciation of basemap.</dd>
+</dl>
+</li>
+</ul>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ax</strong> &#8211; matplotlib.axes instance to plot to</li>
+<li><strong>fig</strong> &#8211; matplotlib.figure instance to plot to</li>
+<li><strong>layout</strong> (<em>str</em>) &#8211; if &#8220;insetv&#8221; or &#8220;inseth&#8221;, uses GridSpec to create subplots
+of different sizes.</li>
+<li><strong>mplargs</strong> (<em>tuple</em><em>,</em><em>list</em>) &#8211; other arguments to pass to matplotlib figure creation</li>
+<li><strong>mplkwargs</strong> (<em>dict</em>) &#8211; other keyword arguments to pass to matplotlib</li>
+<li><strong>use_defaults</strong> (<em>bool</em>) &#8211; whether to load Defaults class. Set to be False
+if e.g. using your own matplotlibrc.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="evac.plot.figure.Figure.basemap_from_newgrid">
 <code class="descname">basemap_from_newgrid</code><span class="sig-paren">(</span><em>Nlim=None</em>, <em>Elim=None</em>, <em>Slim=None</em>, <em>Wlim=None</em>, <em>proj=None</em>, <em>lat_ts=None</em>, <em>resolution='i'</em>, <em>nx=None</em>, <em>ny=None</em>, <em>tlat1=30.0</em>, <em>tlat2=60.0</em>, <em>cen_lat=None</em>, <em>cen_lon=None</em>, <em>lllon=None</em>, <em>lllat=None</em>, <em>urlat=None</em>, <em>urlon=None</em>, <em>drawcounties=False</em>, <em>xx=None</em>, <em>yy=None</em>, <em>lats=None</em>, <em>lons=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/figure.html#Figure.basemap_from_newgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.figure.Figure.basemap_from_newgrid" title="Permalink to this definition">¶</a></dt>

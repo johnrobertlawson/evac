@@ -54,34 +54,35 @@
 <span class="kn">from</span> <span class="nn">evac.plot.figure</span> <span class="k">import</span> <span class="n">Figure</span>
 
 <div class="viewcode-block" id="Performance"><a class="viewcode-back" href="../../../evac.plot.performance.html#evac.plot.performance.Performance">[docs]</a><span class="k">class</span> <span class="nc">Performance</span><span class="p">(</span><span class="n">Figure</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">outpath</span><span class="p">,</span><span class="n">fname</span><span class="p">,</span><span class="n">legendkwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Performance diagram, from Roebber 2009 WAF.</span>
+    <span class="sd">&quot;&quot;&quot; Performance diagram, from Roebber 2009 WAF.</span>
 
-<span class="sd">        Some checking with WFRT&#39;s verif package (Github)</span>
+<span class="sd">    Some checking with WFRT&#39;s verif package (Github)?</span>
 
+<span class="sd">    If passing in stats, they should be:</span>
+
+<span class="sd">    POD     =   A/A+C</span>
+<span class="sd">    FAR     =   B/A+B</span>
+<span class="sd">    BIAS    =   (A+B)/(A+C)</span>
+<span class="sd">    CSI     =   A/(A+B+C)</span>
+<span class="sd">    SR      =   1- FAR</span>
+
+<span class="sd">    Example:</span>
 <span class="sd">        To maintain flexibility, the user should do the following</span>
-<span class="sd">        outside the class once initialised:</span>
+<span class="sd">        outside the class once initialised::</span>
 
-<span class="sd">        Performance.plot_data(...) # As many times as needed</span>
-<span class="sd">        Performance.save() # When finished</span>
-
-<span class="sd">        If passing in stats, they should be:</span>
-
-<span class="sd">        POD     =   A/A+C</span>
-<span class="sd">        FAR     =   B/A+B</span>
-<span class="sd">        BIAS    =   (A+B)/(A+C)</span>
-<span class="sd">        CSI     =   A/(A+B+C)</span>
-<span class="sd">        SR      =   1- FAR</span>
-<span class="sd">               </span>
-<span class="sd">        Some plotting settings, like bias contours, can be accessed:</span>
+<span class="sd">            Performance.plot_data(...) # As many times as needed</span>
+<span class="sd">            Performance.save() # When finished</span>
+<span class="sd">           </span>
+<span class="sd">    Some plotting settings, like bias contours, can be accessed::</span>
 
 <span class="sd">        Performance.contours[&#39;bias&#39;] = [0.5,1,1.5]</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            outpath     :   directory for saving figure</span>
-<span class="sd">            fname       :   file name</span>
-<span class="sd">            legendkwargs:   key-words for ax.legend().</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    Args:</span>
+<span class="sd">        outpath     :   directory for saving figure</span>
+<span class="sd">        fname       :   file name</span>
+<span class="sd">        legendkwargs:   key-words for ax.legend().</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">outpath</span><span class="p">,</span><span class="n">fname</span><span class="p">,</span><span class="n">legendkwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">outpath</span> <span class="o">=</span> <span class="n">outpath</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span>
         <span class="c1">#self.ncol = ncol</span>

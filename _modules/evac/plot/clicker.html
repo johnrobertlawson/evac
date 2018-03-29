@@ -43,21 +43,25 @@
         
         
   <h1>Source code for evac.plot.clicker</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">M</span>
-<span class="n">M</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;gtkagg&#39;</span><span class="p">)</span>
-
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
-<span class="kn">import</span> <span class="nn">collections</span>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">pdb</span>
 
-<span class="c1"># from figure import Figure</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">M</span>
+<span class="n">M</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;gtkagg&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+
 <span class="kn">import</span> <span class="nn">evac.plot.colourtables</span> <span class="k">as</span> <span class="nn">ct</span>
 <span class="kn">from</span> <span class="nn">evac.plot.scales</span> <span class="k">import</span> <span class="n">Scales</span>
 <span class="kn">from</span> <span class="nn">evac.plot.figure</span> <span class="k">import</span> <span class="n">Figure</span>
 <span class="kn">from</span> <span class="nn">evac.utils.defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
 
 <div class="viewcode-block" id="Clicker"><a class="viewcode-back" href="../../../evac.plot.clicker.html#evac.plot.clicker.Clicker">[docs]</a><span class="k">class</span> <span class="nc">Clicker</span><span class="p">(</span><span class="n">Figure</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Generate a clickable GUI interface.</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        * This needs updating as the script hasn&#39;t been used for a long time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># def __init__(self,config,wrfout,ax=0):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wrfout</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fig</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">clvs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="c1"># import pdb; pdb.set_trace()</span>

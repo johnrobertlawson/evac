@@ -43,25 +43,16 @@
         
         
   <h1>Source code for evac.plot.birdseye</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Top-down 2D plots, which are so common in meteorology</span>
-<span class="sd">that they get their own file here.</span>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
-<span class="sd">Subclass of Figure.</span>
-
-<span class="sd">TODO: multiple plots on same figure - like a &#39;hold&#39; - maybe by</span>
-<span class="sd">using set and get decorators. Or stopping save/close.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1</span> <span class="k">import</span> <span class="n">make_axes_locatable</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">M</span>
 <span class="n">M</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="k">import</span> <span class="n">Basemap</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1</span> <span class="k">import</span> <span class="n">make_axes_locatable</span>
 
 <span class="kn">from</span> <span class="nn">evac.datafiles.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
 <span class="kn">from</span> <span class="nn">evac.utils.defaults</span> <span class="k">import</span> <span class="n">Defaults</span>
@@ -70,6 +61,28 @@
 <span class="kn">import</span> <span class="nn">evac.stats</span> <span class="k">as</span> <span class="nn">stats</span>
 
 <div class="viewcode-block" id="BirdsEye"><a class="viewcode-back" href="../../../evac.plot.birdseye.html#evac.plot.birdseye.BirdsEye">[docs]</a><span class="k">class</span> <span class="nc">BirdsEye</span><span class="p">(</span><span class="n">Figure</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Top-down 2D plots.</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        * multiple plots on same figure - like a &#39;hold&#39; - maybe by</span>
+<span class="sd">            using set and get decorators. Or stopping save/close.</span>
+<span class="sd">        * Massive rewrite with cartopy, now basemap is depreciated.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ax,fig (optional): If None (default), then a new figure/axis object</span>
+<span class="sd">            will be created in the instance (via parent class </span>
+<span class="sd">            :class:`~evac.plot.figure.Figure`.</span>
+<span class="sd">        ideal (bool): If True, options for an idealised plot will be used.</span>
+<span class="sd">            For example, no lat/lon.</span>
+<span class="sd">        proj (str,bool): If `str`, such as `&#39;merc&#39;`, this will set the </span>
+<span class="sd">            instance&#39;s plotting projection.</span>
+<span class="sd">        mplargs, mplkwargs: Arguments to pass to matplotlib.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A figure is generated (if no fig/ax is specified), or plotting (onto an</span>
+<span class="sd">            existing figure).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ideal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">mplargs</span><span class="o">=</span><span class="p">[],</span><span class="n">mplkwargs</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&quot;&quot;&quot; Setting ideal to True removes the geography (e.g. for idealised</span>

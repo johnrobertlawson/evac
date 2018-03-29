@@ -51,15 +51,13 @@
   <div class="section" id="module-evac.plot.map">
 <span id="evac-plot-map-module"></span><h1>evac.plot.map module<a class="headerlink" href="#module-evac.plot.map" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="evac.plot.map.DomainGrid">
-<em class="property">class </em><code class="descclassname">evac.plot.map.</code><code class="descname">DomainGrid</code><span class="sig-paren">(</span><em>inherit=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/map.html#DomainGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.map.DomainGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="class">
 <dt id="evac.plot.map.Map">
 <em class="property">class </em><code class="descclassname">evac.plot.map.</code><code class="descname">Map</code><a class="reference internal" href="_modules/evac/plot/map.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.map.Map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="evac.plot.figure.html#evac.plot.figure.Figure" title="evac.plot.figure.Figure"><code class="xref py py-class docutils literal"><span class="pre">evac.plot.figure.Figure</span></code></a></p>
+<p>Plot a geographical map.</p>
+<p>Similar to <code class="xref py py-class docutils literal"><span class="pre">Birdseye</span></code>, but
+without the ability to plot meteorological data. The main use is
+for plotting domains and other geographical maps.</p>
 <dl class="method">
 <dt id="evac.plot.map.Map.make_domain_obj">
 <code class="descname">make_domain_obj</code><span class="sig-paren">(</span><em>input_objs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/map.html#Map.make_domain_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.map.Map.make_domain_obj" title="Permalink to this definition">¶</a></dt>
@@ -69,13 +67,22 @@
 <dl class="method">
 <dt id="evac.plot.map.Map.plot_domains">
 <code class="descname">plot_domains</code><span class="sig-paren">(</span><em>domains</em>, <em>outdir</em>, <em>labels=None</em>, <em>latlons='auto'</em>, <em>fname='domains.png'</em>, <em>colour=0</em>, <em>res='h'</em>, <em>proj='auto'</em>, <em>pad=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/map.html#Map.plot_domains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.map.Map.plot_domains" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>domains</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">list of WRFOut objects for each domain</span><dd>Largest domain should be index 0, if using auto settings</dd>
-<dt>latlons</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">dictionary of Nlim,Elim,Slim,Wlim</span><dd>for plot</dd>
-</dl>
-<p>pad         :   multiply factor (0-1) for padding if latlons is &#8216;auto&#8217;</p>
+<dd><p>This method plots a figure of all domains specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>domains</strong> (<em>list</em><em>,</em><em>tuple</em>) &#8211; list of WRFOut objects for each domain
+Largest domain should be index 0, if using auto settings</li>
+<li><strong>latlons</strong> (<em>dict</em>) &#8211; dictionary of Nlim,Elim,Slim,Wlim
+for plot</li>
+<li><strong>pad</strong> &#8211; multiply factor (0-1) for padding if latlons is &#8216;auto&#8217;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

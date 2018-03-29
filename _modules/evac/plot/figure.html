@@ -43,10 +43,7 @@
         
         
   <h1>Source code for evac.plot.figure</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;All figures are subclasses of Figure.</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">pdb</span>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
@@ -61,24 +58,25 @@
 <span class="c1"># import evac.utils.gis_tools as gis_tools</span>
 
 <div class="viewcode-block" id="Figure"><a class="viewcode-back" href="../../../evac.plot.figure.html#evac.plot.figure.Figure">[docs]</a><span class="k">class</span> <span class="nc">Figure</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Parent class for creating a figure in matplotlib.</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        * Rewrite (along with other plotting scripts) for cartopy, due to </span>
+<span class="sd">            the depreciation of basemap.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ax                  :   matplotlib.axes instance to plot to</span>
+<span class="sd">        fig                 :   matplotlib.figure instance to plot to</span>
+<span class="sd">        layout (str)        :   if &quot;insetv&quot; or &quot;inseth&quot;, uses GridSpec to create subplots</span>
+<span class="sd">                                of different sizes.</span>
+<span class="sd">        mplargs (tuple,list):   other arguments to pass to matplotlib figure creation</span>
+<span class="sd">        mplkwargs (dict)    :   other keyword arguments to pass to matplotlib</span>
+<span class="sd">        use_defaults (bool) :   whether to load Defaults class. Set to be False</span>
+<span class="sd">                                if e.g. using your own matplotlibrc.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">layout</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">,</span>
                     <span class="n">mplargs</span><span class="o">=</span><span class="p">[],</span><span class="n">mplkwargs</span><span class="o">=</span><span class="p">{},</span><span class="n">use_defaults</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Parent class for creating a figure in matplotlib.</span>
-
-<span class="sd">        Arguments:</span>
-<span class="sd">            (No mandatory)</span>
-
-<span class="sd">        Optional:</span>
-<span class="sd">            ax                  :   matplotlib.axes instance to plot to</span>
-<span class="sd">            fig                 :   matplotlib.figure instance to plot to</span>
-<span class="sd">            layout (str)        :   if &quot;insetv&quot; or &quot;inseth&quot;, uses GridSpec to create subplots</span>
-<span class="sd">                                    of different sizes.</span>
-<span class="sd">            mplargs (tuple,list):   other arguments to pass to matplotlib figure creation</span>
-<span class="sd">            mplkwargs (dict)    :   other keyword arguments to pass to matplotlib</span>
-<span class="sd">            use_defaults (bool) :   whether to load Defaults class. Set to be False</span>
-<span class="sd">                                    if e.g. using your own matplotlibrc.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="c1"># self.D = Defaults()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_figure</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_defaults</span> <span class="o">=</span> <span class="n">use_defaults</span>

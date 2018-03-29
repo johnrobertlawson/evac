@@ -54,6 +54,19 @@
 <dt id="evac.plot.heatmap.HeatMap">
 <em class="property">class </em><code class="descclassname">evac.plot.heatmap.</code><code class="descname">HeatMap</code><span class="sig-paren">(</span><em>data</em>, <em>ax=False</em>, <em>fig=False</em>, <em>figsize=(6</em>, <em>6)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/heatmap.html#HeatMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.heatmap.HeatMap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="evac.plot.figure.html#evac.plot.figure.Figure" title="evac.plot.figure.Figure"><code class="xref py py-class docutils literal"><span class="pre">evac.plot.figure.Figure</span></code></a></p>
+<p>Generates a heatmap-style plot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>numpy.array</em>) &#8211; Array of data. Should be 2-D.</li>
+<li><strong>fig</strong><strong>,</strong><strong>ax</strong> &#8211; If present, this plots to an existing axis/figure.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="evac.plot.heatmap.HeatMap.interpolate_nans">
 <code class="descname">interpolate_nans</code><span class="sig-paren">(</span><em>arr1d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/heatmap.html#HeatMap.interpolate_nans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.heatmap.HeatMap.interpolate_nans" title="Permalink to this definition">¶</a></dt>
@@ -67,7 +80,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>outdir</strong> (<em>str</em>) &#8211; absolute path to output directory</li>
 <li><strong>flipsign</strong> (<em>bool</em>) &#8211; multiplies data by -1.</li>
 <li><strong>cmap</strong> (<em>matplotlib.colormap object</em>) &#8211; colour scheme</li>
@@ -79,9 +92,6 @@
 if positive integer, this is the kernel size
 to compute local std.</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(None)</p>
 </td>
 </tr>
 </tbody>

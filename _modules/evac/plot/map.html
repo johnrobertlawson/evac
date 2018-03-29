@@ -53,28 +53,15 @@
 <span class="kn">from</span> <span class="nn">evac.plot.figure</span> <span class="k">import</span> <span class="n">Figure</span>
 <span class="kn">from</span> <span class="nn">evac.utils.reproject_tools</span> <span class="k">import</span> <span class="n">WRF_native_grid</span><span class="p">,</span> <span class="n">VerifGrid</span>
 <span class="kn">from</span> <span class="nn">evac.datafiles.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
-
-<div class="viewcode-block" id="DomainGrid"><a class="viewcode-back" href="../../../evac.plot.map.html#evac.plot.map.DomainGrid">[docs]</a><span class="k">class</span> <span class="nc">DomainGrid</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">inherit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a common class for verification domains, WRF out domains, etc</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inherit</span><span class="p">,</span><span class="n">WRFOut</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="n">inherit</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inherit</span><span class="p">,</span><span class="n">WRF_native_grid</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="n">inherit</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inherit</span><span class="p">,</span><span class="n">VerifGrid</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="n">inherit</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inherit</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
-            <span class="n">inherit</span> <span class="o">=</span> <span class="n">WRFOut</span><span class="p">(</span><span class="n">inherit</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="n">inherit</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-            <span class="c1"># self.lat_0 = inherit.nc.CEN_LAT</span>
-            <span class="c1"># self.lon_0 = inherit.nc.CEN_LON</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Inherited object is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">inherit</span><span class="p">)))</span></div>
+<span class="kn">from</span> <span class="nn">evac.plot.domaingrid</span> <span class="k">import</span> <span class="n">DomainGrid</span>
 
 <div class="viewcode-block" id="Map"><a class="viewcode-back" href="../../../evac.plot.map.html#evac.plot.map.Map">[docs]</a><span class="k">class</span> <span class="nc">Map</span><span class="p">(</span><span class="n">Figure</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Plot a geographical map. </span>
+<span class="sd">    </span>
+<span class="sd">    Similar to :class:`~evac.plot.birdseye.Birdseye`, but</span>
+<span class="sd">    without the ability to plot meteorological data. The main use is</span>
+<span class="sd">    for plotting domains and other geographical maps.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
 
@@ -94,12 +81,14 @@
 
 <div class="viewcode-block" id="Map.plot_domains"><a class="viewcode-back" href="../../../evac.plot.map.html#evac.plot.map.Map.plot_domains">[docs]</a>    <span class="k">def</span> <span class="nf">plot_domains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">domains</span><span class="p">,</span><span class="n">outdir</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">latlons</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">fname</span><span class="o">=</span><span class="s1">&#39;domains.png&#39;</span><span class="p">,</span>
                         <span class="n">colour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">res</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="n">proj</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">pad</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        domains     :   list of WRFOut objects for each domain</span>
-<span class="sd">                        Largest domain should be index 0, if using auto settings</span>
-<span class="sd">        latlons     :   dictionary of Nlim,Elim,Slim,Wlim</span>
-<span class="sd">                        for plot</span>
-<span class="sd">        pad         :   multiply factor (0-1) for padding if latlons is &#39;auto&#39;</span>
+        <span class="sd">&quot;&quot;&quot; This method plots a figure of all domains specified.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            domains (list,tuple): list of WRFOut objects for each domain</span>
+<span class="sd">                Largest domain should be index 0, if using auto settings</span>
+<span class="sd">            latlons (dict): dictionary of Nlim,Elim,Slim,Wlim</span>
+<span class="sd">                for plot</span>
+<span class="sd">            pad: multiply factor (0-1) for padding if latlons is &#39;auto&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">domains</span><span class="p">)</span>

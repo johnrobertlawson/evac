@@ -54,6 +54,38 @@
 <dt id="evac.plot.performance.Performance">
 <em class="property">class </em><code class="descclassname">evac.plot.performance.</code><code class="descname">Performance</code><span class="sig-paren">(</span><em>outpath</em>, <em>fname</em>, <em>legendkwargs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/performance.html#Performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.performance.Performance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="evac.plot.figure.html#evac.plot.figure.Figure" title="evac.plot.figure.Figure"><code class="xref py py-class docutils literal"><span class="pre">evac.plot.figure.Figure</span></code></a></p>
+<p>Performance diagram, from Roebber 2009 WAF.</p>
+<p>Some checking with WFRT&#8217;s verif package (Github)?</p>
+<p>If passing in stats, they should be:</p>
+<p>POD     =   A/A+C
+FAR     =   B/A+B
+BIAS    =   (A+B)/(A+C)
+CSI     =   A/(A+B+C)
+SR      =   1- FAR</p>
+<p class="rubric">Example</p>
+<p>To maintain flexibility, the user should do the following
+outside the class once initialised:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Performance</span><span class="o">.</span><span class="n">plot_data</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="c1"># As many times as needed</span>
+<span class="n">Performance</span><span class="o">.</span><span class="n">save</span><span class="p">()</span> <span class="c1"># When finished</span>
+</pre></div>
+</div>
+<p>Some plotting settings, like bias contours, can be accessed:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Performance</span><span class="o">.</span><span class="n">contours</span><span class="p">[</span><span class="s1">&#39;bias&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.5</span><span class="p">]</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>outpath</strong> &#8211; directory for saving figure</li>
+<li><strong>fname</strong> &#8211; file name</li>
+<li><strong>legendkwargs</strong> &#8211; key-words for ax.legend().</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="evac.plot.performance.Performance.compute_bias_lines">
 <code class="descname">compute_bias_lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/plot/performance.html#Performance.compute_bias_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.plot.performance.Performance.compute_bias_lines" title="Permalink to this definition">¶</a></dt>
