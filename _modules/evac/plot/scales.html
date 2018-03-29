@@ -43,34 +43,32 @@
         
         
   <h1>Source code for evac.plot.scales</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; This file contains colorbar scales for plotting.</span>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
 
-<span class="sd">INPUTS</span>
-
-<span class="sd">va      :   variable to be plotted</span>
-<span class="sd">lv      :   level to be plotted</span>
-
-<span class="sd">OUTPUTS</span>
-
-<span class="sd">cm      :   colour map</span>
-<span class="sd">clvs    :   contour levels</span>
-
-<span class="sd">Level = 2000 indicates surface.</span>
-
-<span class="sd">Default settings are listed at the bottom.</span>
-<span class="sd">These can be overwritten in user&#39;s config file... somehow</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">pdb</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">M</span>
 <span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="k">import</span> <span class="n">LinearSegmentedColormap</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">colourtables</span> <span class="k">as</span> <span class="n">ct</span>
+<span class="kn">import</span> <span class="nn">evac.plot.colourtables</span> <span class="k">as</span> <span class="nn">ct</span>
 <span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">import</span> <span class="nn">evac.utils.evac_types</span> <span class="k">as</span> <span class="nn">evac_types</span>
 
 <div class="viewcode-block" id="Scales"><a class="viewcode-back" href="../../../evac.plot.scales.html#evac.plot.scales.Scales">[docs]</a><span class="k">class</span> <span class="nc">Scales</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; A class with `colorbar` scales for plotting.</span>
+<span class="sd">    Level = 2000 indicates surface.</span>
+<span class="sd">    Default settings are listed at the bottom.</span>
+<span class="sd">    These can be overwritten in user&#39;s config file... somehow</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        va      :   variable to be plotted</span>
+<span class="sd">        lv      :   level to be plotted</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        cm      :   colour map</span>
+<span class="sd">        clvs    :   contour levels</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vrbl</span><span class="p">,</span><span class="n">lv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">clvs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lv</span> <span class="o">=</span> <span class="n">lv</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dict_of_levels</span><span class="p">()</span>
