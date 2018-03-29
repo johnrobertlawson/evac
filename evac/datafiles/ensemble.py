@@ -1,11 +1,5 @@
-""" Ensemble of forecasts.
-
-Todos:
-    * Change from ensemble of WRFOut files to any sort of datafile.
-    * Consistency with method names (e.g., get() )
-"""
-
 import os
+import glob
 import pdb
 import datetime
 
@@ -16,38 +10,52 @@ from evac.datafiles.wrfout import WRFOut
 from evac.datafiles.gefs import GEFS
 
 # Dummy variable in place of proper subclass of WRFOut
-AuxWRFOut = object
+# AuxWRFOut = object
 
 class Ensemble:
-    def __init__(self,rootdir,initutc,doms=1,ctrl='ctrl',aux=False,
-        model='wrf',fmt='em_real',f_prefix='default',loadobj=True,
-        ncf=False,debug=False,onefolder=False,fileformat='netcdf',
-        gefsformat=False):
-        """Class containing all ensemble members. Default is a
-            deterministic forecast (i.e. ensemble of one control member).
-            Each ensemble member needs to have a separate folder (named
-            as the ensemble member's name), but different domains can be
-            within a single member's folder.
+    """ Class containing an ensemble of (netCDF, WRF) forecasts.
 
-        Args:
-            rootdir (str):  Directory at root of datafiles
-            initutc (datetime.datetime): Initialization time
-            doms (int, optional): Number of domains
-            ctrl (bool, optional): Whether ensemble has control member
-            aux (bool, dict, optional): Dictionary lists, per domain, data
-                files that contain additional variables and each
-                file's prefix. Default is False (no auxiliary files).
-                Not implemented yet.
-            enstype (str, optional): Type of ensemble. Default is for
-                Weather Research and Forecast (WRF) model.
-            fmt (str, optional): The type of simulations. Default is
-                real-world simulations (em_real from WRF).
-            f_prefix (tuple, optional): Tuple of prefixes for each
-                ensemble member's main data files. Must be length /doms/.
-                The string 'default' will look for the wrfout_d0* string.
-                Set None for a method to determine
-                the file name using default outputs from e.g. WRF.
-        """
+    A deterministic forecast (i.e. ensemble of one control member) can
+    be created by using one member. 
+    
+    Each ensemble member needs to have a separate folder (named
+    as the ensemble member's name), but different domains can be
+    within a single member's folder.
+
+    Todos:
+        * Change from ensemble of WRFOut files to any sort of datafile.
+        * Consistency with method names (e.g., get() )
+
+    Example:
+        To load a 5-D array of 10-m wind at the second time::
+            
+            from evac.datafiles.ensemble import Ensemble
+            E = Ensemble()
+            E.get('wind10',utc=1)
+
+    Args:
+        rootdir (str):  Directory at root of datafiles
+        initutc (datetime.datetime): Initialization time
+        doms (int, optional): Number of domains
+        ctrl (bool, optional): Whether ensemble has control member
+        aux (bool, dict, optional): Dictionary lists, per domain, data
+            files that contain additional variables and each
+            file's prefix. Default is False (no auxiliary files).
+            Not implemented yet.
+        enstype (str, optional): Type of ensemble. Default is for
+            Weather Research and Forecast (WRF) model.
+        fmt (str, optional): The type of simulations. Default is
+            real-world simulations (em_real from WRF).
+        f_prefix (tuple, optional): Tuple of prefixes for each
+            ensemble member's main data files. Must be length /doms/.
+            The string 'default' will look for the wrfout_d0* string.
+            Set None for a method to determine
+            the file name using default outputs from e.g. WRF.
+    """
+    def __init__(self,rootdir,initutc,doms=1,ctrl='ctrl',aux=False,
+                model='wrf',fmt='em_real',f_prefix='default',loadobj=True,
+                ncf=False,debug=False,onefolder=False,fileformat='netcdf',
+                gefsformat=False):
         self.model = model.lower()
         if self.model == 'wrf':
             print("File type is wrfout.")
@@ -155,9 +163,9 @@ class Ensemble:
         """
         members = {}
         if self.model == 'gefs':
-            members,fdt = self.get_gefs_members(f_prefix=f_prefix)
+            members,fdt = self.get_gefs_members()
         elif self.model == 'wrf':
-            members,fdt = self.get_wrf_members(f_prefix=f_prefix)
+            members,fdt = self.get_wrf_members()
         else:
             raise NotImplementedError
         return members, fdt
@@ -269,7 +277,7 @@ class Ensemble:
         members = {}
         # This will break with subset of members, times, a/b grib files...
         allmembers = ['c00',] + ['p{0:02d}'.format(n) for n in range(1,21)]
-        allfiles = glob.glob(os.path.join(self.ncroot,'ge*'))
+        allfiles = glob.glob(os.path.join(self.rootdir,'ge*'))
         alltimes = N.arange(0,390,6)
 
         for ens in allmembers:

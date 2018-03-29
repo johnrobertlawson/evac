@@ -1,10 +1,3 @@
-""" ECMWF data in NetCDF format.
-
-Todos:
-    * Remove redundant plotting (but keep logic)
-    * Create key table for looking up variables
-"""
-
 import calendar
 import os
 
@@ -17,10 +10,20 @@ import evac.utils as utils
 from evac.datafiles.ncfile import NCFile
 
 class ECMWF(NCFile):
-    def __init__(self,fpath,config):
+    """ Load an ECMWF data object, if netCDF format.
+
+    Args:
+        fpath: Absolute path to .nc file.
+
+    Todo:
+        * Remove redundant plotting (but keep logic)
+        * Create key table for looking up variables
+        * Remove config/defaults logic
+    """
+    def __init__(self,fpath,):#config):
         super().__init__(fpath)
-        self.C = config
-        self.D = Defaults()
+        # self.C = config
+        # self.D = Defaults()
         self.ec = Dataset(fpath,'r')
         self.times = self.ecmwf_times()
         # self.dx =
@@ -53,7 +56,8 @@ class ECMWF(NCFile):
         ts = list(self.times)
         return ts.index(t)
 
-    def get_key(self,va):
+    @staticmethod
+    def get_key(va):
         keys = {}
         keys['Z'] = 'Z_GDS0_ISBL'
         keys['W'] = 'W_GDS0_ISBL'
@@ -72,7 +76,7 @@ class ECMWF(NCFile):
         return data
 
 
-    def plot(self,va,lv,times,**kwargs):
+    def plot(self,va,lv,times,outdir=False,**kwargs):
         for t in times:
 
             fig = plt.figure()
@@ -85,7 +89,7 @@ class ECMWF(NCFile):
             else:
                 f1 = m.contour(x,y,data,colors='k')
 
-            if self.C.plot_titles:
+            if kwargs['title']:
                 title = utils.string_from_time('title',t)
                 plt.title(title)
 
@@ -113,8 +117,8 @@ class ECMWF(NCFile):
 
             plt.clabel(f1, inline=1, fmt='%4u', fontsize=12, colors='k')
 
-            utils.trycreate(self.C.output_root)
-            plt.savefig(os.path.join(self.C.output_root,fname))
+            utils.trycreate(outdir)
+            plt.savefig(os.path.join(outdir,fname))
             plt.clf()
             plt.close()
 
@@ -123,7 +127,7 @@ class ECMWF(NCFile):
 
     def basemap_setup(self,**kwargs):
         # Fetch settings
-        basemap_res = getattr(self.C,'basemap_res',self.D.basemap_res)
+        basemap_res = 'i'
         lllat = self.lats[-1]
         lllon = self.lons[0]
         urlat = self.lats[0]
