@@ -1,4 +1,4 @@
-from .datafile import DataFile
+from evac.datafiles.datafile import DataFile
 
 class BinaryFile(DataFile):
     def __init__(self,fpath):
