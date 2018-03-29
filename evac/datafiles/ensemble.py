@@ -10,7 +10,7 @@ from evac.datafiles.wrfout import WRFOut
 from evac.datafiles.gefs import GEFS
 
 # Dummy variable in place of proper subclass of WRFOut
-# AuxWRFOut = object
+AuxWRFOut = object
 
 class Ensemble:
     """ Class containing an ensemble of (netCDF, WRF) forecasts.
