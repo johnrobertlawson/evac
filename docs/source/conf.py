@@ -110,6 +110,7 @@ html_theme = 'haiku'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_logo = '../images/evac_logo.svg'
+full_logo = True
 
 
 # -- Options for HTMLHelp output ------------------------------------------
