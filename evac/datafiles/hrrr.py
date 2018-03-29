@@ -1,4 +1,7 @@
-from .gribfile import GribFile
+import os
+import pdb
+
+from evac.datafiles.gribfile import GribFile
 
 class HRRR(GribFile):
     def __init__(self,fpath):

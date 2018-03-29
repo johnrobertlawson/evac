@@ -1,8 +1,10 @@
-""" Reads in png data.
-"""
+import pdb
+import os
 
-from .datafile import DataFile
+from evac.datafiles.datafile import DataFile
 
 class PNGFile(DataFile):
-    def __init__(self,):
-        pass
+    """ Generic superclass to read in png data.
+    """
+    def __init__(self,fpath):
+        self.fpath = fpath

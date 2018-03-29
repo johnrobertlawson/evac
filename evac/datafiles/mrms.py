@@ -1,24 +1,28 @@
-""" Multi-radar, multi-sensor data. Converts from their custom
-binary data format.
-"""
-from .binaryfile import BinaryFile
+import pdb
+import os
+
+from evac.datafiels.binaryfile import BinaryFile
 
 class MRMS(BinaryFile):
+    """Multi-radar, multi-sensor data. Converts from their custom
+    binary data format.
+    
+    Todo:
+        * A helper function to automatically generate file name
+            to load needs to be written.
+
+    Args:
+        fpath (str, optional): file path to data. If False, other
+            information must be presented to search for data (below).
+        rootdir (str, optional): if fpath is False, this is required
+            to search for data based on product and time
+        product (str, optional): if fpath is False, this is required
+            to find correct product. Pick from PRECIPRATE. etc
+        utc (datetime.datetime, optional): if fpath is False, this
+            is required to find data file for valid time.
+    """
     def __init__(self,fpath=False,rootdir=False,product=False,
                     utc=False):
-        """A helper function to automatically generate file name
-        to load needs to be written.
-
-        Args:
-            fpath (str, optional): file path to data. If False, other
-                information must be presented to search for data (below).
-            rootdir (str, optional): if fpath is False, this is required
-                to search for data based on product and time
-            product (str, optional): if fpath is False, this is required
-                to find correct product. Pick from PRECIPRATE...
-            utc (datetime.datetime, optional): if fpath is False, this
-                is required to find data file for valid time.
-        """
         if not fpath:
             fpath = self.generate_fpath(rootdir,product,utc)
 

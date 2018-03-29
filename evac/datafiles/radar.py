@@ -1,13 +1,3 @@
-""" Radar download, manipulation, and plotting.
-
-This uses composite reflectivity data stored on Iowa State Univ.
-servers.
-
-Todos:
-    * Allow different inheritance depending on the data format.
-        Probably using the __next__ built-in.
-    * Remove redundant basemap generation method.
-"""
 import os
 import pdb
 import calendar
@@ -22,6 +12,41 @@ import evac.plot.colourtables as ct
 from evac.plot.birdseye import BirdsEye
 
 class Radar(PNGFile):
+    """ Radar data download, manipulation, and plotting via :any:`evac.plot.birdseye`.
+
+    This uses composite reflectivity data stored on Iowa State Univ.
+    servers.
+
+    Example:
+        Acquire and plot radar data on a limited domain::
+
+            from evac.datafiles.radar import Radar
+            import datetime
+
+            utc = datetime.datetime(2017,4,4,21,30,0)
+            limdict = dict(Nlim=45.0,Elim=-90.0,Slim=35.0,Wlim=-100.0)
+            radardir = '/path/to/radar/data'
+
+            fig,ax = plt.subplots(1)
+            R = Radar(utc,radardir)
+            R.get_subdomain(**limdict,overwrite=True)
+            R.plot_radar(fig=fig,ax=ax,drawcounties=True)
+            fig.savefig('/path/to/save.png')
+
+    Note that, if the radar data does not exist in radardir, it will be 
+    downloaded automatically.
+
+    Todos:
+        * Allow different inheritance depending on the data format.
+            Probably using the __next__ built-in.
+        * Remove redundant basemap generation method and integrate with
+            any new cartopy plotting scripts in :any:`evac.plot.birdseye`.
+
+    Args:
+        utc (datetime.datetime): Time of radar data in UTC.
+        datapath: Absolute path to folder with radar data.
+        proj: Projection for plotting.
+    """
     def __init__(self,utc,datapath,proj='merc'):
         """
         Composite radar archive data from mesonet.agron.iastate.edu.

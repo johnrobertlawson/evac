@@ -1,12 +1,15 @@
+import os
+import pdb
+
 from netCDF4 import Dataset
 
-from .datafile import DataFile
+from evac.datafiles.datafile import DataFile
 
 class NCFile(DataFile):
-    def __init__(self,fpath):
-        """Generic netCDF import.
+    """Generic netCDF class.
 
-        Subclass of generic DataFile class.
-        """
+    Subclass of generic DataFile class.
+    """
+    def __init__(self,fpath):
         super().__init__(fpath)
         self.nc = Dataset(fpath,'r')
