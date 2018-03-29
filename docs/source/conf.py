@@ -26,7 +26,7 @@
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-# needs_sphinx = '1.0'
+ needs_sphinx = '1.3'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -51,7 +51,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'evac'
-copyright = '2017, John Lawson'
+copyright = '2018, John Lawson'
 author = 'John Lawson'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -94,6 +94,15 @@ html_theme = 'alabaster'
 # documentation.
 #
 # html_theme_options = {}
+html_sidebars = {
+    '**': [
+        'about.html',
+        'navigation.html',
+        'relations.html',
+        'searchbox.html',
+        'donate.html',
+    ]
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

@@ -24,8 +24,8 @@ cmd('git push',evacdir)
    
 # Make the html
 cmd('sphinx-apidoc -e -o ./source ../evac',os.path.join(evacdir,'docs'))
-# cmd('make html',os.path.join(evacdir,'docs'))
-cmd('sphinx-autobuild . _build/html',os.path.join(evacdir,'docs'))
+cmd('make html',os.path.join(evacdir,'docs'))
+# cmd('sphinx-autobuild . _build/html',os.path.join(evacdir,'docs'))
 
 # Git add
 cmd('git add -A .',htmldir)
