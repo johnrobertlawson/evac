@@ -115,18 +115,20 @@ class LazyEnsemble:
 
         self.rename_d01_ics = rename_d01_ics
         
+        # Time of initialisation
+        self.initutc = initutc
+
         # we need one of these optional arguments to compute run time
         if (endutc is False) and (runsec is False):
             raise Exception("Specific endutc or runsec.")
         elif runsec:
             self.runsec = runsec
-            self.endutc = initutc + datetime.timedelta(seconds=self.runsec)
+            self.endutc = self.initutc + datetime.timedelta(seconds=self.runsec)
         elif endutc:
             self.endutc = endutc
-            self.runsec = (self.endutc - initutc).seconds
+            self.runsec = (self.endutc - self.initutc).seconds
             assert self.runsec > 0
 
-        pdb.set_trace()
         # PATH OBJECTS - see pathlib documentation
         self.exedir = PosixPath(path_to_exedir)
         self.datadir = PosixPath(path_to_datadir)
@@ -151,9 +153,6 @@ class LazyEnsemble:
         if not isinstance(path_to_rundir,str):
             path_to_rundir = path_to_datadir
         self.wrfrundir = PosixPath(path_to_rundir)
-
-        # Time of initialisation
-        self.initutc = initutc
 
         self.sched = sched
         self.dryrun = dryrun
@@ -494,7 +493,8 @@ class LazyEnsemble:
 
         if merge_lbcs:
             wrfbdy_fpath = rundir/'wrfbdy_d01'
-            wrfbdy_fpath.unlink() # Delete!
+            if wrfbdy_fpath.exists():
+                wrfbdy_fpath.unlink() # Delete!
             utils.merge_netcdfs(wrfbdy_fpath,filelist=newlbc_list)
 
         # Rename files in the rundir that match a glob
