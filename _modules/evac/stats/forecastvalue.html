@@ -50,28 +50,28 @@
 <span class="kn">from</span> <span class="nn">evac.stats.detscores</span> <span class="k">import</span> <span class="n">DetScores</span>
 
 <div class="viewcode-block" id="ForecastValue"><a class="viewcode-back" href="../../../evac.stats.forecastvalue.html#evac.stats.forecastvalue.ForecastValue">[docs]</a><span class="k">class</span> <span class="nc">ForecastValue</span><span class="p">(</span><span class="n">DetScores</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Compute FV, forecast value, as Buizza 2001.</span>
+
+<span class="sd">    Example that returns FV for exceeding 0.1 units (e.g., QPF)</span>
+<span class="sd">    using the default range of cost/loss ratios:</span>
+<span class="sd">        FV = ForecastValue(fcst_arr=arr1,obs_arr=arr2,thresh=0.l,</span>
+<span class="sd">                            overunder=&#39;over&#39;)</span>
+
+<span class="sd">    Then, access the FV for a given cost/loss ratio with:</span>
+<span class="sd">        FV.get(0.02)</span>
+
+<span class="sd">    This will return None is the cost/lost ratio doesn&#39;t exist.</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        * Shouldn&#39;t this be a mix-in of `ProbScores` and `DetScores`?</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        CLs (N.ndarray, tuple, list): Cost-loss ratios to compute</span>
+<span class="sd">            FV as function of each ratio</span>
+<span class="sd">        args,kwargs: Arguments sent to the superclass to compute 2x2 contigency.</span>
+<span class="sd">            It&#39;s probably best to use keywords (`kwargs`).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">CLs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Compute FV, forecast value, as Buizza 2001.</span>
-
-<span class="sd">        Example that returns FV for exceeding 0.1 units (e.g., QPF)</span>
-<span class="sd">        using the default range of cost/loss ratios:</span>
-<span class="sd">            FV = ForecastValue(fcst_arr=arr1,obs_arr=arr2,thresh=0.l,</span>
-<span class="sd">                                overunder=&#39;over&#39;)</span>
-
-<span class="sd">        Then, access the FV for a given cost/loss ratio with:</span>
-<span class="sd">            FV.get(0.02)</span>
-
-<span class="sd">        This will return None is the cost/lost ratio doesn&#39;t exist.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            CLs (N.ndarray, tuple, list)    :   Cost-loss ratios to compute</span>
-<span class="sd">                                                    FV as function of each ratio</span>
-<span class="sd">            ``args``,``kwargs``             :   Arguments sent to the superclass</span>
-<span class="sd">                                                    to compute 2x2 contigency.</span>
-<span class="sd">                                                    Use keywords, that&#39;s best.</span>
-
-
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># super(DetScores,self).__init__(*args,**kwargs)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_pod</span><span class="p">()</span>

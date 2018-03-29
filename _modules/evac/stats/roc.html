@@ -43,32 +43,31 @@
         
         
   <h1>Source code for evac.stats.roc</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Relative Operative Statistics.</span>
-
-<span class="sd">Mixin of deterministic and probabilistic scores. Can be used to generate a</span>
-<span class="sd">2x2 contingency table for ensembles.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">pdb</span>
+<span></span><span class="kn">import</span> <span class="nn">pdb</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 
-<span class="kn">from</span> <span class="nn">.detscores</span> <span class="k">import</span> <span class="n">DetScores</span>
-<span class="kn">from</span> <span class="nn">.probscores</span> <span class="k">import</span> <span class="n">ProbScores</span>
+<span class="kn">from</span> <span class="nn">evac.stats.detscores</span> <span class="k">import</span> <span class="n">DetScores</span>
+<span class="kn">from</span> <span class="nn">evac.stats.probscores</span> <span class="k">import</span> <span class="n">ProbScores</span>
 <span class="kn">from</span> <span class="nn">evac.stats.misc_stats</span> <span class="k">import</span> <span class="n">compute_contingency</span>
 
 <div class="viewcode-block" id="ROC"><a class="viewcode-back" href="../../../evac.stats.roc.html#evac.stats.roc.ROC">[docs]</a><span class="k">class</span> <span class="nc">ROC</span><span class="p">(</span><span class="n">DetScores</span><span class="p">,</span><span class="n">ProbScores</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Relative Operative Statistics.</span>
+
+<span class="sd">    Mixin of deterministic and probabilistic scores. Can be used to generate a</span>
+<span class="sd">    2x2 contingency table for ensembles.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        nens        :   number of ensemble members</span>
+<span class="sd">        pf          :   probability of an event (1d array)</span>
+<span class="sd">        ob (bool)   :   whether it happened (1d array)</span>
+<span class="sd">        ensemble    :   Ensemble instance.</span>
+<span class="sd">        obs_array   :   2D array (lats,lons) for verification</span>
+<span class="sd">        threshold   :   float to create binary condition</span>
+<span class="sd">        overunder   :   operator for threshold.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ob</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ensemble</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">obs_array</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">thresholds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overunder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Args:</span>
-<span class="sd">            nens        :   number of ensemble members</span>
-<span class="sd">            pf          :   probability of an event (1d array)</span>
-<span class="sd">            ob (bool)   :   whether it happened (1d array)</span>
-<span class="sd">            ensemble    :   Ensemble instance.</span>
-<span class="sd">            obs_array   :   2D array (lats,lons) for verification</span>
-<span class="sd">            threshold   :   float to create binary condition</span>
-<span class="sd">            overunder   :   operator for threshold.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">nens</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pf</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ob</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Logic here to compute the arrays</span>
             <span class="k">pass</span>

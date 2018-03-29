@@ -48,8 +48,52 @@
       <div class="content">
         
         
-  <div class="section" id="evac-utils-exceptions-module">
-<h1>evac.utils.exceptions module<a class="headerlink" href="#evac-utils-exceptions-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-evac.utils.exceptions">
+<span id="evac-utils-exceptions-module"></span><h1>evac.utils.exceptions module<a class="headerlink" href="#module-evac.utils.exceptions" title="Permalink to this headline">¶</a></h1>
+<p>Custom exceptions.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>Extend the functionality</li>
+<li>Make the wowprint() actually work</li>
+<li><a class="reference external" href="https://github.com/UltimateHackers/hue">https://github.com/UltimateHackers/hue</a></li>
+</ul>
+</div>
+<dl class="exception">
+<dt id="evac.utils.exceptions.FormatError">
+<em class="property">exception </em><code class="descclassname">evac.utils.exceptions.</code><code class="descname">FormatError</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/exceptions.html#FormatError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.exceptions.FormatError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.utils.exceptions.PrettyException" title="evac.utils.exceptions.PrettyException"><code class="xref py py-class docutils literal"><span class="pre">evac.utils.exceptions.PrettyException</span></code></a></p>
+<p>Data is the wrong format or shape.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="evac.utils.exceptions.NonsenseError">
+<em class="property">exception </em><code class="descclassname">evac.utils.exceptions.</code><code class="descname">NonsenseError</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/exceptions.html#NonsenseError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.exceptions.NonsenseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.utils.exceptions.PrettyException" title="evac.utils.exceptions.PrettyException"><code class="xref py py-class docutils literal"><span class="pre">evac.utils.exceptions.PrettyException</span></code></a></p>
+<p>Data or argument doesn&#8217;t make any sense.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="evac.utils.exceptions.PrettyException">
+<em class="property">exception </em><code class="descclassname">evac.utils.exceptions.</code><code class="descname">PrettyException</code><span class="sig-paren">(</span><em>message</em>, <em>color=False</em>, <em>bold=False</em>, <em>underline=False</em>, <em>formatargs=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/exceptions.html#PrettyException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.exceptions.PrettyException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<p>Subclassed error that prints real pretty.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="evac.utils.exceptions.QCError">
+<em class="property">exception </em><code class="descclassname">evac.utils.exceptions.</code><code class="descname">QCError</code><span class="sig-paren">(</span><em>error='Quality Control error.'</em>, <em>pass_idx=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/exceptions.html#QCError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.exceptions.QCError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.utils.exceptions.PrettyException" title="evac.utils.exceptions.PrettyException"><code class="xref py py-class docutils literal"><span class="pre">evac.utils.exceptions.PrettyException</span></code></a></p>
+<p>Data has failed a quality control check.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="evac.utils.exceptions.WRFError">
+<em class="property">exception </em><code class="descclassname">evac.utils.exceptions.</code><code class="descname">WRFError</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/exceptions.html#WRFError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.exceptions.WRFError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#evac.utils.exceptions.PrettyException" title="evac.utils.exceptions.PrettyException"><code class="xref py py-class docutils literal"><span class="pre">evac.utils.exceptions.PrettyException</span></code></a></p>
+<p>WRF run has broken somewhere.</p>
+</dd></dl>
+
 </div>
 
 

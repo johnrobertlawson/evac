@@ -52,32 +52,32 @@
 <span class="kn">from</span> <span class="nn">evac.utils.exceptions</span> <span class="k">import</span> <span class="n">QCError</span><span class="p">,</span> <span class="n">FormatError</span>
 
 <div class="viewcode-block" id="Casati"><a class="viewcode-back" href="../../../evac.stats.casati.html#evac.stats.casati.Casati">[docs]</a><span class="k">class</span> <span class="nc">Casati</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fcstdata</span><span class="p">,</span><span class="n">verifdata</span><span class="p">,</span><span class="n">thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">64</span><span class="p">),</span>
-                    <span class="n">store_all_arrays</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">recalibration</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Casati et al. 2004, Meteorol. Appl.</span>
+    <span class="sd">&quot;&quot;&quot; Scale-aware verification scheme from Casati et al. 2004, Meteorol. Appl.</span>
 
-<span class="sd">        All data in SI units (mm). </span>
+<span class="sd">    All data in SI units (mm). </span>
+<span class="sd">    </span>
+<span class="sd">    Access attributes by a threshold then spatial key.</span>
 
-<span class="sd">        Attrs. all accessed by a threshold then spatial key.</span>
-
-<span class="sd">        e.g. </span>
-<span class="sd">        self.SS[4][3] will return the skill score for 4 mm/hr threshold </span>
-<span class="sd">            and the L=3 spatial scale (= 2**3 grid points)</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            fcstdata (N.ndarray)    :   forecast 2D array</span>
-<span class="sd">            verifdata (N.ndarray)   :   verification 2D array</span>
-<span class="sd">            thresholds (tuple,list,optional)    :   thresholds for stats</span>
-<span class="sd">            store_all_arrays (bool,optional)    :   If False, delete arrays</span>
-<span class="sd">                                                        to conserve memory.</span>
-<span class="sd">            recalibration (bool,optional)       :   whether to remove bias</span>
-
-<span class="sd">        Attributes:</span>
+<span class="sd">    Attributes:</span>
 <span class="sd">        self.father, self.mother    :   wavelet decompositions (in do_BED)</span>
 <span class="sd">        self.MSE, self.MSE_total    :   Mean Square Error (by scale and total)</span>
 <span class="sd">        self.SS                     :   Skill score</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    Example:</span>
+<span class="sd">        self.SS[4][3] will return the skill score for 4 mm/hr threshold </span>
+<span class="sd">            and the L=3 spatial scale (= 2**3 grid points)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fcstdata (N.ndarray)    :   forecast 2D array</span>
+<span class="sd">        verifdata (N.ndarray)   :   verification 2D array</span>
+<span class="sd">        thresholds (tuple,list,optional)    :   thresholds for stats</span>
+<span class="sd">        store_all_arrays (bool,optional)    :   If False, delete arrays</span>
+<span class="sd">            to conserve memory.</span>
+<span class="sd">        recalibration (bool,optional)       :   whether to remove bias</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fcstdata</span><span class="p">,</span><span class="n">verifdata</span><span class="p">,</span><span class="n">thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">64</span><span class="p">),</span>
+                    <span class="n">store_all_arrays</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">recalibration</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span> <span class="o">=</span> <span class="n">thresholds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raw_fcstdata</span> <span class="o">=</span> <span class="n">fcstdata</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raw_verifdata</span> <span class="o">=</span> <span class="n">verifdata</span>

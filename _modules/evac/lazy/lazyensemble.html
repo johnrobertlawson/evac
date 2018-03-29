@@ -53,6 +53,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 
 <span class="kn">import</span> <span class="nn">evac.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">evac.utils.timetool</span> <span class="k">import</span> <span class="n">TimeTool</span>
 <span class="kn">from</span> <span class="nn">evac.utils.exceptions</span> <span class="k">import</span> <span class="n">WRFError</span><span class="p">,</span> <span class="n">PrettyException</span>
 
 <div class="viewcode-block" id="LazyEnsemble"><a class="viewcode-back" href="../../../evac.lazy.lazyensemble.html#evac.lazy.lazyensemble.LazyEnsemble">[docs]</a><span class="k">class</span> <span class="nc">LazyEnsemble</span><span class="p">:</span>
@@ -170,6 +171,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">runsec</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endutc</span> <span class="o">-</span> <span class="n">initutc</span><span class="p">)</span><span class="o">.</span><span class="n">seconds</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">runsec</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
+        <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
         <span class="c1"># PATH OBJECTS - see pathlib documentation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exedir</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_exedir</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">datadir</span> <span class="o">=</span> <span class="n">PosixPath</span><span class="p">(</span><span class="n">path_to_datadir</span><span class="p">)</span>
@@ -402,6 +404,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">nlpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">member</span><span class="p">][</span><span class="s1">&#39;rundir&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="s1">&#39;namelist.input&#39;</span>
 
+        <span class="n">TT</span> <span class="o">=</span> <span class="n">TimeTool</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">runsec</span><span class="p">)</span> 
+        <span class="n">run_days</span><span class="p">,</span> <span class="n">run_hours</span><span class="p">,</span> <span class="n">run_minutes</span><span class="p">,</span> <span class="n">run_seconds</span> <span class="o">=</span> <span class="n">TT</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>
+
         <span class="n">changes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">start_year</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
                         <span class="n">start_month</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
                         <span class="n">start_day</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initutc</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
@@ -416,10 +421,10 @@
                         <span class="n">end_minute</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">endutc</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span>
                         <span class="n">end_second</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">endutc</span><span class="o">.</span><span class="n">second</span><span class="p">,</span>
 
-                        <span class="n">run_days</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                        <span class="n">run_hours</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                        <span class="n">run_minutes</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                        <span class="n">run_seconds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runsec</span><span class="p">,</span>
+                        <span class="n">run_days</span> <span class="o">=</span> <span class="n">run_days</span><span class="p">,</span>
+                        <span class="n">run_hours</span> <span class="o">=</span> <span class="n">run_hours</span><span class="p">,</span>
+                        <span class="n">run_minutes</span> <span class="o">=</span> <span class="n">run_minutes</span><span class="p">,</span>
+                        <span class="n">run_seconds</span> <span class="o">=</span> <span class="n">run_seconds</span><span class="p">,</span>
 
                         <span class="c1"># We&#39;ll assume the output directory is just default</span>
                         <span class="c1"># history_outname would change where the wrfout goes</span>
@@ -533,8 +538,9 @@
                             <span class="n">return_newlist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">merge_lbcs</span><span class="p">:</span>
-            <span class="n">utils</span><span class="o">.</span><span class="n">merge_netcdfs</span><span class="p">(</span><span class="n">rundir</span><span class="o">/</span><span class="s1">&#39;wrfbdy_d01&#39;</span><span class="p">,</span>
-                            <span class="n">filelist</span><span class="o">=</span><span class="n">newlbc_list</span><span class="p">)</span>
+            <span class="n">wrfbdy_fpath</span> <span class="o">=</span> <span class="n">rundir</span><span class="o">/</span><span class="s1">&#39;wrfbdy_d01&#39;</span>
+            <span class="n">wrfbdy_fpath</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span> <span class="c1"># Delete!</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">merge_netcdfs</span><span class="p">(</span><span class="n">wrfbdy_fpath</span><span class="p">,</span><span class="n">filelist</span><span class="o">=</span><span class="n">newlbc_list</span><span class="p">)</span>
 
         <span class="c1"># Rename files in the rundir that match a glob</span>
         <span class="c1"># There must only be one match, obviously.</span>

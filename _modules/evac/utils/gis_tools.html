@@ -43,7 +43,13 @@
         
         
   <h1>Source code for evac.utils.gis_tools</h1><div class="highlight"><pre>
-<span></span><span class="c1">#import scipy.ndimage as nd</span>
+<span></span><span class="sd">&quot;&quot;&quot; A collection of geographical-related functions.</span>
+
+<span class="sd">Todo:</span>
+<span class="sd">    * Make sure other utils functions are imported explicitly, so</span>
+<span class="sd">        we can remove the star import in util&#39;s `__init__.py`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#import scipy.ndimage as nd</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">fnmatch</span>
@@ -56,15 +62,14 @@
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">heapq</span>
-<span class="kn">import</span> <span class="nn">xarray</span>
 
+<span class="kn">import</span> <span class="nn">xarray</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">M</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
 <span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">unix_tools</span> <span class="c1">#as unix_tools</span>
-<span class="c1">#from . import unix_tools</span>
-<span class="c1">#from . import get_data</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">unix_tools</span> <span class="k">as</span> <span class="n">unix_tools</span>
+<span class="c1"># import evac.utils.unix_tools as unix_tools</span>
 
 <div class="viewcode-block" id="decompose_wind"><a class="viewcode-back" href="../../../evac.utils.gis_tools.html#evac.utils.gis_tools.decompose_wind">[docs]</a><span class="k">def</span> <span class="nf">decompose_wind</span><span class="p">(</span><span class="n">wspd</span><span class="p">,</span><span class="n">wdir</span><span class="p">,</span><span class="n">wdir_fmt</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Turn a wind speed and direction into u and v components.</span>

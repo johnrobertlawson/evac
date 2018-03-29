@@ -43,21 +43,22 @@
         
         
   <h1>Source code for evac.stats.misc_stats</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Scripts involving statistics or data manipulation here.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot; Functions that are not specifically deterministic/probabilistic.</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="sd">Todo:</span>
+<span class="sd">    * Move all DKE/DTE functions into :any:`~evac.stats.diffenergy`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">pdb</span>
-<span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">import</span> <span class="nn">scipy.signal</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">operator</span>
 
-<span class="kn">import</span> <span class="nn">evac.utils.gis_tools</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span>
 
+<span class="kn">import</span> <span class="nn">evac.utils.gis_tools</span> <span class="k">as</span> <span class="nn">utils</span>
 <span class="kn">from</span> <span class="nn">evac.datafiles.wrfout</span> <span class="k">import</span> <span class="n">WRFOut</span>
 
 <div class="viewcode-block" id="compute_bool_thresh"><a class="viewcode-back" href="../../../evac.stats.misc_stats.html#evac.stats.misc_stats.compute_bool_thresh">[docs]</a><span class="k">def</span> <span class="nf">compute_bool_thresh</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="n">overunder</span><span class="p">,</span><span class="n">threshold</span><span class="p">):</span>

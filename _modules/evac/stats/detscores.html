@@ -43,16 +43,7 @@
         
         
   <h1>Source code for evac.stats.detscores</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; Miscellaneous (and more simple) deterministic scores.</span>
-
-<span class="sd">Using Buizza 2001, MWR.</span>
-
-<span class="sd">a = observed and forecast</span>
-<span class="sd">b = forecast but not observed</span>
-<span class="sd">c = observed but not forecast</span>
-<span class="sd">d = neither observed nor forecast</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">math</span>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">pdb</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">N</span>
@@ -60,22 +51,29 @@
 <span class="kn">from</span> <span class="nn">evac.stats.misc_stats</span> <span class="k">import</span> <span class="n">compute_contingency</span>
 
 <div class="viewcode-block" id="DetScores"><a class="viewcode-back" href="../../../evac.stats.detscores.html#evac.stats.detscores.DetScores">[docs]</a><span class="k">class</span> <span class="nc">DetScores</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Miscellaneous (and more simple) deterministic scores.</span>
+
+<span class="sd">    Using Buizza 2001, MWR, as follows:</span>
+<span class="sd">        * a = observed and forecast</span>
+<span class="sd">        * b = forecast but not observed</span>
+<span class="sd">        * c = observed but not forecast</span>
+<span class="sd">        * d = neither observed nor forecast</span>
+
+<span class="sd">    Users must supply the forecast and observation array (with threshold</span>
+<span class="sd">    and over/under operation), or either arr or (a,b,c,d).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fcst_arr,obs_arr (N.ndarray)    :   Forecast and verification arrays,</span>
+<span class="sd">                                                the same dimensions.</span>
+<span class="sd">        thresh (float)  :   threshold</span>
+<span class="sd">        overunder (str) :   over, under, overeq, undereq, equal</span>
+<span class="sd">        arr2x2 (N.ndarray) :   Array representing 2x2 matrix.</span>
+<span class="sd">                                Must be arranged so flatten array is</span>
+<span class="sd">                                equal to a tuple of (a,b,c,d).</span>
+<span class="sd">        a,b,c,d (int)   :   Number of elements in 2x2 matrix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arr2x2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">fcst_arr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">obs_arr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overunder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Users must supply the forecast and observation array (with threshold</span>
-<span class="sd">        and over/under operation), or either arr or (a,b,c,d).</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            fcst_arr,obs_arr (N.ndarray)    :   Forecast and verification arrays,</span>
-<span class="sd">                                                    the same dimensions.</span>
-<span class="sd">            thresh (float)  :   threshold</span>
-<span class="sd">            overunder (str) :   over, under, overeq, undereq, equal</span>
-<span class="sd">            arr2x2 (N.ndarray) :   Array representing 2x2 matrix.</span>
-<span class="sd">                                    Must be arranged so flatten array is</span>
-<span class="sd">                                    equal to a tuple of (a,b,c,d).</span>
-<span class="sd">            a,b,c,d (int)   :   Number of elements in 2x2 matrix.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">arr2x2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">fcst_arr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

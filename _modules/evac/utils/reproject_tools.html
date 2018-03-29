@@ -43,7 +43,18 @@
         
         
   <h1>Source code for evac.utils.reproject_tools</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="sd">&quot;&quot;&quot; A collection of classes and functions to reproject data.</span>
+
+<span class="sd">Todo:</span>
+<span class="sd">    * Rewrite using cartopy</span>
+<span class="sd">    * Can some of this be merged with :any:`~evac.utils.gis_tools`?</span>
+<span class="sd">    * These classes need to be put in their own file.</span>
+<span class="sd">    * Long term, we probably need a new directory, &#39;geog&#39; or &#39;reproj&#39;,</span>
+<span class="sd">        which deals with reprojection, and gathers a lot of functions</span>
+<span class="sd">        and classes that are scattered around evac.</span>
+<span class="sd">    * Rewrite without any WEM imports.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pdb</span>
 
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">griddata</span>

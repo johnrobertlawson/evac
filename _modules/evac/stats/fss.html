@@ -51,11 +51,30 @@
 <span class="kn">from</span> <span class="nn">evac.utils.exceptions</span> <span class="k">import</span> <span class="n">FormatError</span>
 
 <div class="viewcode-block" id="FSS"><a class="viewcode-back" href="../../../evac.stats.fss.html#evac.stats.fss.FSS">[docs]</a><span class="k">class</span> <span class="nc">FSS</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Fractions Skill Score (from REF).</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        The forecast and observed data must be on the same 2D grid.</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        * Implement itime/ftime?</span>
+<span class="sd">        * Implement automatic neighbourhood sizes (maxlen)</span>
+<span class="sd">        * Rename `ns` etc, it&#39;s confusing.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data_fcst (numpy.array): Array (2-D) of forecast data.</span>
+<span class="sd">        data_obs (numpy.array): Array (2-D) of observed data.</span>
+<span class="sd">        itime,ftime (datetime.datetime): Initial and final time (UTC).</span>
+<span class="sd">            Not implemented yet, as input data is 2D (single time)</span>
+<span class="sd">        ns (`list`-like): Neighbourhood sizes (as tuple, numpy.array, etc)</span>
+<span class="sd">        thresholds (`list`-like): Thresholds (in mm)</span>
+<span class="sd">        ns_step (int): Interval between neighbourhood, for when this is</span>
+<span class="sd">            automatically computed (i.e. ns is None).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data_fcst</span><span class="p">,</span><span class="n">data_obs</span><span class="p">,</span><span class="n">itime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">ftime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">lv</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span><span class="n">ns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span><span class="n">ns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">ns_step</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Fcst and ob data needs to be on the same grid.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_fcst</span> <span class="o">=</span> <span class="n">data_fcst</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_obs</span> <span class="o">=</span> <span class="n">data_obs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span> <span class="o">=</span> <span class="n">thresholds</span>
@@ -66,9 +85,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">xdim</span> <span class="o">=</span> <span class="n">data</span>
 
         <span class="c1"># Neighbourhoods</span>
-        <span class="k">if</span> <span class="n">ns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ns</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">maxlen</span><span class="p">,</span><span class="n">ns_step</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ns</span> <span class="o">=</span> <span class="n">ns</span>
+        <span class="c1"># if ns is None:</span>
+            <span class="c1"># ns = N.arange(1,maxlen,ns_step)</span>
+        <span class="c1"># self.ns = ns</span>
 
         <span class="c1"># Computations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compute_MSE</span><span class="p">()</span>

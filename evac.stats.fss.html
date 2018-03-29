@@ -48,8 +48,62 @@
       <div class="content">
         
         
-  <div class="section" id="evac-stats-fss-module">
-<h1>evac.stats.fss module<a class="headerlink" href="#evac-stats-fss-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-evac.stats.fss">
+<span id="evac-stats-fss-module"></span><h1>evac.stats.fss module<a class="headerlink" href="#module-evac.stats.fss" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="evac.stats.fss.FSS">
+<em class="property">class </em><code class="descclassname">evac.stats.fss.</code><code class="descname">FSS</code><span class="sig-paren">(</span><em>data_fcst</em>, <em>data_obs</em>, <em>itime=False</em>, <em>ftime=False</em>, <em>thresholds=(0.5</em>, <em>1</em>, <em>2</em>, <em>4</em>, <em>8)</em>, <em>ns=None</em>, <em>ns_step=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/fss.html#FSS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.fss.FSS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Fractions Skill Score (from REF).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The forecast and observed data must be on the same 2D grid.</p>
+</div>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>Implement itime/ftime?</li>
+<li>Implement automatic neighbourhood sizes (maxlen)</li>
+<li>Rename <cite>ns</cite> etc, it&#8217;s confusing.</li>
+</ul>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data_fcst</strong> (<em>numpy.array</em>) &#8211; Array (2-D) of forecast data.</li>
+<li><strong>data_obs</strong> (<em>numpy.array</em>) &#8211; Array (2-D) of observed data.</li>
+<li><strong>itime</strong><strong>,</strong><strong>ftime</strong> (<em>datetime.datetime</em>) &#8211; Initial and final time (UTC).
+Not implemented yet, as input data is 2D (single time)</li>
+<li><strong>ns</strong> (<cite>list</cite>-like) &#8211; Neighbourhood sizes (as tuple, numpy.array, etc)</li>
+<li><strong>thresholds</strong> (<cite>list</cite>-like) &#8211; Thresholds (in mm)</li>
+<li><strong>ns_step</strong> (<em>int</em>) &#8211; Interval between neighbourhood, for when this is
+automatically computed (i.e. ns is None).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="evac.stats.fss.FSS.compute_FSS">
+<code class="descname">compute_FSS</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/fss.html#FSS.compute_FSS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.fss.FSS.compute_FSS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.fss.FSS.do_grid_check">
+<code class="descname">do_grid_check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/fss.html#FSS.do_grid_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.fss.FSS.do_grid_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure grids are identical size.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="evac.stats.fss.FSS.enforce_2D">
+<code class="descname">enforce_2D</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/fss.html#FSS.enforce_2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.fss.FSS.enforce_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Both data grids need to be 2D.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

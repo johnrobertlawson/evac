@@ -48,8 +48,559 @@
       <div class="content">
         
         
-  <div class="section" id="evac-utils-gis-tools-module">
-<h1>evac.utils.gis_tools module<a class="headerlink" href="#evac-utils-gis-tools-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-evac.utils.gis_tools">
+<span id="evac-utils-gis-tools-module"></span><h1>evac.utils.gis_tools module<a class="headerlink" href="#module-evac.utils.gis_tools" title="Permalink to this headline">¶</a></h1>
+<p>A collection of geographical-related functions.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li><dl class="first docutils">
+<dt>Make sure other utils functions are imported explicitly, so</dt>
+<dd>we can remove the star import in util&#8217;s <cite>__init__.py</cite>.</dd>
+</dl>
+</li>
+</ul>
+</div>
+<dl class="function">
+<dt id="evac.utils.gis_tools.TimeSfcLatLon">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">TimeSfcLatLon</code><span class="sig-paren">(</span><em>nc</em>, <em>varlist</em>, <em>times</em>, <em>latslons='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#TimeSfcLatLon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.TimeSfcLatLon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.check_same_dimensions">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">check_same_dimensions</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#check_same_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.check_same_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*args</strong> &#8211; A number of N.ndarray types</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if all arrays have the same size.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.check_vertical_coordinate">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">check_vertical_coordinate</code><span class="sig-paren">(</span><em>level</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#check_vertical_coordinate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.check_vertical_coordinate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check to see what type of level is requested by user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.closest">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">closest</code><span class="sig-paren">(</span><em>arr</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#closest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.closest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find index of closest value.
+Only working on 1D array right now.</p>
+<p>Inputs:
+val     :   required value
+arr     :   array of values</p>
+<p>Output:</p>
+<p>idx     :   index of closest value</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.closest_datetime">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">closest_datetime</code><span class="sig-paren">(</span><em>times</em>, <em>t</em>, <em>round=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#closest_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.closest_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find closest value in list of datetimes.
+Return index of closest.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>times</strong> (<em>list</em><em>,</em><em>tuple</em>) &#8211; collection of datetimes.</li>
+<li><strong>t</strong> (<em>datetime.datetime</em>) &#8211; required time</li>
+<li><strong>round</strong> (<em>bool</em><em>,</em><em>str</em>) &#8211; If False, return closest index only.
+If &#8216;afterinc&#8217;, return index of first time after t.
+(If closest time is identical to t, return that index)
+If &#8216;afterexc&#8217;, same, but if closest time = t, return one after.
+If &#8216;beforeinc&#8217;, return index of last time before t.
+(If closest time is identical to t, return that index)
+If &#8216;beforeexc&#8217;, same, but if closest time = t, return one before.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Index of times requests
+dtss[idx] (int): Number of seconds difference between the two.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">idx (int)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.combine_wind_components">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">combine_wind_components</code><span class="sig-paren">(</span><em>u</em>, <em>v</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#combine_wind_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.combine_wind_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.convert_tuple_to_dntimes">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">convert_tuple_to_dntimes</code><span class="sig-paren">(</span><em>times</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#convert_tuple_to_dntimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.convert_tuple_to_dntimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert tuple or tuple of tuples to datenum date format.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.convert_velocity_units">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">convert_velocity_units</code><span class="sig-paren">(</span><em>V</em>, <em>conversion</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#convert_velocity_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.convert_velocity_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a velocity from one unit to another.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>V</strong> &#8211; a number (int, float, array)</li>
+<li><strong>convert</strong> &#8211; &#8216;ms_kt&#8217; converts the output from m/s to knots.
+&#8216;ms_mph&#8217; converts from m/s to mph.
+&#8216;kt_ms&#8217; converts from knots to m/s.
+&#8216;kt_mph&#8217; converts from knots to mph.
+&#8216;mph_kt&#8217; converts from mph to knots.
+&#8216;mph_ms&#8217; converts from mph to m/s.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>add km/h</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.csvprocess">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">csvprocess</code><span class="sig-paren">(</span><em>data</em>, <em>names</em>, <em>convert=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#csvprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.csvprocess" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.datetime_to_timetuple">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">datetime_to_timetuple</code><span class="sig-paren">(</span><em>utc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#datetime_to_timetuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.datetime_to_timetuple" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.decompose_wind">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">decompose_wind</code><span class="sig-paren">(</span><em>wspd</em>, <em>wdir</em>, <em>wdir_fmt='deg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#decompose_wind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.decompose_wind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn a wind speed and direction into u and v components.</p>
+<p>Uses meteorological convention - so a westerly wind is 270.</p>
+<p>TODO: Add option to use bearings (westerly wind is 90) or mathematical
+(i.e., zero begins at 3 o&#8217;clock)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>wspd</strong> &#8211; Wind speed. Can be float, integer, or N.ndarray</li>
+<li><strong>wdir</strong> &#8211; Wind direction. Can be float, integer, or N.ndarray.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Optional:</dt>
+<dd>wdir_fmt    :   wdir is degrees by default (&#8216;deg&#8217;). Use &#8216;rad&#8217; to use radians.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.determine_model">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">determine_model</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#determine_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.determine_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return model depending on naming convention.</p>
+<p>If no model exists, return false.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.dewpoint">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">dewpoint</code><span class="sig-paren">(</span><em>T</em>, <em>RH</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#dewpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.dewpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.dstack_loop">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">dstack_loop</code><span class="sig-paren">(</span><em>data</em>, <em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#dstack_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.dstack_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to stack numpy array (data) into &#8216;stack&#8217; object (obj).
+If obj doesn&#8217;t exist, then initialise it
+If obj does exist, stack data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.dstack_loop_v2">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">dstack_loop_v2</code><span class="sig-paren">(</span><em>data</em>, <em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#dstack_loop_v2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.dstack_loop_v2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Need to set obj = 0 at start of loop in master script</p>
+<p>Tries to stack numpy array (data) into &#8216;stack&#8217; object (obj).
+If obj doesn&#8217;t exist, then initialise it
+If obj does exist, stack data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.dt_from_fnames">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">dt_from_fnames</code><span class="sig-paren">(</span><em>f1</em>, <em>f2</em>, <em>model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#dt_from_fnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.dt_from_fnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Work out time difference between two data files
+from their naming scheme.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f1</strong><strong>,</strong><strong>f2</strong> (<em>str</em>) &#8211; filename, with or without extension</li>
+<li><strong>model</strong> (<em>str</em>) &#8211; model used to generate data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Difference between files, in seconds.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.ensure_datenum">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">ensure_datenum</code><span class="sig-paren">(</span><em>times</em>, <em>fmt='int'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#ensure_datenum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.ensure_datenum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure times are in list-of-datenums format.
+If not, convert them.</p>
+<p>Possibilities:
+times = 123456                                      #1
+times = (123456,)                                   #2
+times = (123456,234567)                             #3
+times = (2011,12,1,18,0,0)                          #4
+times = ((2011,12,1,18,0,0),(2011,12,2,6,0,0))      #5</p>
+<dl class="docutils">
+<dt>fmt</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">whether to return list of integers or an integer</span><dd>&#8216;int&#8217; or &#8216;list&#8217;</dd>
+</dl>
+<p>Output:
+dntimes = (123456,) or (123456,234567)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.ensure_datetime">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">ensure_datetime</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#ensure_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.ensure_datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Possibilities:
+times = 123456                                      #1
+times = (123456,)                                   #2
+times = (123456,234567)                             #3
+times = (2011,12,1,18,0,0)                          #4
+times = ((2011,12,1,18,0,0),(2011,12,2,6,0,0))      #5
+times = datetime.datetime                           #6
+times = (datetime.datetime, datetime.datetime)      #7</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.ensure_timetuple">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">ensure_timetuple</code><span class="sig-paren">(</span><em>times</em>, <em>fmt='single'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#ensure_timetuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.ensure_timetuple" title="Permalink to this definition">¶</a></dt>
+<dd><p>MAke sure time(s) are in six-item tuple format
+(YYYY,MM,DD,HH,MM,SS)</p>
+<dl class="docutils">
+<dt>fmt</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">whether to return a list of tuples or single tuple.</span><dd>&#8216;list&#8217; or &#8216;single&#8217;</dd>
+</dl>
+<p>Possibilities:
+times = 123456                                      #1
+times = (123456,)                                   #2
+times = (123456,234567)                             #3
+times = (2011,12,1,18,0,0)                          #4
+times = ((2011,12,1,18,0,0),(2011,12,2,6,0,0))      #5</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.find_time_index">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">find_time_index</code><span class="sig-paren">(</span><em>wrftime</em>, <em>reqtimetuple</em>, <em>tupleformat=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#find_time_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.find_time_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.generate_colours">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">generate_colours</code><span class="sig-paren">(</span><em>M</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#generate_colours"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.generate_colours" title="Permalink to this definition">¶</a></dt>
+<dd><p>M       :   Matplotlib instance
+n       :   number of colours you want</p>
+<p>Returns</p>
+<p>Usage: when cycling over n plots, the colour should
+be colourlist[n].</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.generate_image_loop">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">generate_image_loop</code><span class="sig-paren">(</span><em>dom='d03'</em>, <em>fpath='./'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#generate_image_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.generate_image_loop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.generate_times">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">generate_times</code><span class="sig-paren">(</span><em>idate</em>, <em>fdate</em>, <em>interval</em>, <em>fmt='timetuple'</em>, <em>inclusive=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#generate_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.generate_times" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>itime</strong> (<em>list</em><em>,</em><em>tuple</em>) &#8211; Start date/time. Format is
+YYYY,MM,DD,HH,MM,SS (calendar.timegm).</li>
+<li><strong>ftime</strong> (<em>list</em><em>,</em><em>tuple</em>) &#8211; End date/time. Same format as itime.</li>
+<li><strong>interval</strong> (<em>int</em>) &#8211; interval between output times, in seconds.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of times in datenum format.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.getXY">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">getXY</code><span class="sig-paren">(</span><em>lats</em>, <em>lons</em>, <em>ptlat</em>, <em>ptlon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#getXY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.getXY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output is lat, lon so y,x</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.get_cross_section">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">get_cross_section</code><span class="sig-paren">(</span><em>Alat</em>, <em>Alon</em>, <em>Blat</em>, <em>Blon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#get_cross_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.get_cross_section" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.get_latlon_idx">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">get_latlon_idx</code><span class="sig-paren">(</span><em>lats</em>, <em>lons</em>, <em>lat</em>, <em>lon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#get_latlon_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.get_latlon_idx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.get_level_naming">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">get_level_naming</code><span class="sig-paren">(</span><em>va</em>, <em>lv</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#get_level_naming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.get_level_naming" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.get_netcdf_naming">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">get_netcdf_naming</code><span class="sig-paren">(</span><em>model</em>, <em>t</em>, <em>dom=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#get_netcdf_naming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.get_netcdf_naming" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default:
+wrfout files don&#8217;t have an extension
+other files have .nc extension (convert first)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.get_sequence">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">get_sequence</code><span class="sig-paren">(</span><em>x</em>, <em>sos=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#get_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.get_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a sequence (tuple or list) for iteration.
+Avoids an error for strings/integers.
+SoS = 1 enables the check for a sequence of sequences (list of dates)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.gettopo">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">gettopo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#gettopo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.gettopo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.haversine_baker">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">haversine_baker</code><span class="sig-paren">(</span><em>lon1</em>, <em>lat1</em>, <em>lon2</em>, <em>lat2</em>, <em>radians=False</em>, <em>earth_rad=6371.227</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#haversine_baker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.haversine_baker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows to calculate geographical distance
+using the haversine formula.
+:param lon1: longitude of the first set of locations
+:type lon1: numpy.ndarray
+:param lat1: latitude of the frist set of locations
+:type lat1: numpy.ndarray
+:param lon2: longitude of the second set of locations
+:type lon2: numpy.float64
+:param lat2: latitude of the second set of locations
+:type lat2: numpy.float64
+:keyword radians: states if locations are given in terms of radians
+:type radians: bool
+:keyword earth_rad: radius of the earth in km
+:type earth_rad: float
+:returns: geographical distance in km
+:rtype: numpy.ndarray</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.hgt_from_sigma">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">hgt_from_sigma</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#hgt_from_sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.hgt_from_sigma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.interp2point">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">interp2point</code><span class="sig-paren">(</span><em>data</em>, <em>lat_loc</em>, <em>lon_loc</em>, <em>lat</em>, <em>lon</em>, <em>lvidx=0</em>, <em>xyidx=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#interp2point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.interp2point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.interp_latlon">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">interp_latlon</code><span class="sig-paren">(</span><em>data</em>, <em>lat</em>, <em>lon</em>, <em>lats</em>, <em>lons</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#interp_latlon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.interp_latlon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.latlon_1D">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">latlon_1D</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#latlon_1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.latlon_1D" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.load_data">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">load_data</code><span class="sig-paren">(</span><em>folder</em>, <em>fname</em>, <em>format='pickle'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load array from file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.lookup_time">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">lookup_time</code><span class="sig-paren">(</span><em>str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#lookup_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.lookup_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.make_subplot_label">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">make_subplot_label</code><span class="sig-paren">(</span><em>ax</em>, <em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#make_subplot_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.make_subplot_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.merge_netcdfs">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">merge_netcdfs</code><span class="sig-paren">(</span><em>outpath</em>, <em>filelist=None</em>, <em>globpath=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#merge_netcdfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.merge_netcdfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge numerous netcdf files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filelist</strong> (<em>list</em><em>,</em><em>tuple</em>) &#8211; Absolute paths to all netcdf files.</li>
+<li><strong>globpath</strong> (<em>str</em>) &#8211; Absolute path with glob search</li>
+<li><strong>outpath</strong> (<em>str</em>) &#8211; Absolute path to merged file.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.netcdf_files_in">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">netcdf_files_in</code><span class="sig-paren">(</span><em>folder</em>, <em>dom=1</em>, <em>init_time=0</em>, <em>model='auto'</em>, <em>return_model=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#netcdf_files_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.netcdf_files_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hunt through given folder to find the right netcdf file for data.
+Return ncpath (absolute path to file) and model (RUC, WRF, etc).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>folder</strong> &#8211; Absolute path to directory</li>
+<li><strong>dom</strong> &#8211; specify domain. None specified if zero.</li>
+<li><strong>init_time</strong> &#8211; initialisation time. Can be tuple or datenum.
+If zero, then folder must contain one unambiguous file.</li>
+<li><strong>model</strong> &#8211; Default: automatically detect the type of netcdf file
+(RUC data, wrfout file, etc)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Absolute path to file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">ncpath</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.p_interpol">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">p_interpol</code><span class="sig-paren">(</span><em>dom</em>, <em>var</em>, <em>ncfolder</em>, <em>datestr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#p_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.p_interpol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.padded_times">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">padded_times</code><span class="sig-paren">(</span><em>timeseq</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#padded_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.padded_times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.pretty_fhr">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">pretty_fhr</code><span class="sig-paren">(</span><em>fhr</em>, <em>in_fmt='hours'</em>, <em>out_fmt=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#pretty_fhr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.pretty_fhr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pretty time stamp suitable for looping plots
+over numerous forecast times.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fhr</strong> &#8211; offset from initialisation time (units given by in_fmt).</li>
+<li><strong>in_fmt</strong> (<em>str</em>) &#8211; &#8216;hours&#8217;, &#8216;minutes&#8217;, or &#8216;seconds&#8217;</li>
+<li><strong>out_fmt</strong> (<em>int</em>) &#8211; selects the format of the output string.
+out_fmt=1 is &#8220;{h}h_{mm}m&#8221;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.return_subdomain">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">return_subdomain</code><span class="sig-paren">(</span><em>data</em>, <em>lats</em>, <em>lons</em>, <em>Nlim</em>, <em>Elim</em>, <em>Slim</em>, <em>Wlim</em>, <em>fmt='latlon'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#return_subdomain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.return_subdomain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns smaller domain of data and lats/lons based
+on specified limits.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.save_data">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">save_data</code><span class="sig-paren">(</span><em>data</em>, <em>folder</em>, <em>fname</em>, <em>format='pickle'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#save_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.save_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save array to file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.string_from_time">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">string_from_time</code><span class="sig-paren">(</span><em>usage</em>, <em>t</em>, <em>dom=0</em>, <em>strlen=0</em>, <em>conven=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#string_from_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.string_from_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>conven  :   convection of MM/DD versus DD/MM</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.thinned_barbs">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">thinned_barbs</code><span class="sig-paren">(</span><em>pres</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#thinned_barbs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.thinned_barbs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.timetuple_to_datetime">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">timetuple_to_datetime</code><span class="sig-paren">(</span><em>utc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#timetuple_to_datetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.timetuple_to_datetime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.vstack_loop">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">vstack_loop</code><span class="sig-paren">(</span><em>data</em>, <em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#vstack_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.vstack_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Need to set obj = 0 at start of loop in master script</p>
+<p>Tries to stack numpy array (data) into &#8216;stack&#8217; object (obj).
+If obj doesn&#8217;t exist, then initialise it
+If obj does exist, stack data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.wrfout_files_in">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">wrfout_files_in</code><span class="sig-paren">(</span><em>folders</em>, <em>dom=0</em>, <em>init_time='notset'</em>, <em>descend=1</em>, <em>avoid=0</em>, <em>unambiguous=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#wrfout_files_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.wrfout_files_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hunt through given folder(s) to find all occurrences of wrfout
+files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>folders</strong> &#8211; list of absolute paths to directories</li>
+<li><strong>dom</strong> &#8211; specify domain. None specified if zero.</li>
+<li><strong>init_time</strong> &#8211; tuple of initialisation time</li>
+<li><strong>descend</strong> &#8211; boolean: go into subfolders</li>
+<li><strong>avoid</strong> &#8211; string of filenames. if a subfolder contains
+the string, do not descend into this one.</li>
+<li><strong>unambiguous</strong> &#8211; only return a single absolute path, else throw
+an Exception.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of absolute paths to wrfout files</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">wrfouts</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="evac.utils.gis_tools.xs_distance">
+<code class="descclassname">evac.utils.gis_tools.</code><code class="descname">xs_distance</code><span class="sig-paren">(</span><em>Alat</em>, <em>Alon</em>, <em>Blat</em>, <em>Blon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/utils/gis_tools.html#xs_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.utils.gis_tools.xs_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 
 
