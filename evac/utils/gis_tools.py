@@ -53,7 +53,7 @@ def decompose_wind(wspd,wdir,wdir_fmt='deg'):
         pass
     else:
         raise Exception("Choose 'deg' or 'rad' for wdir_fmt.")
-        
+
     u = -wspd * N.sin(wdir)
     v = -wspd * N.cos(wdir)
 
@@ -61,7 +61,7 @@ def decompose_wind(wspd,wdir,wdir_fmt='deg'):
 
 def convert_velocity_units(V,conversion):
     """Convert a velocity from one unit to another.
-    
+
     Args:
         V       :   a number (int, float, array)
         convert :   'ms_kt' converts the output from m/s to knots.
@@ -90,9 +90,9 @@ def convert_velocity_units(V,conversion):
     else:
         raise Exception("Conversion argument {} is not recognised.".format(
                         conversion))
-    
+
     return V * factor
-    
+
 def combine_wind_components(u,v):
     wdir = N.degrees(N.arctan2(u,v)) + 180.0
     wspd = N.sqrt(u**2 + v**2)
@@ -1381,6 +1381,9 @@ def pretty_fhr(fhr,in_fmt='hours',out_fmt=1):
     """ Returns a pretty time stamp suitable for looping plots
     over numerous forecast times.
 
+    Todo:
+        * Merge with :class:`~evac.utils.timetool`?
+        
     Args:
         fhr: offset from initialisation time (units given by in_fmt).
         in_fmt (str): 'hours', 'minutes', or 'seconds'
@@ -1393,6 +1396,6 @@ def pretty_fhr(fhr,in_fmt='hours',out_fmt=1):
         raise Exception("Not implemented yet.")
 
     if out_fmt == 1:
-        h,m = divmod(in_fmt,60)
+        h,m = divmod(fhr,60)
         outstr = '{:d}h_{:02d}min'.format(h,m)
     return outstr
