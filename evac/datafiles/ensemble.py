@@ -16,8 +16,8 @@ class Ensemble:
     """ Class containing an ensemble of (netCDF, WRF) forecasts.
 
     A deterministic forecast (i.e. ensemble of one control member) can
-    be created by using one member. 
-    
+    be created by using one member.
+
     Each ensemble member needs to have a separate folder (named
     as the ensemble member's name), but different domains can be
     within a single member's folder.
@@ -28,7 +28,7 @@ class Ensemble:
 
     Example:
         To load a 5-D array of 10-m wind at the second time (and using defaults)::
-            
+
             import datetime
             from evac.datafiles.ensemble import Ensemble
 
@@ -152,7 +152,7 @@ class Ensemble:
         fdt = 6 # fdt is 6 for gefs - at least for sensible ranges?
         # pdb.set_trace()
         return members, fdt
-            
+
 
     def get_members(self,f_prefix=None):
         """Create a dictionary with all data.
@@ -166,9 +166,9 @@ class Ensemble:
         """
         members = {}
         if self.model == 'gefs':
-            members,fdt = self.get_gefs_members()
+            members,fdt = self.get_gefs_members(f_prefix=f_prefix)
         elif self.model == 'wrf':
-            members,fdt = self.get_wrf_members()
+            members,fdt = self.get_wrf_members(f_prefix=f_prefix)
         else:
             raise NotImplementedError
         return members, fdt
@@ -650,8 +650,3 @@ class Ensemble:
     def get_cenlatlons(self,dom=1):
         W = self.arbitrary_pick(dataobj=True,dom=dom)
         return W.cen_lat, W.cen_lon
-
-
-        
-
-        

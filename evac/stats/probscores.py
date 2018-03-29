@@ -88,20 +88,26 @@ class ProbScores:
         """
         pass
 
-    def compute_crps(self,threshs,mean=True,QC=True):
+    def compute_crps(self,threshs,mean=True,QC=False):
         """
-        Needs observation array (m x n)
-        Needs ensemble forecast array (e x m x n) where
+        Notes:
+            This method needs the followed during class instantiation:
+            * Needs `xa`, observation array (m x n)
+            * Needs `xfs`, ensemble forecast array (e x m x n) where
                 e = number of ensemble members
+            * Px is the probability that ob is less or equal to fcst.
+                Loop through all probs from 0 to 100 %
 
-        xa     :   observation
-        xfs    :   forecasts for N ensemble members
-        Px is the probability that ob is less or equal to fcst
-                    - loop through all probs from 0 to 100 %
+        Todo:
+            * Decompose CRPS into reliability etc, see Hersbach paper.
 
-        threshs is a numpy array of the levels to apply to the data
+        Args:
+            threshs: An array of the levels to apply to the data
+            mean (bool): If `True`, return a mean score averaged over the domain
+            QC (bool): If `True`, set anything less than zero to zero.
 
-        Discretising using https://www.kaggle.com/c/how-much-did-it-rain#evaluation
+        Discretising using:
+        https://www.kaggle.com/c/how-much-did-it-rain#evaluation
         """
         # Number of ensemble members
         nens, ny, nx = self.xfs.shape
@@ -127,7 +133,7 @@ class ProbScores:
         # Now the integration
         # integrand = (Px-Pax)**2 * dx
         # crps = N.sum(integrand)
-        
+
         def integrand(a):
             Px,Pax = a
             return (Px-Pax)**2
@@ -142,7 +148,7 @@ class ProbScores:
         c = N.zeros_like(threshs)
         for thidx,th in enumerate(threshs):
             # Sum of 2D field of probs/heaviside
-            Px = N.sum(N.greater(xfs_sort,th),axis=0)/nens 
+            Px = N.sum(N.greater(xfs_sort,th),axis=0)/nens
             Hx = (self.heaviside(th-self.xa)).astype(int)
             c[thidx] = N.sum((Px - Hx) **2)
         # Average over all thresholds and grid points
