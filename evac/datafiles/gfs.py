@@ -1,6 +1,14 @@
-from .gribfile import GribFile
+import os
+import pdb
+
+from evac.datafiles.gribfile import GribFile
 
 class GFS(GribFile):
+    """ Class to hold GFS data (in GRIB format).
+
+    Args:
+        fpath: Absolute path to data file.
+    """
     def __init__(self,fpath):
         """Initialise GFS object, a child of GribFile,
         grandchild of DataFile.

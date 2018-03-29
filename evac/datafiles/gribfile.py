@@ -9,12 +9,15 @@ except ModuleNotFoundError:
     print("Not using pygrib")
     pygrib = None
 
-from .datafile import DataFile
+from evac.datafiles.datafile import DataFile
 
 class GribFile(DataFile):
-    """Generic load for Grib 1/2 files (both?)
+    """Generic load for Grib 1/2 files.
 
-    Todos:
+    Args:
+        fpath: Absolute path to grib file.
+
+    Todo:
         * Make general, i.e. remove HRRR etc specifics
     """
     def __init__(self,fpath):

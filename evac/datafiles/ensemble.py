@@ -27,15 +27,18 @@ class Ensemble:
         * Consistency with method names (e.g., get() )
 
     Example:
-        To load a 5-D array of 10-m wind at the second time::
+        To load a 5-D array of 10-m wind at the second time (and using defaults)::
             
+            import datetime
             from evac.datafiles.ensemble import Ensemble
-            E = Ensemble()
+
+            initutc = datetime.datetime(2016,3,31,18,0,0)
+            E = Ensemble(rootdir='/path/to/data',initutc=initutc)
             E.get('wind10',utc=1)
 
     Args:
         rootdir (str):  Directory at root of datafiles
-        initutc (datetime.datetime): Initialization time
+        initutc (datetime.datetime): Initialization time (assumed UTC)
         doms (int, optional): Number of domains
         ctrl (bool, optional): Whether ensemble has control member
         aux (bool, dict, optional): Dictionary lists, per domain, data
