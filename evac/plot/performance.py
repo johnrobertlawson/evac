@@ -9,34 +9,35 @@ from evac.utils.evac_numbers import is_number, has_integers, is_integer, is_arra
 from evac.plot.figure import Figure
 
 class Performance(Figure):
-    def __init__(self,outpath,fname,legendkwargs=None):
-        """ Performance diagram, from Roebber 2009 WAF.
+    """ Performance diagram, from Roebber 2009 WAF.
 
-        Some checking with WFRT's verif package (Github)
+    Some checking with WFRT's verif package (Github)?
 
+    If passing in stats, they should be:
+
+    POD     =   A/A+C
+    FAR     =   B/A+B
+    BIAS    =   (A+B)/(A+C)
+    CSI     =   A/(A+B+C)
+    SR      =   1- FAR
+
+    Example:
         To maintain flexibility, the user should do the following
-        outside the class once initialised:
+        outside the class once initialised::
 
-        Performance.plot_data(...) # As many times as needed
-        Performance.save() # When finished
-
-        If passing in stats, they should be:
-
-        POD     =   A/A+C
-        FAR     =   B/A+B
-        BIAS    =   (A+B)/(A+C)
-        CSI     =   A/(A+B+C)
-        SR      =   1- FAR
-               
-        Some plotting settings, like bias contours, can be accessed:
+            Performance.plot_data(...) # As many times as needed
+            Performance.save() # When finished
+           
+    Some plotting settings, like bias contours, can be accessed::
 
         Performance.contours['bias'] = [0.5,1,1.5]
 
-        Args:
-            outpath     :   directory for saving figure
-            fname       :   file name
-            legendkwargs:   key-words for ax.legend().
-        """
+    Args:
+        outpath     :   directory for saving figure
+        fname       :   file name
+        legendkwargs:   key-words for ax.legend().
+    """
+    def __init__(self,outpath,fname,legendkwargs=None):
         self.outpath = outpath
         self.fname = fname
         #self.ncol = ncol

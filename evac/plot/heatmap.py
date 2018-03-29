@@ -9,6 +9,12 @@ import astropy.convolution
 from .figure import Figure
 
 class HeatMap(Figure):
+    """ Generates a heatmap-style plot.
+
+    Args:
+        data (numpy.array): Array of data. Should be 2-D.
+        fig,ax: If present, this plots to an existing axis/figure.
+    """
     def __init__(self,data,ax=False,fig=False,figsize=(6,6)):
         self.matrix = data
         super(HeatMap,self).__init__(figsize=figsize)
@@ -37,10 +43,8 @@ class HeatMap(Figure):
             x2labels (list,tuple): enables second x axis for labelling
             fname (str): file name for output image
             local_std (int): if zero, do not overlay local standard deviation.
-                             if positive integer, this is the kernel size
-                             to compute local std.
-        Returns:
-            (None)
+                if positive integer, this is the kernel size
+                to compute local std.
         """
         
         if not blank_nan:

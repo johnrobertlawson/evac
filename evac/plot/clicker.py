@@ -1,18 +1,22 @@
-import matplotlib as M
-M.use('gtkagg')
-
-import matplotlib.pyplot as plt
-import numpy as N
 import collections
 import pdb
 
-# from figure import Figure
+import matplotlib as M
+M.use('gtkagg')
+import matplotlib.pyplot as plt
+import numpy as N
+
 import evac.plot.colourtables as ct
 from evac.plot.scales import Scales
 from evac.plot.figure import Figure
 from evac.utils.defaults import Defaults
 
 class Clicker(Figure):
+    """ Generate a clickable GUI interface.
+
+    Todo:
+        * This needs updating as the script hasn't been used for a long time.
+    """
     # def __init__(self,config,wrfout,ax=0):
     def __init__(self,wrfout,data=0,fig=0,ax=0,clvs=False,cmap=False):
         # import pdb; pdb.set_trace()

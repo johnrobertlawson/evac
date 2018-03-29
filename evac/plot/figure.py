@@ -1,6 +1,3 @@
-"""All figures are subclasses of Figure.
-
-"""
 import pdb
 import os
 
@@ -16,24 +13,25 @@ import evac.utils as utils
 # import evac.utils.gis_tools as gis_tools
 
 class Figure:
+    """ Parent class for creating a figure in matplotlib.
+
+    Todo:
+        * Rewrite (along with other plotting scripts) for cartopy, due to 
+            the depreciation of basemap.
+
+    Args:
+        ax                  :   matplotlib.axes instance to plot to
+        fig                 :   matplotlib.figure instance to plot to
+        layout (str)        :   if "insetv" or "inseth", uses GridSpec to create subplots
+                                of different sizes.
+        mplargs (tuple,list):   other arguments to pass to matplotlib figure creation
+        mplkwargs (dict)    :   other keyword arguments to pass to matplotlib
+        use_defaults (bool) :   whether to load Defaults class. Set to be False
+                                if e.g. using your own matplotlibrc.
+    """
+
     def __init__(self,ax=None,fig=None,layout='normal',
                     mplargs=[],mplkwargs={},use_defaults=False):
-        """ Parent class for creating a figure in matplotlib.
-
-        Arguments:
-            (No mandatory)
-
-        Optional:
-            ax                  :   matplotlib.axes instance to plot to
-            fig                 :   matplotlib.figure instance to plot to
-            layout (str)        :   if "insetv" or "inseth", uses GridSpec to create subplots
-                                    of different sizes.
-            mplargs (tuple,list):   other arguments to pass to matplotlib figure creation
-            mplkwargs (dict)    :   other keyword arguments to pass to matplotlib
-            use_defaults (bool) :   whether to load Defaults class. Set to be False
-                                    if e.g. using your own matplotlibrc.
-        """
-
         # self.D = Defaults()
         self.save_figure = True
         self.use_defaults = use_defaults

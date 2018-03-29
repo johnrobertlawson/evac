@@ -8,28 +8,15 @@ from mpl_toolkits.basemap import Basemap
 from evac.plot.figure import Figure
 from evac.utils.reproject_tools import WRF_native_grid, VerifGrid
 from evac.datafiles.wrfout import WRFOut
-
-class DomainGrid:
-    def __init__(self,inherit=None):
-        """
-        Create a common class for verification domains, WRF out domains, etc
-        """
-        if isinstance(inherit,WRFOut):
-            self.__dict__ = inherit.__dict__.copy()
-        elif isinstance(inherit,WRF_native_grid):
-            self.__dict__ = inherit.__dict__.copy()
-        elif isinstance(inherit,VerifGrid):
-            self.__dict__ = inherit.__dict__.copy()
-        elif isinstance(inherit,str):
-            inherit = WRFOut(inherit)
-            self.__dict__ = inherit.__dict__.copy()
-
-            # self.lat_0 = inherit.nc.CEN_LAT
-            # self.lon_0 = inherit.nc.CEN_LON
-        else:
-            raise Exception("Inherited object is {}".format(type(inherit)))
+from evac.plot.domaingrid import DomainGrid
 
 class Map(Figure):
+    """ Plot a geographical map. 
+    
+    Similar to :class:`~evac.plot.birdseye.Birdseye`, but
+    without the ability to plot meteorological data. The main use is
+    for plotting domains and other geographical maps.
+    """
     def __init__(self,):
         super().__init__()
 
@@ -49,12 +36,14 @@ class Map(Figure):
 
     def plot_domains(self,domains,outdir,labels=None,latlons='auto',fname='domains.png',
                         colour=0,res='h',proj='auto',pad=0.2):
-        """
-        domains     :   list of WRFOut objects for each domain
-                        Largest domain should be index 0, if using auto settings
-        latlons     :   dictionary of Nlim,Elim,Slim,Wlim
-                        for plot
-        pad         :   multiply factor (0-1) for padding if latlons is 'auto'
+        """ This method plots a figure of all domains specified.
+
+        Args:
+            domains (list,tuple): list of WRFOut objects for each domain
+                Largest domain should be index 0, if using auto settings
+            latlons (dict): dictionary of Nlim,Elim,Slim,Wlim
+                for plot
+            pad: multiply factor (0-1) for padding if latlons is 'auto'
         """
         if labels is not None:
             assert len(labels) == len(domains)

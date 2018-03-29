@@ -1,22 +1,13 @@
-"""
-Top-down 2D plots, which are so common in meteorology
-that they get their own file here.
-
-Subclass of Figure.
-
-TODO: multiple plots on same figure - like a 'hold' - maybe by
-using set and get decorators. Or stopping save/close.
-"""
-
 import pdb
+import collections
+import os
+
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib as M
 M.use('Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 import numpy as N
-import collections
-import os
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from evac.datafiles.wrfout import WRFOut
 from evac.utils.defaults import Defaults
@@ -25,6 +16,28 @@ from evac.plot.scales import Scales
 import evac.stats as stats
 
 class BirdsEye(Figure):
+    """ Top-down 2D plots.
+
+    Todo:
+        * multiple plots on same figure - like a 'hold' - maybe by
+            using set and get decorators. Or stopping save/close.
+        * Massive rewrite with cartopy, now basemap is depreciated.
+
+    Args:
+        ax,fig (optional): If None (default), then a new figure/axis object
+            will be created in the instance (via parent class 
+            :class:`~evac.plot.figure.Figure`.
+        ideal (bool): If True, options for an idealised plot will be used.
+            For example, no lat/lon.
+        proj (str,bool): If `str`, such as `'merc'`, this will set the 
+            instance's plotting projection.
+        mplargs, mplkwargs: Arguments to pass to matplotlib.
+
+    Returns:
+        A figure is generated (if no fig/ax is specified), or plotting (onto an
+            existing figure).
+    """
+
     def __init__(self,ax=None,fig=None,ideal=False,proj=None,
                  mplargs=[],mplkwargs={}):
         """ Setting ideal to True removes the geography (e.g. for idealised

@@ -1,6 +1,9 @@
 """Colour tables for plotting.
 
 Adapted from code by Luke Madaus and David-John Gagne II
+
+Todo:
+    * Probably should use American English for the title...
 """
 import pdb
 
