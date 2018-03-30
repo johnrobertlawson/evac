@@ -91,21 +91,41 @@
 
 <dl class="method">
 <dt id="evac.stats.probscores.ProbScores.compute_crps">
-<code class="descname">compute_crps</code><span class="sig-paren">(</span><em>threshs</em>, <em>mean=True</em>, <em>QC=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_crps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_crps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Needs observation array (m x n)
-Needs ensemble forecast array (e x m x n) where</p>
+<code class="descname">compute_crps</code><span class="sig-paren">(</span><em>threshs</em>, <em>mean=True</em>, <em>QC=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evac/stats/probscores.html#ProbScores.compute_crps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evac.stats.probscores.ProbScores.compute_crps" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Notes</p>
+<p>This method needs the followed during class instantiation:
+* Needs <cite>xa</cite>, observation array (m x n)
+* Needs <cite>xfs</cite>, ensemble forecast array (e x m x n) where</p>
 <blockquote>
 <div>e = number of ensemble members</div></blockquote>
-<p>xa     :   observation
-xfs    :   forecasts for N ensemble members
-Px is the probability that ob is less or equal to fcst</p>
-<blockquote>
-<div><ul class="simple">
-<li>loop through all probs from 0 to 100 %</li>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Px is the probability that ob is less or equal to fcst.</dt>
+<dd>Loop through all probs from 0 to 100 %</dd>
+</dl>
+</li>
 </ul>
-</div></blockquote>
-<p>threshs is a numpy array of the levels to apply to the data</p>
-<p>Discretising using <a class="reference external" href="https://www.kaggle.com/c/how-much-did-it-rain#evaluation">https://www.kaggle.com/c/how-much-did-it-rain#evaluation</a></p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>Decompose CRPS into reliability etc, see Hersbach paper.</li>
+</ul>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>threshs</strong> &#8211; An array of the levels to apply to the data</li>
+<li><strong>mean</strong> (<em>bool</em>) &#8211; If <cite>True</cite>, return a mean score averaged over the domain</li>
+<li><strong>QC</strong> (<em>bool</em>) &#8211; If <cite>True</cite>, set anything less than zero to zero.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Discretising using:
+<a class="reference external" href="https://www.kaggle.com/c/how-much-did-it-rain#evaluation">https://www.kaggle.com/c/how-much-did-it-rain#evaluation</a></p>
 </dd></dl>
 
 <dl class="method">
