@@ -16,15 +16,15 @@ class Performance(Figure):
     If passing in stats, they should be:
 
     .. math::
-        \textrm{POD}     &=   A/A+C
+        \\textrm{POD}     &=   A/A+C
 
-        \textrm{FAR}     &=   B/A+B 
+        \\textrm{FAR}     &=   B/A+B 
 
-        \textrm{BIAS}    &=   (A+B)/(A+C)
+        \\textrm{BIAS}    &=   (A+B)/(A+C)
 
-        \textrm{CSI}     &=   A/(A+B+C) 
+        \\textrm{CSI}     &=   A/(A+B+C) 
 
-        \textrm{SR}      &=   1-\textrm{FAR} 
+        \\textrm{SR}      &=   1-\textrm{FAR} 
 
     Example:
         To maintain flexibility, the user should do the following
