@@ -146,7 +146,9 @@ class LazyEnsemble:
             self.lbcdir = PosixPath(path_to_lbcdir)
             
         # Not implemented yet
-        self.outdir = PosixPath(path_to_outdir)
+        if path_to_outdir is not None:
+            raise NotImplemented
+        #self.outdir = PosixPath(path_to_outdir)
         self.batchscript = PosixPath(path_to_batch)
 
         # Shortcut for accessing the script name
