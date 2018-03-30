@@ -14,7 +14,7 @@ from evac.utils.exceptions import WRFError, PrettyException
 class LazyEnsemble:
     """ Generate ensemble by running multiple WRF runs simulataneously.
 
-    This is done by creating temporary folder and linking/copying, with 
+    This is done by creating temporary folder and linking/copying, with
     efficiency improvements from Monte Flora. Will not work on Windows systems
     as it stands, due to hardcoded PosixPath.
 
@@ -103,8 +103,9 @@ class LazyEnsemble:
                                 d01 domain has ICs.
     """
     def __init__(self,path_to_exedir,path_to_datadir, path_to_namelistdir,
-                    path_to_icdir,path_to_lbcdir,path_to_outdir,
+                    path_to_icdir,path_to_lbcdir,
                     path_to_batch,initutc,
+                    path_to_outdir=None,
                     sched='slurm',path_to_rundir=False,delete_exe_copy=False,
                     ndoms=1,nmems=0,membernames=False,
                     endutc=False,runsec=False,nl_per_member=True,
@@ -144,6 +145,7 @@ class LazyEnsemble:
         else:
             self.lbcdir = PosixPath(path_to_lbcdir)
             
+        # Not implemented yet
         self.outdir = PosixPath(path_to_outdir)
         self.batchscript = PosixPath(path_to_batch)
 
@@ -358,7 +360,7 @@ class LazyEnsemble:
         """
         nlpath = self.members[member]['rundir'] / 'namelist.input'
 
-        TT = TimeTool(seconds=self.runsec) 
+        TT = TimeTool(seconds=self.runsec)
         run_days, run_hours, run_minutes, run_seconds = TT.reduce()
 
         changes = dict(start_year=self.initutc.year,
