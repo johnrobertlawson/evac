@@ -109,7 +109,7 @@ class LazyEnsemble:
                     sched='slurm',path_to_rundir=False,delete_exe_copy=False,
                     ndoms=1,nmems=0,membernames=False,
                     endutc=False,runsec=False,nl_per_member=True,
-                    nl_suffix='name',ics=None,lbcs=None,dryrun=False,
+                    nl_suffix='dot_number',ics=None,lbcs=None,dryrun=False,
                     rename_d01_ics=False):
         # Check - must have either number of members or a list of names
         assert isinstance(membernames,(list,tuple)) or (nmems > 0)
@@ -442,6 +442,7 @@ class LazyEnsemble:
             first = len(self.members.keys())
         # Submit these in parallel...
         for nmem,member in enumerate(sorted(self.members)):
+            kwargs['memno'] = nmem
             self.run_wrf_member(member,prereqs,**kwargs)
             if first == nmem+1:
                 print("Exiting due to test.")
@@ -452,7 +453,8 @@ class LazyEnsemble:
     def run_wrf_member(self,member,prereqs,cpus=1,nodes=1,
                         sleep=30,firstwait=3600,
                         maxtime=(24*3600),check=False,
-                        rename_dict=None,merge_lbcs=False):
+                        rename_dict=None,merge_lbcs=False,
+                        memno=None):
         """ Submit a wrf run to batch scheduler.
 
         member  :   (str) - name of member to run
@@ -482,9 +484,13 @@ class LazyEnsemble:
 
         # Copy, edit namelist
         if not self.nl_per_member:
-            frompath = self.namelistdir / 'namelist.input'
-        else:
-            raise Exception("Implement this!")
+            nl_fname = 'namelist.input'
+        elif self.nl_per_member == 'dot_number':
+            nl_fname = 'namelist.input.{}'.format(memno)
+        elif nl_suffix:
+            nl_fname = 'namelist.input.{}'.format(nl_suffix)
+
+        frompath = self.namelistdir / nl_fname
         utils.bridge('copy',frompath,rundir)
         self.namelist_for_member(member)
 
