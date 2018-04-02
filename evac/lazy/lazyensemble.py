@@ -147,7 +147,7 @@ class LazyEnsemble:
             
         # Not implemented yet
         if path_to_outdir is not None:
-            raise NotImplemented
+            print("Ignoring path_to_outdir - not implemented.")
         #self.outdir = PosixPath(path_to_outdir)
         self.batchscript = PosixPath(path_to_batch)
 
@@ -442,9 +442,10 @@ class LazyEnsemble:
             first = len(self.members.keys())
         # Submit these in parallel...
         for nmem,member in enumerate(sorted(self.members)):
+            nmem += 1
             kwargs['memno'] = nmem
             self.run_wrf_member(member,prereqs,**kwargs)
-            if first == nmem+1:
+            if first == nmem:
                 print("Exiting due to test.")
                 break
         # Generate README for each dir?
@@ -491,7 +492,7 @@ class LazyEnsemble:
             nl_fname = 'namelist.input.{}'.format(nl_suffix)
 
         frompath = self.namelistdir / nl_fname
-        utils.bridge('copy',frompath,rundir)
+        utils.bridge('copy',frompath,rundir/'namelist.input')
         self.namelist_for_member(member)
 
         # Copy ICBC data if not done manually
@@ -616,24 +617,3 @@ class LazyEnsemble:
         fpath.chmod(perm_decimal)
         print("Changed permissions for {} to {}".format(fpath,perm_str))
         return
-
-    def aa_test(self,param1,param2=2,param3=('hi','there')):
-        """Example of docstring on the __init__ method.
-
-        The __init__ method may be documented in either the class level
-        docstring, or as a docstring on the __init__ method itself.
-
-        Either form is acceptable, but the two should not be mixed. Choose one
-        convention to document the __init__ method and be consistent with it.
-
-        Note:
-            Do not include the `self` parameter in the ``Args`` section.
-
-        Args:
-            param1 (str): Description of `param1`.
-            param2 (:obj:`int`, optional): Description of `param2`. Multiple
-                lines are supported.
-            param3 (list(str)): Description of `param3`.
-
-        """
-        pass

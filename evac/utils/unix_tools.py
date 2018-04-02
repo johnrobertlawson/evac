@@ -75,6 +75,8 @@ def bridge(command,frompath,topath,catch_overwrite=False,
     if catch_overwrite and topath.exists():
         raise Exception("{} already exists.".format(topath))
 
+    trycreate(topath)
+
     if command is "copy":
         # This is ridiculous, but that's what I get for using sodding pathlib
         topath.write_bytes(frompath.read_bytes())
@@ -86,7 +88,11 @@ def bridge(command,frompath,topath,catch_overwrite=False,
     else:
         raise NonsenseError("The command variable **{}** is invalid".format(
                         command),color='red')
-    assert topath.exists()
+
+    if not topath.exists():
+        print("File not created at",topath)
+    else:
+        print("File created at",topath)
 
     if return_newpath:
         return topath
@@ -190,8 +196,8 @@ def trycreate(loc, parents=True,exist_ok=True,loc_is_dir=False):
     """
     l = enforce_pathobj(loc)
     # if not l.is_dir():
-    # if not loc_is_dir:
-        # l = l.parent
+    if (not loc_is_dir) or (not l.is_dir()):
+        l = l.parent
 
     wowprint("Checking **{}** exists.".format(l),color='blue')
     # Does the location exist?
