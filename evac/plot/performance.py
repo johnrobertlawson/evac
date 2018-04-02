@@ -24,7 +24,7 @@ class Performance(Figure):
 
         \\textrm{CSI}     &=   A/(A+B+C) 
 
-        \\textrm{SR}      &=   1-\textrm{FAR} 
+        \\textrm{SR}      &=   1-\\textrm{FAR} 
 
     Example:
         To maintain flexibility, the user should do the following
