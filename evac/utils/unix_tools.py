@@ -195,15 +195,28 @@ def trycreate(loc, parents=True,exist_ok=True,loc_is_dir=False):
                     existing.
     """
     l = enforce_pathobj(loc)
-    # if not l.is_dir():
-    if (not loc_is_dir) or (not l.is_dir()):
+    wowprint("Checking **{}** exists.".format(l),color='blue')
+
+    # First, check if file or directory exists
+    if l.exists():
+        if l.is_dir():
+            print("Directory already exists.")
+        else:
+            print("File already exists.")
+        return
+
+    # If not, create the directory enclosing the file, or
+    # the directory.
+
+    # Assume that l is a path to a file, so we need l.parent for the directory
+    if not loc_is_dir:
         l = l.parent
 
-    wowprint("Checking **{}** exists.".format(l),color='blue')
+    l.mkdir(parents=parents,exist_ok=True)
+
     # Does the location exist?
-    if not l.exists():
-        l.mkdir(parents=parents,exist_ok=True)
-        wowprint("The directory **{}** has been made.".format(l),color='red')
+    assert l.exists()
+    wowprint("The directory **{}** has been made.".format(l),color='red')
     # pdb.set_trace()
     return
 
