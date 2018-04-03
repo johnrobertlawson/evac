@@ -173,7 +173,7 @@ def create_WRFgrid(f):
     return xx,yy,lats,lons,m
 
 def reproject(data_orig,xx_orig=False,yy_orig=False,lats_orig=False,lons_orig=False,newgrid=False,
-                    xx_new=False,yy_new=False,method='linear'):
+                    xx_new=False,yy_new=False,method='linear',debug=False):
     """
     data_orig               -   N.ndarray of original data (2D?)
     xx_orig,yy_orig         -   x-/y-axis indices of original data straight out a m(lons,lats)
@@ -196,10 +196,12 @@ def reproject(data_orig,xx_orig=False,yy_orig=False,lats_orig=False,lons_orig=Fa
     # data_new = griddata((xx_orig.flat,yy_orig.flat),data_orig.flat,(xx_new.flat,
         # yy_new.flat)).reshape(xx_new_dim,yy_new_dim)
     # pdb.set_trace()
-    print("Starting reprojection...")
+    if debug:
+        print("Starting reprojection...")
     data_new = griddata((xx_orig.flat,yy_orig.flat),
                             data_orig.flat,(mx.flat,my.flat),
                             method=method).reshape(xx_new_dim,yy_new_dim)
                         # (mx.flat,my.flat),method=method)
-    print("Completed reprojection.")
+    if debug:
+        print("Completed reprojection.")
     return data_new
