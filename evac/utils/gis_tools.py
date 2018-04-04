@@ -586,9 +586,33 @@ def padded_times(timeseq):
     padded = ['{0:04d}'.format(t) for t in timeseq]
     return padded
 
-def string_from_time(usage,t,dom=0,strlen=0,conven=0,**kwargs):
-    """
-    conven  :   convection of MM/DD versus DD/MM
+def string_from_time(usage,t,dom=0,strlen=None,convention=0,**kwargs):
+    """ Generate a string from a given time.
+
+    Example:
+        Various formats for 2016/3/31/18/0/0::
+        
+            # usage == 'output':
+            201603311800
+            # usage == 'title':
+            18:00Z on 31/03/2016
+            # usage == 'skip':
+            (2016, 3, 31, 18, 0, 0)
+            # usage == 'wrfout':
+            wrfout_d01_2016-03-31_18:00:00
+            # usage == 'ruc':
+            ruc2_252_{0:04d}{1:02d}{2:02d}_1800_000.nc
+            # usage == 'dir':
+            2016033118
+
+    Args:
+        usage (str): the format to output
+        t: date/time, in tuple or datetime.datetime formats
+        strlen: Minimum unit to output. "hour","minute" etc
+        convention: convention of MM/DD versus DD/MM
+
+    Returns:
+        Formatted string.
     """
     t = ensure_timetuple(t)
 
@@ -632,15 +656,15 @@ def string_from_time(usage,t,dom=0,strlen=0,conven=0,**kwargs):
         strg = ('ruc2_252_{0:04d}{1:02d}{2:02d}_' +
                 '{3:02d}{4:02d}_{5:02d}0.nc'.format(*t))
     elif usage == 'output':
-        if not conven:
+        if not convention:
             # No convention set, assume DD/MM (I'm biased)
-            conven = 'full'
+            convention = 'full'
         # Generates string for output file creation
-        if conven == 'DM':
+        if convention == 'DM':
             strg = '{2:02d}{1:02d}_{3:02d}{4:02d}'.format(*t)
-        elif conven == 'MD':
+        elif convention == 'MD':
             strg = '{1:02d}{2:02d}_{3:02d}{4:02d}'.format(*t)
-        elif conven == 'full':
+        elif convention == 'full':
             strg = '{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}'.format(*t)
         else:
             print("Set convention for date format: DM or MD.")
@@ -1399,3 +1423,13 @@ def pretty_fhr(fhr,in_fmt='hours',out_fmt=1):
         h,m = divmod(fhr,60)
         outstr = '{:d}h_{:02d}min'.format(int(h),int(m))
     return outstr
+
+def hr_to_sec(hr,fmt=int):
+    """ Converts hours to seconds.
+
+    Args:
+        hr (int,float): number of hours
+        fmt (type): file type of output. Integer, by default.
+    """
+    sec = hr * 3600
+    return fmt(sec)
