@@ -42,6 +42,7 @@ commenting.
 
 ## TO DO
 * Folder naming - should it clash with scripts within the directories?
+* Create stable master branch, release version 1.0, and fork for edits 
 
 ## Contributors & Attributions
 
