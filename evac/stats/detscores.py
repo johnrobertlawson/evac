@@ -204,3 +204,18 @@ class DetScores:
             return val
         else:
             raise Exception("Specify from the following: \n{}".format(scores.keys()))
+
+    def compute_all(self,datadir=None,fname=None,):
+        """ If datadir/fname are not None, computed stats are saved.
+        Else, they are just returned in the dictionary.
+        """
+        SCORES = dict(a=self.a, b=self.b, c=self.c, d=self.d)
+        for score in scores:
+            SCORES[score] = self.get(score)
+            
+        if datadir:
+            datapath = os.path.join(datadir,fname)
+            print("Saving all data arrays to {}".format(datapath))
+            N.savez(file=datapath,**SCORES)
+            print("Saved.")
+        return SCORES

@@ -7,11 +7,15 @@ import pdb
 import os
 import base64
 from pathlib import Path, PosixPath
+import datetime
+import pytz
 
 try:
     import paramiko
 except ImportError:
     print("Module paramiko unavailable. Ignoring import.")
+
+import evac.utils.gis_tools as gis_tools
 
 def bridge_multi(orders,fromlist=False,todir=False,
                     return_newlist=False):
@@ -321,3 +325,10 @@ def edit_namelist(f,sett,newval,absolute=False,doms=1,samealldoms=True):
             # import pdb;pdb.set_trace()
         raise ValueError("Setting",sett,"not found in namelist.")
     return
+
+def generate_timestamp_fname(extension):
+    """ Returns a file name based on current time.
+    """
+    nowutc = datetime.datetime.now(tz=pytz.utc)
+    fname = gis_tools.string_from_time('output',nowutc,strlen='second')
+    return '.'.join(fname,extension)

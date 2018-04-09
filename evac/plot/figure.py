@@ -1,3 +1,9 @@
+""" Figure superclass.
+
+Todo:
+	* Merge __get_plot_options.
+"""
+
 import pdb
 import os
 
@@ -57,12 +63,18 @@ class Figure:
         if self.use_defaults:
             self.fig.set_dpi(self.D.dpi)
 
-    def create_fname(self,*naming,joiner='_',append_ext=True):
+    def create_fname(self,*naming,joiner='_',append_ext=True,
+                        use_time=True,filetype='.png'):
         """Creates file name from list of arguments.
 
         Optional:
             append_ext (bool)   :   If True, add .png extension
         """
+        if len(naming) == 0:
+            if use_time:
+                return = utils.generate_timestamp_fname(filetype)
+            else:
+                raise Exception("What are we creating the filename from?")
         fname = joiner.join([str(a) for a in naming])
         if append_ext:
             fname = self.enforce_png_ext(fname)
@@ -246,3 +258,73 @@ class Figure:
                 # x,y = m(N.meshgrid(lons,lats))
         # pdb.set_trace()
         return m, x, y
+
+
+    def __get_plot_options2(self,*args,**kwargs):
+        """ Plot options common to all plotting methods.
+
+        Note:
+            * hold and save are mutually exclusive and must be 
+                opposite booleans.
+
+        Args:
+            hold (bool): If True, the figure is not saved after the 
+                call, and further plots can be made. If False,
+                it is saved immediately and `save()` is not needed.
+        """
+        clskwargs = {}
+        mplkwargs = {}
+        plotkwargs = {}
+
+        clskwargs['hold'] = kwargs.get('hold',False)
+        clskwargs['save'] = kwargs.get('save',True)
+        assert clskwargs['hold'] != clskwargs['save']
+
+        return clskwargs, mplkwargs, plotkwargs
+
+      def __get_plot_options1(self,vrbl,*args,**kwargs):
+          """ Filter arguments and key-word arguments for plotting methods.
+
+          Whatever is in dictionary will overwrite defaults in the plotting
+          method.
+
+          These may be
+              * fhrs (forecast hour plotting times - or all)
+              * ensmems (ensemble members, or all)
+
+
+          """
+          # Get plotting levels if not already given
+          # TODO: rewrite this using hasattr() or something.
+          S = Scales(vrbl)
+          if not 'levels' in kwargs:
+              kwargs['levels'] = S.clvs
+          if not 'cmap' in kwargs:
+              kwargs['cmap'] = S.cm
+
+          # Specific things for certain variables
+          if vrbl in ('REFL_10CM',"REFL_comp"):
+              pass
+
+          # Save all figures to a subdirectory
+          if subdir in kwargs:
+              utils.trycreate(subdir,is_folder=True)
+
+          # What times are being plotted?
+          # If all, return list of all times
+          if 'utc' in kwargs:
+              pass
+          elif ('fchr' not in kwargs) or (kwargs['fchr'] == 'all'):
+              kwargs['utc'] = E.list_of_times
+          # Does this pick up on numpy arange?
+          elif isinstance(kwargs['fchr'], (list,tuple)):
+              kwargs['utc'] = []
+              for f in kwargs['fchr']:
+                  utc = self.inittime + datetime.timedelta(seconds=3600*f)
+                  kwargs['fchr'].append(utc)
+
+          # Make domain smaller if requested
+
+          # Save data before plotting
+          clskwargs['save_data'] = kwargs.get('save_data',False)
+          return clskwargs,plotkwargs,mplkwargs

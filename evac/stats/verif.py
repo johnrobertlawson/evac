@@ -6,11 +6,12 @@ The idea is that no actual plotting is done herein, but that this class
 calls the relevant class methods outside of `Verif` to do this.
 
 Todo:
-    * Create a `evac.plot.graph` class
     * Create a `evac.plot.thumbnails` class
     * Ensure all figure subtypes has a "print" call to notify of path to figure
     * Save numpy files of computed data for CPU-intense calculations.
     * Decorate all plotting/computation processes with timeme().
+    * Be aware if saved data already exists - load if that's the case.
+    * Wrap __get_plot_options into figure().
 
 """
 import os
@@ -18,8 +19,10 @@ import pdb
 import copy
 
 from evac.plot.thumbnails import Thumbnails
+from evac.plot.linegraph import LineGraph
 from evac.stats.detscores import DetScores
 from evac.stats.probscores import ProbScores
+from evac.plot.scorecard import ScoreCard
 import evac.utils as utils
 
 class Verif:
@@ -50,7 +53,12 @@ class Verif:
         * Each method should all option to change bounding area of the plot.
         * Avoid doing `E.get()` numerous times for `Ensemble` instances, if
             looping over plotting times. Data should be loaded first as 
-            3/4/5D array .
+            3/4/5D array.
+        * Compare domains of the ensemble, by reprojecting to a common
+            domain that is contained inside all domains. Then a figure
+            can be plotted that compares scores across given lead times
+            ( like a scorecard?).
+
     
     Example:
         Set up the instance::
@@ -133,6 +141,19 @@ class Verif:
         TN = Thumbnails(verif_first=verif_first)
         return
 
+    def plot_scorecard(self,detscores='all',probscores='all'):
+        """ To compare domains.
+        """
+        # Set up scorecard
+        SC = ScoreCard()
+
+        # Reproject domains to common grid
+
+        # Evaluate detscores - save?
+
+        # Evaluate probscores - save?
+
+        # Plot to scorecard.
 
     def generate_mutual_grid(self,):
         """ Create a new domain that all forecast and observation
@@ -167,8 +188,10 @@ class Verif:
             To return 
             get_2D_data(E) 
         """
+        pass
 
-    def plot_all_detscores(self,scores='all',average='all'):
+    def plot_all_detscores(self,scores='all',average='all',
+                            *args,**kwargs):
         """ Plot all available deterministic scores.
 
         Currently available scores are:
@@ -182,14 +205,26 @@ class Verif:
                 all cases and times with equal weighting. If None,
                 scores will be plotted for every time.
         """
-        if scores == 'all':
-            scores = ['CSI','POD',]
+        args, kwargs = self.__get_plot_options(vrbl,*args,**kwargs)
 
-        # Get data into right format.
-        
+        # if scores == 'all':
+            # scores = ['CSI','POD',]
+
+        scores = self.return_detscores(fcst=fcst,obs=obs,datafname=datafname)
 
         for score in scores:
-            Graph()
+            LG = LineGraph(self.outdir,fname=fname)
+            LG.plot_score(xdata,ydata,hold=False)
+
+    def return_detscores(self,fcst,obs,datafname=None):
+        # Get data into right format.
+        for utc in kwargs['list_of_times']:
+            fcst = 0
+            obs = 0
+            DS = DetScores(fcst_arr=fcst,obs_arr=obs)
+
+            scores = DS.compute_all(datadir=self.datadir,fname=datafname)
+            return scores
 
     def plot_all_probscores(self,vrbl,scores='all',average='all',
                     *args,**kwargs):
@@ -251,6 +286,7 @@ class Verif:
 
         # Make domain smaller if requested
 
-
-        return args,kwargs
+        # Save data before plotting
+        clskwargs['save_data'] = kwargs.get('save_data',False)
+        return clskwargs,plotkwargs,mplkwargs
             
