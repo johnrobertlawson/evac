@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.plot.birdseye.BirdsEye</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.plot-module.html">Package&nbsp;plot</a> ::
+        <a href="evac.plot.birdseye-module.html">Module&nbsp;birdseye</a> ::
+        Class&nbsp;BirdsEye
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.plot.birdseye.BirdsEye-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class BirdsEye</h1><p class="nomargin-top"><span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="class_hierarchy_for_birdseye" name="class_hierarchy_for_birdseye">
+<area shape="rect" id="node1" href="evac.plot.birdseye.BirdsEye-class.html" title="BirdsEye" alt="" coords="5,5,83,31"/>
+<area shape="rect" id="node2" href="javascript:void(0);" title="figure.Figure" alt="" coords="106,5,206,31"/>
+</map>
+  <img src="class_hierarchy_for_birdseye.gif" alt='' usemap="#class_hierarchy_for_birdseye" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<pre class="literalblock">
+Top-down 2D plots.
+
+Todo:
+    * multiple plots on same figure - like a 'hold' - maybe by
+        using set and get decorators. Or stopping save/close.
+    * Massive rewrite with cartopy, now basemap is depreciated.
+
+Args:
+    ax,fig (optional): If None (default), then a new figure/axis object
+        will be created in the instance (via parent class 
+        :class:`~evac.plot.figure.Figure`.
+    ideal (bool): If True, options for an idealised plot will be used.
+        For example, no lat/lon.
+    proj (str,bool): If `str`, such as `'merc'`, this will set the 
+        instance's plotting projection.
+    mplargs, mplkwargs: Arguments to pass to matplotlib.
+
+Returns:
+    A figure is generated (if no fig/ax is specified), or plotting (onto an
+        existing figure).
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.birdseye.BirdsEye-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">ax</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">fig</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">ideal</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">proj</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">mplargs</span>=<span class="summary-sig-default">[]</span>,
+        <span class="summary-sig-arg">mplkwargs</span>=<span class="summary-sig-default">{}</span>)</span><br />
+      Setting ideal to True removes the geography (e.g.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.birdseye.BirdsEye-class.html#plot2D" class="summary-sig-name">plot2D</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">fname</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">outdir</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">plottype</span>=<span class="summary-sig-default">'contourf'</span>,
+        <span class="summary-sig-arg">save</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">smooth</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">lats</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">lons</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">clvs</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">cmap</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">title</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">cb</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">locations</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">m</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">x</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">y</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">Nlim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Elim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Slim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Wlim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">color</span>=<span class="summary-sig-default">'k'</span>,
+        <span class="summary-sig-arg">inline</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">cblabel</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">ideal</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">drawcounties</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">mplargs</span>=<span class="summary-sig-default">[]</span>,
+        <span class="summary-sig-arg">mplkwargs</span>=<span class="summary-sig-default">{}</span>,
+        <span class="summary-sig-arg">extend</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">nx</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">ny</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">cen_lat</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">cen_lon</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">lat_ts</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">W</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Generic method that plots any matrix of data on a map</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.plot2D">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="plot_locations"></a><span class="summary-sig-name">plot_locations</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">locations</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.plot_locations">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_contour_plot"></a><span class="summary-sig-name">do_contour_plot</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.do_contour_plot">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_contourf_plot"></a><span class="summary-sig-name">do_contourf_plot</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.do_contourf_plot">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_pcolormesh_plot"></a><span class="summary-sig-name">do_pcolormesh_plot</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.do_pcolormesh_plot">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.birdseye.BirdsEye-class.html#plot_streamlines" class="summary-sig-name">plot_streamlines</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">U</span>,
+        <span class="summary-sig-arg">V</span>,
+        <span class="summary-sig-arg">outdir</span>,
+        <span class="summary-sig-arg">fname</span>,
+        <span class="summary-sig-arg">lats</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">lons</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">smooth</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">title</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">lw_speed</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">density</span>=<span class="summary-sig-default">1.8</span>,
+        <span class="summary-sig-arg">ideal</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Plot streamlines.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.plot_streamlines">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.birdseye.BirdsEye-class.html#spaghetti" class="summary-sig-name">spaghetti</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">t</span>,
+        <span class="summary-sig-arg">lv</span>,
+        <span class="summary-sig-arg">va</span>,
+        <span class="summary-sig-arg">contour</span>,
+        <span class="summary-sig-arg">wrfouts</span>,
+        <span class="summary-sig-arg">outpath</span>,
+        <span class="summary-sig-arg">da</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">0</span>)</span><br />
+      wrfouts     :   list of wrfout files</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.spaghetti">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="make_subplot_label"></a><span class="summary-sig-name">make_subplot_label</span>(<span class="summary-sig-arg">ax</span>,
+        <span class="summary-sig-arg">label</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.make_subplot_label">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">ax</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">fig</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">ideal</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">proj</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">mplargs</span>=<span class="sig-default">[]</span>,
+        <span class="sig-arg">mplkwargs</span>=<span class="sig-default">{}</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Setting ideal to True removes the geography (e.g. for idealised 
+  plots)</p>
+  <dl class="fields">
+    <dt>Overrides:
+        figure.Figure.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="plot2D"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">plot2D</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">fname</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">outdir</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">plottype</span>=<span class="sig-default">'contourf'</span>,
+        <span class="sig-arg">save</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">smooth</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">lats</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">lons</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">clvs</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">cmap</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">title</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">cb</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">locations</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">m</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">x</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">y</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">Nlim</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">Elim</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">Slim</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">Wlim</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">color</span>=<span class="sig-default">'k'</span>,
+        <span class="sig-arg">inline</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">cblabel</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">ideal</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">drawcounties</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">mplargs</span>=<span class="sig-default">[]</span>,
+        <span class="sig-arg">mplkwargs</span>=<span class="sig-default">{}</span>,
+        <span class="sig-arg">extend</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">nx</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">ny</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">cen_lat</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">cen_lon</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">lat_ts</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">W</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.plot2D">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Generic method that plots any matrix of data on a map
+
+Inputs:
+data        :   2D matrix of data
+outdir      :   path to plots
+outf        :   filename for output (with or without .png)
+
+Optional:
+plottype    :   matplotlib function for plotting
+smooth      :   Gaussian smooth by this many grid spaces
+clvs        :   scale for contours
+title       :   title on plot
+save        :   whether to save to file
+
+:param locations:       Locations to plot on the basemap.
+                        Format: locations = {'label':(lat,lon),etc}
+:type locations:        dict
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="plot_streamlines"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">plot_streamlines</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">U</span>,
+        <span class="sig-arg">V</span>,
+        <span class="sig-arg">outdir</span>,
+        <span class="sig-arg">fname</span>,
+        <span class="sig-arg">lats</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">lons</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">smooth</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">title</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">lw_speed</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">density</span>=<span class="sig-default">1.8</span>,
+        <span class="sig-arg">ideal</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.plot_streamlines">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Plot streamlines.</p>
+  <p>U       :   U-component of wind (nx x ny) V       :   V-component of 
+  wind (same dimensions)</p>
+  <p>lw_speed    :   linewidth is proportional to wind speed</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="spaghetti"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">spaghetti</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">t</span>,
+        <span class="sig-arg">lv</span>,
+        <span class="sig-arg">va</span>,
+        <span class="sig-arg">contour</span>,
+        <span class="sig-arg">wrfouts</span>,
+        <span class="sig-arg">outpath</span>,
+        <span class="sig-arg">da</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">dom</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.birdseye-pysrc.html#BirdsEye.spaghetti">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>wrfouts     :   list of wrfout files</p>
+  <p>Only change dom if there are multiple domains.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

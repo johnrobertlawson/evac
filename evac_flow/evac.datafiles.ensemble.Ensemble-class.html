@@ -1,0 +1,1041 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.datafiles.ensemble.Ensemble</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.datafiles-module.html">Package&nbsp;datafiles</a> ::
+        <a href="evac.datafiles.ensemble-module.html">Module&nbsp;ensemble</a> ::
+        Class&nbsp;Ensemble
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.datafiles.ensemble.Ensemble-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Ensemble</h1><p class="nomargin-top"><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+Class containing an ensemble of (netCDF, WRF) forecasts.
+
+A deterministic forecast (i.e. ensemble of one control member) can
+be created by using one member.
+
+Each ensemble member needs to have a separate folder (named
+as the ensemble member's name), but different domains can be
+within a single member's folder.
+
+Todos:
+    * Change from ensemble of WRFOut files to any sort of datafile.
+    * Consistency with method names (e.g., get() )
+
+Example:
+    To load a 5-D array of 10-m wind at the second time (and using defaults)::
+
+        import datetime
+        from evac.datafiles.ensemble import Ensemble
+
+        initutc = datetime.datetime(2016,3,31,18,0,0)
+        E = Ensemble(rootdir='/path/to/data',initutc=initutc)
+        E.get('wind10',utc=1)
+
+Args:
+    rootdir (str):  Directory at root of datafiles
+    initutc (datetime.datetime): Initialization time (assumed UTC)
+    doms (int, optional): Number of domains
+    ctrl (bool, optional): Whether ensemble has control member
+    aux (bool, dict, optional): Dictionary lists, per domain, data
+        files that contain additional variables and each
+        file's prefix. Default is False (no auxiliary files).
+        Not implemented yet.
+    enstype (str, optional): Type of ensemble. Default is for
+        Weather Research and Forecast (WRF) model.
+    fmt (str, optional): The type of simulations. Default is
+        real-world simulations (em_real from WRF).
+    f_prefix (tuple, optional): Tuple of prefixes for each
+        ensemble member's main data files. Must be length /doms/.
+        The string 'default' will look for the wrfout_d0* string.
+        Set None for a method to determine
+        the file name using default outputs from e.g. WRF.
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rootdir</span>,
+        <span class="summary-sig-arg">initutc</span>,
+        <span class="summary-sig-arg">doms</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">ctrl</span>=<span class="summary-sig-default">'ctrl'</span>,
+        <span class="summary-sig-arg">aux</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">model</span>=<span class="summary-sig-default">'wrf'</span>,
+        <span class="summary-sig-arg">fmt</span>=<span class="summary-sig-default">'em_real'</span>,
+        <span class="summary-sig-arg">f_prefix</span>=<span class="summary-sig-default">'default'</span>,
+        <span class="summary-sig-arg">loadobj</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">ncf</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">debug</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">onefolder</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">fileformat</span>=<span class="summary-sig-default">'netcdf'</span>,
+        <span class="summary-sig-arg">gefsformat</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ensemble.Ensemble-class.html#compute_fdt" class="summary-sig-name">compute_fdt</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Compute the difference in time between each data file's first entry.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.compute_fdt">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_gefs_members"></a><span class="summary-sig-name">get_gefs_members</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Load GEFS grib files that are all in one folder.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_gefs_members">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ensemble.Ensemble-class.html#get_members" class="summary-sig-name">get_members</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">f_prefix</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Create a dictionary with all data.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_members">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_wrf_members"></a><span class="summary-sig-name">get_wrf_members</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">f_prefix</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_wrf_members">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="datafile_object"></a><span class="summary-sig-name">datafile_object</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fpath</span>,
+        <span class="summary-sig-arg">loadobj</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.datafile_object">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ensemble.Ensemble-class.html#get_gefs_ensemble" class="summary-sig-name">get_gefs_ensemble</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      All gefs data files should be in the same folder.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_gefs_ensemble">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ensemble.Ensemble-class.html#get_exceedance_probs" class="summary-sig-name">get_exceedance_probs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">overunder</span>,
+        <span class="summary-sig-arg">threshold</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">itime</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">ftime</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">fcsttime</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">Nlim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">Elim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">Slim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">Wlim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Return probability of exceeding or reaching a threshold.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_exceedance_probs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="closest_to_mean"></a><span class="summary-sig-name">closest_to_mean</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">level</span>,
+        <span class="summary-sig-arg">fcsttime</span>,
+        <span class="summary-sig-arg">Nlim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Elim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Slim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Wlim</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Find closest member to the mean for given variable Passing latlon/box
+      allows calculation over given area (Box is in grid spaces)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.closest_to_mean">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="return_DF_for_t"></a><span class="summary-sig-name">return_DF_for_t</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">utc</span>,
+        <span class="summary-sig-arg">member</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.return_DF_for_t">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ensemble.Ensemble-class.html#get" class="summary-sig-name">get</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">utc</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">itime</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">ftime</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">fcsttime</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Nlim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">Elim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">Slim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">Wlim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">inclusive</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">lats</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">lons</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">members</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Returns 5D array of data for ranges.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ensemble.Ensemble-class.html#accumulated" class="summary-sig-name">accumulated</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>=<span class="summary-sig-default">'RAINNC'</span>,
+        <span class="summary-sig-arg">itime</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">ftime</span>=<span class="summary-sig-default">-1</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Nlim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Elim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Slim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Wlim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">inclusive</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">lons</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">lats</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Accumulate, for every ensemble member, at each grid point,
+the variable specified.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.accumulated">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="mean"></a><span class="summary-sig-name">mean</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">fcsttime</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Nlim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Elim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Slim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Wlim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">itime</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">ftime</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Returns mean.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.mean">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="std"></a><span class="summary-sig-name">std</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">fcsttime</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">itime</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">ftime</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Nlim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Elim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Slim</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">Wlim</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Return standard devation</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.std">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ensemble.Ensemble-class.html#arbitrary_pick" class="summary-sig-name">arbitrary_pick</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dataobj</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">give_keys</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">give_path</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Arbitrary pick of a datafile entry in the members dictionary.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.arbitrary_pick">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ensemble.Ensemble-class.html#list_of_filetimes" class="summary-sig-name">list_of_filetimes</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">arb</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">member</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Return list of times for each data file's first time entry,
+for a member and domain.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.list_of_filetimes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_nt_per_file"></a><span class="summary-sig-name">compute_nt_per_file</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.compute_nt_per_file">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ensemble.Ensemble-class.html#compute_history_dt" class="summary-sig-name">compute_history_dt</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Calculate time difference between each history output time.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.compute_history_dt">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ensemble.Ensemble-class.html#find_file_for_t" class="summary-sig-name">find_file_for_t</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">simutc</span>,
+        <span class="summary-sig-arg">member</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Determine file to load given required time.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.find_file_for_t">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ensemble.Ensemble-class.html#get_limits" class="summary-sig-name">get_limits</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">fmt</span>=<span class="summary-sig-default">'dict'</span>)</span><br />
+      Return the limits of the domain.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_limits">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_latlons"></a><span class="summary-sig-name">get_latlons</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_latlons">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_nx_ny"></a><span class="summary-sig-name">get_nx_ny</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_nx_ny">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_cenlatlons"></a><span class="summary-sig-name">get_cenlatlons</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_cenlatlons">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="compute_fdt"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_fdt</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.compute_fdt">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Compute the difference in time between each data file's first 
+  entry.</p>
+  <p>Returns the difference in seconds.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_members"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_members</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">f_prefix</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_members">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create a dictionary with all data.</p>
+  <p>Format is: members[member][domain][time][data]</p>
+  <p>Returns members (dict): Dictionary of ensemble members</p>
+  <p>Also returns fdt (int): Seconds between output files.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_gefs_ensemble"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_gefs_ensemble</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_gefs_ensemble">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>All gefs data files should be in the same folder. Each forecast time 
+  is a different file.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_exceedance_probs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_exceedance_probs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">vrbl</span>,
+        <span class="sig-arg">overunder</span>,
+        <span class="sig-arg">threshold</span>,
+        <span class="sig-arg">level</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">itime</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">ftime</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">fcsttime</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">Nlim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">Elim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">Slim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">Wlim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">dom</span>=<span class="sig-default">1</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_exceedance_probs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Return probability of exceeding or reaching a threshold.
+
+Args:
+    vrbl (str,N.array)      : variable. If N.array, use provided data
+                                (i.e. override the loading).
+                                Must be 5D.
+                                [ensemble_member,time,level,lat,lon]
+    overunder (str)         : threshold evaluation
+                                'over', 'overeq','under','undereq','equal'
+    threshold (float,int)   : the threshold in same (SI) units as data
+    itime (datetime.datetime)   : initial time
+    ftime (datetime.datetime)   : final time
+    fcsttime (datetime.datetime): single time (must be present if itime
+                                    and ftime are None.)
+    Nlim, Elim, Slim, Wlim (float,optional) : bounding box of lats/lons
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">vrbl</span>,
+        <span class="sig-arg">level</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">utc</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">itime</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">ftime</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">fcsttime</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">Nlim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">Elim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">Slim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">Wlim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">inclusive</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">lats</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">lons</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">dom</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">members</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Returns 5D array of data for ranges.
+
+Needs to load WRFOut files if self.loadobj is False.
+
+Ordered in descending order on pert. members
+First dimension is ensemble members.
+
+Args:
+    inclusive (bool, optional): if True, included time specified
+        at ftime in the time range. Default is False (like Python).
+
+Todos:
+    * lat/lon box is in the correct projection?
+    * Implement bounding lat/lon box.
+
+    * fcsttime and utc are the same to maintain compatibility
+    because get() APIs in different areas of evac/WEM
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="accumulated"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">accumulated</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">vrbl</span>=<span class="sig-default">'RAINNC'</span>,
+        <span class="sig-arg">itime</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">ftime</span>=<span class="sig-default">-1</span>,
+        <span class="sig-arg">level</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">Nlim</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">Elim</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">Slim</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">Wlim</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">inclusive</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">lons</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">lats</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">dom</span>=<span class="sig-default">1</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.accumulated">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Accumulate, for every ensemble member, at each grid point,
+the variable specified. Usually precipitation.
+
+Todos:
+    * Logic to work out if values are for each history output
+        timestep, from the start of the simulation, from the
+        start of the data file...
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="arbitrary_pick"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">arbitrary_pick</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">dataobj</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">give_keys</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">give_path</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">dom</span>=<span class="sig-default">1</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.arbitrary_pick">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Arbitrary pick of a datafile entry in the members dictionary.
+
+Args:
+    dataobj (bool, optional): if True, return the DataFile subclass.
+        Otherwise, return filepath.
+    give_keys (bool, optional): if True, return a list of
+        member, domain, time keys to enter into a dictionary.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="list_of_filetimes"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">list_of_filetimes</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">arb</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">member</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">dom</span>=<span class="sig-default">1</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.list_of_filetimes">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Return list of times for each data file's first time entry,
+for a member and domain.
+
+Args:
+    arb (bool, optional): If true, arbitrarily pick a
+        member and domain to build the time list, i.e.,
+        assuming all members/domains have same list
+    member (str, optional): Name of member to build times
+        from. Needed if arb is False.
+    dom (int, optional): Number of domain to build times
+        from. Default is 1.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_history_dt"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_history_dt</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.compute_history_dt">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calculate time difference between each history output time. This could
+  be across multiple files or in one.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="find_file_for_t"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">find_file_for_t</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">simutc</span>,
+        <span class="sig-arg">member</span>,
+        <span class="sig-arg">dom</span>=<span class="sig-default">1</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.find_file_for_t">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Determine file to load given required time.
+
+Raises exception if history time doesn't exist.
+
+Args:
+    utc (datetime.datetime): Desired time
+    member (str): Name of member to look up. If &quot;arb&quot;, pick
+        a member arbitrarily (this assumes members have
+        identical structure of times in the data).
+    dom (int, optional): Domain number to look up
+
+Returns:
+    t (datetime.datetime): members dictionary key for right file,
+    index (int): Index in that file.
+
+Todos:
+    * Give nearest time (and/or file object) if time doesn't exist.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_limits"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_limits</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">dom</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">fmt</span>=<span class="sig-default">'dict'</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ensemble-pysrc.html#Ensemble.get_limits">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Return the limits of the domain.
+
+Args:
+
+dom     :   (int) - domain number to return
+fmt     :   (str) - format to return data.
+            If 'dict', dictionary.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

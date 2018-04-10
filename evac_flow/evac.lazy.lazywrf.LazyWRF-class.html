@@ -1,0 +1,764 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.lazy.lazywrf.LazyWRF</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.lazy-module.html">Package&nbsp;lazy</a> ::
+        <a href="evac.lazy.lazywrf-module.html">Module&nbsp;lazywrf</a> ::
+        Class&nbsp;LazyWRF
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.lazy.lazywrf.LazyWRF-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class LazyWRF</h1><p class="nomargin-top"><span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF">source&nbsp;code</a></span></p>
+<p>Designed for running multiple runs from the same folder.</p>
+  <p>To be depreciated; for parallel ensemble generation, use 
+  :class:`~evac.lazy.lazyensemble`.</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path_to_WRF</span>,
+        <span class="summary-sig-arg">path_to_wrfout</span>,
+        <span class="summary-sig-arg">submit_fname</span>,
+        <span class="summary-sig-arg">submit_ideal_fname</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">path_to_storage</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">submit_real_fname</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">path_to_WPS</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">path_to_atmos</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">path_to_soil</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">sched</span>=<span class="summary-sig-default">'slurm'</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="init_WPS"></a><span class="summary-sig-name">init_WPS</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">soilVtable_fname</span>=<span class="summary-sig-default">'Vtable.GFS_soilonly'</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.init_WPS">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazywrf.LazyWRF-class.html#go" class="summary-sig-name">go</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">casestr</span>,
+        <span class="summary-sig-arg">IC</span>,
+        <span class="summary-sig-arg">experiment</span>,
+        <span class="summary-sig-arg">ensnames</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Inputs: (all folder names)
+casestr     :   string of case study initialisation date/time
+IC          :   initial condition model
+experiment  :   dictionary.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.go">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazywrf.LazyWRF-class.html#go_GEFSR2" class="summary-sig-name">go_GEFSR2</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">ensns</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Runs WPS, WRF for one set of initial conditions and settings based on
+      the GEFSR2 model.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.go_GEFSR2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazywrf.LazyWRF-class.html#copy_files" class="summary-sig-name">copy_files</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fromfolder</span>,
+        <span class="summary-sig-arg">tofolder</span>,
+        <span class="summary-sig-arg">matchfs</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Move wrfout files to folder.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.copy_files">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="submit_job"></a><span class="summary-sig-name">submit_job</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">waitmin</span>=<span class="summary-sig-default">10</span>,
+        <span class="summary-sig-arg">sleepmin</span>=<span class="summary-sig-default">5</span>,
+        <span class="summary-sig-arg">wrf_only</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">first_only</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.submit_job">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="link_to_met_em"></a><span class="summary-sig-name">link_to_met_em</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.link_to_met_em">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazywrf.LazyWRF-class.html#link_to_IC_data" class="summary-sig-name">link_to_IC_data</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">IC</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Inputs: *args   :   e.g.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.link_to_IC_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="link_to_IC_Vtable"></a><span class="summary-sig-name">link_to_IC_Vtable</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">IC</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.link_to_IC_Vtable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="link_to_soil_data"></a><span class="summary-sig-name">link_to_soil_data</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.link_to_soil_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="link_to_soil_Vtable"></a><span class="summary-sig-name">link_to_soil_Vtable</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.link_to_soil_Vtable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="add_new_namelist"></a><span class="summary-sig-name">add_new_namelist</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">suffix</span>,
+        <span class="summary-sig-arg">section</span>,
+        <span class="summary-sig-arg">sett</span>,
+        <span class="summary-sig-arg">newval</span>,
+        <span class="summary-sig-arg">quoted</span>)</span><br />
+      Adds new namelist setting at end of section, before the backslash.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.add_new_namelist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="remove_namelist_line"></a><span class="summary-sig-name">remove_namelist_line</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">suffix</span>,
+        <span class="summary-sig-arg">sett</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.remove_namelist_line">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="return_namelist_path"></a><span class="summary-sig-name">return_namelist_path</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">suffix</span>)</span><br />
+      Gives path to namelist depending on suffix argument.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.return_namelist_path">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazywrf.LazyWRF-class.html#edit_namelist" class="summary-sig-name">edit_namelist</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">suffix</span>,
+        <span class="summary-sig-arg">sett</span>,
+        <span class="summary-sig-arg">newval</span>,
+        <span class="summary-sig-arg">maxdom</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">quoted</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Method edits namelist.wps or namelist.input.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.edit_namelist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazywrf.LazyWRF-class.html#run_exe" class="summary-sig-name">run_exe</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">exe</span>)</span><br />
+      Run WPS executables, then check to see if it failed.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.run_exe">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="copy_namelist"></a><span class="summary-sig-name">copy_namelist</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">suffix</span>)</span><br />
+      Appends current time to namelist to create backup.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.copy_namelist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== STATIC METHODS ==================== -->
+<a name="section-StaticMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Static Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-StaticMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazywrf.LazyWRF-class.html#generate_date" class="summary-sig-name">generate_date</a>(<span class="summary-sig-arg">date</span>,
+        <span class="summary-sig-arg">outstyle</span>=<span class="summary-sig-default">'wps'</span>)</span><br />
+      Creates date string for namelist files.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.generate_date">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== INSTANCE VARIABLES ==================== -->
+<a name="section-InstanceVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="evac.lazy.lazywrf.LazyWRF-class.html#GO" class="summary-name">GO</a><br />
+      self.enstype is a list of ensemble models or types.
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="go"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">go</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">casestr</span>,
+        <span class="sig-arg">IC</span>,
+        <span class="sig-arg">experiment</span>,
+        <span class="sig-arg">ensnames</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.go">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Inputs: (all folder names)
+casestr     :   string of case study initialisation date/time
+IC          :   initial condition model
+experiment  :   dictionary. Key: ensemble type (ICBC,STCH,MXMP)
+                    -initial condition/boundary condition
+                    -stochastic kinetic energy backscatter
+                    -mixed model parameterisations
+                Value...
+                    -model configuration (CTRL) for ICBC
+                    -initial condition model/ens member for others
+ensnames    :   list of ensemble member names
+                    - e.g. c00,p01,p02
+
+**kwargs include:
+WPS_only    :   stop after linking met_em files to WRF folder
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="go_GEFSR2"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">go_GEFSR2</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">ensns</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.go_GEFSR2">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Runs WPS, WRF for one set of initial conditions and settings based on 
+  the GEFSR2 model.</p>
+  <p>Inputs: ensns   :   names of ensemble member</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="copy_files"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">copy_files</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">fromfolder</span>,
+        <span class="sig-arg">tofolder</span>,
+        <span class="sig-arg">matchfs</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.copy_files">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Move wrfout files to folder. Create folder if it doesn't exist</p>
+  <p>Move .TS files if they exist Copy namelist.input to that folder. Copy 
+  rsl.error.0000 to the folder.</p>
+  <p>Input(s): args = names of folder tree, in order of depth.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="link_to_IC_data"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">link_to_IC_data</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">IC</span>,
+        <span class="sig-arg">*args</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.link_to_IC_data">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Inputs: *args   :   e.g. ensemble member</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="edit_namelist"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">edit_namelist</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">suffix</span>,
+        <span class="sig-arg">sett</span>,
+        <span class="sig-arg">newval</span>,
+        <span class="sig-arg">maxdom</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">quoted</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.edit_namelist">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Method edits namelist.wps or namelist.input.
+
+Args:
+    suffix : which namelist needs changing
+    sett : setting that needs changing
+    newval : its new value -&gt; currently replaces whole line
+    maxdom : number of domains to edit
+        (this is relevant for multiple columns?)
+
+Returns:
+    None.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="run_exe"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">run_exe</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">exe</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.run_exe">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Run WPS executables, then check to see if it failed. If not, return 
+  True to proceed.</p>
+  <p>Input: exe     :   .exe file name.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="generate_date"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">generate_date</span>(<span class="sig-arg">date</span>,
+        <span class="sig-arg">outstyle</span>=<span class="sig-default">'wps'</span>)</span>
+    <br /><em class="fname">Static Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazywrf-pysrc.html#LazyWRF.generate_date">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Creates date string for namelist files.</p>
+  <p>Input:</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== INSTANCE VARIABLE DETAILS ==================== -->
+<a name="section-InstanceVariableDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Variable Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceVariableDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="GO"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">GO</h3>
+  <p>self.enstype is a list of ensemble models or types. self.enslist is a 
+  list of each model's member names. Both are used to name runs, and 
+  folders for output etc</p>
+  <p>Lookup table GO contains the methods to run for each ensemble 
+  type.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

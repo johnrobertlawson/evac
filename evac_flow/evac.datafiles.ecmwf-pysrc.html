@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.datafiles.ecmwf</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.datafiles-module.html">Package&nbsp;datafiles</a> ::
+        Module&nbsp;ecmwf
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.datafiles.ecmwf-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="evac.datafiles.ecmwf-module.html">Module evac.datafiles.ecmwf</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">calendar</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">netCDF4</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Dataset</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">matplotlib</tt><tt class="py-op">.</tt><tt class="py-name">pyplot</tt> <tt class="py-keyword">as</tt> <tt class="py-name">plt</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">mpl_toolkits</tt><tt class="py-op">.</tt><tt class="py-name">basemap</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Basemap</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">N</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Package evac=evac-module.html"><a title="evac" class="py-name" href="#" onclick="return doclink('link-0', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package evac.utils=evac.utils-module.html,Module evac.utils.utils=evac.utils.utils-module.html"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-1', 'utils', 'link-1');">utils</a></tt> <tt class="py-keyword">as</tt> <tt id="link-2" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-2', 'utils', 'link-1');">utils</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name"><a title="evac" class="py-name" href="#" onclick="return doclink('link-3', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Package evac.datafiles=evac.datafiles-module.html"><a title="evac.datafiles" class="py-name" href="#" onclick="return doclink('link-4', 'datafiles', 'link-4');">datafiles</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Module evac.datafiles.ncfile=evac.datafiles.ncfile-module.html"><a title="evac.datafiles.ncfile" class="py-name" href="#" onclick="return doclink('link-5', 'ncfile', 'link-5');">ncfile</a></tt> <tt class="py-keyword">import</tt> <tt id="link-6" class="py-name" targets="Class evac.datafiles.ncfile.NCFile=evac.datafiles.ncfile.NCFile-class.html"><a title="evac.datafiles.ncfile.NCFile" class="py-name" href="#" onclick="return doclink('link-6', 'NCFile', 'link-6');">NCFile</a></tt> </tt>
+<a name="ECMWF"></a><div id="ECMWF-def"><a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt> <a class="py-toggle" href="#" id="ECMWF-toggle" onclick="return toggle('ECMWF');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="evac.datafiles.ecmwf.ECMWF-class.html">ECMWF</a><tt class="py-op">(</tt><tt class="py-base-class">NCFile</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ECMWF-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="ECMWF-expanded"><a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line">    <tt class="py-docstring">""" Load an ECMWF data object, if netCDF format.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring">    Args:</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring">        fpath: Absolute path to .nc file.</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">    Todo:</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">        * Remove redundant plotting (but keep logic)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">        * Create key table for looking up variables</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring">        * Remove config/defaults logic</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="ECMWF.__init__"></a><div id="ECMWF.__init__-def"><a name="L23"></a><tt class="py-lineno"> 23</tt> <a class="py-toggle" href="#" id="ECMWF.__init__-toggle" onclick="return toggle('ECMWF.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.ecmwf.ECMWF-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">fpath</tt><tt class="py-op">,</tt><tt class="py-op">)</tt><tt class="py-op">:</tt><tt class="py-comment">#config):</tt> </tt>
+</div><a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method evac.datafiles.binaryfile.BinaryFile.__init__()=evac.datafiles.binaryfile.BinaryFile-class.html#__init__,Method evac.datafiles.csvfile.CSVFile.__init__()=evac.datafiles.csvfile.CSVFile-class.html#__init__,Method evac.datafiles.datafile.DataFile.__init__()=evac.datafiles.datafile.DataFile-class.html#__init__,Method evac.datafiles.ecmwf.ECMWF.__init__()=evac.datafiles.ecmwf.ECMWF-class.html#__init__,Method evac.datafiles.ensemble.Ensemble.__init__()=evac.datafiles.ensemble.Ensemble-class.html#__init__,Method evac.datafiles.gefs.GEFS.__init__()=evac.datafiles.gefs.GEFS-class.html#__init__,Method evac.datafiles.gfs.GFS.__init__()=evac.datafiles.gfs.GFS-class.html#__init__,Method evac.datafiles.gribfile.GribFile.__init__()=evac.datafiles.gribfile.GribFile-class.html#__init__,Method evac.datafiles.hrrr.HRRR.__init__()=evac.datafiles.hrrr.HRRR-class.html#__init__,Method evac.datafiles.mrms.MRMS.__init__()=evac.datafiles.mrms.MRMS-class.html#__init__,Method evac.datafiles.ncfile.NCFile.__init__()=evac.datafiles.ncfile.NCFile-class.html#__init__,Method evac.datafiles.obs.Obs.__init__()=evac.datafiles.obs.Obs-class.html#__init__,Method evac.datafiles.pngfile.PNGFile.__init__()=evac.datafiles.pngfile.PNGFile-class.html#__init__,Method evac.datafiles.radar.Radar.__init__()=evac.datafiles.radar.Radar-class.html#__init__,Method evac.datafiles.ruc.RUC.__init__()=evac.datafiles.ruc.RUC-class.html#__init__,Method evac.datafiles.spclsr.SPCLSR.__init__()=evac.datafiles.spclsr.SPCLSR-class.html#__init__,Method evac.datafiles.stageiv.StageIV.__init__()=evac.datafiles.stageiv.StageIV-class.html#__init__,Method evac.datafiles.stormevents.StormEvents.__init__()=evac.datafiles.stormevents.StormEvents-class.html#__init__,Method evac.datafiles.wrfout.WRFOut.__init__()=evac.datafiles.wrfout.WRFOut-class.html#__init__,Method evac.lazy.ideal_profiles.Profile.__init__()=evac.lazy.ideal_profiles.Profile-class.html#__init__,Method evac.lazy.lazyensemble.LazyEnsemble.__init__()=evac.lazy.lazyensemble.LazyEnsemble-class.html#__init__,Method evac.lazy.lazywrf.LazyWRF.__init__()=evac.lazy.lazywrf.LazyWRF-class.html#__init__,Method evac.plot._rucplot.RUCPlot.__init__()=evac.plot._rucplot.RUCPlot-class.html#__init__,Method evac.plot._skewt.Profile.__init__()=evac.plot._skewt.Profile-class.html#__init__,Method evac.plot._skewt.SkewT.__init__()=evac.plot._skewt.SkewT-class.html#__init__,Method evac.plot._skewt2.SkewXAxis.__init__()=evac.plot._skewt2.SkewXAxis-class.html#__init__,Method evac.plot.birdseye.BirdsEye.__init__()=evac.plot.birdseye.BirdsEye-class.html#__init__,Method evac.plot.clicker.Clicker.__init__()=evac.plot.clicker.Clicker-class.html#__init__,Method evac.plot.domaingrid.DomainGrid.__init__()=evac.plot.domaingrid.DomainGrid-class.html#__init__,Method evac.plot.heatmap.HeatMap.__init__()=evac.plot.heatmap.HeatMap-class.html#__init__,Method evac.plot.linegraph.LineGraph.__init__()=evac.plot.linegraph.LineGraph-class.html#__init__,Method evac.plot.map.Map.__init__()=evac.plot.map.Map-class.html#__init__,Method evac.plot.performance.Performance.__init__()=evac.plot.performance.Performance-class.html#__init__,Method evac.plot.scales.Scales.__init__()=evac.plot.scales.Scales-class.html#__init__,Method evac.plot.skewt.SkewT.__init__()=evac.plot.skewt.SkewT-class.html#__init__,Method evac.plot.timeseries.TimeSeries.__init__()=evac.plot.timeseries.TimeSeries-class.html#__init__,Method evac.plot.xsection.CrossSection.__init__()=evac.plot.xsection.CrossSection-class.html#__init__,Method evac.stats._objects.ObjVerif.__init__()=evac.stats._objects.ObjVerif-class.html#__init__,Method evac.stats.casati.Casati.__init__()=evac.stats.casati.Casati-class.html#__init__,Method evac.stats.detscores.DetScores.__init__()=evac.stats.detscores.DetScores-class.html#__init__,Method evac.stats.forecastvalue.ForecastValue.__init__()=evac.stats.forecastvalue.ForecastValue-class.html#__init__,Method evac.stats.fss.FSS.__init__()=evac.stats.fss.FSS-class.html#__init__,Method evac.stats.objectbased.ObjectBased.__init__()=evac.stats.objectbased.ObjectBased-class.html#__init__,Method evac.stats.probscores.ProbScores.__init__()=evac.stats.probscores.ProbScores-class.html#__init__,Method evac.stats.roc.ROC.__init__()=evac.stats.roc.ROC-class.html#__init__,Method evac.stats.sal.SAL.__init__()=evac.stats.sal.SAL-class.html#__init__,Method evac.stoch.ifsfractal.IFSFractal.__init__()=evac.stoch.ifsfractal.IFSFractal-class.html#__init__,Method evac.utils.defaults.Defaults.__init__()=evac.utils.defaults.Defaults-class.html#__init__,Method evac.utils.exceptions.FormatError.__init__()=evac.utils.exceptions.FormatError-class.html#__init__,Method evac.utils.exceptions.NonsenseError.__init__()=evac.utils.exceptions.NonsenseError-class.html#__init__,Method evac.utils.exceptions.PrettyException.__init__()=evac.utils.exceptions.PrettyException-class.html#__init__,Method evac.utils.exceptions.QCError.__init__()=evac.utils.exceptions.QCError-class.html#__init__,Method evac.utils.exceptions.WRFError.__init__()=evac.utils.exceptions.WRFError-class.html#__init__,Method evac.utils.reproject_tools.HRRR_native_grid.__init__()=evac.utils.reproject_tools.HRRR_native_grid-class.html#__init__,Method evac.utils.reproject_tools.VerifGrid.__init__()=evac.utils.reproject_tools.VerifGrid-class.html#__init__,Method evac.utils.reproject_tools.WRF_native_grid.__init__()=evac.utils.reproject_tools.WRF_native_grid-class.html#__init__,Method evac.utils.timetool.TimeTool.__init__()=evac.utils.timetool.TimeTool-class.html#__init__"><a title="evac.datafiles.binaryfile.BinaryFile.__init__
+evac.datafiles.csvfile.CSVFile.__init__
+evac.datafiles.datafile.DataFile.__init__
+evac.datafiles.ecmwf.ECMWF.__init__
+evac.datafiles.ensemble.Ensemble.__init__
+evac.datafiles.gefs.GEFS.__init__
+evac.datafiles.gfs.GFS.__init__
+evac.datafiles.gribfile.GribFile.__init__
+evac.datafiles.hrrr.HRRR.__init__
+evac.datafiles.mrms.MRMS.__init__
+evac.datafiles.ncfile.NCFile.__init__
+evac.datafiles.obs.Obs.__init__
+evac.datafiles.pngfile.PNGFile.__init__
+evac.datafiles.radar.Radar.__init__
+evac.datafiles.ruc.RUC.__init__
+evac.datafiles.spclsr.SPCLSR.__init__
+evac.datafiles.stageiv.StageIV.__init__
+evac.datafiles.stormevents.StormEvents.__init__
+evac.datafiles.wrfout.WRFOut.__init__
+evac.lazy.ideal_profiles.Profile.__init__
+evac.lazy.lazyensemble.LazyEnsemble.__init__
+evac.lazy.lazywrf.LazyWRF.__init__
+evac.plot._rucplot.RUCPlot.__init__
+evac.plot._skewt.Profile.__init__
+evac.plot._skewt.SkewT.__init__
+evac.plot._skewt2.SkewXAxis.__init__
+evac.plot.birdseye.BirdsEye.__init__
+evac.plot.clicker.Clicker.__init__
+evac.plot.domaingrid.DomainGrid.__init__
+evac.plot.heatmap.HeatMap.__init__
+evac.plot.linegraph.LineGraph.__init__
+evac.plot.map.Map.__init__
+evac.plot.performance.Performance.__init__
+evac.plot.scales.Scales.__init__
+evac.plot.skewt.SkewT.__init__
+evac.plot.timeseries.TimeSeries.__init__
+evac.plot.xsection.CrossSection.__init__
+evac.stats._objects.ObjVerif.__init__
+evac.stats.casati.Casati.__init__
+evac.stats.detscores.DetScores.__init__
+evac.stats.forecastvalue.ForecastValue.__init__
+evac.stats.fss.FSS.__init__
+evac.stats.objectbased.ObjectBased.__init__
+evac.stats.probscores.ProbScores.__init__
+evac.stats.roc.ROC.__init__
+evac.stats.sal.SAL.__init__
+evac.stoch.ifsfractal.IFSFractal.__init__
+evac.utils.defaults.Defaults.__init__
+evac.utils.exceptions.FormatError.__init__
+evac.utils.exceptions.NonsenseError.__init__
+evac.utils.exceptions.PrettyException.__init__
+evac.utils.exceptions.QCError.__init__
+evac.utils.exceptions.WRFError.__init__
+evac.utils.reproject_tools.HRRR_native_grid.__init__
+evac.utils.reproject_tools.VerifGrid.__init__
+evac.utils.reproject_tools.WRF_native_grid.__init__
+evac.utils.timetool.TimeTool.__init__" class="py-name" href="#" onclick="return doclink('link-7', '__init__', 'link-7');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">        <tt class="py-comment"># self.C = config</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">        <tt class="py-comment"># self.D = Defaults()</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ec</tt> <tt class="py-op">=</tt> <tt class="py-name">Dataset</tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">,</tt><tt class="py-string">'r'</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">times</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method evac.datafiles.ecmwf.ECMWF.ecmwf_times()=evac.datafiles.ecmwf.ECMWF-class.html#ecmwf_times"><a title="evac.datafiles.ecmwf.ECMWF.ecmwf_times" class="py-name" href="#" onclick="return doclink('link-8', 'ecmwf_times', 'link-8');">ecmwf_times</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">        <tt class="py-comment"># self.dx =</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt class="py-comment"># self.dy =</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ec</tt><tt class="py-op">.</tt><tt class="py-name">variables</tt><tt class="py-op">[</tt><tt class="py-string">'g0_lat_2'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> <tt class="py-comment">#N to S</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ec</tt><tt class="py-op">.</tt><tt class="py-name">variables</tt><tt class="py-op">[</tt><tt class="py-string">'g0_lon_3'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> <tt class="py-comment">#W to E</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lvs</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ec</tt><tt class="py-op">.</tt><tt class="py-name">variables</tt><tt class="py-op">[</tt><tt class="py-string">'lv_ISBL1'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> <tt class="py-comment">#jet to sfc</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">fields</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ec</tt><tt class="py-op">.</tt><tt class="py-name">variables</tt><tt class="py-op">.</tt><tt class="py-name">keys</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ec</tt><tt class="py-op">.</tt><tt class="py-name">variables</tt><tt class="py-op">[</tt><tt class="py-string">'Z_GDS0_ISBL'</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">x_dim</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">3</tt><tt class="py-op">]</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">y_dim</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">2</tt><tt class="py-op">]</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">z_dim</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-comment"># Times, levels, lats, lons</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"> </tt>
+<a name="ECMWF.ecmwf_times"></a><div id="ECMWF.ecmwf_times-def"><a name="L41"></a><tt class="py-lineno"> 41</tt> <a class="py-toggle" href="#" id="ECMWF.ecmwf_times-toggle" onclick="return toggle('ECMWF.ecmwf_times');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.ecmwf.ECMWF-class.html#ecmwf_times">ecmwf_times</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ECMWF.ecmwf_times-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ECMWF.ecmwf_times-expanded"><a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-name">ec_t</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ec</tt><tt class="py-op">.</tt><tt class="py-name">variables</tt><tt class="py-op">[</tt><tt class="py-string">'initial_time0_hours'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-name">t</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-name">ec_t</tt><tt class="py-op">*</tt><tt class="py-number">3600.0</tt><tt class="py-op">)</tt> <tt class="py-op">-</tt> <tt class="py-op">(</tt><tt class="py-number">1490184.0</tt><tt class="py-op">*</tt><tt class="py-number">3600.0</tt><tt class="py-op">)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">t</tt> </tt>
+</div><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"> </tt>
+<a name="ECMWF.find_level_idx"></a><div id="ECMWF.find_level_idx-def"><a name="L46"></a><tt class="py-lineno"> 46</tt> <a class="py-toggle" href="#" id="ECMWF.find_level_idx-toggle" onclick="return toggle('ECMWF.find_level_idx');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.ecmwf.ECMWF-class.html#find_level_idx">find_level_idx</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">lv</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ECMWF.find_level_idx-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ECMWF.find_level_idx-expanded"><a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-name">lvs</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lvs</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-name">lv_idx</tt> <tt class="py-op">=</tt> <tt class="py-name">lvs</tt><tt class="py-op">.</tt><tt class="py-name">index</tt><tt class="py-op">(</tt><tt class="py-name">lv</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">lv_idx</tt> </tt>
+</div><a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"> </tt>
+<a name="ECMWF.find_time_idx"></a><div id="ECMWF.find_time_idx-def"><a name="L51"></a><tt class="py-lineno"> 51</tt> <a class="py-toggle" href="#" id="ECMWF.find_time_idx-toggle" onclick="return toggle('ECMWF.find_time_idx');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.ecmwf.ECMWF-class.html#find_time_idx">find_time_idx</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">t</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ECMWF.find_time_idx-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ECMWF.find_time_idx-expanded"><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">,</tt><tt class="py-name">int</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">            <tt class="py-keyword">pass</tt> <tt class="py-comment"># It's a datenum</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">            <tt class="py-name">t</tt> <tt class="py-op">=</tt> <tt class="py-name">calendar</tt><tt class="py-op">.</tt><tt class="py-name">timegm</tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-name">ts</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">times</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">ts</tt><tt class="py-op">.</tt><tt class="py-name">index</tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">staticmethod</tt> </tt>
+<a name="ECMWF.get_key"></a><div id="ECMWF.get_key-def"><a name="L60"></a><tt class="py-lineno"> 60</tt> <a class="py-toggle" href="#" id="ECMWF.get_key-toggle" onclick="return toggle('ECMWF.get_key');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.ecmwf.ECMWF-class.html#get_key">get_key</a><tt class="py-op">(</tt><tt class="py-param">va</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ECMWF.get_key-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ECMWF.get_key-expanded"><a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-name">keys</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-name">keys</tt><tt class="py-op">[</tt><tt class="py-string">'Z'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-string">'Z_GDS0_ISBL'</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-name">keys</tt><tt class="py-op">[</tt><tt class="py-string">'W'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-string">'W_GDS0_ISBL'</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">keys</tt><tt class="py-op">[</tt><tt class="py-name">va</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"> </tt>
+<a name="ECMWF.get"></a><div id="ECMWF.get-def"><a name="L66"></a><tt class="py-lineno"> 66</tt> <a class="py-toggle" href="#" id="ECMWF.get-toggle" onclick="return toggle('ECMWF.get');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.ecmwf.ECMWF-class.html#get">get</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">va</tt><tt class="py-op">,</tt><tt class="py-param">lv</tt><tt class="py-op">,</tt><tt class="py-param">t</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ECMWF.get-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ECMWF.get-expanded"><a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-name">t_idx</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method evac.datafiles.ecmwf.ECMWF.find_time_idx()=evac.datafiles.ecmwf.ECMWF-class.html#find_time_idx"><a title="evac.datafiles.ecmwf.ECMWF.find_time_idx" class="py-name" href="#" onclick="return doclink('link-9', 'find_time_idx', 'link-9');">find_time_idx</a></tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-name">lv_idx</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method evac.datafiles.ecmwf.ECMWF.find_level_idx()=evac.datafiles.ecmwf.ECMWF-class.html#find_level_idx"><a title="evac.datafiles.ecmwf.ECMWF.find_level_idx" class="py-name" href="#" onclick="return doclink('link-10', 'find_level_idx', 'link-10');">find_level_idx</a></tt><tt class="py-op">(</tt><tt class="py-name">lv</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">va</tt> <tt class="py-op">==</tt> <tt class="py-string">'wind'</tt><tt class="py-op">:</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">            <tt id="link-11" class="py-name" targets="Variable evac.stoch.fractal_tools.u=evac.stoch.fractal_tools-module.html#u,Variable evac.stoch.lovejoy_fractal.u=evac.stoch.lovejoy_fractal-module.html#u"><a title="evac.stoch.fractal_tools.u
+evac.stoch.lovejoy_fractal.u" class="py-name" href="#" onclick="return doclink('link-11', 'u', 'link-11');">u</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ec</tt><tt class="py-op">.</tt><tt class="py-name">variables</tt><tt class="py-op">[</tt><tt class="py-string">'U_GDS0_ISBL'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-name">t_idx</tt><tt class="py-op">,</tt><tt class="py-name">lv_idx</tt><tt class="py-op">,</tt><tt class="py-op">.</tt><tt class="py-op">.</tt><tt class="py-op">.</tt><tt class="py-op">]</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">            <tt class="py-name">v</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ec</tt><tt class="py-op">.</tt><tt class="py-name">variables</tt><tt class="py-op">[</tt><tt class="py-string">'V_GDS0_ISBL'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-name">t_idx</tt><tt class="py-op">,</tt><tt class="py-name">lv_idx</tt><tt class="py-op">,</tt><tt class="py-op">.</tt><tt class="py-op">.</tt><tt class="py-op">.</tt><tt class="py-op">]</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">            <tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">sqrt</tt><tt class="py-op">(</tt><tt id="link-12" class="py-name"><a title="evac.stoch.fractal_tools.u
+evac.stoch.lovejoy_fractal.u" class="py-name" href="#" onclick="return doclink('link-12', 'u', 'link-11');">u</a></tt><tt class="py-op">**</tt><tt class="py-number">2</tt> <tt class="py-op">+</tt> <tt class="py-name">v</tt><tt class="py-op">**</tt><tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">            <tt class="py-name">k</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Static Method evac.datafiles.ecmwf.ECMWF.get_key()=evac.datafiles.ecmwf.ECMWF-class.html#get_key,Method evac.datafiles.ruc.RUC.get_key()=evac.datafiles.ruc.RUC-class.html#get_key,Method evac.plot._rucplot.RUCPlot.get_key()=evac.plot._rucplot.RUCPlot-class.html#get_key"><a title="evac.datafiles.ecmwf.ECMWF.get_key
+evac.datafiles.ruc.RUC.get_key
+evac.plot._rucplot.RUCPlot.get_key" class="py-name" href="#" onclick="return doclink('link-13', 'get_key', 'link-13');">get_key</a></tt><tt class="py-op">(</tt><tt class="py-name">va</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">            <tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ec</tt><tt class="py-op">.</tt><tt class="py-name">variables</tt><tt class="py-op">[</tt><tt class="py-name">k</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-name">t_idx</tt><tt class="py-op">,</tt><tt class="py-name">lv_idx</tt><tt class="py-op">,</tt><tt class="py-op">.</tt><tt class="py-op">.</tt><tt class="py-op">.</tt><tt class="py-op">]</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">data</tt> </tt>
+</div><a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"> </tt>
+<a name="ECMWF.plot"></a><div id="ECMWF.plot-def"><a name="L79"></a><tt class="py-lineno"> 79</tt> <a class="py-toggle" href="#" id="ECMWF.plot-toggle" onclick="return toggle('ECMWF.plot');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.ecmwf.ECMWF-class.html#plot">plot</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">va</tt><tt class="py-op">,</tt><tt class="py-param">lv</tt><tt class="py-op">,</tt><tt class="py-param">times</tt><tt class="py-op">,</tt><tt class="py-param">outdir</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ECMWF.plot-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ECMWF.plot-expanded"><a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">t</tt> <tt class="py-keyword">in</tt> <tt class="py-name">times</tt><tt class="py-op">:</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">            <tt class="py-name">fig</tt> <tt class="py-op">=</tt> <tt class="py-name">plt</tt><tt class="py-op">.</tt><tt class="py-name">figure</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">            <tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method evac.datafiles.ecmwf.ECMWF.get()=evac.datafiles.ecmwf.ECMWF-class.html#get,Method evac.datafiles.ensemble.Ensemble.get()=evac.datafiles.ensemble.Ensemble-class.html#get,Method evac.datafiles.gribfile.GribFile.get()=evac.datafiles.gribfile.GribFile-class.html#get,Method evac.datafiles.stageiv.StageIV.get()=evac.datafiles.stageiv.StageIV-class.html#get,Method evac.datafiles.wrfout.WRFOut.get()=evac.datafiles.wrfout.WRFOut-class.html#get,Method evac.plot._rucplot.RUCPlot.get()=evac.plot._rucplot.RUCPlot-class.html#get,Method evac.stats.detscores.DetScores.get()=evac.stats.detscores.DetScores-class.html#get"><a title="evac.datafiles.ecmwf.ECMWF.get
+evac.datafiles.ensemble.Ensemble.get
+evac.datafiles.gribfile.GribFile.get
+evac.datafiles.stageiv.StageIV.get
+evac.datafiles.wrfout.WRFOut.get
+evac.plot._rucplot.RUCPlot.get
+evac.stats.detscores.DetScores.get" class="py-name" href="#" onclick="return doclink('link-14', 'get', 'link-14');">get</a></tt><tt class="py-op">(</tt><tt class="py-name">va</tt><tt class="py-op">,</tt><tt class="py-name">lv</tt><tt class="py-op">,</tt><tt class="py-name">t</tt><tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">            <tt class="py-name">m</tt><tt class="py-op">,</tt> <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Method evac.datafiles.ecmwf.ECMWF.basemap_setup()=evac.datafiles.ecmwf.ECMWF-class.html#basemap_setup,Method evac.datafiles.ruc.RUC.basemap_setup()=evac.datafiles.ruc.RUC-class.html#basemap_setup,Method evac.plot._rucplot.RUCPlot.basemap_setup()=evac.plot._rucplot.RUCPlot-class.html#basemap_setup"><a title="evac.datafiles.ecmwf.ECMWF.basemap_setup
+evac.datafiles.ruc.RUC.basemap_setup
+evac.plot._rucplot.RUCPlot.basemap_setup" class="py-name" href="#" onclick="return doclink('link-15', 'basemap_setup', 'link-15');">basemap_setup</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-string">'scale'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">kwargs</tt><tt class="py-op">:</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">                <tt class="py-name">S</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">'scale'</tt><tt class="py-op">]</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">                <tt class="py-name">f1</tt> <tt class="py-op">=</tt> <tt class="py-name">m</tt><tt class="py-op">.</tt><tt class="py-name">contour</tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">,</tt><tt class="py-name">y</tt><tt class="py-op">,</tt><tt class="py-name">data</tt><tt class="py-op">,</tt><tt class="py-name">S</tt><tt class="py-op">,</tt><tt class="py-name">colors</tt><tt class="py-op">=</tt><tt class="py-string">'k'</tt><tt class="py-op">)</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">                <tt class="py-name">f1</tt> <tt class="py-op">=</tt> <tt class="py-name">m</tt><tt class="py-op">.</tt><tt class="py-name">contour</tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">,</tt><tt class="py-name">y</tt><tt class="py-op">,</tt><tt class="py-name">data</tt><tt class="py-op">,</tt><tt class="py-name">colors</tt><tt class="py-op">=</tt><tt class="py-string">'k'</tt><tt class="py-op">)</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">'title'</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">                <tt class="py-name">title</tt> <tt class="py-op">=</tt> <tt id="link-16" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-16', 'utils', 'link-1');">utils</a></tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Function evac.utils.gis_tools.string_from_time()=evac.utils.gis_tools-module.html#string_from_time"><a title="evac.utils.gis_tools.string_from_time" class="py-name" href="#" onclick="return doclink('link-17', 'string_from_time', 'link-17');">string_from_time</a></tt><tt class="py-op">(</tt><tt class="py-string">'title'</tt><tt class="py-op">,</tt><tt class="py-name">t</tt><tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">                <tt class="py-name">plt</tt><tt class="py-op">.</tt><tt class="py-name">title</tt><tt class="py-op">(</tt><tt class="py-name">title</tt><tt class="py-op">)</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-string">'wind_overlay'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">kwargs</tt><tt class="py-op">:</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">                <tt class="py-name">jet</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">'wind_overlay'</tt><tt class="py-op">]</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">                <tt id="link-18" class="py-name" targets="Method evac.lazy.ideal_profiles.Profile.wind()=evac.lazy.ideal_profiles.Profile-class.html#wind"><a title="evac.lazy.ideal_profiles.Profile.wind" class="py-name" href="#" onclick="return doclink('link-18', 'wind', 'link-18');">wind</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="evac.datafiles.ecmwf.ECMWF.get
+evac.datafiles.ensemble.Ensemble.get
+evac.datafiles.gribfile.GribFile.get
+evac.datafiles.stageiv.StageIV.get
+evac.datafiles.wrfout.WRFOut.get
+evac.plot._rucplot.RUCPlot.get
+evac.stats.detscores.DetScores.get" class="py-name" href="#" onclick="return doclink('link-19', 'get', 'link-14');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'wind'</tt><tt class="py-op">,</tt><tt class="py-name">lv</tt><tt class="py-op">,</tt><tt class="py-name">t</tt><tt class="py-op">)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">                <tt class="py-name">windplot</tt> <tt class="py-op">=</tt> <tt class="py-name">m</tt><tt class="py-op">.</tt><tt class="py-name">contourf</tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">,</tt><tt class="py-name">y</tt><tt class="py-op">,</tt><tt id="link-20" class="py-name"><a title="evac.lazy.ideal_profiles.Profile.wind" class="py-name" href="#" onclick="return doclink('link-20', 'wind', 'link-18');">wind</a></tt><tt class="py-op">,</tt><tt class="py-name">jet</tt><tt class="py-op">,</tt><tt id="link-21" class="py-name" targets="Variable evac.stoch.fractal_tools.alpha=evac.stoch.fractal_tools-module.html#alpha,Variable evac.stoch.lovejoy_fractal.alpha=evac.stoch.lovejoy_fractal-module.html#alpha,Variable evac.utils._fractal_tools.alpha=evac.utils._fractal_tools-module.html#alpha"><a title="evac.stoch.fractal_tools.alpha
+evac.stoch.lovejoy_fractal.alpha
+evac.utils._fractal_tools.alpha" class="py-name" href="#" onclick="return doclink('link-21', 'alpha', 'link-21');">alpha</a></tt><tt class="py-op">=</tt><tt class="py-number">0.6</tt><tt class="py-op">)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">                <tt class="py-name">plt</tt><tt class="py-op">.</tt><tt class="py-name">colorbar</tt><tt class="py-op">(</tt><tt class="py-name">windplot</tt><tt class="py-op">)</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-string">'W_overlay'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">kwargs</tt><tt class="py-op">:</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">                <tt class="py-name">Wscale</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">'W_overlay'</tt><tt class="py-op">]</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">                <tt class="py-name">W</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="evac.datafiles.ecmwf.ECMWF.get
+evac.datafiles.ensemble.Ensemble.get
+evac.datafiles.gribfile.GribFile.get
+evac.datafiles.stageiv.StageIV.get
+evac.datafiles.wrfout.WRFOut.get
+evac.plot._rucplot.RUCPlot.get
+evac.stats.detscores.DetScores.get" class="py-name" href="#" onclick="return doclink('link-22', 'get', 'link-14');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'W'</tt><tt class="py-op">,</tt><tt class="py-name">lv</tt><tt class="py-op">,</tt><tt class="py-name">t</tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">                <tt class="py-name">windplot</tt> <tt class="py-op">=</tt> <tt class="py-name">m</tt><tt class="py-op">.</tt><tt class="py-name">contourf</tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">,</tt><tt class="py-name">y</tt><tt class="py-op">,</tt><tt class="py-name">W</tt><tt class="py-op">,</tt><tt id="link-23" class="py-name"><a title="evac.stoch.fractal_tools.alpha
+evac.stoch.lovejoy_fractal.alpha
+evac.utils._fractal_tools.alpha" class="py-name" href="#" onclick="return doclink('link-23', 'alpha', 'link-21');">alpha</a></tt><tt class="py-op">=</tt><tt class="py-number">0.6</tt><tt class="py-op">)</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">                <tt class="py-name">plt</tt><tt class="py-op">.</tt><tt class="py-name">colorbar</tt><tt class="py-op">(</tt><tt class="py-name">windplot</tt><tt class="py-op">)</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">            <tt class="py-comment"># if self.C.colorbar:</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">                <tt class="py-comment"># plt.colorbar(orientation='horizontal')</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">            <tt class="py-name">datestr</tt> <tt class="py-op">=</tt> <tt id="link-24" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-24', 'utils', 'link-1');">utils</a></tt><tt class="py-op">.</tt><tt id="link-25" class="py-name"><a title="evac.utils.gis_tools.string_from_time" class="py-name" href="#" onclick="return doclink('link-25', 'string_from_time', 'link-17');">string_from_time</a></tt><tt class="py-op">(</tt><tt class="py-string">'output'</tt><tt class="py-op">,</tt><tt class="py-name">t</tt><tt class="py-op">)</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">            <tt class="py-name">fname</tt> <tt class="py-op">=</tt> <tt class="py-string">'_'</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-string">'ECMWF'</tt><tt class="py-op">,</tt><tt class="py-name">va</tt><tt class="py-op">,</tt><tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">lv</tt><tt class="py-op">)</tt><tt class="py-op">,</tt><tt class="py-name">datestr</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'.png'</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-string">"Plotting {0} at {1} for {2}"</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">                        <tt class="py-name">va</tt><tt class="py-op">,</tt><tt class="py-name">lv</tt><tt class="py-op">,</tt><tt class="py-name">datestr</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line"> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">            <tt class="py-name">plt</tt><tt class="py-op">.</tt><tt class="py-name">clabel</tt><tt class="py-op">(</tt><tt class="py-name">f1</tt><tt class="py-op">,</tt> <tt class="py-name">inline</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">fmt</tt><tt class="py-op">=</tt><tt class="py-string">'%4u'</tt><tt class="py-op">,</tt> <tt class="py-name">fontsize</tt><tt class="py-op">=</tt><tt class="py-number">12</tt><tt class="py-op">,</tt> <tt class="py-name">colors</tt><tt class="py-op">=</tt><tt class="py-string">'k'</tt><tt class="py-op">)</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line"> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">            <tt id="link-26" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-26', 'utils', 'link-1');">utils</a></tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Function evac.utils.unix_tools.trycreate()=evac.utils.unix_tools-module.html#trycreate,Function evac.utils.utils.trycreate()=evac.utils.utils-module.html#trycreate"><a title="evac.utils.unix_tools.trycreate
+evac.utils.utils.trycreate" class="py-name" href="#" onclick="return doclink('link-27', 'trycreate', 'link-27');">trycreate</a></tt><tt class="py-op">(</tt><tt class="py-name">outdir</tt><tt class="py-op">)</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">            <tt class="py-name">plt</tt><tt class="py-op">.</tt><tt class="py-name">savefig</tt><tt class="py-op">(</tt><tt class="py-name">os</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Variable evac.lazy._monte2.path=evac.lazy._monte2-module.html#path"><a title="evac.lazy._monte2.path" class="py-name" href="#" onclick="return doclink('link-28', 'path', 'link-28');">path</a></tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">outdir</tt><tt class="py-op">,</tt><tt class="py-name">fname</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">            <tt class="py-name">plt</tt><tt class="py-op">.</tt><tt class="py-name">clf</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">            <tt class="py-name">plt</tt><tt class="py-op">.</tt><tt class="py-name">close</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line"> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line"> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line"> </tt>
+<a name="ECMWF.basemap_setup"></a><div id="ECMWF.basemap_setup-def"><a name="L128"></a><tt class="py-lineno">128</tt> <a class="py-toggle" href="#" id="ECMWF.basemap_setup-toggle" onclick="return toggle('ECMWF.basemap_setup');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.ecmwf.ECMWF-class.html#basemap_setup">basemap_setup</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ECMWF.basemap_setup-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ECMWF.basemap_setup-expanded"><a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-comment"># Fetch settings</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">        <tt class="py-name">basemap_res</tt> <tt class="py-op">=</tt> <tt class="py-string">'i'</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-name">lllat</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">        <tt class="py-name">lllon</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">        <tt class="py-name">urlat</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">        <tt class="py-name">urlon</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line"> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">'Wlim'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">kwargs</tt><tt class="py-op">:</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">            <tt class="py-name">lllat</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">'Slim'</tt><tt class="py-op">]</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">            <tt class="py-name">lllon</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">'Wlim'</tt><tt class="py-op">]</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">            <tt class="py-name">urlat</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">'Nlim'</tt><tt class="py-op">]</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">            <tt class="py-name">urlon</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">'Elim'</tt><tt class="py-op">]</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line"> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-comment"># dx = 13.0</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">        <tt class="py-comment"># dy = 13.0</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt class="py-comment"># x_dim = lats.shape[0]</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">        <tt class="py-comment"># y_dim = lats.shape[1]</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-comment"># width_m = dx*(x_dim-1)</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">        <tt class="py-comment"># height_m = dy*(y_dim-1)</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">        <tt class="py-name">lat0</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">[</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">y_dim</tt><tt class="py-op">/</tt><tt class="py-number">2</tt><tt class="py-op">]</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">        <tt class="py-name">lon0</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt><tt class="py-op">[</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">x_dim</tt><tt class="py-op">/</tt><tt class="py-number">2</tt><tt class="py-op">]</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line"> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        <tt class="py-name">m</tt> <tt class="py-op">=</tt> <tt class="py-name">Basemap</tt><tt class="py-op">(</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">            <tt id="link-29" class="py-name" targets="Method evac.datafiles.gribfile.GribFile.projection()=evac.datafiles.gribfile.GribFile-class.html#projection,Method evac.datafiles.stageiv.StageIV.projection()=evac.datafiles.stageiv.StageIV-class.html#projection"><a title="evac.datafiles.gribfile.GribFile.projection
+evac.datafiles.stageiv.StageIV.projection" class="py-name" href="#" onclick="return doclink('link-29', 'projection', 'link-29');">projection</a></tt><tt class="py-op">=</tt><tt class="py-string">'merc'</tt><tt class="py-op">,</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">            <tt class="py-name">llcrnrlon</tt><tt class="py-op">=</tt><tt class="py-name">lllon</tt><tt class="py-op">,</tt><tt class="py-name">llcrnrlat</tt><tt class="py-op">=</tt><tt class="py-name">lllat</tt><tt class="py-op">,</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">            <tt class="py-name">urcrnrlon</tt><tt class="py-op">=</tt><tt class="py-name">urlon</tt><tt class="py-op">,</tt><tt class="py-name">urcrnrlat</tt><tt class="py-op">=</tt><tt class="py-name">urlat</tt><tt class="py-op">,</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">            <tt class="py-name">lat_0</tt><tt class="py-op">=</tt><tt class="py-name">lat0</tt><tt class="py-op">,</tt><tt class="py-name">lon_0</tt><tt class="py-op">=</tt><tt class="py-name">lon0</tt><tt class="py-op">,</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">            <tt class="py-name">resolution</tt><tt class="py-op">=</tt><tt class="py-name">basemap_res</tt><tt class="py-op">,</tt><tt class="py-name">area_thresh</tt><tt class="py-op">=</tt><tt class="py-number">500</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">            <tt class="py-op">)</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">        <tt class="py-name">m</tt><tt class="py-op">.</tt><tt class="py-name">drawcoastlines</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">        <tt class="py-name">m</tt><tt class="py-op">.</tt><tt class="py-name">drawstates</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">        <tt class="py-name">m</tt><tt class="py-op">.</tt><tt class="py-name">drawcountries</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line"> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">        <tt class="py-comment"># Draw meridians etc with wrff.lat/lon spacing</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt class="py-comment"># Default should be a tenth of width of plot, rounded to sig fig</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">        <tt class="py-comment"># pdb.set_trace()</tt> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">        <tt class="py-name">mx</tt><tt class="py-op">,</tt> <tt class="py-name">my</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">meshgrid</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">)</tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">        <tt class="py-name">x</tt><tt class="py-op">,</tt><tt class="py-name">y</tt> <tt class="py-op">=</tt> <tt class="py-name">m</tt><tt class="py-op">(</tt><tt class="py-name">mx</tt><tt class="py-op">,</tt><tt class="py-name">my</tt><tt class="py-op">)</tt> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">m</tt><tt class="py-op">,</tt> <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt> </tt>
+</div></div><a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

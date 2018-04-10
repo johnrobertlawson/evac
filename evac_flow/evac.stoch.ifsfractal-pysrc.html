@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.stoch.ifsfractal</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.stoch-module.html">Package&nbsp;stoch</a> ::
+        Module&nbsp;ifsfractal
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.stoch.ifsfractal-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="evac.stoch.ifsfractal-module.html">Module evac.stoch.ifsfractal</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pdb</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">N</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">scipy</tt><tt class="py-op">.</tt><tt class="py-name">ndimage</tt><tt class="py-op">.</tt><tt class="py-name">interpolation</tt> <tt class="py-keyword">as</tt> <tt class="py-name">INT</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">scipy</tt><tt class="py-op">.</tt><tt class="py-name">interpolate</tt> <tt class="py-keyword">import</tt> <tt class="py-name">RectBivariateSpline</tt> <tt class="py-keyword">as</tt> <tt class="py-name">RBS</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"> </tt>
+<a name="IFSFractal"></a><div id="IFSFractal-def"><a name="L7"></a><tt class="py-lineno"> 7</tt> <a class="py-toggle" href="#" id="IFSFractal-toggle" onclick="return toggle('IFSFractal');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="evac.stoch.ifsfractal.IFSFractal-class.html">IFSFractal</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IFSFractal-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="IFSFractal-expanded"><a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line">    <tt class="py-docstring">""" Generate a fractal using the IFS algorithm.</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-docstring">    Todo:</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-docstring">        * Where did I get the inspiration from?!</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-docstring">        * Not sure this has been tested.</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring">    Args:</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">        arr: No idea. Sorry.</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="IFSFractal.__init__"></a><div id="IFSFractal.__init__-def"><a name="L17"></a><tt class="py-lineno">17</tt> <a class="py-toggle" href="#" id="IFSFractal.__init__-toggle" onclick="return toggle('IFSFractal.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stoch.ifsfractal.IFSFractal-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">arr</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IFSFractal.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="IFSFractal.__init__-expanded"><a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">arr</tt> <tt class="py-op">=</tt> <tt class="py-name">arr</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-keyword">pass</tt> </tt>
+</div><a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"> </tt>
+<a name="IFSFractal.IFS_go"></a><div id="IFSFractal.IFS_go-def"><a name="L21"></a><tt class="py-lineno">21</tt> <a class="py-toggle" href="#" id="IFSFractal.IFS_go-toggle" onclick="return toggle('IFSFractal.IFS_go');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stoch.ifsfractal.IFSFractal-class.html#IFS_go">IFS_go</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">r</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-param">s</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-param">theta</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-param">phi</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-param">e</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-param">f</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-param">zoom</tt><tt class="py-op">=</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IFSFractal.IFS_go-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="IFSFractal.IFS_go-expanded"><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">        <tt class="py-comment"># new_arr = INT.zoom(self.arr,3,output=int)</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">xdim</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ydim</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">arr</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">r</tt> <tt class="py-op">=</tt> <tt class="py-name">r</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Variable evac.stoch.fractal_tools.s=evac.stoch.fractal_tools-module.html#s,Variable evac.stoch.lovejoy_fractal.s=evac.stoch.lovejoy_fractal-module.html#s"><a title="evac.stoch.fractal_tools.s
+evac.stoch.lovejoy_fractal.s" class="py-name" href="#" onclick="return doclink('link-0', 's', 'link-0');">s</a></tt> <tt class="py-op">=</tt> <tt id="link-1" class="py-name"><a title="evac.stoch.fractal_tools.s
+evac.stoch.lovejoy_fractal.s" class="py-name" href="#" onclick="return doclink('link-1', 's', 'link-0');">s</a></tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">theta</tt> <tt class="py-op">=</tt> <tt class="py-name">theta</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-comment"># Need to make phi different from theta</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">phi</tt> <tt class="py-op">=</tt> <tt class="py-name">phi</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Method evac.plot._skewt.SkewT.e()=evac.plot._skewt.SkewT-class.html#e"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-2', 'e', 'link-2');">e</a></tt> <tt class="py-op">=</tt> <tt id="link-3" class="py-name"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-3', 'e', 'link-2');">e</a></tt><tt class="py-op">*</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">xdim</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">f</tt> <tt class="py-op">=</tt> <tt class="py-name">f</tt><tt class="py-op">*</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ydim</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">xx_in</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">arange</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">xdim</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">yy_in</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">arange</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ydim</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line"> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-name">arr_mod</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">copy</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">arr</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">r</tt> <tt class="py-op">!=</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">            <tt class="py-name">arr_mod</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method evac.stoch.ifsfractal.IFSFractal.apply_r()=evac.stoch.ifsfractal.IFSFractal-class.html#apply_r"><a title="evac.stoch.ifsfractal.IFSFractal.apply_r" class="py-name" href="#" onclick="return doclink('link-4', 'apply_r', 'link-4');">apply_r</a></tt><tt class="py-op">(</tt><tt class="py-name">arr_mod</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-5" class="py-name"><a title="evac.stoch.fractal_tools.s
+evac.stoch.lovejoy_fractal.s" class="py-name" href="#" onclick="return doclink('link-5', 's', 'link-0');">s</a></tt> <tt class="py-op">!=</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">            <tt class="py-name">arr_mod</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method evac.stoch.ifsfractal.IFSFractal.apply_s()=evac.stoch.ifsfractal.IFSFractal-class.html#apply_s"><a title="evac.stoch.ifsfractal.IFSFractal.apply_s" class="py-name" href="#" onclick="return doclink('link-6', 'apply_s', 'link-6');">apply_s</a></tt><tt class="py-op">(</tt><tt class="py-name">arr_mod</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">theta</tt> <tt class="py-op">!=</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">            <tt class="py-name">arr_mod</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method evac.stoch.ifsfractal.IFSFractal.apply_theta()=evac.stoch.ifsfractal.IFSFractal-class.html#apply_theta"><a title="evac.stoch.ifsfractal.IFSFractal.apply_theta" class="py-name" href="#" onclick="return doclink('link-7', 'apply_theta', 'link-7');">apply_theta</a></tt><tt class="py-op">(</tt><tt class="py-name">arr_mod</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-comment"># if phi != 0:</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">            <tt class="py-comment"># arr_mod = self.apply_phi(arr_mod)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-8" class="py-name"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-8', 'e', 'link-2');">e</a></tt> <tt class="py-op">!=</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">            <tt class="py-name">arr_mod</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method evac.stoch.ifsfractal.IFSFractal.apply_e()=evac.stoch.ifsfractal.IFSFractal-class.html#apply_e"><a title="evac.stoch.ifsfractal.IFSFractal.apply_e" class="py-name" href="#" onclick="return doclink('link-9', 'apply_e', 'link-9');">apply_e</a></tt><tt class="py-op">(</tt><tt class="py-name">arr_mod</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">f</tt> <tt class="py-op">!=</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">            <tt class="py-name">arr_mod</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method evac.stoch.ifsfractal.IFSFractal.apply_f()=evac.stoch.ifsfractal.IFSFractal-class.html#apply_f"><a title="evac.stoch.ifsfractal.IFSFractal.apply_f" class="py-name" href="#" onclick="return doclink('link-10', 'apply_f', 'link-10');">apply_f</a></tt><tt class="py-op">(</tt><tt class="py-name">arr_mod</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">arr_mod</tt> </tt>
+</div><a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line"> </tt>
+<a name="IFSFractal.apply_r"></a><div id="IFSFractal.apply_r-def"><a name="L51"></a><tt class="py-lineno">51</tt> <a class="py-toggle" href="#" id="IFSFractal.apply_r-toggle" onclick="return toggle('IFSFractal.apply_r');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stoch.ifsfractal.IFSFractal-class.html#apply_r">apply_r</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">arr_in</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IFSFractal.apply_r-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="IFSFractal.apply_r-expanded"><a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-comment"># Scaling in the horizontal</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">        <tt class="py-name">xx_out</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">xx_in</tt> <tt class="py-op">*</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">r</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">        <tt class="py-name">rbs</tt> <tt class="py-op">=</tt> <tt class="py-name">RBS</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">yy_in</tt><tt class="py-op">,</tt><tt class="py-name">xx_out</tt><tt class="py-op">,</tt><tt class="py-name">arr_in</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">        <tt class="py-name">nn</tt> <tt class="py-op">=</tt> <tt class="py-name">rbs</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">yy_in</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">xx_in</tt><tt class="py-op">)</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">nn</tt><tt class="py-op">.</tt><tt class="py-name">round</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">astype</tt><tt class="py-op">(</tt><tt class="py-name">int</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line"> </tt>
+<a name="IFSFractal.apply_s"></a><div id="IFSFractal.apply_s-def"><a name="L58"></a><tt class="py-lineno">58</tt> <a class="py-toggle" href="#" id="IFSFractal.apply_s-toggle" onclick="return toggle('IFSFractal.apply_s');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stoch.ifsfractal.IFSFractal-class.html#apply_s">apply_s</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">arr_in</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IFSFractal.apply_s-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="IFSFractal.apply_s-expanded"><a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">        <tt class="py-comment"># Scaling in the vertical</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">        <tt class="py-name">yy_out</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">yy_in</tt> <tt class="py-op">*</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">r</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">        <tt class="py-name">rbs</tt> <tt class="py-op">=</tt> <tt class="py-name">RBS</tt><tt class="py-op">(</tt><tt class="py-name">yy_out</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">xx_in</tt><tt class="py-op">,</tt><tt class="py-name">arr_in</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">        <tt class="py-name">nn</tt> <tt class="py-op">=</tt> <tt class="py-name">rbs</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">yy_in</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">xx_in</tt><tt class="py-op">)</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">nn</tt><tt class="py-op">.</tt><tt class="py-name">round</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">astype</tt><tt class="py-op">(</tt><tt class="py-name">int</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line"> </tt>
+<a name="IFSFractal.apply_theta"></a><div id="IFSFractal.apply_theta-def"><a name="L65"></a><tt class="py-lineno">65</tt> <a class="py-toggle" href="#" id="IFSFractal.apply_theta-toggle" onclick="return toggle('IFSFractal.apply_theta');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stoch.ifsfractal.IFSFractal-class.html#apply_theta">apply_theta</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">arr_in</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IFSFractal.apply_theta-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="IFSFractal.apply_theta-expanded"><a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">        <tt class="py-name">arr_out</tt> <tt class="py-op">=</tt> <tt class="py-name">INT</tt><tt class="py-op">.</tt><tt class="py-name">rotate</tt><tt class="py-op">(</tt><tt class="py-name">arr_in</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">theta</tt><tt class="py-op">,</tt><tt class="py-name">reshape</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">arr_out</tt> </tt>
+</div><a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line"> </tt>
+<a name="IFSFractal.apply_phi"></a><div id="IFSFractal.apply_phi-def"><a name="L69"></a><tt class="py-lineno">69</tt> <a class="py-toggle" href="#" id="IFSFractal.apply_phi-toggle" onclick="return toggle('IFSFractal.apply_phi');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stoch.ifsfractal.IFSFractal-class.html#apply_phi">apply_phi</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">arr_in</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IFSFractal.apply_phi-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="IFSFractal.apply_phi-expanded"><a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">        <tt class="py-name">arr_out</tt> <tt class="py-op">=</tt> <tt class="py-name">INT</tt><tt class="py-op">.</tt><tt class="py-name">rotate</tt><tt class="py-op">(</tt><tt class="py-name">arr_in</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">phi</tt><tt class="py-op">,</tt><tt class="py-name">reshape</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">arr_out</tt> </tt>
+</div><a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line"> </tt>
+<a name="IFSFractal.apply_e"></a><div id="IFSFractal.apply_e-def"><a name="L73"></a><tt class="py-lineno">73</tt> <a class="py-toggle" href="#" id="IFSFractal.apply_e-toggle" onclick="return toggle('IFSFractal.apply_e');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stoch.ifsfractal.IFSFractal-class.html#apply_e">apply_e</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">arr_in</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IFSFractal.apply_e-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="IFSFractal.apply_e-expanded"><a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line">        <tt class="py-name">shift</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-11', 'e', 'link-2');">e</a></tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">        <tt class="py-name">arr_out</tt> <tt class="py-op">=</tt> <tt class="py-name">INT</tt><tt class="py-op">.</tt><tt class="py-name">shift</tt><tt class="py-op">(</tt><tt class="py-name">arr_in</tt><tt class="py-op">,</tt><tt class="py-name">shift</tt><tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">arr_out</tt> </tt>
+</div><a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line"> </tt>
+<a name="IFSFractal.apply_f"></a><div id="IFSFractal.apply_f-def"><a name="L78"></a><tt class="py-lineno">78</tt> <a class="py-toggle" href="#" id="IFSFractal.apply_f-toggle" onclick="return toggle('IFSFractal.apply_f');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stoch.ifsfractal.IFSFractal-class.html#apply_f">apply_f</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">arr_in</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="IFSFractal.apply_f-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="IFSFractal.apply_f-expanded"><a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line">        <tt class="py-name">shift</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">f</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line">        <tt class="py-name">arr_out</tt> <tt class="py-op">=</tt> <tt class="py-name">INT</tt><tt class="py-op">.</tt><tt class="py-name">shift</tt><tt class="py-op">(</tt><tt class="py-name">arr_in</tt><tt class="py-op">,</tt><tt class="py-name">shift</tt><tt class="py-op">)</tt> </tt>
+<a name="L81"></a><tt class="py-lineno">81</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">arr_out</tt> </tt>
+</div></div><a name="L82"></a><tt class="py-lineno">82</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

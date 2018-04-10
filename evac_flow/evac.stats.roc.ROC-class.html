@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.stats.roc.ROC</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.stats-module.html">Package&nbsp;stats</a> ::
+        <a href="evac.stats.roc-module.html">Module&nbsp;roc</a> ::
+        Class&nbsp;ROC
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.stats.roc.ROC-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class ROC</h1><p class="nomargin-top"><span class="codelink"><a href="evac.stats.roc-pysrc.html#ROC">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="class_hierarchy_for_roc" name="class_hierarchy_for_roc">
+<area shape="rect" id="node1" href="evac.stats.detscores.DetScores-class.html" title="detscores.DetScores" alt="" coords="5,5,161,31"/>
+<area shape="rect" id="node2" href="evac.stats.probscores.ProbScores-class.html" title="probscores.ProbScores" alt="" coords="186,5,357,31"/>
+<area shape="rect" id="node3" href="evac.stats.roc.ROC-class.html" title="ROC" alt="" coords="381,5,431,31"/>
+</map>
+  <img src="class_hierarchy_for_roc.gif" alt='' usemap="#class_hierarchy_for_roc" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<pre class="literalblock">
+Relative Operative Statistics.
+
+Mixin of deterministic and probabilistic scores. Can be used to generate a
+2x2 contingency table for ensembles.
+
+Args:
+    nens        :   number of ensemble members
+    pf          :   probability of an event (1d array)
+    ob (bool)   :   whether it happened (1d array)
+    ensemble    :   Ensemble instance.
+    obs_array   :   2D array (lats,lons) for verification
+    threshold   :   float to create binary condition
+    overunder   :   operator for threshold.
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.roc.ROC-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">nens</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">pf</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">ob</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">ensemble</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">obs_array</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">thresholds</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">overunder</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.roc-pysrc.html#ROC.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_roc_contingency"></a><span class="summary-sig-name">compute_roc_contingency</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.roc-pysrc.html#ROC.compute_roc_contingency">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_compute_roc"></a><span class="summary-sig-name">_compute_roc</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      w is the probability threshold list.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.roc-pysrc.html#ROC._compute_roc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.roc.ROC-class.html#compute_roca" class="summary-sig-name">compute_roca</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Area under ROC curve.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.roc-pysrc.html#ROC.compute_roca">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_rocas"></a><span class="summary-sig-name">compute_rocas</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      ROC area skill score.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.roc-pysrc.html#ROC.compute_rocas">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="evac.stats.detscores.DetScores-class.html">detscores.DetScores</a></code></b>:
+      <code><a href="evac.stats.detscores.DetScores-class.html#check_approx">check_approx</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_E">compute_E</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_all">compute_all</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_ar">compute_ar</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_bias">compute_bias</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_csi">compute_csi</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_falsealarmrate">compute_falsealarmrate</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_falsealarmratio">compute_falsealarmratio</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_gilbert">compute_gilbert</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_heidke">compute_heidke</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_hitrate">compute_hitrate</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_kss">compute_kss</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_pcli">compute_pcli</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_peirce">compute_peirce</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_pfd">compute_pfd</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_pod">compute_pod</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_propcorrect">compute_propcorrect</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_successrate">compute_successrate</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_threat">compute_threat</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#compute_yuleq">compute_yuleq</a></code>,
+      <code><a href="evac.stats.detscores.DetScores-class.html#get">get</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="evac.stats.probscores.ProbScores-class.html">probscores.ProbScores</a></code></b>:
+      <code><a href="evac.stats.probscores.ProbScores-class.html#cdf_">cdf_</a></code>,
+      <code><a href="evac.stats.probscores.ProbScores-class.html#compute_briar">compute_briar</a></code>,
+      <code><a href="evac.stats.probscores.ProbScores-class.html#compute_bss">compute_bss</a></code>,
+      <code><a href="evac.stats.probscores.ProbScores-class.html#compute_crps">compute_crps</a></code>,
+      <code><a href="evac.stats.probscores.ProbScores-class.html#compute_crps_old">compute_crps_old</a></code>,
+      <code><a href="evac.stats.probscores.ProbScores-class.html#compute_poutl">compute_poutl</a></code>,
+      <code><a href="evac.stats.probscores.ProbScores-class.html#compute_rps">compute_rps</a></code>,
+      <code><a href="evac.stats.probscores.ProbScores-class.html#heaviside">heaviside</a></code>,
+      <code><a href="evac.stats.probscores.ProbScores-class.html#rank_hist">rank_hist</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">nens</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">pf</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">ob</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">ensemble</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">obs_array</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">thresholds</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">overunder</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.roc-pysrc.html#ROC.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="evac.stats.probscores.ProbScores-class.html#__init__">probscores.ProbScores.__init__</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_roca"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_roca</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.roc-pysrc.html#ROC.compute_roca">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Area under ROC curve.</p>
+  <p>TODO.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
