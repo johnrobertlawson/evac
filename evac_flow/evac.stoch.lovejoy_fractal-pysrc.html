@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.stoch.lovejoy_fractal</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.stoch-module.html">Package&nbsp;stoch</a> ::
+        Module&nbsp;lovejoy_fractal
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.stoch.lovejoy_fractal-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="evac.stoch.lovejoy_fractal-module.html">Module evac.stoch.lovejoy_fractal</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-docstring">""" Fractal generator.</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">Todo:</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">    * Merge with `fractal_tools`.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pdb</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">multiprocessing</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">multiprocessing</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Queue</tt><tt class="py-op">,</tt> <tt class="py-name">Process</tt><tt class="py-op">,</tt> <tt class="py-name">Pool</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">N</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">matplotlib</tt> <tt class="py-keyword">as</tt> <tt class="py-name">M</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">matplotlib</tt><tt class="py-op">.</tt><tt class="py-name">pyplot</tt> <tt class="py-keyword">as</tt> <tt class="py-name">plt</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">scipy</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Package evac.stats=evac.stats-module.html"><a title="evac.stats" class="py-name" href="#" onclick="return doclink('link-0', 'stats', 'link-0');">stats</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">SS</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-comment">### 1D PLOT ###</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-comment">### VARIABLES ###</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt id="link-1" class="py-name" targets="Variable evac.stoch.fractal_tools.R=evac.stoch.fractal_tools-module.html#R,Variable evac.stoch.lovejoy_fractal.R=evac.stoch.lovejoy_fractal-module.html#R,Variable evac.utils._fractal_tools.R=evac.utils._fractal_tools-module.html#R,Variable evac.utils.met_constants.R=evac.utils.met_constants-module.html#R"><a title="evac.stoch.fractal_tools.R
+evac.stoch.lovejoy_fractal.R
+evac.utils._fractal_tools.R
+evac.utils.met_constants.R" class="py-name" href="#" onclick="return doclink('link-1', 'R', 'link-1');">R</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> <tt class="py-comment"># Function, varying with scale t</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt id="link-2" class="py-name" targets="Variable evac.stoch.fractal_tools.dR=evac.stoch.fractal_tools-module.html#dR,Variable evac.stoch.lovejoy_fractal.dR=evac.stoch.lovejoy_fractal-module.html#dR"><a title="evac.stoch.fractal_tools.dR
+evac.stoch.lovejoy_fractal.dR" class="py-name" href="#" onclick="return doclink('link-2', 'dR', 'link-2');">dR</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> <tt class="py-comment"># height of pulse - rainfatll intensity increment</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt id="link-3" class="py-name" targets="Variable evac.stoch.fractal_tools.rho=evac.stoch.fractal_tools-module.html#rho,Variable evac.stoch.lovejoy_fractal.rho=evac.stoch.lovejoy_fractal-module.html#rho"><a title="evac.stoch.fractal_tools.rho
+evac.stoch.lovejoy_fractal.rho" class="py-name" href="#" onclick="return doclink('link-3', 'rho', 'link-3');">rho</a></tt> <tt class="py-op">=</tt> <tt class="py-number">3</tt> <tt class="py-comment"># width of pulse - rainfall duration</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt id="link-4" class="py-name" targets="Variable evac.stoch.fractal_tools.ppcen=evac.stoch.fractal_tools-module.html#ppcen,Variable evac.stoch.lovejoy_fractal.ppcen=evac.stoch.lovejoy_fractal-module.html#ppcen"><a title="evac.stoch.fractal_tools.ppcen
+evac.stoch.lovejoy_fractal.ppcen" class="py-name" href="#" onclick="return doclink('link-4', 'ppcen', 'link-4');">ppcen</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> <tt class="py-comment"># centre of pulse according to Poisson process </tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt id="link-5" class="py-name" targets="Variable evac.stoch.fractal_tools.mu=evac.stoch.fractal_tools-module.html#mu,Variable evac.stoch.lovejoy_fractal.mu=evac.stoch.lovejoy_fractal-module.html#mu,Variable evac.utils._fractal_tools.mu=evac.utils._fractal_tools-module.html#mu"><a title="evac.stoch.fractal_tools.mu
+evac.stoch.lovejoy_fractal.mu
+evac.utils._fractal_tools.mu" class="py-name" href="#" onclick="return doclink('link-5', 'mu', 'link-5');">mu</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0.025</tt> <tt class="py-comment"># constant rate for Poisson process</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt id="link-6" class="py-name" targets="Variable evac.stoch.fractal_tools.rhotick=evac.stoch.fractal_tools-module.html#rhotick,Variable evac.stoch.lovejoy_fractal.rhotick=evac.stoch.lovejoy_fractal-module.html#rhotick"><a title="evac.stoch.fractal_tools.rhotick
+evac.stoch.lovejoy_fractal.rhotick" class="py-name" href="#" onclick="return doclink('link-6', 'rhotick', 'link-6');">rhotick</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> <tt class="py-comment"># random duration</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt id="link-7" class="py-name" targets="Variable evac.stoch.fractal_tools.alpha=evac.stoch.fractal_tools-module.html#alpha,Variable evac.stoch.lovejoy_fractal.alpha=evac.stoch.lovejoy_fractal-module.html#alpha,Variable evac.utils._fractal_tools.alpha=evac.utils._fractal_tools-module.html#alpha"><a title="evac.stoch.fractal_tools.alpha
+evac.stoch.lovejoy_fractal.alpha
+evac.utils._fractal_tools.alpha" class="py-name" href="#" onclick="return doclink('link-7', 'alpha', 'link-7');">alpha</a></tt> <tt class="py-op">=</tt> <tt class="py-number">5</tt><tt class="py-op">/</tt><tt class="py-number">3</tt> <tt class="py-comment"># ?&gt;&gt;</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt id="link-8" class="py-name" targets="Variable evac.stoch.fractal_tools.H=evac.stoch.fractal_tools-module.html#H,Variable evac.stoch.lovejoy_fractal.H=evac.stoch.lovejoy_fractal-module.html#H,Variable evac.utils._fractal_tools.H=evac.utils._fractal_tools-module.html#H"><a title="evac.stoch.fractal_tools.H
+evac.stoch.lovejoy_fractal.H
+evac.utils._fractal_tools.H" class="py-name" href="#" onclick="return doclink('link-8', 'H', 'link-8');">H</a></tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt><tt class="py-op">/</tt><tt id="link-9" class="py-name"><a title="evac.stoch.fractal_tools.alpha
+evac.stoch.lovejoy_fractal.alpha
+evac.utils._fractal_tools.alpha" class="py-name" href="#" onclick="return doclink('link-9', 'alpha', 'link-7');">alpha</a></tt> <tt class="py-comment"># scaling exponent</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt id="link-10" class="py-name" targets="Variable evac.stoch.fractal_tools.lamb=evac.stoch.fractal_tools-module.html#lamb,Variable evac.stoch.lovejoy_fractal.lamb=evac.stoch.lovejoy_fractal-module.html#lamb"><a title="evac.stoch.fractal_tools.lamb
+evac.stoch.lovejoy_fractal.lamb" class="py-name" href="#" onclick="return doclink('link-10', 'lamb', 'link-10');">lamb</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> <tt class="py-comment"># ???</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt id="link-11" class="py-name" targets="Variable evac.stoch.fractal_tools.L0=evac.stoch.fractal_tools-module.html#L0,Variable evac.stoch.lovejoy_fractal.L0=evac.stoch.lovejoy_fractal-module.html#L0"><a title="evac.stoch.fractal_tools.L0
+evac.stoch.lovejoy_fractal.L0" class="py-name" href="#" onclick="return doclink('link-11', 'L0', 'link-11');">L0</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> <tt class="py-comment"># Interval min</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt id="link-12" class="py-name" targets="Variable evac.stoch.fractal_tools.L=evac.stoch.fractal_tools-module.html#L,Variable evac.stoch.lovejoy_fractal.L=evac.stoch.lovejoy_fractal-module.html#L,Variable evac.utils._fractal_tools.L=evac.utils._fractal_tools-module.html#L,Variable evac.utils.met_constants.L=evac.utils.met_constants-module.html#L"><a title="evac.stoch.fractal_tools.L
+evac.stoch.lovejoy_fractal.L
+evac.utils._fractal_tools.L
+evac.utils.met_constants.L" class="py-name" href="#" onclick="return doclink('link-12', 'L', 'link-12');">L</a></tt> <tt class="py-op">=</tt> <tt class="py-number">400</tt> <tt class="py-comment"># Interval max</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt id="link-13" class="py-name" targets="Variable evac.stoch.fractal_tools.l=evac.stoch.fractal_tools-module.html#l,Variable evac.stoch.lovejoy_fractal.l=evac.stoch.lovejoy_fractal-module.html#l,Variable evac.utils._fractal_tools.l=evac.utils._fractal_tools-module.html#l"><a title="evac.stoch.fractal_tools.l
+evac.stoch.lovejoy_fractal.l
+evac.utils._fractal_tools.l" class="py-name" href="#" onclick="return doclink('link-13', 'l', 'link-13');">l</a></tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name"><a title="evac.stoch.fractal_tools.L
+evac.stoch.lovejoy_fractal.L
+evac.utils._fractal_tools.L
+evac.utils.met_constants.L" class="py-name" href="#" onclick="return doclink('link-14', 'L', 'link-12');">L</a></tt><tt class="py-op">/</tt><tt class="py-number">6</tt> <tt class="py-comment"># Inner interval length</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt id="link-15" class="py-name" targets="Variable evac.stoch.fractal_tools.s=evac.stoch.fractal_tools-module.html#s,Variable evac.stoch.lovejoy_fractal.s=evac.stoch.lovejoy_fractal-module.html#s"><a title="evac.stoch.fractal_tools.s
+evac.stoch.lovejoy_fractal.s" class="py-name" href="#" onclick="return doclink('link-15', 's', 'link-15');">s</a></tt> <tt class="py-op">=</tt> <tt class="py-number">8</tt> <tt class="py-comment"># smoothing factor. S -&gt; inf makes rectangular</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt id="link-16" class="py-name" targets="Variable evac.stoch.fractal_tools.u=evac.stoch.fractal_tools-module.html#u,Variable evac.stoch.lovejoy_fractal.u=evac.stoch.lovejoy_fractal-module.html#u"><a title="evac.stoch.fractal_tools.u
+evac.stoch.lovejoy_fractal.u" class="py-name" href="#" onclick="return doclink('link-16', 'u', 'link-16');">u</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> <tt class="py-comment"># distance from centre of echo</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt id="link-17" class="py-name" targets="Variable evac.stoch.fractal_tools.rho_i=evac.stoch.fractal_tools-module.html#rho_i,Variable evac.stoch.lovejoy_fractal.rho_i=evac.stoch.lovejoy_fractal-module.html#rho_i,Variable evac.utils._fractal_tools.rho_i=evac.utils._fractal_tools-module.html#rho_i"><a title="evac.stoch.fractal_tools.rho_i
+evac.stoch.lovejoy_fractal.rho_i
+evac.utils._fractal_tools.rho_i" class="py-name" href="#" onclick="return doclink('link-17', 'rho_i', 'link-17');">rho_i</a></tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt> <tt class="py-comment"># minimum resolution or inner scale - in pixels</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-comment"># rho_0 = mu*L # outer scale</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt id="link-18" class="py-name" targets="Variable evac.stoch.fractal_tools.rho_0=evac.stoch.fractal_tools-module.html#rho_0,Variable evac.stoch.lovejoy_fractal.rho_0=evac.stoch.lovejoy_fractal-module.html#rho_0,Variable evac.utils._fractal_tools.rho_0=evac.utils._fractal_tools-module.html#rho_0"><a title="evac.stoch.fractal_tools.rho_0
+evac.stoch.lovejoy_fractal.rho_0
+evac.utils._fractal_tools.rho_0" class="py-name" href="#" onclick="return doclink('link-18', 'rho_0', 'link-18');">rho_0</a></tt> <tt class="py-op">=</tt> <tt class="py-number">1200</tt> <tt class="py-comment"># outer scale</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt id="link-19" class="py-name" targets="Variable evac.stoch.fractal_tools.n=evac.stoch.fractal_tools-module.html#n,Variable evac.stoch.lovejoy_fractal.n=evac.stoch.lovejoy_fractal-module.html#n,Variable evac.utils._fractal_tools.n=evac.utils._fractal_tools-module.html#n"><a title="evac.stoch.fractal_tools.n
+evac.stoch.lovejoy_fractal.n
+evac.utils._fractal_tools.n" class="py-name" href="#" onclick="return doclink('link-19', 'n', 'link-19');">n</a></tt> <tt class="py-op">=</tt> <tt class="py-number">1.6e5</tt> <tt class="py-comment"># number of pulses</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-comment"># Enforce L/l between 3 and 6</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"> </tt>
+<a name="get_poisson"></a><div id="get_poisson-def"><a name="L38"></a><tt class="py-lineno"> 38</tt> <a class="py-toggle" href="#" id="get_poisson-toggle" onclick="return toggle('get_poisson');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stoch.lovejoy_fractal-module.html#get_poisson">get_poisson</a><tt class="py-op">(</tt><tt class="py-param">L</tt><tt class="py-op">,</tt><tt class="py-param">mu</tt><tt class="py-op">,</tt><tt class="py-param">size</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_poisson-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_poisson-expanded"><a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">poisson</tt><tt class="py-op">(</tt><tt class="py-name">lam</tt><tt class="py-op">=</tt><tt id="link-20" class="py-name"><a title="evac.stoch.fractal_tools.L
+evac.stoch.lovejoy_fractal.L
+evac.utils._fractal_tools.L
+evac.utils.met_constants.L" class="py-name" href="#" onclick="return doclink('link-20', 'L', 'link-12');">L</a></tt><tt class="py-op">/</tt><tt id="link-21" class="py-name"><a title="evac.stoch.fractal_tools.mu
+evac.stoch.lovejoy_fractal.mu
+evac.utils._fractal_tools.mu" class="py-name" href="#" onclick="return doclink('link-21', 'mu', 'link-5');">mu</a></tt><tt class="py-op">,</tt><tt class="py-name">size</tt><tt class="py-op">=</tt><tt class="py-name">size</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"> </tt>
+<a name="fractal_worker"></a><div id="fractal_worker-def"><a name="L41"></a><tt class="py-lineno"> 41</tt> <a class="py-toggle" href="#" id="fractal_worker-toggle" onclick="return toggle('fractal_worker');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stoch.lovejoy_fractal-module.html#fractal_worker">fractal_worker</a><tt class="py-op">(</tt><tt class="py-param">size</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">high</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">rholist</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">xx</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">                <tt class="py-param">yy</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">delta</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">sigma</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">s</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">                <tt class="py-param">mu</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">pdf_full</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">R</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">q</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="fractal_worker-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="fractal_worker-expanded"><a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">    <tt class="py-name">centrex</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">random_integers</tt><tt class="py-op">(</tt><tt class="py-name">low</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-name">high</tt><tt class="py-op">=</tt><tt class="py-name">high</tt><tt class="py-op">,</tt><tt class="py-name">size</tt><tt class="py-op">=</tt><tt class="py-name">size</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">    <tt class="py-name">centrey</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">random_integers</tt><tt class="py-op">(</tt><tt class="py-name">low</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-name">high</tt><tt class="py-op">=</tt><tt class="py-name">high</tt><tt class="py-op">,</tt><tt class="py-name">size</tt><tt class="py-op">=</tt><tt class="py-name">size</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">    <tt class="py-name">count</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">cenx</tt><tt class="py-op">,</tt> <tt class="py-name">ceny</tt> <tt class="py-keyword">in</tt> <tt class="py-name">zip</tt><tt class="py-op">(</tt><tt class="py-name">centrex</tt><tt class="py-op">,</tt><tt class="py-name">centrey</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt id="link-22" class="py-name"><a title="evac.stoch.fractal_tools.rhotick
+evac.stoch.lovejoy_fractal.rhotick" class="py-name" href="#" onclick="return doclink('link-22', 'rhotick', 'link-6');">rhotick</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-name">count</tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">count</tt><tt class="py-op">%</tt><tt class="py-number">200</tt><tt class="py-op">:</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">'Doing plot #'</tt><tt class="py-op">,</tt><tt class="py-name">count</tt><tt class="py-op">,</tt><tt class="py-string">"of"</tt><tt class="py-op">,</tt><tt class="py-name">size</tt><tt class="py-op">)</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-name">cenxP</tt> <tt class="py-op">=</tt> <tt id="link-23" class="py-name" targets="Function evac.stoch.fractal_tools.get_poisson()=evac.stoch.fractal_tools-module.html#get_poisson,Function evac.stoch.lovejoy_fractal.get_poisson()=evac.stoch.lovejoy_fractal-module.html#get_poisson,Function evac.utils._fractal_tools.get_poisson()=evac.utils._fractal_tools-module.html#get_poisson"><a title="evac.stoch.fractal_tools.get_poisson
+evac.stoch.lovejoy_fractal.get_poisson
+evac.utils._fractal_tools.get_poisson" class="py-name" href="#" onclick="return doclink('link-23', 'get_poisson', 'link-23');">get_poisson</a></tt><tt class="py-op">(</tt><tt class="py-name">cenx</tt><tt class="py-op">,</tt><tt id="link-24" class="py-name"><a title="evac.stoch.fractal_tools.mu
+evac.stoch.lovejoy_fractal.mu
+evac.utils._fractal_tools.mu" class="py-name" href="#" onclick="return doclink('link-24', 'mu', 'link-5');">mu</a></tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-name">cenyP</tt> <tt class="py-op">=</tt> <tt id="link-25" class="py-name"><a title="evac.stoch.fractal_tools.get_poisson
+evac.stoch.lovejoy_fractal.get_poisson
+evac.utils._fractal_tools.get_poisson" class="py-name" href="#" onclick="return doclink('link-25', 'get_poisson', 'link-23');">get_poisson</a></tt><tt class="py-op">(</tt><tt class="py-name">ceny</tt><tt class="py-op">,</tt><tt id="link-26" class="py-name"><a title="evac.stoch.fractal_tools.mu
+evac.stoch.lovejoy_fractal.mu
+evac.utils._fractal_tools.mu" class="py-name" href="#" onclick="return doclink('link-26', 'mu', 'link-5');">mu</a></tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-keyword">while</tt> <tt id="link-27" class="py-name"><a title="evac.stoch.fractal_tools.rhotick
+evac.stoch.lovejoy_fractal.rhotick" class="py-name" href="#" onclick="return doclink('link-27', 'rhotick', 'link-6');">rhotick</a></tt> <tt class="py-op">&lt;</tt> <tt id="link-28" class="py-name"><a title="evac.stoch.fractal_tools.rho_i
+evac.stoch.lovejoy_fractal.rho_i
+evac.utils._fractal_tools.rho_i" class="py-name" href="#" onclick="return doclink('link-28', 'rho_i', 'link-17');">rho_i</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">            <tt id="link-29" class="py-name"><a title="evac.stoch.fractal_tools.rhotick
+evac.stoch.lovejoy_fractal.rhotick" class="py-name" href="#" onclick="return doclink('link-29', 'rhotick', 'link-6');">rhotick</a></tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">choice</tt><tt class="py-op">(</tt><tt id="link-30" class="py-name" targets="Variable evac.stoch.fractal_tools.rholist=evac.stoch.fractal_tools-module.html#rholist,Variable evac.utils._fractal_tools.rholist=evac.utils._fractal_tools-module.html#rholist"><a title="evac.stoch.fractal_tools.rholist
+evac.utils._fractal_tools.rholist" class="py-name" href="#" onclick="return doclink('link-30', 'rholist', 'link-30');">rholist</a></tt><tt class="py-op">,</tt><tt class="py-name">p</tt><tt class="py-op">=</tt><tt id="link-31" class="py-name" targets="Variable evac.stoch.fractal_tools.pdf_full=evac.stoch.fractal_tools-module.html#pdf_full,Variable evac.utils._fractal_tools.pdf_full=evac.utils._fractal_tools-module.html#pdf_full"><a title="evac.stoch.fractal_tools.pdf_full
+evac.utils._fractal_tools.pdf_full" class="py-name" href="#" onclick="return doclink('link-31', 'pdf_full', 'link-31');">pdf_full</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt id="link-32" class="py-name"><a title="evac.stoch.fractal_tools.dR
+evac.stoch.lovejoy_fractal.dR" class="py-name" href="#" onclick="return doclink('link-32', 'dR', 'link-2');">dR</a></tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">choice</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">*</tt> <tt id="link-33" class="py-name"><a title="evac.stoch.fractal_tools.rhotick
+evac.stoch.lovejoy_fractal.rhotick" class="py-name" href="#" onclick="return doclink('link-33', 'rhotick', 'link-6');">rhotick</a></tt><tt class="py-op">**</tt><tt id="link-34" class="py-name"><a title="evac.stoch.fractal_tools.H
+evac.stoch.lovejoy_fractal.H
+evac.utils._fractal_tools.H" class="py-name" href="#" onclick="return doclink('link-34', 'H', 'link-8');">H</a></tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt id="link-35" class="py-name"><a title="evac.stoch.fractal_tools.u
+evac.stoch.lovejoy_fractal.u" class="py-name" href="#" onclick="return doclink('link-35', 'u', 'link-16');">u</a></tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">sqrt</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">xx</tt><tt class="py-op">-</tt><tt class="py-name">cenx</tt><tt class="py-op">)</tt><tt class="py-op">**</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">+</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">yy</tt><tt class="py-op">-</tt><tt class="py-name">ceny</tt><tt class="py-op">)</tt><tt class="py-op">**</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt id="link-36" class="py-name"><a title="evac.stoch.fractal_tools.R
+evac.stoch.lovejoy_fractal.R
+evac.utils._fractal_tools.R
+evac.utils.met_constants.R" class="py-name" href="#" onclick="return doclink('link-36', 'R', 'link-1');">R</a></tt> <tt class="py-op">+=</tt> <tt id="link-37" class="py-name"><a title="evac.stoch.fractal_tools.dR
+evac.stoch.lovejoy_fractal.dR" class="py-name" href="#" onclick="return doclink('link-37', 'dR', 'link-2');">dR</a></tt> <tt class="py-op">*</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">exp</tt><tt class="py-op">(</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">*</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt id="link-38" class="py-name"><a title="evac.stoch.fractal_tools.u
+evac.stoch.lovejoy_fractal.u" class="py-name" href="#" onclick="return doclink('link-38', 'u', 'link-16');">u</a></tt><tt class="py-op">**</tt><tt class="py-number">2</tt><tt class="py-op">/</tt><tt id="link-39" class="py-name"><a title="evac.stoch.fractal_tools.rhotick
+evac.stoch.lovejoy_fractal.rhotick" class="py-name" href="#" onclick="return doclink('link-39', 'rhotick', 'link-6');">rhotick</a></tt><tt class="py-op">**</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">-</tt><tt class="py-name">delta</tt><tt class="py-op">**</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">/</tt><tt class="py-name">sigma</tt><tt class="py-op">**</tt><tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">**</tt><tt class="py-op">(</tt><tt class="py-number">2</tt><tt class="py-op">*</tt><tt id="link-40" class="py-name"><a title="evac.stoch.fractal_tools.s
+evac.stoch.lovejoy_fractal.s" class="py-name" href="#" onclick="return doclink('link-40', 's', 'link-15');">s</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">    <tt class="py-name">q</tt><tt class="py-op">.</tt><tt class="py-name">put</tt><tt class="py-op">(</tt><tt id="link-41" class="py-name"><a title="evac.stoch.fractal_tools.R
+evac.stoch.lovejoy_fractal.R
+evac.utils._fractal_tools.R
+evac.utils.met_constants.R" class="py-name" href="#" onclick="return doclink('link-41', 'R', 'link-1');">R</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">     </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'__main__'</tt><tt class="py-op">:</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">    <tt class="py-name">CPUs</tt> <tt class="py-op">=</tt> <tt class="py-name">multiprocessing</tt><tt class="py-op">.</tt><tt class="py-name">cpu_count</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">-</tt><tt class="py-number">1</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">    <tt id="link-42" class="py-name"><a title="evac.stoch.fractal_tools.rho_i
+evac.stoch.lovejoy_fractal.rho_i
+evac.utils._fractal_tools.rho_i" class="py-name" href="#" onclick="return doclink('link-42', 'rho_i', 'link-17');">rho_i</a></tt> <tt class="py-op">=</tt> <tt class="py-number">6</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">    <tt id="link-43" class="py-name"><a title="evac.stoch.fractal_tools.rho_0
+evac.stoch.lovejoy_fractal.rho_0
+evac.utils._fractal_tools.rho_0" class="py-name" href="#" onclick="return doclink('link-43', 'rho_0', 'link-18');">rho_0</a></tt> <tt class="py-op">=</tt> <tt class="py-number">900</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">    <tt id="link-44" class="py-name"><a title="evac.stoch.fractal_tools.l
+evac.stoch.lovejoy_fractal.l
+evac.utils._fractal_tools.l" class="py-name" href="#" onclick="return doclink('link-44', 'l', 'link-13');">l</a></tt> <tt class="py-op">=</tt> <tt class="py-number">300</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">    <tt id="link-45" class="py-name"><a title="evac.stoch.fractal_tools.L
+evac.stoch.lovejoy_fractal.L
+evac.utils._fractal_tools.L
+evac.utils.met_constants.L" class="py-name" href="#" onclick="return doclink('link-45', 'L', 'link-12');">L</a></tt> <tt class="py-op">=</tt> <tt class="py-number">300</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">    <tt class="py-comment"># n = 160000</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">    <tt class="py-comment"># n = CPUs*9000</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">    <tt id="link-46" class="py-name"><a title="evac.stoch.fractal_tools.n
+evac.stoch.lovejoy_fractal.n
+evac.utils._fractal_tools.n" class="py-name" href="#" onclick="return doclink('link-46', 'n', 'link-19');">n</a></tt> <tt class="py-op">=</tt> <tt class="py-name">CPUs</tt><tt class="py-op">*</tt><tt class="py-number">6000</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">    <tt id="link-47" class="py-name"><a title="evac.stoch.fractal_tools.s
+evac.stoch.lovejoy_fractal.s" class="py-name" href="#" onclick="return doclink('link-47', 's', 'link-15');">s</a></tt> <tt class="py-op">=</tt> <tt class="py-number">2</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">    <tt id="link-48" class="py-name"><a title="evac.stoch.fractal_tools.mu
+evac.stoch.lovejoy_fractal.mu
+evac.utils._fractal_tools.mu" class="py-name" href="#" onclick="return doclink('link-48', 'mu', 'link-5');">mu</a></tt> <tt class="py-op">=</tt> <tt class="py-number">2.5</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">    <tt class="py-comment"># LAMB = 1.2 * N.pi</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">    <tt class="py-name">LAMB</tt> <tt class="py-op">=</tt> <tt class="py-number">1.2</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">    <tt class="py-name">LAMBstar</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">sqrt</tt><tt class="py-op">(</tt><tt class="py-name">LAMB</tt><tt class="py-op">**</tt><tt class="py-number">2</tt> <tt class="py-op">-</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">    <tt class="py-name">delta</tt> <tt class="py-op">=</tt> <tt class="py-number">0.5</tt><tt class="py-op">*</tt><tt class="py-op">(</tt><tt class="py-name">LAMBstar</tt> <tt class="py-op">+</tt> <tt class="py-name">LAMB</tt><tt class="py-op">)</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">    <tt class="py-name">sigma</tt> <tt class="py-op">=</tt> <tt class="py-number">0.5</tt><tt class="py-op">*</tt><tt class="py-op">(</tt><tt class="py-name">LAMB</tt><tt class="py-op">-</tt><tt class="py-name">LAMBstar</tt><tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">    <tt id="link-49" class="py-name"><a title="evac.stoch.fractal_tools.alpha
+evac.stoch.lovejoy_fractal.alpha
+evac.utils._fractal_tools.alpha" class="py-name" href="#" onclick="return doclink('link-49', 'alpha', 'link-7');">alpha</a></tt> <tt class="py-op">=</tt> <tt class="py-number">5</tt> <tt class="py-comment"># ?&gt;&gt;</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">    <tt id="link-50" class="py-name"><a title="evac.stoch.fractal_tools.H
+evac.stoch.lovejoy_fractal.H
+evac.utils._fractal_tools.H" class="py-name" href="#" onclick="return doclink('link-50', 'H', 'link-8');">H</a></tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt><tt class="py-op">/</tt><tt id="link-51" class="py-name"><a title="evac.stoch.fractal_tools.alpha
+evac.stoch.lovejoy_fractal.alpha
+evac.utils._fractal_tools.alpha" class="py-name" href="#" onclick="return doclink('link-51', 'alpha', 'link-7');">alpha</a></tt> <tt class="py-comment"># scaling exponent</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">    <tt id="link-52" class="py-name"><a title="evac.stoch.fractal_tools.rholist
+evac.utils._fractal_tools.rholist" class="py-name" href="#" onclick="return doclink('link-52', 'rholist', 'link-30');">rholist</a></tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">arange</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt id="link-53" class="py-name"><a title="evac.stoch.fractal_tools.rho_0
+evac.stoch.lovejoy_fractal.rho_0
+evac.utils._fractal_tools.rho_0" class="py-name" href="#" onclick="return doclink('link-53', 'rho_0', 'link-18');">rho_0</a></tt><tt class="py-op">+</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">    <tt id="link-54" class="py-name" targets="Variable evac.stoch.fractal_tools.cdf=evac.stoch.fractal_tools-module.html#cdf,Variable evac.utils._fractal_tools.cdf=evac.utils._fractal_tools-module.html#cdf"><a title="evac.stoch.fractal_tools.cdf
+evac.utils._fractal_tools.cdf" class="py-name" href="#" onclick="return doclink('link-54', 'cdf', 'link-54');">cdf</a></tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt><tt class="py-op">/</tt><tt id="link-55" class="py-name"><a title="evac.stoch.fractal_tools.rholist
+evac.utils._fractal_tools.rholist" class="py-name" href="#" onclick="return doclink('link-55', 'rholist', 'link-30');">rholist</a></tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">    <tt id="link-56" class="py-name" targets="Variable evac.stoch.fractal_tools.pdf=evac.stoch.fractal_tools-module.html#pdf,Variable evac.utils._fractal_tools.pdf=evac.utils._fractal_tools-module.html#pdf"><a title="evac.stoch.fractal_tools.pdf
+evac.utils._fractal_tools.pdf" class="py-name" href="#" onclick="return doclink('link-56', 'pdf', 'link-56');">pdf</a></tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">diff</tt><tt class="py-op">(</tt><tt id="link-57" class="py-name"><a title="evac.stoch.fractal_tools.cdf
+evac.utils._fractal_tools.cdf" class="py-name" href="#" onclick="return doclink('link-57', 'cdf', 'link-54');">cdf</a></tt><tt class="py-op">)</tt><tt class="py-op">*</tt><tt class="py-op">-</tt><tt class="py-number">1</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">    <tt id="link-58" class="py-name"><a title="evac.stoch.fractal_tools.pdf_full
+evac.utils._fractal_tools.pdf_full" class="py-name" href="#" onclick="return doclink('link-58', 'pdf_full', 'link-31');">pdf_full</a></tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt id="link-59" class="py-name"><a title="evac.stoch.fractal_tools.pdf
+evac.utils._fractal_tools.pdf" class="py-name" href="#" onclick="return doclink('link-59', 'pdf', 'link-56');">pdf</a></tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">-</tt><tt id="link-60" class="py-name"><a title="evac.stoch.fractal_tools.pdf
+evac.utils._fractal_tools.pdf" class="py-name" href="#" onclick="return doclink('link-60', 'pdf', 'link-56');">pdf</a></tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">    <tt id="link-61" class="py-name"><a title="evac.stoch.fractal_tools.R
+evac.stoch.lovejoy_fractal.R
+evac.utils._fractal_tools.R
+evac.utils.met_constants.R" class="py-name" href="#" onclick="return doclink('link-61', 'R', 'link-1');">R</a></tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">zeros</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt id="link-62" class="py-name"><a title="evac.stoch.fractal_tools.L
+evac.stoch.lovejoy_fractal.L
+evac.utils._fractal_tools.L
+evac.utils.met_constants.L" class="py-name" href="#" onclick="return doclink('link-62', 'L', 'link-12');">L</a></tt><tt class="py-op">,</tt><tt id="link-63" class="py-name"><a title="evac.stoch.fractal_tools.L
+evac.stoch.lovejoy_fractal.L
+evac.utils._fractal_tools.L
+evac.utils.met_constants.L" class="py-name" href="#" onclick="return doclink('link-63', 'L', 'link-12');">L</a></tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-name">dtype</tt><tt class="py-op">=</tt><tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">float64</tt><tt class="py-op">)</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">    <tt class="py-name">xx</tt><tt class="py-op">,</tt> <tt class="py-name">yy</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">mgrid</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt id="link-64" class="py-name"><a title="evac.stoch.fractal_tools.L
+evac.stoch.lovejoy_fractal.L
+evac.utils._fractal_tools.L
+evac.utils.met_constants.L" class="py-name" href="#" onclick="return doclink('link-64', 'L', 'link-12');">L</a></tt><tt class="py-op">,</tt> <tt class="py-op">:</tt><tt id="link-65" class="py-name"><a title="evac.stoch.fractal_tools.L
+evac.stoch.lovejoy_fractal.L
+evac.utils._fractal_tools.L
+evac.utils.met_constants.L" class="py-name" href="#" onclick="return doclink('link-65', 'L', 'link-12');">L</a></tt><tt class="py-op">]</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"Starting computation now"</tt><tt class="py-op">)</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">    <tt class="py-comment"># paralellise the processing</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">    <tt class="py-name">npart</tt> <tt class="py-op">=</tt> <tt class="py-name">int</tt><tt class="py-op">(</tt><tt id="link-66" class="py-name"><a title="evac.stoch.fractal_tools.n
+evac.stoch.lovejoy_fractal.n
+evac.utils._fractal_tools.n" class="py-name" href="#" onclick="return doclink('link-66', 'n', 'link-19');">n</a></tt><tt class="py-op">/</tt><tt class="py-name">CPUs</tt><tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">    <tt class="py-comment"># centrex = N.random.random_integers(low=0,high=L,size=n)</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">    <tt class="py-comment"># centrey = N.random.random_integers(low=0,high=L,size=n)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">    <tt class="py-name">Rs</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">    <tt class="py-name">Rsum</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">zeros_like</tt><tt class="py-op">(</tt><tt id="link-67" class="py-name"><a title="evac.stoch.fractal_tools.R
+evac.stoch.lovejoy_fractal.R
+evac.utils._fractal_tools.R
+evac.utils.met_constants.R" class="py-name" href="#" onclick="return doclink('link-67', 'R', 'link-1');">R</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">    <tt class="py-comment"># Pool = multiprocessing.Pool(CPUs)</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">    <tt class="py-name">queues</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">Queue</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">c</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">CPUs</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">    <tt class="py-name">kw</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">    <tt class="py-name">kw</tt><tt class="py-op">[</tt><tt class="py-string">'size'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">npart</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">    <tt class="py-name">kw</tt><tt class="py-op">[</tt><tt class="py-string">'high'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-68" class="py-name"><a title="evac.stoch.fractal_tools.L
+evac.stoch.lovejoy_fractal.L
+evac.utils._fractal_tools.L
+evac.utils.met_constants.L" class="py-name" href="#" onclick="return doclink('link-68', 'L', 'link-12');">L</a></tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">    <tt class="py-name">kw</tt><tt class="py-op">[</tt><tt class="py-string">'rholist'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-69" class="py-name"><a title="evac.stoch.fractal_tools.rholist
+evac.utils._fractal_tools.rholist" class="py-name" href="#" onclick="return doclink('link-69', 'rholist', 'link-30');">rholist</a></tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">    <tt class="py-name">kw</tt><tt class="py-op">[</tt><tt class="py-string">'xx'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">xx</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">    <tt class="py-name">kw</tt><tt class="py-op">[</tt><tt class="py-string">'yy'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">yy</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">    <tt class="py-name">kw</tt><tt class="py-op">[</tt><tt class="py-string">'delta'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">delta</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">    <tt class="py-name">kw</tt><tt class="py-op">[</tt><tt class="py-string">'sigma'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">sigma</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">    <tt class="py-name">kw</tt><tt class="py-op">[</tt><tt class="py-string">'s'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-70" class="py-name"><a title="evac.stoch.fractal_tools.s
+evac.stoch.lovejoy_fractal.s" class="py-name" href="#" onclick="return doclink('link-70', 's', 'link-15');">s</a></tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">    <tt class="py-name">kw</tt><tt class="py-op">[</tt><tt class="py-string">'mu'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-71" class="py-name"><a title="evac.stoch.fractal_tools.mu
+evac.stoch.lovejoy_fractal.mu
+evac.utils._fractal_tools.mu" class="py-name" href="#" onclick="return doclink('link-71', 'mu', 'link-5');">mu</a></tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">    <tt class="py-name">kw</tt><tt class="py-op">[</tt><tt class="py-string">'pdf_full'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-72" class="py-name"><a title="evac.stoch.fractal_tools.pdf_full
+evac.utils._fractal_tools.pdf_full" class="py-name" href="#" onclick="return doclink('link-72', 'pdf_full', 'link-31');">pdf_full</a></tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">    <tt class="py-name">kw</tt><tt class="py-op">[</tt><tt class="py-string">'R'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-73" class="py-name"><a title="evac.stoch.fractal_tools.R
+evac.stoch.lovejoy_fractal.R
+evac.utils._fractal_tools.R
+evac.utils.met_constants.R" class="py-name" href="#" onclick="return doclink('link-73', 'R', 'link-1');">R</a></tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">    <tt class="py-name">jobs</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">q</tt> <tt class="py-keyword">in</tt> <tt class="py-name">queues</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">        <tt class="py-name">KW</tt> <tt class="py-op">=</tt> <tt class="py-name">kw</tt><tt class="py-op">.</tt><tt class="py-name">copy</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">        <tt class="py-name">KW</tt><tt class="py-op">[</tt><tt class="py-string">'q'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">q</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-name">jobs</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">Process</tt><tt class="py-op">(</tt><tt class="py-name">target</tt><tt class="py-op">=</tt><tt id="link-74" class="py-name" targets="Function evac.stoch.fractal_tools.fractal_worker()=evac.stoch.fractal_tools-module.html#fractal_worker,Function evac.stoch.lovejoy_fractal.fractal_worker()=evac.stoch.lovejoy_fractal-module.html#fractal_worker,Function evac.utils._fractal_tools.fractal_worker()=evac.utils._fractal_tools-module.html#fractal_worker"><a title="evac.stoch.fractal_tools.fractal_worker
+evac.stoch.lovejoy_fractal.fractal_worker
+evac.utils._fractal_tools.fractal_worker" class="py-name" href="#" onclick="return doclink('link-74', 'fractal_worker', 'link-74');">fractal_worker</a></tt><tt class="py-op">,</tt><tt class="py-name">kwargs</tt><tt class="py-op">=</tt><tt class="py-name">KW</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line"> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">job</tt> <tt class="py-keyword">in</tt> <tt class="py-name">jobs</tt><tt class="py-op">:</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">        <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-75" class="py-name" targets="Variable evac.lazy._monte2.start=evac.lazy._monte2-module.html#start,Variable evac.stoch.fractal_tools.start=evac.stoch.fractal_tools-module.html#start"><a title="evac.lazy._monte2.start
+evac.stoch.fractal_tools.start" class="py-name" href="#" onclick="return doclink('link-75', 'start', 'link-75');">start</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">qn</tt><tt class="py-op">,</tt><tt class="py-name">q</tt> <tt class="py-keyword">in</tt> <tt class="py-name">enumerate</tt><tt class="py-op">(</tt><tt class="py-name">queues</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"Getting Queue #"</tt><tt class="py-op">,</tt><tt class="py-name">qn</tt><tt class="py-op">)</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">        <tt class="py-name">Rq</tt> <tt class="py-op">=</tt> <tt class="py-name">q</tt><tt class="py-op">.</tt><tt id="link-76" class="py-name" targets="Method evac.datafiles.ecmwf.ECMWF.get()=evac.datafiles.ecmwf.ECMWF-class.html#get,Method evac.datafiles.ensemble.Ensemble.get()=evac.datafiles.ensemble.Ensemble-class.html#get,Method evac.datafiles.gribfile.GribFile.get()=evac.datafiles.gribfile.GribFile-class.html#get,Method evac.datafiles.stageiv.StageIV.get()=evac.datafiles.stageiv.StageIV-class.html#get,Method evac.datafiles.wrfout.WRFOut.get()=evac.datafiles.wrfout.WRFOut-class.html#get,Method evac.plot._rucplot.RUCPlot.get()=evac.plot._rucplot.RUCPlot-class.html#get,Method evac.stats.detscores.DetScores.get()=evac.stats.detscores.DetScores-class.html#get"><a title="evac.datafiles.ecmwf.ECMWF.get
+evac.datafiles.ensemble.Ensemble.get
+evac.datafiles.gribfile.GribFile.get
+evac.datafiles.stageiv.StageIV.get
+evac.datafiles.wrfout.WRFOut.get
+evac.plot._rucplot.RUCPlot.get
+evac.stats.detscores.DetScores.get" class="py-name" href="#" onclick="return doclink('link-76', 'get', 'link-76');">get</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt class="py-name">Rsum</tt> <tt class="py-op">+=</tt> <tt class="py-name">Rq</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">job</tt> <tt class="py-keyword">in</tt> <tt class="py-name">jobs</tt><tt class="py-op">:</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt class="py-name">job</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">    <tt class="py-comment"># for cpu in CPUs:</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-comment"># pool.apply(fractal_worker,args=(*listargs))</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">        <tt class="py-comment"># pool.close()</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-comment"># pool.join()</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">        <tt class="py-comment"># Rs.append(fractal_worker())</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">    <tt class="py-comment"># pdb.set_trace()</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">    <tt id="link-77" class="py-name"><a title="evac.stoch.fractal_tools.R
+evac.stoch.lovejoy_fractal.R
+evac.utils._fractal_tools.R
+evac.utils.met_constants.R" class="py-name" href="#" onclick="return doclink('link-77', 'R', 'link-1');">R</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Rsum</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">    <tt class="py-name">fig</tt><tt class="py-op">,</tt><tt class="py-name">axes</tt> <tt class="py-op">=</tt> <tt class="py-name">plt</tt><tt class="py-op">.</tt><tt class="py-name">subplots</tt><tt class="py-op">(</tt><tt class="py-number">2</tt><tt class="py-op">,</tt><tt class="py-name">figsize</tt><tt class="py-op">=</tt><tt class="py-op">(</tt><tt class="py-number">12</tt><tt class="py-op">,</tt><tt class="py-number">12</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line"> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">    <tt class="py-name">ax</tt> <tt class="py-op">=</tt> <tt class="py-name">axes</tt><tt class="py-op">.</tt><tt class="py-name">flat</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">    <tt class="py-name">cc</tt> <tt class="py-op">=</tt> <tt class="py-name">ax</tt><tt class="py-op">.</tt><tt class="py-name">pcolormesh</tt><tt class="py-op">(</tt><tt class="py-name">xx</tt><tt class="py-op">,</tt><tt class="py-name">yy</tt><tt class="py-op">,</tt><tt id="link-78" class="py-name"><a title="evac.stoch.fractal_tools.R
+evac.stoch.lovejoy_fractal.R
+evac.utils._fractal_tools.R
+evac.utils.met_constants.R" class="py-name" href="#" onclick="return doclink('link-78', 'R', 'link-1');">R</a></tt><tt class="py-op">,</tt><tt class="py-name">cmap</tt><tt class="py-op">=</tt><tt class="py-name">M</tt><tt class="py-op">.</tt><tt class="py-name">cm</tt><tt class="py-op">.</tt><tt class="py-name">Greys_r</tt><tt class="py-op">,</tt><tt class="py-op">)</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">    <tt class="py-name">ax</tt><tt class="py-op">.</tt><tt class="py-name">set_aspect</tt><tt class="py-op">(</tt><tt class="py-string">'equal'</tt><tt class="py-op">)</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">    <tt class="py-name">ax</tt> <tt class="py-op">=</tt> <tt class="py-name">axes</tt><tt class="py-op">.</tt><tt class="py-name">flat</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">    <tt class="py-comment"># vals, edges = N.histogram(R,bins=20)</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">    <tt class="py-name">ax</tt><tt class="py-op">.</tt><tt class="py-name">hist</tt><tt class="py-op">(</tt><tt id="link-79" class="py-name"><a title="evac.stoch.fractal_tools.R
+evac.stoch.lovejoy_fractal.R
+evac.utils._fractal_tools.R
+evac.utils.met_constants.R" class="py-name" href="#" onclick="return doclink('link-79', 'R', 'link-1');">R</a></tt><tt class="py-op">.</tt><tt class="py-name">flatten</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">,</tt><tt class="py-number">100</tt><tt class="py-op">)</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">    <tt class="py-name">fig</tt><tt class="py-op">.</tt><tt class="py-name">colorbar</tt><tt class="py-op">(</tt><tt class="py-name">cc</tt><tt class="py-op">)</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">    <tt class="py-name">fig</tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">    <tt class="py-name">fig</tt><tt class="py-op">.</tt><tt class="py-name">savefig</tt><tt class="py-op">(</tt><tt class="py-string">'lovejoy_example.png'</tt><tt class="py-op">)</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:52:27 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -1,0 +1,776 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.lazy.lazyensemble.LazyEnsemble</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.lazy-module.html">Package&nbsp;lazy</a> ::
+        <a href="evac.lazy.lazyensemble-module.html">Module&nbsp;lazyensemble</a> ::
+        Class&nbsp;LazyEnsemble
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.lazy.lazyensemble.LazyEnsemble-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class LazyEnsemble</h1><p class="nomargin-top"><span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+Generate ensemble by running multiple WRF runs simulataneously.
+
+This is done by creating temporary folder and linking/copying, with
+efficiency improvements from Monte Flora. Will not work on Windows systems
+as it stands, due to hardcoded PosixPath.
+
+User must specify either endutc or runsec.
+
+The initial and boundary conditions are copied from path_to_icbcdir
+to path_to_rundir, using default names.
+
+Member names, if automatically created, are &quot;mem01&quot;, &quot;mem02&quot;, etc
+
+Example:
+    Parent script should be run via batch submission. The procedure is::
+
+        L = LazyEnsemble(*args,**kwargs)
+        L.run_all_members()
+
+Note that WRF can run with initial and boundary conditions from
+only the parent domain (d01).
+
+Args:
+    path_to_exedir      :   (str) - directory of compiled WRF executables
+    path_to_datadir     :   (str) - directory where wrfout and other data
+                            will be saved.
+    path_to_namelistdir :   (str) - directory containing namelist(s)
+                            templates or full versions.
+    path_to_icdir       :   (str,bool) - directory with initial conditions
+                            If False, don't copy any ICs.
+    path_to_lbcdir      :   (str,bool) - directory with boundary conditions
+                            If False, don't copy any LBCss.
+    path_to_outdir      :   (str) - where to move wrfout files to
+    path_to_batch       :   (str) - absolute path to *.job script
+                            for slurm - not sure about rocks etc
+    initutc             :   (datetime.datetime) - initialisation time
+
+    path_to_rundir      :   (str, optional) - directory where wrf.exe will
+                            be copied to,
+                            and rsl.error files will be generated.
+                            By default, this is the datadir.
+                            If running multiple ensembles, it is
+                            faster to have permanant folders for each
+                            ensemble, rather than spinning up and
+                            deleting wrf.exe)
+    sched               :   (str, optional) - job scheduler.
+                            Only implemented for slurm right now
+    delete_exe_copy     :   (bool, optional) - whether the .exe files
+                            will be deleted after the run is finished.
+                            The default is no, as numerous ensembles
+                            can use the same run folders, potentially.
+    ndoms               :   (int) - number of domains
+    nmems               :   (int) - number of members. If zero,
+                            try counting length of membernames.
+    membernames         :   (list,tuple) - list of strings for
+                            member names. If False, use automatic
+    endutc              :   (datetime.datetime) - time to end simulation
+    runsec              :   (int) - seconds of simulation time
+    nl_per_member       :   (bool) - if True, each member has their
+                            own namelist file in path_to_namelistdir,
+                            where each member's namelist is the file
+                            namelist.input.&lt;nl_suffix&gt; - see next
+    nl_suffix           :   (str) - if 'name', the suffix will be the
+                            member name (either passed in or automatically
+                            generated).
+    ics,lbcs            :   (dict,list,bool) - filename of IC/LBC files.
+                            
+                            if dictionary, format is {member :{(from,to):cmd)
+                            where cmd is &quot;move&quot;, &quot;copy&quot;, or &quot;softlink&quot;, and
+                            to/from are the absolute paths
+                            
+                            If a list, this is used for each ensemble
+                            member from a folder within icdir and
+                            lbcdir, respectively.
+                            
+                            If True, it looks for the default names
+                            in subfolders of icdir and lbcdir
+                            
+                            if 'all', it copies everything from the
+                            default folders.
+                            
+                            if any other string, it glob-matches
+                            ics/lbcs and imports all matches.
+                            
+    dryrun              :   (bool) - if True, don't delete any files
+                            or submit any runs.
+    rename_d01_ics      :   (bool) - if True, rename d01 ICs to
+                            wrfinput_d01. Only works if only the
+                            d01 domain has ICs.
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path_to_exedir</span>,
+        <span class="summary-sig-arg">path_to_datadir</span>,
+        <span class="summary-sig-arg">path_to_namelistdir</span>,
+        <span class="summary-sig-arg">path_to_icdir</span>,
+        <span class="summary-sig-arg">path_to_lbcdir</span>,
+        <span class="summary-sig-arg">path_to_batch</span>,
+        <span class="summary-sig-arg">initutc</span>,
+        <span class="summary-sig-arg">path_to_outdir</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">sched</span>=<span class="summary-sig-default">'slurm'</span>,
+        <span class="summary-sig-arg">path_to_rundir</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">delete_exe_copy</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">ndoms</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">nmems</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">membernames</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">endutc</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">runsec</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">nl_per_member</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">nl_suffix</span>=<span class="summary-sig-default">'dot_number'</span>,
+        <span class="summary-sig-arg">ics</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">lbcs</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">dryrun</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">rename_d01_ics</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazyensemble.LazyEnsemble-class.html#get_paths_to_input" class="summary-sig-name">get_paths_to_input</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">userinput</span>,
+        <span class="summary-sig-arg">opt</span>,
+        <span class="summary-sig-arg">fname_warning</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Logic to add absolute paths of ICs or LBCs to the dictionary.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.get_paths_to_input">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="catalog_members"></a><span class="summary-sig-name">catalog_members</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Create the members dictionary.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.catalog_members">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazyensemble.LazyEnsemble-class.html#print_readme" class="summary-sig-name">print_readme</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Save a pretty-printed README file to a given directory.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.print_readme">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="batchscript_for_member"></a><span class="summary-sig-name">batchscript_for_member</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">member</span>)</span><br />
+      Edit parts of the batch submission script.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.batchscript_for_member">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazyensemble.LazyEnsemble-class.html#namelist_for_member" class="summary-sig-name">namelist_for_member</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">member</span>)</span><br />
+      Edit parts of the namelist</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.namelist_for_member">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazyensemble.LazyEnsemble-class.html#run_all_members" class="summary-sig-name">run_all_members</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">prereqs</span>,
+        <span class="summary-sig-arg">first</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Automatically submit all jobs to the scheduler.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.run_all_members">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazyensemble.LazyEnsemble-class.html#run_wrf_member" class="summary-sig-name">run_wrf_member</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">member</span>,
+        <span class="summary-sig-arg">prereqs</span>,
+        <span class="summary-sig-arg">cpus</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">nodes</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">sleep</span>=<span class="summary-sig-default">30</span>,
+        <span class="summary-sig-arg">firstwait</span>=<span class="summary-sig-default">3600</span>,
+        <span class="summary-sig-arg">maxtime</span>=<span class="summary-sig-default">(24*3600)</span>,
+        <span class="summary-sig-arg">check</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">rename_dict</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">merge_lbcs</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">memno</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Submit a wrf run to batch scheduler.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.run_wrf_member">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazyensemble.LazyEnsemble-class.html#cleanup" class="summary-sig-name">cleanup</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">folder</span>,
+        <span class="summary-sig-arg">files</span>)</span><br />
+      Deletes files in given directory that match a glob.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.cleanup">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazyensemble.LazyEnsemble-class.html#check_complete" class="summary-sig-name">check_complete</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">member</span>,
+        <span class="summary-sig-arg">raise_error</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">sleep</span>=<span class="summary-sig-default">30</span>,
+        <span class="summary-sig-arg">firstwait</span>=<span class="summary-sig-default">3600</span>,
+        <span class="summary-sig-arg">maxtime</span>=<span class="summary-sig-default">(24*3600)</span>)</span><br />
+      Check ensemble member to see if wrf run has finished.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.check_complete">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="run_real_member"></a><span class="summary-sig-name">run_real_member</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Submit real.exe to batch scheduler.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.run_real_member">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== STATIC METHODS ==================== -->
+<a name="section-StaticMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Static Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-StaticMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.lazyensemble.LazyEnsemble-class.html#edit_batchscript" class="summary-sig-name">edit_batchscript</a>(<span class="summary-sig-arg">fpath</span>,
+        <span class="summary-sig-arg">linekey</span>,
+        <span class="summary-sig-arg">newline</span>)</span><br />
+      Replace a line from the submission script that matches a key 
+      (linekey) with newline.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.edit_batchscript">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ensure_permissions"></a><span class="summary-sig-name">ensure_permissions</span>(<span class="summary-sig-arg">fpath</span>,
+        <span class="summary-sig-arg">perm_decimal</span>=<span class="summary-sig-default">755</span>)</span><br />
+      Makes sure the scheduler can run the executable at fpath.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.ensure_permissions">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="get_paths_to_input"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_paths_to_input</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">userinput</span>,
+        <span class="sig-arg">opt</span>,
+        <span class="sig-arg">fname_warning</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.get_paths_to_input">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Logic to add absolute paths of ICs or LBCs to the dictionary.
+
+
+Args:
+
+userinput   :   ics or lbcs from __init__.
+opt         :   (str) - 'ics' or 'lbcs'
+fname_warning   :   (bool) - if True, raise Exception if
+                    the IC/LBC files do not follow the
+                    convention for the wrf run directory
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="print_readme"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">print_readme</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.print_readme">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Save a pretty-printed README file to a given directory.</p>
+  <p>Optional argument will print namelist.input</p>
+  <p>Maybe this could be a decorator method that logs this data for each 
+  ensemble member.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="edit_batchscript"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">edit_batchscript</span>(<span class="sig-arg">fpath</span>,
+        <span class="sig-arg">linekey</span>,
+        <span class="sig-arg">newline</span>)</span>
+    <br /><em class="fname">Static Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.edit_batchscript">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Replace a line from the submission script that matches a key (linekey)
+  with newline.</p>
+  <p>linekey must be unambiguous, otherwise it will change the first 
+  occurence in the file that matches.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="namelist_for_member"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">namelist_for_member</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">member</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.namelist_for_member">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Edit parts of the namelist</p>
+  <p>start/end year, month, day, hour, minute, second</p>
+  <p>Use multiplied notation by number of domains (self.ndoms)</p>
+  <p>Assume that everything else in namelist is correct for member</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="run_all_members"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">run_all_members</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">prereqs</span>,
+        <span class="sig-arg">first</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.run_all_members">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Automatically submit all jobs to the scheduler.
+See run_wrf_member() and check_complete() for keyword arguments.
+
+Args:
+prereqs :   (dict) - a dictionary containing prerequisite files
+            needed in rundir. use this format:
+
+            dict( path_to_file = cmd)
+
+            where path_to_file is the absolute path to
+            the file in question (as str or Path obj) and
+            cmd is from ['copy','move','softlink'].
+
+            Don't include initial, boundary conditions (these are
+            different for every member and are copied automatically)
+            or namelist files (ditto).
+first       :   (int) - only run the first x members
+kwargs      :   keyword arguments passed to run_wrf_member.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="run_wrf_member"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">run_wrf_member</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">member</span>,
+        <span class="sig-arg">prereqs</span>,
+        <span class="sig-arg">cpus</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">nodes</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">sleep</span>=<span class="sig-default">30</span>,
+        <span class="sig-arg">firstwait</span>=<span class="sig-default">3600</span>,
+        <span class="sig-arg">maxtime</span>=<span class="sig-default">(24*3600)</span>,
+        <span class="sig-arg">check</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">rename_dict</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">merge_lbcs</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">memno</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.run_wrf_member">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Submit a wrf run to batch scheduler.</p>
+  <p>member  :   (str) - name of member to run</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="cleanup"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">cleanup</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">folder</span>,
+        <span class="sig-arg">files</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.cleanup">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Deletes files in given directory that match a glob.
+
+Args:
+
+folder      :   (path-like object) - this is where to clean up.
+files       :   (str,list,tuple) - a list of strings, or a string,
+                to match glob. For instance, &quot;rsl*&quot;.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="check_complete"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">check_complete</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">member</span>,
+        <span class="sig-arg">raise_error</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">sleep</span>=<span class="sig-default">30</span>,
+        <span class="sig-arg">firstwait</span>=<span class="sig-default">3600</span>,
+        <span class="sig-arg">maxtime</span>=<span class="sig-default">(24*3600)</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.lazyensemble-pysrc.html#LazyEnsemble.check_complete">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Check ensemble member to see if wrf run has finished.
+
+Returns:
+True if WRF exits successfully.
+False if not (and if raise_error is False, otherwise Exception)
+Does not exit, if maxtime is N.inf and if WRF does not exit
+
+Args:
+raise_error     :   (bool) - if True, pass a WRFError as return
+                    if WRF breaks.
+sleep           :   (int) - number of seconds to wait between checks
+firstwait       :   (int) - number of seconds to wait after submission
+                    before checks
+maxtime         :   (int) - number of seconds after which the
+                    method will assume the member's run has died.
+                    If this is infinity, script will NEVER DIE!
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:52:27 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

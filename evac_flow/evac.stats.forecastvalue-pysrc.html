@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.stats.forecastvalue</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.stats-module.html">Package&nbsp;stats</a> ::
+        Module&nbsp;forecastvalue
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.stats.forecastvalue-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="evac.stats.forecastvalue-module.html">Module evac.stats.forecastvalue</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">N</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pdb</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package evac=evac-module.html"><a title="evac" class="py-name" href="#" onclick="return doclink('link-0', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package evac.utils=evac.utils-module.html,Module evac.utils.utils=evac.utils.utils-module.html"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-1', 'utils', 'link-1');">utils</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module evac.utils.exceptions=evac.utils.exceptions-module.html"><a title="evac.utils.exceptions" class="py-name" href="#" onclick="return doclink('link-2', 'exceptions', 'link-2');">exceptions</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Class evac.utils.exceptions.FormatError=evac.utils.exceptions.FormatError-class.html"><a title="evac.utils.exceptions.FormatError" class="py-name" href="#" onclick="return doclink('link-3', 'FormatError', 'link-3');">FormatError</a></tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Class evac.utils.exceptions.NonsenseError=evac.utils.exceptions.NonsenseError-class.html"><a title="evac.utils.exceptions.NonsenseError" class="py-name" href="#" onclick="return doclink('link-4', 'NonsenseError', 'link-4');">NonsenseError</a></tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-5" class="py-name"><a title="evac" class="py-name" href="#" onclick="return doclink('link-5', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Package evac.stats=evac.stats-module.html"><a title="evac.stats" class="py-name" href="#" onclick="return doclink('link-6', 'stats', 'link-6');">stats</a></tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Module evac.stats.detscores=evac.stats.detscores-module.html"><a title="evac.stats.detscores" class="py-name" href="#" onclick="return doclink('link-7', 'detscores', 'link-7');">detscores</a></tt> <tt class="py-keyword">import</tt> <tt id="link-8" class="py-name" targets="Class evac.stats.detscores.DetScores=evac.stats.detscores.DetScores-class.html"><a title="evac.stats.detscores.DetScores" class="py-name" href="#" onclick="return doclink('link-8', 'DetScores', 'link-8');">DetScores</a></tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"> </tt>
+<a name="ForecastValue"></a><div id="ForecastValue-def"><a name="L7"></a><tt class="py-lineno"> 7</tt> <a class="py-toggle" href="#" id="ForecastValue-toggle" onclick="return toggle('ForecastValue');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="evac.stats.forecastvalue.ForecastValue-class.html">ForecastValue</a><tt class="py-op">(</tt><tt class="py-base-class">DetScores</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ForecastValue-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="ForecastValue-expanded"><a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line">    <tt class="py-docstring">""" Compute FV, forecast value, as Buizza 2001.</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-docstring">    Example that returns FV for exceeding 0.1 units (e.g., QPF)</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-docstring">    using the default range of cost/loss ratios:</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-docstring">        FV = ForecastValue(fcst_arr=arr1,obs_arr=arr2,thresh=0.l,</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-docstring">                            overunder='over')</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">    Then, access the FV for a given cost/loss ratio with:</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">        FV.get(0.02)</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring">    This will return None is the cost/lost ratio doesn't exist.</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">    Todo:</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring">        * Shouldn't this be a mix-in of `ProbScores` and `DetScores`?</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt class="py-docstring">    Args:</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt class="py-docstring">        CLs (N.ndarray, tuple, list): Cost-loss ratios to compute</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-docstring">            FV as function of each ratio</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt class="py-docstring">        args,kwargs: Arguments sent to the superclass to compute 2x2 contigency.</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"><tt class="py-docstring">            It's probably best to use keywords (`kwargs`).</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="ForecastValue.__init__"></a><div id="ForecastValue.__init__-def"><a name="L29"></a><tt class="py-lineno">29</tt> <a class="py-toggle" href="#" id="ForecastValue.__init__-toggle" onclick="return toggle('ForecastValue.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stats.forecastvalue.ForecastValue-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">CLs</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt><tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt><tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ForecastValue.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ForecastValue.__init__-expanded"><a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method evac.datafiles.binaryfile.BinaryFile.__init__()=evac.datafiles.binaryfile.BinaryFile-class.html#__init__,Method evac.datafiles.csvfile.CSVFile.__init__()=evac.datafiles.csvfile.CSVFile-class.html#__init__,Method evac.datafiles.datafile.DataFile.__init__()=evac.datafiles.datafile.DataFile-class.html#__init__,Method evac.datafiles.ecmwf.ECMWF.__init__()=evac.datafiles.ecmwf.ECMWF-class.html#__init__,Method evac.datafiles.ensemble.Ensemble.__init__()=evac.datafiles.ensemble.Ensemble-class.html#__init__,Method evac.datafiles.gefs.GEFS.__init__()=evac.datafiles.gefs.GEFS-class.html#__init__,Method evac.datafiles.gfs.GFS.__init__()=evac.datafiles.gfs.GFS-class.html#__init__,Method evac.datafiles.gribfile.GribFile.__init__()=evac.datafiles.gribfile.GribFile-class.html#__init__,Method evac.datafiles.hrrr.HRRR.__init__()=evac.datafiles.hrrr.HRRR-class.html#__init__,Method evac.datafiles.mrms.MRMS.__init__()=evac.datafiles.mrms.MRMS-class.html#__init__,Method evac.datafiles.ncfile.NCFile.__init__()=evac.datafiles.ncfile.NCFile-class.html#__init__,Method evac.datafiles.obs.Obs.__init__()=evac.datafiles.obs.Obs-class.html#__init__,Method evac.datafiles.pngfile.PNGFile.__init__()=evac.datafiles.pngfile.PNGFile-class.html#__init__,Method evac.datafiles.radar.Radar.__init__()=evac.datafiles.radar.Radar-class.html#__init__,Method evac.datafiles.ruc.RUC.__init__()=evac.datafiles.ruc.RUC-class.html#__init__,Method evac.datafiles.spclsr.SPCLSR.__init__()=evac.datafiles.spclsr.SPCLSR-class.html#__init__,Method evac.datafiles.stageiv.StageIV.__init__()=evac.datafiles.stageiv.StageIV-class.html#__init__,Method evac.datafiles.stormevents.StormEvents.__init__()=evac.datafiles.stormevents.StormEvents-class.html#__init__,Method evac.datafiles.wrfout.WRFOut.__init__()=evac.datafiles.wrfout.WRFOut-class.html#__init__,Method evac.lazy.ideal_profiles.Profile.__init__()=evac.lazy.ideal_profiles.Profile-class.html#__init__,Method evac.lazy.lazyensemble.LazyEnsemble.__init__()=evac.lazy.lazyensemble.LazyEnsemble-class.html#__init__,Method evac.lazy.lazywrf.LazyWRF.__init__()=evac.lazy.lazywrf.LazyWRF-class.html#__init__,Method evac.plot._rucplot.RUCPlot.__init__()=evac.plot._rucplot.RUCPlot-class.html#__init__,Method evac.plot._skewt.Profile.__init__()=evac.plot._skewt.Profile-class.html#__init__,Method evac.plot._skewt.SkewT.__init__()=evac.plot._skewt.SkewT-class.html#__init__,Method evac.plot._skewt2.SkewXAxis.__init__()=evac.plot._skewt2.SkewXAxis-class.html#__init__,Method evac.plot.birdseye.BirdsEye.__init__()=evac.plot.birdseye.BirdsEye-class.html#__init__,Method evac.plot.clicker.Clicker.__init__()=evac.plot.clicker.Clicker-class.html#__init__,Method evac.plot.domaingrid.DomainGrid.__init__()=evac.plot.domaingrid.DomainGrid-class.html#__init__,Method evac.plot.heatmap.HeatMap.__init__()=evac.plot.heatmap.HeatMap-class.html#__init__,Method evac.plot.linegraph.LineGraph.__init__()=evac.plot.linegraph.LineGraph-class.html#__init__,Method evac.plot.map.Map.__init__()=evac.plot.map.Map-class.html#__init__,Method evac.plot.performance.Performance.__init__()=evac.plot.performance.Performance-class.html#__init__,Method evac.plot.scales.Scales.__init__()=evac.plot.scales.Scales-class.html#__init__,Method evac.plot.skewt.SkewT.__init__()=evac.plot.skewt.SkewT-class.html#__init__,Method evac.plot.timeseries.TimeSeries.__init__()=evac.plot.timeseries.TimeSeries-class.html#__init__,Method evac.plot.xsection.CrossSection.__init__()=evac.plot.xsection.CrossSection-class.html#__init__,Method evac.stats._objects.ObjVerif.__init__()=evac.stats._objects.ObjVerif-class.html#__init__,Method evac.stats.casati.Casati.__init__()=evac.stats.casati.Casati-class.html#__init__,Method evac.stats.detscores.DetScores.__init__()=evac.stats.detscores.DetScores-class.html#__init__,Method evac.stats.forecastvalue.ForecastValue.__init__()=evac.stats.forecastvalue.ForecastValue-class.html#__init__,Method evac.stats.fss.FSS.__init__()=evac.stats.fss.FSS-class.html#__init__,Method evac.stats.objectbased.ObjectBased.__init__()=evac.stats.objectbased.ObjectBased-class.html#__init__,Method evac.stats.probscores.ProbScores.__init__()=evac.stats.probscores.ProbScores-class.html#__init__,Method evac.stats.roc.ROC.__init__()=evac.stats.roc.ROC-class.html#__init__,Method evac.stats.sal.SAL.__init__()=evac.stats.sal.SAL-class.html#__init__,Method evac.stoch.ifsfractal.IFSFractal.__init__()=evac.stoch.ifsfractal.IFSFractal-class.html#__init__,Method evac.utils.defaults.Defaults.__init__()=evac.utils.defaults.Defaults-class.html#__init__,Method evac.utils.exceptions.FormatError.__init__()=evac.utils.exceptions.FormatError-class.html#__init__,Method evac.utils.exceptions.NonsenseError.__init__()=evac.utils.exceptions.NonsenseError-class.html#__init__,Method evac.utils.exceptions.PrettyException.__init__()=evac.utils.exceptions.PrettyException-class.html#__init__,Method evac.utils.exceptions.QCError.__init__()=evac.utils.exceptions.QCError-class.html#__init__,Method evac.utils.exceptions.WRFError.__init__()=evac.utils.exceptions.WRFError-class.html#__init__,Method evac.utils.reproject_tools.HRRR_native_grid.__init__()=evac.utils.reproject_tools.HRRR_native_grid-class.html#__init__,Method evac.utils.reproject_tools.VerifGrid.__init__()=evac.utils.reproject_tools.VerifGrid-class.html#__init__,Method evac.utils.reproject_tools.WRF_native_grid.__init__()=evac.utils.reproject_tools.WRF_native_grid-class.html#__init__,Method evac.utils.timetool.TimeTool.__init__()=evac.utils.timetool.TimeTool-class.html#__init__"><a title="evac.datafiles.binaryfile.BinaryFile.__init__
+evac.datafiles.csvfile.CSVFile.__init__
+evac.datafiles.datafile.DataFile.__init__
+evac.datafiles.ecmwf.ECMWF.__init__
+evac.datafiles.ensemble.Ensemble.__init__
+evac.datafiles.gefs.GEFS.__init__
+evac.datafiles.gfs.GFS.__init__
+evac.datafiles.gribfile.GribFile.__init__
+evac.datafiles.hrrr.HRRR.__init__
+evac.datafiles.mrms.MRMS.__init__
+evac.datafiles.ncfile.NCFile.__init__
+evac.datafiles.obs.Obs.__init__
+evac.datafiles.pngfile.PNGFile.__init__
+evac.datafiles.radar.Radar.__init__
+evac.datafiles.ruc.RUC.__init__
+evac.datafiles.spclsr.SPCLSR.__init__
+evac.datafiles.stageiv.StageIV.__init__
+evac.datafiles.stormevents.StormEvents.__init__
+evac.datafiles.wrfout.WRFOut.__init__
+evac.lazy.ideal_profiles.Profile.__init__
+evac.lazy.lazyensemble.LazyEnsemble.__init__
+evac.lazy.lazywrf.LazyWRF.__init__
+evac.plot._rucplot.RUCPlot.__init__
+evac.plot._skewt.Profile.__init__
+evac.plot._skewt.SkewT.__init__
+evac.plot._skewt2.SkewXAxis.__init__
+evac.plot.birdseye.BirdsEye.__init__
+evac.plot.clicker.Clicker.__init__
+evac.plot.domaingrid.DomainGrid.__init__
+evac.plot.heatmap.HeatMap.__init__
+evac.plot.linegraph.LineGraph.__init__
+evac.plot.map.Map.__init__
+evac.plot.performance.Performance.__init__
+evac.plot.scales.Scales.__init__
+evac.plot.skewt.SkewT.__init__
+evac.plot.timeseries.TimeSeries.__init__
+evac.plot.xsection.CrossSection.__init__
+evac.stats._objects.ObjVerif.__init__
+evac.stats.casati.Casati.__init__
+evac.stats.detscores.DetScores.__init__
+evac.stats.forecastvalue.ForecastValue.__init__
+evac.stats.fss.FSS.__init__
+evac.stats.objectbased.ObjectBased.__init__
+evac.stats.probscores.ProbScores.__init__
+evac.stats.roc.ROC.__init__
+evac.stats.sal.SAL.__init__
+evac.stoch.ifsfractal.IFSFractal.__init__
+evac.utils.defaults.Defaults.__init__
+evac.utils.exceptions.FormatError.__init__
+evac.utils.exceptions.NonsenseError.__init__
+evac.utils.exceptions.PrettyException.__init__
+evac.utils.exceptions.QCError.__init__
+evac.utils.exceptions.WRFError.__init__
+evac.utils.reproject_tools.HRRR_native_grid.__init__
+evac.utils.reproject_tools.VerifGrid.__init__
+evac.utils.reproject_tools.WRF_native_grid.__init__
+evac.utils.timetool.TimeTool.__init__" class="py-name" href="#" onclick="return doclink('link-9', '__init__', 'link-9');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt><tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-comment"># super(DetScores,self).__init__(*args,**kwargs)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pod</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method evac.stats.detscores.DetScores.compute_pod()=evac.stats.detscores.DetScores-class.html#compute_pod"><a title="evac.stats.detscores.DetScores.compute_pod" class="py-name" href="#" onclick="return doclink('link-10', 'compute_pod', 'link-10');">compute_pod</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pfd</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Method evac.stats.detscores.DetScores.compute_pfd()=evac.stats.detscores.DetScores-class.html#compute_pfd"><a title="evac.stats.detscores.DetScores.compute_pfd" class="py-name" href="#" onclick="return doclink('link-11', 'compute_pfd', 'link-11');">compute_pfd</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pcli</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method evac.stats.detscores.DetScores.compute_pcli()=evac.stats.detscores.DetScores-class.html#compute_pcli"><a title="evac.stats.detscores.DetScores.compute_pcli" class="py-name" href="#" onclick="return doclink('link-12', 'compute_pcli', 'link-12');">compute_pcli</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">kss</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Method evac.stats.detscores.DetScores.compute_kss()=evac.stats.detscores.DetScores-class.html#compute_kss"><a title="evac.stats.detscores.DetScores.compute_kss" class="py-name" href="#" onclick="return doclink('link-13', 'compute_kss', 'link-13');">compute_kss</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">CLs</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">            <tt class="py-name">CLs</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">arange</tt><tt class="py-op">(</tt><tt class="py-number">0.01</tt><tt class="py-op">,</tt><tt class="py-number">1.01</tt><tt class="py-op">,</tt><tt class="py-number">0.01</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">CLs</tt><tt class="py-op">,</tt><tt class="py-op">(</tt><tt class="py-name">int</tt><tt class="py-op">,</tt><tt class="py-name">float</tt><tt class="py-op">,</tt><tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">ndarray</tt><tt class="py-op">,</tt><tt class="py-name">tuple</tt><tt class="py-op">,</tt><tt class="py-name">list</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">            <tt class="py-name">CLs</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">array</tt><tt class="py-op">(</tt><tt class="py-name">CLs</tt><tt class="py-op">)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt id="link-14" class="py-name"><a title="evac.utils.exceptions.FormatError" class="py-name" href="#" onclick="return doclink('link-14', 'FormatError', 'link-3');">FormatError</a></tt><tt class="py-op">(</tt><tt class="py-string">"CLs argument must be one of the following: \n"</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">                              <tt class="py-string">"int, float, N.ndarray, tuple, list."</tt><tt class="py-op">)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLs</tt> <tt class="py-op">=</tt> <tt class="py-name">CLs</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line"> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">FVs</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">cl</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLs</tt><tt class="py-op">:</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">FVs</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Method evac.stats.forecastvalue.ForecastValue.compute_FV()=evac.stats.forecastvalue.ForecastValue-class.html#compute_FV"><a title="evac.stats.forecastvalue.ForecastValue.compute_FV" class="py-name" href="#" onclick="return doclink('link-15', 'compute_FV', 'link-15');">compute_FV</a></tt><tt class="py-op">(</tt><tt class="py-name">cl</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line"> </tt>
+<a name="ForecastValue.compute_FV"></a><div id="ForecastValue.compute_FV-def"><a name="L50"></a><tt class="py-lineno">50</tt> <a class="py-toggle" href="#" id="ForecastValue.compute_FV-toggle" onclick="return toggle('ForecastValue.compute_FV');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stats.forecastvalue.ForecastValue-class.html#compute_FV">compute_FV</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">cl</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ForecastValue.compute_FV-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ForecastValue.compute_FV-expanded"><a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">        <tt class="py-docstring">""" Compute FV.</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line"><tt class="py-docstring">        Note the variable "x" is the minimum of C/L ratio and P_cli.</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"><tt class="py-docstring">        Args:</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line"><tt class="py-docstring">            cl (float)  :   Cost/loss ratio</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">        <tt class="py-comment"># For ease of reading</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">        <tt class="py-name">x</tt> <tt class="py-op">=</tt> <tt class="py-name">min</tt><tt class="py-op">(</tt><tt class="py-name">cl</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pcli</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line"> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">        <tt class="py-comment"># Eq. 26 in Buizza 2001</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">        <tt class="py-name">FV</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">kss</tt> <tt class="py-op">-</tt> <tt class="py-op">(</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">            <tt class="py-comment"># Numerator</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">            <tt class="py-op">(</tt> <tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">-</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pod</tt><tt class="py-op">)</tt> <tt class="py-op">*</tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pcli</tt><tt class="py-op">-</tt><tt class="py-name">x</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pfd</tt><tt class="py-op">*</tt><tt class="py-op">(</tt><tt class="py-name">cl</tt><tt class="py-op">-</tt><tt class="py-name">x</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt><tt class="py-op">/</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">            <tt class="py-comment"># Denominator</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">            <tt class="py-op">(</tt><tt class="py-name">x</tt> <tt class="py-op">-</tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pcli</tt><tt class="py-op">*</tt><tt class="py-name">cl</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">        <tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line"> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">        <tt class="py-comment"># FV2 = self.kss - ( (1-self.pod)*(</tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">                        <tt class="py-comment"># (self.pcli-cl)/</tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">                        <tt class="py-comment"># (cl*(1-self.pcli))) )</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line"> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">FV</tt> </tt>
+</div><a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line"> </tt>
+<a name="ForecastValue.get_FV"></a><div id="ForecastValue.get_FV-def"><a name="L76"></a><tt class="py-lineno">76</tt> <a class="py-toggle" href="#" id="ForecastValue.get_FV-toggle" onclick="return toggle('ForecastValue.get_FV');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stats.forecastvalue.ForecastValue-class.html#get_FV">get_FV</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">cl</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ForecastValue.get_FV-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ForecastValue.get_FV-expanded"><a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line">        <tt class="py-docstring">""" Return the FV for a given cost/loss ratio, otherwise None.</tt> </tt>
+<a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line">        <tt class="py-name">clidx</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">where</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">CLs</tt> <tt class="py-op">==</tt> <tt class="py-name">cl</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">clidx</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L81"></a><tt class="py-lineno">81</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">FV</tt><tt class="py-op">[</tt><tt class="py-name">clidx</tt><tt class="py-op">]</tt> </tt>
+<a name="L82"></a><tt class="py-lineno">82</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">clidx</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L83"></a><tt class="py-lineno">83</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"No C/L ratio found for that cl value"</tt><tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno">84</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L85"></a><tt class="py-lineno">85</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno">86</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt id="link-16" class="py-name"><a title="evac.utils.exceptions.NonsenseError" class="py-name" href="#" onclick="return doclink('link-16', 'NonsenseError', 'link-4');">NonsenseError</a></tt><tt class="py-op">(</tt><tt class="py-string">"C/L ratio is ambiguous."</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L87"></a><tt class="py-lineno">87</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:52:27 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

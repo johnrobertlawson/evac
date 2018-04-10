@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.datafiles.stageiv</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.datafiles-module.html">Package&nbsp;datafiles</a> ::
+        Module&nbsp;stageiv
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.datafiles.stageiv-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="evac.datafiles.stageiv-module.html">Module evac.datafiles.stageiv</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">glob</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">datetime</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">N</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">mpl_toolkits</tt><tt class="py-op">.</tt><tt class="py-name">basemap</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Basemap</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package evac=evac-module.html"><a title="evac" class="py-name" href="#" onclick="return doclink('link-0', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package evac.datafiles=evac.datafiles-module.html"><a title="evac.datafiles" class="py-name" href="#" onclick="return doclink('link-1', 'datafiles', 'link-1');">datafiles</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module evac.datafiles.gribfile=evac.datafiles.gribfile-module.html"><a title="evac.datafiles.gribfile" class="py-name" href="#" onclick="return doclink('link-2', 'gribfile', 'link-2');">gribfile</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Class evac.datafiles.gribfile.GribFile=evac.datafiles.gribfile.GribFile-class.html"><a title="evac.datafiles.gribfile.GribFile" class="py-name" href="#" onclick="return doclink('link-3', 'GribFile', 'link-3');">GribFile</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"> </tt>
+<a name="StageIV"></a><div id="StageIV-def"><a name="L10"></a><tt class="py-lineno"> 10</tt> <a class="py-toggle" href="#" id="StageIV-toggle" onclick="return toggle('StageIV');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html">StageIV</a><tt class="py-op">(</tt><tt class="py-base-class">GribFile</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="StageIV-expanded"><a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line">    <tt class="py-docstring">""" Class that holds Stage IV verification data.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-docstring">    Args:</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-docstring">        dir_or_file: if directory, it scans for all files</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring">            If file, it loads that one file.</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring">        load_1h (bool): if True, load the hourly data files.</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring">        load_6h (bool): if True, load the six-hourly data files.</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">        load_24h (bool): if True, load the daily data files.</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">        loadobj (bool): if True, load the data as instances of </tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">            :class:`~evac.datafiles.gribfile.GribFile()`.</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-docstring">    Todos:</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-docstring">        * Check for 9999s (missing) or negative. Other codes</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-docstring">        * Consistency: are we loading one or a group of files?</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="StageIV.__init__"></a><div id="StageIV.__init__-def"><a name="L27"></a><tt class="py-lineno"> 27</tt> <a class="py-toggle" href="#" id="StageIV.__init__-toggle" onclick="return toggle('StageIV.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">dir_or_file</tt><tt class="py-op">,</tt><tt class="py-param">load_1h</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt><tt class="py-param">load_6h</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">load_24h</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">                    <tt class="py-param">loadobj</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="StageIV.__init__-expanded"><a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">            <tt class="py-keyword">import</tt> <tt id="link-4" class="py-name" targets="Variable evac.datafiles.gribfile.pygrib=evac.datafiles.gribfile-module.html#pygrib"><a title="evac.datafiles.gribfile.pygrib" class="py-name" href="#" onclick="return doclink('link-4', 'pygrib', 'link-4');">pygrib</a></tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">ImportError</tt><tt class="py-op">:</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"You need to install pygrib for the StageIV class."</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name"><a title="evac.datafiles.gribfile.pygrib" class="py-name" href="#" onclick="return doclink('link-5', 'pygrib', 'link-4');">pygrib</a></tt> <tt class="py-op">=</tt> <tt id="link-6" class="py-name"><a title="evac.datafiles.gribfile.pygrib" class="py-name" href="#" onclick="return doclink('link-6', 'pygrib', 'link-4');">pygrib</a></tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">loadobj</tt> <tt class="py-op">=</tt> <tt class="py-name">loadobj</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-comment"># Determine whether to load one file or search in directory</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Variable evac.lazy._monte2.path=evac.lazy._monte2-module.html#path"><a title="evac.lazy._monte2.path" class="py-name" href="#" onclick="return doclink('link-7', 'path', 'link-7');">path</a></tt><tt class="py-op">.</tt><tt class="py-name">isdir</tt><tt class="py-op">(</tt><tt class="py-name">dir_or_file</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-comment"># try:</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-comment"># except OSError:</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">            <tt class="py-name">ST4s</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name"><a title="evac.lazy._monte2.path" class="py-name" href="#" onclick="return doclink('link-8', 'path', 'link-7');">path</a></tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">dir_or_file</tt><tt class="py-op">,</tt><tt class="py-string">'ST4*'</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"Loading files in {0}"</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt class="py-name">ST4s</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">            <tt class="py-name">fps</tt> <tt class="py-op">=</tt> <tt class="py-name">glob</tt><tt class="py-op">.</tt><tt class="py-name">glob</tt><tt class="py-op">(</tt><tt class="py-name">ST4s</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">            <tt class="py-name">G</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name"><a title="evac.datafiles.gribfile.pygrib" class="py-name" href="#" onclick="return doclink('link-9', 'pygrib', 'link-4');">pygrib</a></tt><tt class="py-op">.</tt><tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">dir_or_file</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">            <tt class="py-name">fps</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">dir_or_file</tt><tt class="py-op">,</tt><tt class="py-op">]</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DATA</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">load_1h</tt><tt class="py-op">:</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DATA</tt><tt class="py-op">[</tt><tt class="py-string">'01h'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">load_6h</tt><tt class="py-op">:</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DATA</tt><tt class="py-op">[</tt><tt class="py-string">'06h'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">load_24h</tt><tt class="py-op">:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DATA</tt><tt class="py-op">[</tt><tt class="py-string">'24h'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">fp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">fps</tt><tt class="py-op">:</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">            <tt class="py-comment"># fp is the full path to the (grib?) file</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">            <tt class="py-comment"># f is the name of the file only</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">            <tt class="py-name">f</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="evac.lazy._monte2.path" class="py-name" href="#" onclick="return doclink('link-10', 'path', 'link-7');">path</a></tt><tt class="py-op">.</tt><tt class="py-name">basename</tt><tt class="py-op">(</tt><tt class="py-name">fp</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">            <tt class="py-name">t</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Method evac.datafiles.stageiv.StageIV.date_from_fname()=evac.datafiles.stageiv.StageIV-class.html#date_from_fname"><a title="evac.datafiles.stageiv.StageIV.date_from_fname" class="py-name" href="#" onclick="return doclink('link-11', 'date_from_fname', 'link-11');">date_from_fname</a></tt><tt class="py-op">(</tt><tt class="py-name">f</tt><tt class="py-op">)</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">            <tt class="py-comment"># if f.endswith('01h'):</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">                <tt class="py-comment"># d1h[t] = self.load_data(f)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">            <tt class="py-comment"># elif f.endswith('06h'):</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">                <tt class="py-comment"># d6h[t] = self.load_data(f)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">            <tt class="py-comment"># elif f.endswith('24h'):</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">                <tt class="py-comment"># d24h[t] = self.load_data(f)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">            <tt class="py-comment"># else:</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                <tt class="py-comment"># pass</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">accum_t</tt> <tt class="py-keyword">in</tt> <tt class="py-op">(</tt><tt class="py-string">'01h'</tt><tt class="py-op">,</tt><tt class="py-string">'06h'</tt><tt class="py-op">,</tt><tt class="py-string">'24h'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">f</tt><tt class="py-op">.</tt><tt class="py-name">endswith</tt><tt class="py-op">(</tt><tt class="py-name">accum_t</tt><tt class="py-op">)</tt> <tt class="py-keyword">and</tt> <tt class="py-op">(</tt><tt class="py-name">accum_t</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DATA</tt><tt class="py-op">.</tt><tt class="py-name">keys</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">                    <tt class="py-name">answer</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method evac.datafiles.stageiv.StageIV.load_data()=evac.datafiles.stageiv.StageIV-class.html#load_data,Function evac.utils.gis_tools.load_data()=evac.utils.gis_tools-module.html#load_data"><a title="evac.datafiles.stageiv.StageIV.load_data
+evac.utils.gis_tools.load_data" class="py-name" href="#" onclick="return doclink('link-12', 'load_data', 'link-12');">load_data</a></tt><tt class="py-op">(</tt><tt class="py-name">fp</tt><tt class="py-op">,</tt><tt class="py-name">loadobj</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-name">answer</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">False</tt><tt class="py-op">:</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">                        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DATA</tt><tt class="py-op">[</tt><tt class="py-name">accum_t</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-name">t</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">answer</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">                <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">                    <tt class="py-keyword">pass</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-comment"># Assign all projection stats</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-comment"># pdb.set_trace()</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">        <tt class="py-comment"># print("All files in ",ST4s)</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-comment"># for fp in fps:</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">            <tt class="py-comment"># print(fp)</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-comment"># print("-"*10)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Method evac.datafiles.gribfile.GribFile.projection()=evac.datafiles.gribfile.GribFile-class.html#projection,Method evac.datafiles.stageiv.StageIV.projection()=evac.datafiles.stageiv.StageIV-class.html#projection"><a title="evac.datafiles.gribfile.GribFile.projection
+evac.datafiles.stageiv.StageIV.projection" class="py-name" href="#" onclick="return doclink('link-13', 'projection', 'link-13');">projection</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="StageIV.get"></a><div id="StageIV.get-def"><a name="L89"></a><tt class="py-lineno"> 89</tt> <a class="py-toggle" href="#" id="StageIV.get-toggle" onclick="return toggle('StageIV.get');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html#get">get</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">utc</tt><tt class="py-op">,</tt><tt class="py-param">accum_hr</tt><tt class="py-op">=</tt><tt class="py-string">'01h'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV.get-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="StageIV.get-expanded"><a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"><tt class="py-docstring">        Get a given time, in similar manner to WRFOut.</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"><tt class="py-docstring">        Wrapper for return_array with reshape to 4D</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-name">data2D</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method evac.datafiles.stageiv.StageIV.return_array()=evac.datafiles.stageiv.StageIV-class.html#return_array"><a title="evac.datafiles.stageiv.StageIV.return_array" class="py-name" href="#" onclick="return doclink('link-14', 'return_array', 'link-14');">return_array</a></tt><tt class="py-op">(</tt><tt class="py-name">utc</tt><tt class="py-op">,</tt><tt class="py-name">accum_hr</tt><tt class="py-op">=</tt><tt class="py-name">accum_hr</tt><tt class="py-op">)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">        <tt class="py-name">data4D</tt> <tt class="py-op">=</tt> <tt class="py-name">data2D</tt><tt class="py-op">[</tt><tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">newaxis</tt><tt class="py-op">,</tt><tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">newaxis</tt><tt class="py-op">,</tt><tt class="py-op">:</tt><tt class="py-op">,</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">data4D</tt> </tt>
+</div><a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"> </tt>
+<a name="StageIV.date_from_fname"></a><div id="StageIV.date_from_fname-def"><a name="L99"></a><tt class="py-lineno"> 99</tt> <a class="py-toggle" href="#" id="StageIV.date_from_fname-toggle" onclick="return toggle('StageIV.date_from_fname');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html#date_from_fname">date_from_fname</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">f</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV.date_from_fname-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="StageIV.date_from_fname-expanded"><a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt class="py-name">_1</tt><tt class="py-op">,</tt> <tt class="py-name">d</tt><tt class="py-op">,</tt> <tt class="py-name">_2</tt> <tt class="py-op">=</tt> <tt class="py-name">f</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">'.'</tt><tt class="py-op">)</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">        <tt class="py-name">fmt</tt> <tt class="py-op">=</tt> <tt class="py-string">'%Y%m%d%H'</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt class="py-name">utc</tt> <tt class="py-op">=</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt class="py-name">strptime</tt><tt class="py-op">(</tt><tt class="py-name">d</tt><tt class="py-op">,</tt><tt class="py-name">fmt</tt><tt class="py-op">)</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">utc</tt> </tt>
+</div><a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"> </tt>
+<a name="StageIV.load_data"></a><div id="StageIV.load_data-def"><a name="L105"></a><tt class="py-lineno">105</tt> <a class="py-toggle" href="#" id="StageIV.load_data-toggle" onclick="return toggle('StageIV.load_data');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html#load_data">load_data</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">f</tt><tt class="py-op">,</tt><tt class="py-param">loadobj</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV.load_data-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="StageIV.load_data-expanded"><a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">loadobj</tt><tt class="py-op">:</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">            <tt class="py-comment"># Return Pygrib object if valid grib file</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">                <tt class="py-name">G</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="evac.datafiles.gribfile.pygrib" class="py-name" href="#" onclick="return doclink('link-15', 'pygrib', 'link-4');">pygrib</a></tt><tt class="py-op">.</tt><tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">f</tt><tt class="py-op">)</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt> <tt class="py-name">OSError</tt><tt class="py-op">:</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">False</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">G</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">            <tt class="py-comment"># Return file path if valid grib file</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">                <tt class="py-name">G_test</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="evac.datafiles.gribfile.pygrib" class="py-name" href="#" onclick="return doclink('link-16', 'pygrib', 'link-4');">pygrib</a></tt><tt class="py-op">.</tt><tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">f</tt><tt class="py-op">)</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt> <tt class="py-name">OSError</tt><tt class="py-op">:</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">False</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">f</tt> </tt>
+</div><a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line"> </tt>
+<a name="StageIV.load_gribpart"></a><div id="StageIV.load_gribpart-def"><a name="L123"></a><tt class="py-lineno">123</tt> <a class="py-toggle" href="#" id="StageIV.load_gribpart-toggle" onclick="return toggle('StageIV.load_gribpart');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html#load_gribpart">load_gribpart</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">G</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV.load_gribpart-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="StageIV.load_gribpart-expanded"><a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">G</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">            <tt class="py-name">G</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Method evac.datafiles.ensemble.Ensemble.arbitrary_pick()=evac.datafiles.ensemble.Ensemble-class.html#arbitrary_pick,Method evac.datafiles.gribfile.GribFile.arbitrary_pick()=evac.datafiles.gribfile.GribFile-class.html#arbitrary_pick,Method evac.datafiles.stageiv.StageIV.arbitrary_pick()=evac.datafiles.stageiv.StageIV-class.html#arbitrary_pick"><a title="evac.datafiles.ensemble.Ensemble.arbitrary_pick
+evac.datafiles.gribfile.GribFile.arbitrary_pick
+evac.datafiles.stageiv.StageIV.arbitrary_pick" class="py-name" href="#" onclick="return doclink('link-17', 'arbitrary_pick', 'link-17');">arbitrary_pick</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">G</tt><tt class="py-op">,</tt><tt class="py-name">str</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">            <tt class="py-name">G</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="evac.datafiles.stageiv.StageIV.load_data
+evac.utils.gis_tools.load_data" class="py-name" href="#" onclick="return doclink('link-18', 'load_data', 'link-12');">load_data</a></tt><tt class="py-op">(</tt><tt class="py-name">G</tt><tt class="py-op">,</tt><tt class="py-name">loadobj</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-name">G</tt><tt class="py-op">.</tt><tt class="py-name">seek</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-name">gg</tt> <tt class="py-op">=</tt> <tt class="py-name">G</tt><tt class="py-op">.</tt><tt class="py-name">select</tt><tt class="py-op">(</tt><tt id="link-19" class="py-name" targets="Variable evac.plot._skewt2.SkewXAxes.name=evac.plot._skewt2.SkewXAxes-class.html#name"><a title="evac.plot._skewt2.SkewXAxes.name" class="py-name" href="#" onclick="return doclink('link-19', 'name', 'link-19');">name</a></tt><tt class="py-op">=</tt><tt class="py-string">'Total Precipitation'</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">gg</tt> </tt>
+</div><a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line"> </tt>
+<a name="StageIV.load_accum"></a><div id="StageIV.load_accum-def"><a name="L132"></a><tt class="py-lineno">132</tt> <a class="py-toggle" href="#" id="StageIV.load_accum-toggle" onclick="return toggle('StageIV.load_accum');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html#load_accum">load_accum</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">G</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV.load_accum-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="StageIV.load_accum-expanded"><a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">        <tt class="py-name">gg</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Method evac.datafiles.stageiv.StageIV.load_gribpart()=evac.datafiles.stageiv.StageIV-class.html#load_gribpart"><a title="evac.datafiles.stageiv.StageIV.load_gribpart" class="py-name" href="#" onclick="return doclink('link-20', 'load_gribpart', 'link-20');">load_gribpart</a></tt><tt class="py-op">(</tt><tt class="py-name">G</tt><tt class="py-op">)</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">        <tt class="py-name">arr</tt> <tt class="py-op">=</tt> <tt class="py-name">gg</tt><tt class="py-op">.</tt><tt class="py-name">values</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">arr</tt> </tt>
+</div><a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line"> </tt>
+<a name="StageIV.return_latlon"></a><div id="StageIV.return_latlon-def"><a name="L137"></a><tt class="py-lineno">137</tt> <a class="py-toggle" href="#" id="StageIV.return_latlon-toggle" onclick="return toggle('StageIV.return_latlon');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html#return_latlon">return_latlon</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">G</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV.return_latlon-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="StageIV.return_latlon-expanded"><a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">G</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">            <tt class="py-name">G</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="evac.datafiles.ensemble.Ensemble.arbitrary_pick
+evac.datafiles.gribfile.GribFile.arbitrary_pick
+evac.datafiles.stageiv.StageIV.arbitrary_pick" class="py-name" href="#" onclick="return doclink('link-21', 'arbitrary_pick', 'link-17');">arbitrary_pick</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">        <tt class="py-name">gg</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="evac.datafiles.stageiv.StageIV.load_gribpart" class="py-name" href="#" onclick="return doclink('link-22', 'load_gribpart', 'link-20');">load_gribpart</a></tt><tt class="py-op">(</tt><tt class="py-name">G</tt><tt class="py-op">)</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">        <tt class="py-name">latlon</tt> <tt class="py-op">=</tt> <tt class="py-name">gg</tt><tt class="py-op">.</tt><tt class="py-name">latlons</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-name">lats</tt><tt class="py-op">,</tt> <tt class="py-name">lons</tt> <tt class="py-op">=</tt> <tt class="py-name">latlon</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">lats</tt><tt class="py-op">,</tt><tt class="py-name">lons</tt> </tt>
+</div><a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"> </tt>
+<a name="StageIV.return_array"></a><div id="StageIV.return_array-def"><a name="L145"></a><tt class="py-lineno">145</tt> <a class="py-toggle" href="#" id="StageIV.return_array-toggle" onclick="return toggle('StageIV.return_array');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html#return_array">return_array</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">utc</tt><tt class="py-op">,</tt><tt class="py-param">accum_hr</tt><tt class="py-op">=</tt><tt class="py-string">'01h'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV.return_array-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="StageIV.return_array-expanded"><a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-name">G</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DATA</tt><tt class="py-op">[</tt><tt class="py-name">accum_hr</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-name">utc</tt><tt class="py-op">]</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Method evac.datafiles.stageiv.StageIV.load_accum()=evac.datafiles.stageiv.StageIV-class.html#load_accum"><a title="evac.datafiles.stageiv.StageIV.load_accum" class="py-name" href="#" onclick="return doclink('link-23', 'load_accum', 'link-23');">load_accum</a></tt><tt class="py-op">(</tt><tt class="py-name">G</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line"> </tt>
+<a name="StageIV.return_point"></a><div id="StageIV.return_point-def"><a name="L149"></a><tt class="py-lineno">149</tt> <a class="py-toggle" href="#" id="StageIV.return_point-toggle" onclick="return toggle('StageIV.return_point');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html#return_point">return_point</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">utc</tt><tt class="py-op">,</tt><tt class="py-param">lat</tt><tt class="py-op">,</tt><tt class="py-param">lon</tt><tt class="py-op">,</tt><tt class="py-param">accum_hr</tt><tt class="py-op">=</tt><tt class="py-string">'01h'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV.return_point-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="StageIV.return_point-expanded"><a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">        <tt class="py-name">lats</tt><tt class="py-op">,</tt> <tt class="py-name">lons</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Method evac.datafiles.gribfile.GribFile.return_latlon()=evac.datafiles.gribfile.GribFile-class.html#return_latlon,Method evac.datafiles.stageiv.StageIV.return_latlon()=evac.datafiles.stageiv.StageIV-class.html#return_latlon"><a title="evac.datafiles.gribfile.GribFile.return_latlon
+evac.datafiles.stageiv.StageIV.return_latlon" class="py-name" href="#" onclick="return doclink('link-24', 'return_latlon', 'link-24');">return_latlon</a></tt><tt class="py-op">(</tt><tt class="py-name">None</tt><tt class="py-op">)</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        <tt class="py-name">latidx</tt><tt class="py-op">,</tt><tt class="py-name">lonidx</tt> <tt class="py-op">=</tt> <tt id="link-25" class="py-name" targets="Package evac.utils=evac.utils-module.html,Module evac.utils.utils=evac.utils.utils-module.html"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-25', 'utils', 'link-25');">utils</a></tt><tt class="py-op">.</tt><tt id="link-26" class="py-name" targets="Method evac.datafiles.wrfout.WRFOut.get_latlon_idx()=evac.datafiles.wrfout.WRFOut-class.html#get_latlon_idx,Function evac.utils.gis_tools.get_latlon_idx()=evac.utils.gis_tools-module.html#get_latlon_idx"><a title="evac.datafiles.wrfout.WRFOut.get_latlon_idx
+evac.utils.gis_tools.get_latlon_idx" class="py-name" href="#" onclick="return doclink('link-26', 'get_latlon_idx', 'link-26');">get_latlon_idx</a></tt><tt class="py-op">(</tt><tt class="py-name">lats</tt><tt class="py-op">,</tt><tt class="py-name">lons</tt><tt class="py-op">,</tt><tt class="py-name">lat</tt><tt class="py-op">,</tt><tt class="py-name">lon</tt><tt class="py-op">)</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">        <tt class="py-name">arr</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="evac.datafiles.stageiv.StageIV.return_array" class="py-name" href="#" onclick="return doclink('link-27', 'return_array', 'link-14');">return_array</a></tt><tt class="py-op">(</tt><tt class="py-name">utc</tt><tt class="py-op">,</tt><tt class="py-name">accum_hr</tt><tt class="py-op">=</tt><tt class="py-name">accum_hr</tt><tt class="py-op">)</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">        <tt class="py-comment"># pdb.set_trace()</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">arr</tt><tt class="py-op">[</tt><tt class="py-name">latidx</tt><tt class="py-op">,</tt><tt class="py-name">lonidx</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line"> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line"> </tt>
+<a name="StageIV.projection"></a><div id="StageIV.projection-def"><a name="L157"></a><tt class="py-lineno">157</tt> <a class="py-toggle" href="#" id="StageIV.projection-toggle" onclick="return toggle('StageIV.projection');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html#projection">projection</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV.projection-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="StageIV.projection-expanded"><a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">m</tt> <tt class="py-op">=</tt> <tt class="py-name">Basemap</tt><tt class="py-op">(</tt><tt id="link-28" class="py-name"><a title="evac.datafiles.gribfile.GribFile.projection
+evac.datafiles.stageiv.StageIV.projection" class="py-name" href="#" onclick="return doclink('link-28', 'projection', 'link-13');">projection</a></tt><tt class="py-op">=</tt><tt class="py-string">'npstere'</tt><tt class="py-op">,</tt><tt class="py-name">lon_0</tt><tt class="py-op">=</tt><tt class="py-op">-</tt><tt class="py-number">105.0</tt><tt class="py-op">,</tt><tt class="py-comment">#lat_1=60.0,</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">                <tt class="py-comment"># llcrnrlon=lllon,llcrnrlat=lllat,urcrnrlon=urlon,urcrnrlat=urlat,</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">                            <tt class="py-name">boundinglat</tt><tt class="py-op">=</tt><tt class="py-number">24.701632</tt><tt class="py-op">)</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">        <tt class="py-name">G</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name"><a title="evac.datafiles.ensemble.Ensemble.arbitrary_pick
+evac.datafiles.gribfile.GribFile.arbitrary_pick
+evac.datafiles.stageiv.StageIV.arbitrary_pick" class="py-name" href="#" onclick="return doclink('link-29', 'arbitrary_pick', 'link-17');">arbitrary_pick</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-30" class="py-name"><a title="evac.datafiles.gribfile.GribFile.return_latlon
+evac.datafiles.stageiv.StageIV.return_latlon" class="py-name" href="#" onclick="return doclink('link-30', 'return_latlon', 'link-24');">return_latlon</a></tt><tt class="py-op">(</tt><tt class="py-name">G</tt><tt class="py-op">)</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">xx</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">yy</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">m</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">)</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">        <tt class="py-comment"># pdb.set_trace()</tt> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">        <tt class="py-comment"># self.mx, self.my = N.meshgrid(self.xx,self.yy)</tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line"> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">        <tt class="py-comment"># lllon = -119.023</tt> </tt>
+<a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lllon</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">        <tt class="py-comment"># lllat = 23.117</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lllat</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">        <tt class="py-comment"># urlon = -59.9044</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">urlon</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line">        <tt class="py-comment"># urlat = 45.6147234</tt> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">urlat</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line"> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line">        <tt class="py-keyword">assert</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> </tt>
+</div><a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line"> </tt>
+<a name="StageIV.arbitrary_pick"></a><div id="StageIV.arbitrary_pick-def"><a name="L179"></a><tt class="py-lineno">179</tt> <a class="py-toggle" href="#" id="StageIV.arbitrary_pick-toggle" onclick="return toggle('StageIV.arbitrary_pick');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.stageiv.StageIV-class.html#arbitrary_pick">arbitrary_pick</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="StageIV.arbitrary_pick-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="StageIV.arbitrary_pick-expanded"><a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">        <tt class="py-comment"># pdb.set_trace()</tt> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line">        <tt class="py-name">accum</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DATA</tt><tt class="py-op">.</tt><tt class="py-name">keys</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">        <tt class="py-name">utc</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DATA</tt><tt class="py-op">[</tt><tt class="py-name">accum</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">keys</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">DATA</tt><tt class="py-op">[</tt><tt class="py-name">accum</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-name">utc</tt><tt class="py-op">]</tt> </tt>
+</div></div><a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:52:27 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

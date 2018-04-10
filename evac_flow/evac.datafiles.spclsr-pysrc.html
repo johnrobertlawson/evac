@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.datafiles.spclsr</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.datafiles-module.html">Package&nbsp;datafiles</a> ::
+        Module&nbsp;spclsr
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.datafiles.spclsr-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="evac.datafiles.spclsr-module.html">Module evac.datafiles.spclsr</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pdb</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package evac=evac-module.html"><a title="evac" class="py-name" href="#" onclick="return doclink('link-0', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package evac.datafiles=evac.datafiles-module.html"><a title="evac.datafiles" class="py-name" href="#" onclick="return doclink('link-1', 'datafiles', 'link-1');">datafiles</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module evac.datafiles.csvfile=evac.datafiles.csvfile-module.html"><a title="evac.datafiles.csvfile" class="py-name" href="#" onclick="return doclink('link-2', 'csvfile', 'link-2');">csvfile</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Class evac.datafiles.csvfile.CSVFile=evac.datafiles.csvfile.CSVFile-class.html"><a title="evac.datafiles.csvfile.CSVFile" class="py-name" href="#" onclick="return doclink('link-3', 'CSVFile', 'link-3');">CSVFile</a></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"> </tt>
+<a name="SPCLSR"></a><div id="SPCLSR-def"><a name="L5"></a><tt class="py-lineno"> 5</tt> <a class="py-toggle" href="#" id="SPCLSR-toggle" onclick="return toggle('SPCLSR');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="evac.datafiles.spclsr.SPCLSR-class.html">SPCLSR</a><tt class="py-op">(</tt><tt class="py-base-class">CSVFile</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SPCLSR-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="SPCLSR-expanded"><a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line">    <tt class="py-docstring">""" Local storm reports from SPC site.</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-docstring">    Todo:</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-docstring">        * Work out the timing convention? Do we even need a `utc` argument?</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-docstring">    Args:</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-docstring">        utc (datetime.datetime): Time, but how does this work?!</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-docstring">        datapath: Absolute path to data CSV file.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring">        wind,hail,torn (bool): If `True`, use these data.</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="SPCLSR.__init__"></a><div id="SPCLSR.__init__-def"><a name="L16"></a><tt class="py-lineno">16</tt> <a class="py-toggle" href="#" id="SPCLSR.__init__-toggle" onclick="return toggle('SPCLSR.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.spclsr.SPCLSR-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">utc</tt><tt class="py-op">,</tt><tt class="py-param">datapath</tt><tt class="py-op">,</tt><tt class="py-param">wind</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt><tt class="py-param">hail</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt><tt class="py-param">torn</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SPCLSR.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="SPCLSR.__init__-expanded"><a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">utc</tt> <tt class="py-op">=</tt> <tt class="py-name">utc</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">        <tt class="py-name">tt</tt> <tt class="py-op">=</tt> <tt id="link-4" class="py-name" targets="Package evac.utils=evac.utils-module.html,Module evac.utils.utils=evac.utils.utils-module.html"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-4', 'utils', 'link-4');">utils</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Function evac.utils.gis_tools.ensure_timetuple()=evac.utils.gis_tools-module.html#ensure_timetuple"><a title="evac.utils.gis_tools.ensure_timetuple" class="py-name" href="#" onclick="return doclink('link-5', 'ensure_timetuple', 'link-5');">ensure_timetuple</a></tt><tt class="py-op">(</tt><tt class="py-name">utc</tt><tt class="py-op">)</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-name">yr</tt> <tt class="py-op">=</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">tt</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">2</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt class="py-name">mth</tt> <tt class="py-op">=</tt> <tt class="py-string">'{0:02d}'</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt class="py-name">tt</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-name">day</tt> <tt class="py-op">=</tt> <tt class="py-string">'{0:02d}'</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt class="py-name">tt</tt><tt class="py-op">[</tt><tt class="py-number">2</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">        <tt class="py-name">threats</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-6" class="py-name" targets="Method evac.lazy.ideal_profiles.Profile.wind()=evac.lazy.ideal_profiles.Profile-class.html#wind"><a title="evac.lazy.ideal_profiles.Profile.wind" class="py-name" href="#" onclick="return doclink('link-6', 'wind', 'link-6');">wind</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">            <tt class="py-name">threats</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-string">'wind'</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">hail</tt><tt class="py-op">:</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">            <tt class="py-name">threats</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-string">'hail'</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">torn</tt><tt class="py-op">:</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">            <tt class="py-name">threats</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-string">'torn'</tt><tt class="py-op">)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">reports</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">threat</tt> <tt class="py-keyword">in</tt> <tt class="py-name">threats</tt><tt class="py-op">:</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">            <tt class="py-name">fname</tt> <tt class="py-op">=</tt> <tt class="py-string">'{0}{1}{2}_rpts_{3}.csv'</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">                        <tt class="py-name">yr</tt><tt class="py-op">,</tt><tt class="py-name">mth</tt><tt class="py-op">,</tt><tt class="py-name">day</tt><tt class="py-op">,</tt><tt class="py-name">threat</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">            <tt class="py-comment"># Check to see if file exists</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">            <tt class="py-name">fpath</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Variable evac.lazy._monte2.path=evac.lazy._monte2-module.html#path"><a title="evac.lazy._monte2.path" class="py-name" href="#" onclick="return doclink('link-7', 'path', 'link-7');">path</a></tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">datapath</tt><tt class="py-op">,</tt><tt class="py-name">fname</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">            <tt class="py-name">scan</tt> <tt class="py-op">=</tt> <tt class="py-name">glob</tt><tt class="py-op">.</tt><tt class="py-name">glob</tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">scan</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">                <tt class="py-name">url</tt> <tt class="py-op">=</tt> <tt class="py-string">'http://www.spc.noaa.gov/climo/reports/'</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">                <tt id="link-8" class="py-name" targets="Variable evac.lazy._monte2.cmd=evac.lazy._monte2-module.html#cmd"><a title="evac.lazy._monte2.cmd" class="py-name" href="#" onclick="return doclink('link-8', 'cmd', 'link-8');">cmd</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'wget {0}{1} -P {2}'</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">                                <tt class="py-name">url</tt><tt class="py-op">,</tt><tt class="py-name">fname</tt><tt class="py-op">,</tt><tt class="py-name">datapath</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">                <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">system</tt><tt class="py-op">(</tt><tt id="link-9" class="py-name"><a title="evac.lazy._monte2.cmd" class="py-name" href="#" onclick="return doclink('link-9', 'cmd', 'link-8');">cmd</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line"> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">threat</tt><tt class="py-op">==</tt><tt class="py-string">'wind'</tt><tt class="py-op">:</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">                <tt class="py-name">names</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-string">'time'</tt><tt class="py-op">,</tt><tt class="py-string">'speed'</tt><tt class="py-op">,</tt><tt class="py-string">'location'</tt><tt class="py-op">,</tt><tt class="py-string">'county'</tt><tt class="py-op">,</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">                        <tt class="py-string">'state'</tt><tt class="py-op">,</tt><tt class="py-string">'lat'</tt><tt class="py-op">,</tt><tt class="py-string">'lon'</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">                <tt class="py-name">formats</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">                            <tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'f4'</tt><tt class="py-op">,</tt><tt class="py-string">'f4'</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-name">threat</tt><tt class="py-op">==</tt><tt class="py-string">'hail'</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">                <tt class="py-name">names</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-string">'time'</tt><tt class="py-op">,</tt><tt class="py-string">'size'</tt><tt class="py-op">,</tt><tt class="py-string">'location'</tt><tt class="py-op">,</tt><tt class="py-string">'county'</tt><tt class="py-op">,</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">                        <tt class="py-string">'state'</tt><tt class="py-op">,</tt><tt class="py-string">'lat'</tt><tt class="py-op">,</tt><tt class="py-string">'lon'</tt><tt class="py-op">)</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">                <tt class="py-name">formats</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">                            <tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'f4'</tt><tt class="py-op">,</tt><tt class="py-string">'f4'</tt><tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-name">threat</tt><tt class="py-op">==</tt><tt class="py-string">'torn'</tt><tt class="py-op">:</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">                <tt class="py-name">names</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-string">'time'</tt><tt class="py-op">,</tt><tt class="py-string">'fscale'</tt><tt class="py-op">,</tt><tt class="py-string">'location'</tt><tt class="py-op">,</tt><tt class="py-string">'county'</tt><tt class="py-op">,</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">                        <tt class="py-string">'state'</tt><tt class="py-op">,</tt><tt class="py-string">'lat'</tt><tt class="py-op">,</tt><tt class="py-string">'lon'</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">                <tt class="py-name">formats</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'S4'</tt><tt class="py-op">,</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">                            <tt class="py-string">'S4'</tt><tt class="py-op">,</tt><tt class="py-string">'f4'</tt><tt class="py-op">,</tt><tt class="py-string">'f4'</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">reports</tt><tt class="py-op">[</tt><tt class="py-name">threat</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">loadtxt</tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">,</tt><tt class="py-name">dtype</tt><tt class="py-op">=</tt><tt class="py-op">{</tt><tt class="py-string">'names'</tt><tt class="py-op">:</tt><tt class="py-name">names</tt><tt class="py-op">,</tt><tt class="py-string">'formats'</tt><tt class="py-op">:</tt><tt class="py-name">formats</tt><tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">                                        <tt class="py-name">skiprows</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-name">delimiter</tt><tt class="py-op">=</tt><tt class="py-string">','</tt><tt class="py-op">,</tt><tt class="py-name">usecols</tt><tt class="py-op">=</tt><tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">8</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">            <tt class="py-comment">#times = reports['time']</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">threats</tt> <tt class="py-op">=</tt> <tt class="py-name">threats</tt> </tt>
+</div><a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line"> </tt>
+<a name="SPCLSR.report_datenum"></a><div id="SPCLSR.report_datenum-def"><a name="L64"></a><tt class="py-lineno">64</tt> <a class="py-toggle" href="#" id="SPCLSR.report_datenum-toggle" onclick="return toggle('SPCLSR.report_datenum');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.spclsr.SPCLSR-class.html#report_datenum">report_datenum</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">timestamp</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SPCLSR.report_datenum-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="SPCLSR.report_datenum-expanded"><a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line"><tt class="py-docstring">        convert timestamp to datenum format.</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">        <tt class="py-name">tt</tt> <tt class="py-op">=</tt> <tt id="link-10" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-10', 'utils', 'link-4');">utils</a></tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="evac.utils.gis_tools.ensure_timetuple" class="py-name" href="#" onclick="return doclink('link-11', 'ensure_timetuple', 'link-5');">ensure_timetuple</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">utc</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">        <tt class="py-name">itime_dn</tt> <tt class="py-op">=</tt> <tt class="py-name">calendar</tt><tt class="py-op">.</tt><tt class="py-name">timegm</tt><tt class="py-op">(</tt><tt class="py-name">tt</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-name">tt</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-name">tt</tt><tt class="py-op">[</tt><tt class="py-number">2</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-number">12</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line"> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">        <tt class="py-name">hr</tt> <tt class="py-op">=</tt> <tt class="py-name">int</tt><tt class="py-op">(</tt><tt id="link-12" class="py-name" targets="Variable evac.lazy._monte.timestamp=evac.lazy._monte-module.html#timestamp"><a title="evac.lazy._monte.timestamp" class="py-name" href="#" onclick="return doclink('link-12', 'timestamp', 'link-12');">timestamp</a></tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-number">2</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">        <tt class="py-name">mn</tt> <tt class="py-op">=</tt> <tt class="py-name">int</tt><tt class="py-op">(</tt><tt id="link-13" class="py-name"><a title="evac.lazy._monte.timestamp" class="py-name" href="#" onclick="return doclink('link-13', 'timestamp', 'link-12');">timestamp</a></tt><tt class="py-op">[</tt><tt class="py-number">2</tt><tt class="py-op">:</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line"> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">hr</tt><tt class="py-op">&lt;</tt><tt class="py-number">11</tt><tt class="py-op">:</tt> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">            <tt class="py-comment"># After midnight UTC</tt> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line">            <tt class="py-name">hr</tt> <tt class="py-op">=</tt> <tt class="py-name">hr</tt><tt class="py-op">+</tt><tt class="py-number">24</tt> </tt>
+<a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line"> </tt>
+<a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line">        <tt class="py-name">tdelta</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">hr</tt><tt class="py-op">-</tt><tt class="py-number">12</tt><tt class="py-op">)</tt><tt class="py-op">*</tt><tt class="py-number">60</tt><tt class="py-op">*</tt><tt class="py-number">60</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-op">(</tt><tt class="py-name">mn</tt><tt class="py-op">*</tt><tt class="py-number">60</tt><tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">itime_dn</tt> <tt class="py-op">+</tt> <tt class="py-name">tdelta</tt> </tt>
+</div><a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line"> </tt>
+<a name="SPCLSR.plot_reports"></a><div id="SPCLSR.plot_reports-def"><a name="L81"></a><tt class="py-lineno">81</tt> <a class="py-toggle" href="#" id="SPCLSR.plot_reports-toggle" onclick="return toggle('SPCLSR.plot_reports');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.spclsr.SPCLSR-class.html#plot_reports">plot_reports</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">fig</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">ax</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SPCLSR.plot_reports-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="SPCLSR.plot_reports-expanded"><a name="L82"></a><tt class="py-lineno">82</tt>  <tt class="py-line">        <tt class="py-name">plot_all</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L83"></a><tt class="py-lineno">83</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">threat</tt> <tt class="py-keyword">in</tt> <tt class="py-name">threats</tt><tt class="py-op">:</tt> </tt>
+<a name="L84"></a><tt class="py-lineno">84</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">plot_all</tt><tt class="py-op">:</tt> </tt>
+<a name="L85"></a><tt class="py-lineno">85</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">t</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">reports</tt><tt class="py-op">[</tt><tt class="py-name">threat</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'time'</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno">86</tt>  <tt class="py-line">                    <tt class="py-name">utc</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method evac.datafiles.spclsr.SPCLSR.report_datenum()=evac.datafiles.spclsr.SPCLSR-class.html#report_datenum"><a title="evac.datafiles.spclsr.SPCLSR.report_datenum" class="py-name" href="#" onclick="return doclink('link-14', 'report_datenum', 'link-14');">report_datenum</a></tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L87"></a><tt class="py-lineno">87</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:52:27 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

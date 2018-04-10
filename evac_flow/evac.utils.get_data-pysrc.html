@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.utils.get_data</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.utils-module.html">Package&nbsp;utils</a> ::
+        Module&nbsp;get_data
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.utils.get_data-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="evac.utils.get_data-module.html">Module evac.utils.get_data</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-docstring">""" A collection of functions to download weather forecast/observed data.</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">Todo:</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">    * Integrate with :any:`evac.datafiles.obs` and other related things</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-docstring">    * Clean up - it's pretty messy in here!</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">calendar</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Variable evac.lazy._monte2.time=evac.lazy._monte2-module.html#time"><a title="evac.lazy._monte2.time" class="py-name" href="#" onclick="return doclink('link-0', 'time', 'link-0');">time</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pdb</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">sys</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">glob</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Package evac=evac-module.html"><a title="evac" class="py-name" href="#" onclick="return doclink('link-1', 'evac', 'link-1');">evac</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Package evac.utils=evac.utils-module.html,Module evac.utils.utils=evac.utils.utils-module.html"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-2', 'utils', 'link-2');">utils</a></tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Module evac.utils.gis_tools=evac.utils.gis_tools-module.html"><a title="evac.utils.gis_tools" class="py-name" href="#" onclick="return doclink('link-3', 'gis_tools', 'link-3');">gis_tools</a></tt> <tt class="py-keyword">as</tt> <tt id="link-4" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-4', 'utils', 'link-2');">utils</a></tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-comment"># date format: YYYYMMDD (string)</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"> </tt>
+<a name="getgefs"></a><div id="getgefs-def"><a name="L18"></a><tt class="py-lineno"> 18</tt> <a class="py-toggle" href="#" id="getgefs-toggle" onclick="return toggle('getgefs');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.utils.get_data-module.html#getgefs">getgefs</a><tt class="py-op">(</tt><tt class="py-param">dates</tt><tt class="py-op">,</tt><tt class="py-param">download</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-param">split</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-param">lowres</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-param">custom_ens</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-param">control</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">            <tt class="py-param">coord</tt><tt class="py-op">=</tt><tt class="py-string">'latlon'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="getgefs-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="getgefs-expanded"><a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">    <tt class="py-docstring">"""This script downloads all variables for GEFS R2 reforecasts.</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring">    All runs are initialised at 0000 UTC.</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-docstring">    Inputs (all optional unless stated):</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-docstring">    dates       :   YYYYMMDD, list of strings (mandatory)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-docstring">    download    :   whether to download the data</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-docstring">    split       :   whether to split up the data</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-docstring">    lowres      :   whether to download times after T+190</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-docstring">    custom_ens  :   a custom list of perturbation ensemble members</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-docstring">    control     :   whether to download the control member</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-docstring">    coord       :   latlon/gaussian grid</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">    <tt class="py-comment"># This selected all 10 perturbation ensemble members. Change ens for desired member (or mean/sprd)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">custom_ens</tt><tt class="py-op">:</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">        <tt class="py-name">ens</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'p'</tt> <tt class="py-op">+</tt> <tt class="py-string">'%02u'</tt> <tt class="py-op">%</tt><tt class="py-name">p</tt> <tt class="py-keyword">for</tt> <tt class="py-name">p</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-number">11</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">        <tt class="py-name">ens</tt> <tt class="py-op">=</tt> <tt class="py-name">custom_ens</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">      </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">control</tt><tt class="py-op">:</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-name">ens</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-string">'c00'</tt><tt class="py-op">)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">          </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">    <tt class="py-comment"># Root directory of FTP site</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">    <tt class="py-name">FTP</tt> <tt class="py-op">=</tt> <tt class="py-string">'ftp://ftp.cdc.noaa.gov/Projects/Reforecast2/'</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">      </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">    <tt class="py-comment"># -nc does not download a renamed multiple copy of file</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">    <tt class="py-comment"># --output-document=CATNAME concatenates all files together for the big grib file</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">    <tt class="py-comment"># -nd makes sure hierachy isn't downloaded too</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">download</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">d</tt> <tt class="py-keyword">in</tt> <tt class="py-name">dates</tt><tt class="py-op">:</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt id="link-5" class="py-name" targets="Method evac.plot._skewt.SkewT.e()=evac.plot._skewt.SkewT-class.html#e"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-5', 'e', 'link-5');">e</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">ens</tt><tt class="py-op">:</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">                <tt class="py-name">url</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Variable evac.lazy._monte2.path=evac.lazy._monte2-module.html#path"><a title="evac.lazy._monte2.path" class="py-name" href="#" onclick="return doclink('link-6', 'path', 'link-6');">path</a></tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">FTP</tt><tt class="py-op">,</tt> <tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">:</tt><tt class="py-number">4</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">:</tt><tt class="py-number">6</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">d</tt><tt class="py-op">+</tt><tt class="py-string">'00'</tt><tt class="py-op">,</tt> <tt id="link-7" class="py-name"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-7', 'e', 'link-5');">e</a></tt><tt class="py-op">,</tt> <tt class="py-name">coord</tt><tt class="py-op">)</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">                <tt class="py-name">fname</tt> <tt class="py-op">=</tt> <tt class="py-string">'/*'</tt> <tt class="py-op">+</tt> <tt id="link-8" class="py-name"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-8', 'e', 'link-5');">e</a></tt> <tt class="py-op">+</tt> <tt class="py-string">'.grib2'</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">                <tt class="py-name">CATNAME</tt> <tt class="py-op">=</tt> <tt class="py-name">d</tt> <tt class="py-op">+</tt> <tt class="py-string">'_'</tt> <tt class="py-op">+</tt> <tt id="link-9" class="py-name"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-9', 'e', 'link-5');">e</a></tt> <tt class="py-op">+</tt> <tt class="py-string">'.grib2'</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">                <tt class="py-name">cmnd</tt> <tt class="py-op">=</tt> <tt class="py-string">"wget -nc -nd --output-document="</tt> <tt class="py-op">+</tt> <tt class="py-name">CATNAME</tt> <tt class="py-op">+</tt> <tt class="py-string">' '</tt> <tt class="py-op">+</tt> <tt class="py-name">url</tt> <tt class="py-op">+</tt> <tt class="py-name">fname</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">                <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">system</tt><tt class="py-op">(</tt><tt class="py-name">cmnd</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">                <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-name">d</tt><tt class="py-op">,</tt> <tt id="link-10" class="py-name"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-10', 'e', 'link-5');">e</a></tt><tt class="py-op">,</tt> <tt class="py-string">" Downloaded."</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">          </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">    <tt class="py-comment"># This section will split the data into forecast times for WRF to read</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">    <tt class="py-comment"># Using WGRIB2</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">    <tt class="py-comment"># fin : grib2 input file</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">    <tt class="py-comment"># fout : smaller grib2 output file with just one forecast time</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">    <tt class="py-comment"># timestr : search pattern to find the forecast time</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">split</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">d</tt> <tt class="py-keyword">in</tt> <tt class="py-name">dates</tt><tt class="py-op">:</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">            <tt class="py-comment"># Convert this date to python time for later conversion</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">            <tt class="py-name">pytime_anl</tt> <tt class="py-op">=</tt> <tt class="py-name">calendar</tt><tt class="py-op">.</tt><tt class="py-name">timegm</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">int</tt><tt class="py-op">(</tt><tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-number">4</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">,</tt><tt class="py-name">int</tt><tt class="py-op">(</tt><tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-number">4</tt><tt class="py-op">:</tt><tt class="py-number">6</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">,</tt><tt class="py-name">int</tt><tt class="py-op">(</tt><tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-number">6</tt><tt class="py-op">:</tt><tt class="py-number">8</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt id="link-11" class="py-name"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-11', 'e', 'link-5');">e</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">ens</tt><tt class="py-op">:</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                <tt class="py-name">fin</tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">d</tt><tt class="py-op">,</tt><tt class="py-string">'_'</tt><tt class="py-op">,</tt><tt id="link-12" class="py-name"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-12', 'e', 'link-5');">e</a></tt><tt class="py-op">,</tt><tt class="py-string">'.grib2'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                <tt class="py-name">fprefix</tt> <tt class="py-op">=</tt> <tt class="py-string">'_'</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">d</tt><tt class="py-op">,</tt><tt id="link-13" class="py-name"><a title="evac.plot._skewt.SkewT.e" class="py-name" href="#" onclick="return doclink('link-13', 'e', 'link-5');">e</a></tt><tt class="py-op">,</tt><tt class="py-string">'f'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">t</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">198</tt><tt class="py-op">,</tt><tt class="py-number">6</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">                    <tt class="py-name">ts</tt> <tt class="py-op">=</tt> <tt class="py-string">"%03d"</tt> <tt class="py-op">%</tt><tt class="py-name">t</tt> <tt class="py-comment"># Gets files into chron order with padded zeroes</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-name">t</tt><tt class="py-op">==</tt><tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">                        <tt class="py-name">timestr</tt> <tt class="py-op">=</tt> <tt class="py-string">'":anl:"'</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">                    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">                        <tt class="py-name">timestr</tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-string">'":('</tt><tt class="py-op">,</tt><tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt><tt class="py-op">,</tt><tt class="py-string">' hour fcst):"'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">                    <tt class="py-name">fout</tt> <tt class="py-op">=</tt> <tt class="py-name">fprefix</tt> <tt class="py-op">+</tt> <tt class="py-name">ts</tt> <tt class="py-op">+</tt> <tt class="py-string">'.grib2'</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">                    <tt class="py-name">str1</tt> <tt class="py-op">=</tt> <tt class="py-string">' '</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-string">'wgrib2'</tt><tt class="py-op">,</tt><tt class="py-name">fin</tt><tt class="py-op">,</tt><tt class="py-string">'-match'</tt><tt class="py-op">,</tt><tt class="py-name">timestr</tt><tt class="py-op">,</tt><tt class="py-string">'-grib'</tt><tt class="py-op">,</tt><tt class="py-name">fout</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">                    <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">system</tt><tt class="py-op">(</tt><tt class="py-name">str1</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="getgfs"></a><div id="getgfs-def"><a name="L82"></a><tt class="py-lineno"> 82</tt> <a class="py-toggle" href="#" id="getgfs-toggle" onclick="return toggle('getgfs');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.utils.get_data-module.html#getgfs">getgfs</a><tt class="py-op">(</tt><tt class="py-param">dates</tt><tt class="py-op">,</tt><tt class="py-param">hours</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="getgfs-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="getgfs-expanded"><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">    <tt class="py-docstring">""" Downloads GFS analysis data.</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"><tt class="py-docstring">    Inputs:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"><tt class="py-docstring">    dates       :   List of strings, YYYYMMDD</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"><tt class="py-docstring">    hours       :   List of strings, HH</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">    <tt class="py-comment"># If date is before 2007, download grib1.</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">d</tt> <tt class="py-keyword">in</tt> <tt class="py-name">dates</tt><tt class="py-op">:</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-name">yr_int</tt> <tt class="py-op">=</tt> <tt class="py-name">int</tt><tt class="py-op">(</tt><tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-number">4</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">h</tt> <tt class="py-keyword">in</tt> <tt class="py-name">hours</tt><tt class="py-op">:</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">yr_int</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">2006</tt><tt class="py-op">:</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">                <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">system</tt><tt class="py-op">(</tt><tt class="py-string">'wget "http://nomads.ncdc.noaa.gov/data/gfsanl/'</tt><tt class="py-op">+</tt><tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-number">6</tt><tt class="py-op">]</tt><tt class="py-op">+</tt><tt class="py-string">'/'</tt><tt class="py-op">+</tt> <tt class="py-name">d</tt><tt class="py-op">+</tt><tt class="py-string">'/gfsanl_4_'</tt><tt class="py-op">+</tt><tt class="py-name">d</tt><tt class="py-op">+</tt><tt class="py-string">'_'</tt><tt class="py-op">+</tt><tt class="py-name">h</tt><tt class="py-op">+</tt><tt class="py-string">'00_000.grb2"'</tt><tt class="py-op">)</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">                <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">system</tt><tt class="py-op">(</tt><tt class="py-string">'wget "http://nomads.ncdc.noaa.gov/data/gfsanl/'</tt><tt class="py-op">+</tt><tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-number">6</tt><tt class="py-op">]</tt><tt class="py-op">+</tt><tt class="py-string">'/'</tt><tt class="py-op">+</tt> <tt class="py-name">d</tt><tt class="py-op">+</tt><tt class="py-string">'/gfsanl_3_'</tt><tt class="py-op">+</tt><tt class="py-name">d</tt><tt class="py-op">+</tt><tt class="py-string">'_'</tt><tt class="py-op">+</tt><tt class="py-name">h</tt><tt class="py-op">+</tt><tt class="py-string">'00_000.grb"'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"> </tt>
+<a name="getnam"></a><div id="getnam-def"><a name="L100"></a><tt class="py-lineno">100</tt> <a class="py-toggle" href="#" id="getnam-toggle" onclick="return toggle('getnam');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.utils.get_data-module.html#getnam">getnam</a><tt class="py-op">(</tt><tt class="py-param">dates</tt><tt class="py-op">,</tt><tt class="py-param">hours</tt><tt class="py-op">,</tt><tt class="py-param">datatype</tt><tt class="py-op">,</tt><tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="getnam-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="getnam-expanded"><a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">    <tt class="py-docstring">""" Downloads NAM analysis and forecast data.</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"><tt class="py-docstring">    Inputs:</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-docstring">    dates       :   List of strings, YYYYMMDD</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"><tt class="py-docstring">    hours       :   List of strings, HH</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"><tt class="py-docstring">    datatype    :   analysis or forecast.</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"><tt class="py-docstring">    Optional arguments for forecasts via kwargs:</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"><tt class="py-docstring">    tmax        :   maximum forecast time to download (inclusive)</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-docstring">    tint        :   internal (hr) between fetched forecasts</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line"> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">    <tt class="py-comment"># If date is before ####, download grib1, use this:</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">    <tt class="py-name">age</tt> <tt class="py-op">=</tt> <tt class="py-string">'old'</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">    <tt class="py-keyword">def</tt> <tt class="py-def-name">get_anl</tt><tt class="py-op">(</tt><tt class="py-param">dates</tt><tt class="py-op">,</tt><tt class="py-param">hours</tt><tt class="py-op">,</tt><tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">d</tt> <tt class="py-keyword">in</tt> <tt class="py-name">dates</tt><tt class="py-op">:</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">h</tt> <tt class="py-keyword">in</tt> <tt class="py-name">hours</tt><tt class="py-op">:</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">                <tt class="py-comment">#if age=='new':</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">                <tt class="py-comment">#    command = ('wget "http://nomads.ncdc.noaa.gov/data/namanl/'+</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">                <tt class="py-comment">#                d[:6]+'/'+ d+'/namanl_4_'+d+'_'+h+'00_000.grb2"')</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">                <tt class="py-comment">#elif age=='old':</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">                <tt class="py-name">command</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-string">'wget "http://nomads.ncdc.noaa.gov/data/namanl/'</tt><tt class="py-op">+</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">                            <tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-number">6</tt><tt class="py-op">]</tt><tt class="py-op">+</tt><tt class="py-string">'/'</tt><tt class="py-op">+</tt> <tt class="py-name">d</tt><tt class="py-op">+</tt><tt class="py-string">'/namanl_218_'</tt><tt class="py-op">+</tt><tt class="py-name">d</tt><tt class="py-op">+</tt><tt class="py-string">'_'</tt><tt class="py-op">+</tt><tt class="py-name">h</tt><tt class="py-op">+</tt><tt class="py-string">'00_000.grb"'</tt><tt class="py-op">)</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">                <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">system</tt><tt class="py-op">(</tt><tt class="py-name">command</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">          </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">    <tt class="py-comment"># Where are these forecast archives?</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">    <tt class="py-keyword">def</tt> <tt class="py-def-name">get_218fcst</tt><tt class="py-op">(</tt><tt class="py-param">dates</tt><tt class="py-op">,</tt><tt class="py-param">hours</tt><tt class="py-op">,</tt><tt class="py-param">Tmax</tt><tt class="py-op">,</tt><tt class="py-param">Tint</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">d</tt> <tt class="py-keyword">in</tt> <tt class="py-name">dates</tt><tt class="py-op">:</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">h</tt> <tt class="py-keyword">in</tt> <tt class="py-name">hours</tt><tt class="py-op">:</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">                <tt class="py-name">fhs</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-name">Tmax</tt><tt class="py-op">+</tt><tt class="py-name">Tint</tt><tt class="py-op">,</tt><tt class="py-name">Tint</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">fh</tt> <tt class="py-keyword">in</tt> <tt class="py-name">fhs</tt><tt class="py-op">:</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">                    <tt class="py-name">fpad</tt> <tt class="py-op">=</tt> <tt class="py-string">"%03d"</tt> <tt class="py-op">%</tt><tt class="py-name">fh</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-name">age</tt> <tt class="py-op">==</tt> <tt class="py-string">'old'</tt><tt class="py-op">:</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">                        <tt class="py-name">command</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-string">'wget "http://nomads.ncdc.noaa.gov/data/nam/'</tt><tt class="py-op">+</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">                                    <tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-number">6</tt><tt class="py-op">]</tt><tt class="py-op">+</tt><tt class="py-string">'/'</tt><tt class="py-op">+</tt> <tt class="py-name">d</tt><tt class="py-op">+</tt><tt class="py-string">'/nam_218_'</tt><tt class="py-op">+</tt><tt class="py-name">d</tt><tt class="py-op">+</tt><tt class="py-string">'_'</tt><tt class="py-op">+</tt><tt class="py-name">h</tt><tt class="py-op">+</tt><tt class="py-string">'00_'</tt><tt class="py-op">+</tt><tt class="py-name">fpad</tt><tt class="py-op">+</tt><tt class="py-string">'.grb"'</tt><tt class="py-op">)</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">                    <tt class="py-keyword">elif</tt> <tt class="py-name">age</tt> <tt class="py-op">==</tt> <tt class="py-string">'new'</tt><tt class="py-op">:</tt> <tt class="py-comment"># doesn't seem to work</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">                        <tt class="py-name">command</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-string">'wget "http://nomads.ncdc.noaa.gov/data/nam/'</tt><tt class="py-op">+</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">                                    <tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-number">6</tt><tt class="py-op">]</tt><tt class="py-op">+</tt><tt class="py-string">'/'</tt><tt class="py-op">+</tt> <tt class="py-name">d</tt><tt class="py-op">+</tt><tt class="py-string">'/nam_4_'</tt><tt class="py-op">+</tt><tt class="py-name">d</tt><tt class="py-op">+</tt><tt class="py-string">'_'</tt><tt class="py-op">+</tt><tt class="py-name">h</tt><tt class="py-op">+</tt><tt class="py-string">'00_'</tt><tt class="py-op">+</tt><tt class="py-name">fpad</tt><tt class="py-op">+</tt><tt class="py-string">'.grb2"'</tt><tt class="py-op">)</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">                        </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">                    <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">system</tt><tt class="py-op">(</tt><tt class="py-name">command</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line"> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">    <tt class="py-name">CMND</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">'forecast'</tt><tt class="py-op">:</tt><tt class="py-name">get_218fcst</tt><tt class="py-op">,</tt> <tt class="py-string">'analysis'</tt><tt class="py-op">:</tt><tt class="py-name">get_anl</tt><tt class="py-op">}</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">    <tt class="py-name">CMND</tt><tt class="py-op">[</tt><tt class="py-name">data</tt><tt class="py-op">]</tt><tt class="py-op">(</tt><tt class="py-name">dates</tt><tt class="py-op">,</tt><tt class="py-name">hours</tt><tt class="py-op">,</tt><tt class="py-name">Tmax</tt><tt class="py-op">,</tt><tt class="py-name">Tint</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line"> </tt>
+<a name="getruc"></a><div id="getruc-def"><a name="L147"></a><tt class="py-lineno">147</tt> <a class="py-toggle" href="#" id="getruc-toggle" onclick="return toggle('getruc');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.utils.get_data-module.html#getruc">getruc</a><tt class="py-op">(</tt><tt class="py-param">utc</tt><tt class="py-op">,</tt><tt class="py-param">ncpath</tt><tt class="py-op">=</tt><tt class="py-string">'./'</tt><tt class="py-op">,</tt><tt class="py-param">convert2nc</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">duplicate</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="getruc-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="getruc-expanded"><a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line"> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">    <tt class="py-name">URL</tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name" targets="Function evac.utils.get_data.RUC_URL()=evac.utils.get_data-module.html#RUC_URL"><a title="evac.utils.get_data.RUC_URL" class="py-name" href="#" onclick="return doclink('link-14', 'RUC_URL', 'link-14');">RUC_URL</a></tt><tt class="py-op">(</tt><tt class="py-name">utc</tt><tt class="py-op">)</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">    <tt class="py-name">fname</tt> <tt class="py-op">=</tt> <tt id="link-15" class="py-name" targets="Function evac.utils.get_data.RUC_fname()=evac.utils.get_data-module.html#RUC_fname"><a title="evac.utils.get_data.RUC_fname" class="py-name" href="#" onclick="return doclink('link-15', 'RUC_fname', 'link-15');">RUC_fname</a></tt><tt class="py-op">(</tt><tt class="py-name">utc</tt><tt class="py-op">)</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">    <tt class="py-name">URLpath</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="evac.lazy._monte2.path" class="py-name" href="#" onclick="return doclink('link-16', 'path', 'link-6');">path</a></tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">URL</tt><tt class="py-op">,</tt><tt class="py-name">fname</tt><tt class="py-op">)</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">    <tt class="py-name">fpath</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="evac.lazy._monte2.path" class="py-name" href="#" onclick="return doclink('link-17', 'path', 'link-6');">path</a></tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">ncpath</tt><tt class="py-op">,</tt><tt class="py-name">fname</tt><tt class="py-op">)</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">duplicate</tt><tt class="py-op">:</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">        <tt class="py-name">fexist</tt> <tt class="py-op">=</tt> <tt class="py-name">glob</tt><tt class="py-op">.</tt><tt class="py-name">glob</tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line"> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">    <tt class="py-comment"># import pdb; pdb.set_trace()</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">fexist</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">        <tt class="py-name">command</tt> <tt class="py-op">=</tt> <tt class="py-string">'wget {0} -P {1}'</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt class="py-name">URLpath</tt><tt class="py-op">,</tt><tt class="py-name">ncpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">        <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">system</tt><tt class="py-op">(</tt><tt class="py-name">command</tt><tt class="py-op">)</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">convert2nc</tt><tt class="py-op">:</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">            <tt class="py-name">command2</tt> <tt class="py-op">=</tt> <tt class="py-string">'ncl_convert2nc {0} -o {1}'</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">,</tt><tt class="py-name">ncpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">            <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">system</tt><tt class="py-op">(</tt><tt class="py-name">command2</tt><tt class="py-op">)</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> </tt>
+</div><a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line"> </tt>
+<a name="RUC_fname"></a><div id="RUC_fname-def"><a name="L165"></a><tt class="py-lineno">165</tt> <a class="py-toggle" href="#" id="RUC_fname-toggle" onclick="return toggle('RUC_fname');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.utils.get_data-module.html#RUC_fname">RUC_fname</a><tt class="py-op">(</tt><tt class="py-param">utc</tt><tt class="py-op">,</tt><tt class="py-param">filetype</tt><tt class="py-op">=</tt><tt class="py-string">'grib'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="RUC_fname-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="RUC_fname-expanded"><a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line"><tt class="py-docstring">    Returns RUC filename for date.</tt> </tt>
+<a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">    <tt class="py-name">version</tt> <tt class="py-op">=</tt> <tt id="link-18" class="py-name" targets="Function evac.utils.get_data.RUC_version()=evac.utils.get_data-module.html#RUC_version"><a title="evac.utils.get_data.RUC_version" class="py-name" href="#" onclick="return doclink('link-18', 'RUC_version', 'link-18');">RUC_version</a></tt><tt class="py-op">(</tt><tt class="py-name">utc</tt><tt class="py-op">)</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line"> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">    <tt class="py-name">t</tt> <tt class="py-op">=</tt> <tt id="link-19" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-19', 'utils', 'link-2');">utils</a></tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Function evac.utils.gis_tools.ensure_datenum()=evac.utils.gis_tools-module.html#ensure_datenum"><a title="evac.utils.gis_tools.ensure_datenum" class="py-name" href="#" onclick="return doclink('link-20', 'ensure_datenum', 'link-20');">ensure_datenum</a></tt><tt class="py-op">(</tt><tt class="py-name">utc</tt><tt class="py-op">)</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">    <tt class="py-name">yr</tt> <tt class="py-op">=</tt> <tt id="link-21" class="py-name"><a title="evac.lazy._monte2.time" class="py-name" href="#" onclick="return doclink('link-21', 'time', 'link-0');">time</a></tt><tt class="py-op">.</tt><tt class="py-name">gmtime</tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">tm_year</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line">    <tt class="py-name">mth</tt> <tt class="py-op">=</tt> <tt id="link-22" class="py-name"><a title="evac.lazy._monte2.time" class="py-name" href="#" onclick="return doclink('link-22', 'time', 'link-0');">time</a></tt><tt class="py-op">.</tt><tt class="py-name">gmtime</tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">tm_mon</tt> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">    <tt class="py-name">day</tt> <tt class="py-op">=</tt> <tt id="link-23" class="py-name"><a title="evac.lazy._monte2.time" class="py-name" href="#" onclick="return doclink('link-23', 'time', 'link-0');">time</a></tt><tt class="py-op">.</tt><tt class="py-name">gmtime</tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">tm_mday</tt> </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line">    <tt class="py-name">hr</tt> <tt class="py-op">=</tt> <tt id="link-24" class="py-name"><a title="evac.lazy._monte2.time" class="py-name" href="#" onclick="return doclink('link-24', 'time', 'link-0');">time</a></tt><tt class="py-op">.</tt><tt class="py-name">gmtime</tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">tm_hour</tt> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line"> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">version</tt> <tt class="py-op">==</tt> <tt class="py-number">3</tt><tt class="py-op">:</tt> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">        <tt id="link-25" class="py-name" targets="Variable evac.lazy._monte2.prefix=evac.lazy._monte2-module.html#prefix"><a title="evac.lazy._monte2.prefix" class="py-name" href="#" onclick="return doclink('link-25', 'prefix', 'link-25');">prefix</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'rap_130'</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">        <tt class="py-name">suffix</tt> <tt class="py-op">=</tt> <tt class="py-string">'grb2'</tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">version</tt> <tt class="py-op">==</tt> <tt class="py-number">2</tt><tt class="py-op">:</tt> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line">        <tt id="link-26" class="py-name"><a title="evac.lazy._monte2.prefix" class="py-name" href="#" onclick="return doclink('link-26', 'prefix', 'link-25');">prefix</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'ruc2anl_130'</tt> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">        <tt class="py-name">suffix</tt> <tt class="py-op">=</tt> <tt class="py-string">'grb2'</tt> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">version</tt> <tt class="py-op">==</tt> <tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line">        <tt id="link-27" class="py-name"><a title="evac.lazy._monte2.prefix" class="py-name" href="#" onclick="return doclink('link-27', 'prefix', 'link-25');">prefix</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'ruc2anl_252'</tt> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line">        <tt class="py-name">suffix</tt> <tt class="py-op">=</tt> <tt class="py-string">'grb'</tt> </tt>
+<a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line">        <tt id="link-28" class="py-name"><a title="evac.lazy._monte2.prefix" class="py-name" href="#" onclick="return doclink('link-28', 'prefix', 'link-25');">prefix</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'ruc2_252'</tt> </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line">        <tt class="py-name">suffix</tt> <tt class="py-op">=</tt> <tt class="py-string">'grb'</tt> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line"> </tt>
+<a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">filetype</tt><tt class="py-op">==</tt><tt class="py-string">'netcdf'</tt><tt class="py-op">:</tt> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line">        <tt class="py-name">suffix</tt> <tt class="py-op">=</tt> <tt class="py-string">'nc'</tt> </tt>
+<a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line">    <tt class="py-name">fname</tt> <tt class="py-op">=</tt> <tt class="py-string">'{0}_{1:04d}{2:02d}{3:02d}_{4:02d}00_000.{5}'</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt id="link-29" class="py-name"><a title="evac.lazy._monte2.prefix" class="py-name" href="#" onclick="return doclink('link-29', 'prefix', 'link-25');">prefix</a></tt><tt class="py-op">,</tt><tt class="py-name">yr</tt><tt class="py-op">,</tt><tt class="py-name">mth</tt><tt class="py-op">,</tt><tt class="py-name">day</tt><tt class="py-op">,</tt><tt class="py-name">hr</tt><tt class="py-op">,</tt><tt class="py-name">suffix</tt><tt class="py-op">)</tt> </tt>
+<a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">fname</tt> </tt>
+</div><a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line"> </tt>
+<a name="RUC_URL"></a><div id="RUC_URL-def"><a name="L195"></a><tt class="py-lineno">195</tt> <a class="py-toggle" href="#" id="RUC_URL-toggle" onclick="return toggle('RUC_URL');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.utils.get_data-module.html#RUC_URL">RUC_URL</a><tt class="py-op">(</tt><tt class="py-param">utc</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="RUC_URL-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="RUC_URL-expanded"><a name="L196"></a><tt class="py-lineno">196</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L197"></a><tt class="py-lineno">197</tt>  <tt class="py-line"><tt class="py-docstring">    Returns URL to download RUC file from nomads.</tt> </tt>
+<a name="L198"></a><tt class="py-lineno">198</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L199"></a><tt class="py-lineno">199</tt>  <tt class="py-line">    <tt class="py-name">t</tt> <tt class="py-op">=</tt> <tt id="link-30" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-30', 'utils', 'link-2');">utils</a></tt><tt class="py-op">.</tt><tt id="link-31" class="py-name"><a title="evac.utils.gis_tools.ensure_datenum" class="py-name" href="#" onclick="return doclink('link-31', 'ensure_datenum', 'link-20');">ensure_datenum</a></tt><tt class="py-op">(</tt><tt class="py-name">utc</tt><tt class="py-op">)</tt> </tt>
+<a name="L200"></a><tt class="py-lineno">200</tt>  <tt class="py-line">    <tt class="py-name">yr</tt> <tt class="py-op">=</tt> <tt id="link-32" class="py-name"><a title="evac.lazy._monte2.time" class="py-name" href="#" onclick="return doclink('link-32', 'time', 'link-0');">time</a></tt><tt class="py-op">.</tt><tt class="py-name">gmtime</tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">tm_year</tt> </tt>
+<a name="L201"></a><tt class="py-lineno">201</tt>  <tt class="py-line">    <tt class="py-name">mth</tt> <tt class="py-op">=</tt> <tt id="link-33" class="py-name"><a title="evac.lazy._monte2.time" class="py-name" href="#" onclick="return doclink('link-33', 'time', 'link-0');">time</a></tt><tt class="py-op">.</tt><tt class="py-name">gmtime</tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">tm_mon</tt> </tt>
+<a name="L202"></a><tt class="py-lineno">202</tt>  <tt class="py-line">    <tt class="py-name">day</tt> <tt class="py-op">=</tt> <tt id="link-34" class="py-name"><a title="evac.lazy._monte2.time" class="py-name" href="#" onclick="return doclink('link-34', 'time', 'link-0');">time</a></tt><tt class="py-op">.</tt><tt class="py-name">gmtime</tt><tt class="py-op">(</tt><tt class="py-name">t</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">tm_mday</tt> </tt>
+<a name="L203"></a><tt class="py-lineno">203</tt>  <tt class="py-line"> </tt>
+<a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line">    <tt class="py-name">URL_base</tt> <tt class="py-op">=</tt> <tt class="py-string">"http://nomads.ncdc.noaa.gov/data/rucanl"</tt> </tt>
+<a name="L205"></a><tt class="py-lineno">205</tt>  <tt class="py-line">    <tt class="py-name">URL</tt> <tt class="py-op">=</tt> <tt class="py-string">'{0}/{1:04d}{2:02d}/{1:02d}{2:02d}{3:02d}/'</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt class="py-name">URL_base</tt><tt class="py-op">,</tt><tt class="py-name">yr</tt><tt class="py-op">,</tt><tt class="py-name">mth</tt><tt class="py-op">,</tt><tt class="py-name">day</tt><tt class="py-op">)</tt> </tt>
+<a name="L206"></a><tt class="py-lineno">206</tt>  <tt class="py-line"> </tt>
+<a name="L207"></a><tt class="py-lineno">207</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">URL</tt> </tt>
+</div><a name="L208"></a><tt class="py-lineno">208</tt>  <tt class="py-line"> </tt>
+<a name="RUC_version"></a><div id="RUC_version-def"><a name="L209"></a><tt class="py-lineno">209</tt> <a class="py-toggle" href="#" id="RUC_version-toggle" onclick="return toggle('RUC_version');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.utils.get_data-module.html#RUC_version">RUC_version</a><tt class="py-op">(</tt><tt class="py-param">utc</tt><tt class="py-op">,</tt><tt class="py-param">fname</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">URL</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="RUC_version-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="RUC_version-expanded"><a name="L210"></a><tt class="py-lineno">210</tt>  <tt class="py-line">    <tt class="py-docstring">"""Returns the version/fname of RUC file</tt> </tt>
+<a name="L211"></a><tt class="py-lineno">211</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L212"></a><tt class="py-lineno">212</tt>  <tt class="py-line">    <tt class="py-name">t</tt> <tt class="py-op">=</tt> <tt id="link-35" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-35', 'utils', 'link-2');">utils</a></tt><tt class="py-op">.</tt><tt id="link-36" class="py-name"><a title="evac.utils.gis_tools.ensure_datenum" class="py-name" href="#" onclick="return doclink('link-36', 'ensure_datenum', 'link-20');">ensure_datenum</a></tt><tt class="py-op">(</tt><tt class="py-name">utc</tt><tt class="py-op">)</tt> </tt>
+<a name="L213"></a><tt class="py-lineno">213</tt>  <tt class="py-line">    <tt class="py-name">date0</tt> <tt class="py-op">=</tt> <tt id="link-37" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-37', 'utils', 'link-2');">utils</a></tt><tt class="py-op">.</tt><tt id="link-38" class="py-name"><a title="evac.utils.gis_tools.ensure_datenum" class="py-name" href="#" onclick="return doclink('link-38', 'ensure_datenum', 'link-20');">ensure_datenum</a></tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">2004</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L214"></a><tt class="py-lineno">214</tt>  <tt class="py-line">    <tt class="py-name">date1</tt> <tt class="py-op">=</tt> <tt id="link-39" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-39', 'utils', 'link-2');">utils</a></tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="evac.utils.gis_tools.ensure_datenum" class="py-name" href="#" onclick="return doclink('link-40', 'ensure_datenum', 'link-20');">ensure_datenum</a></tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">2007</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L215"></a><tt class="py-lineno">215</tt>  <tt class="py-line">    <tt class="py-name">date2</tt> <tt class="py-op">=</tt> <tt id="link-41" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-41', 'utils', 'link-2');">utils</a></tt><tt class="py-op">.</tt><tt id="link-42" class="py-name"><a title="evac.utils.gis_tools.ensure_datenum" class="py-name" href="#" onclick="return doclink('link-42', 'ensure_datenum', 'link-20');">ensure_datenum</a></tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">2008</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L216"></a><tt class="py-lineno">216</tt>  <tt class="py-line">    <tt class="py-name">date3</tt> <tt class="py-op">=</tt> <tt id="link-43" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-43', 'utils', 'link-2');">utils</a></tt><tt class="py-op">.</tt><tt id="link-44" class="py-name"><a title="evac.utils.gis_tools.ensure_datenum" class="py-name" href="#" onclick="return doclink('link-44', 'ensure_datenum', 'link-20');">ensure_datenum</a></tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">2009</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L217"></a><tt class="py-lineno">217</tt>  <tt class="py-line">    <tt class="py-name">date4</tt> <tt class="py-op">=</tt> <tt id="link-45" class="py-name"><a title="evac.utils
+evac.utils.utils" class="py-name" href="#" onclick="return doclink('link-45', 'utils', 'link-2');">utils</a></tt><tt class="py-op">.</tt><tt id="link-46" class="py-name"><a title="evac.utils.gis_tools.ensure_datenum" class="py-name" href="#" onclick="return doclink('link-46', 'ensure_datenum', 'link-20');">ensure_datenum</a></tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">2012</tt><tt class="py-op">,</tt><tt class="py-number">5</tt><tt class="py-op">,</tt><tt class="py-number">9</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L218"></a><tt class="py-lineno">218</tt>  <tt class="py-line"> </tt>
+<a name="L219"></a><tt class="py-lineno">219</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">t</tt> <tt class="py-op">&gt;=</tt> <tt class="py-name">date4</tt><tt class="py-op">:</tt> </tt>
+<a name="L220"></a><tt class="py-lineno">220</tt>  <tt class="py-line">        <tt class="py-name">version</tt> <tt class="py-op">=</tt> <tt class="py-number">3</tt> </tt>
+<a name="L221"></a><tt class="py-lineno">221</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">t</tt> <tt class="py-op">&gt;=</tt> <tt class="py-name">date3</tt><tt class="py-op">:</tt> </tt>
+<a name="L222"></a><tt class="py-lineno">222</tt>  <tt class="py-line">        <tt class="py-name">version</tt> <tt class="py-op">=</tt> <tt class="py-number">2</tt> </tt>
+<a name="L223"></a><tt class="py-lineno">223</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">t</tt> <tt class="py-op">&gt;=</tt> <tt class="py-name">date2</tt><tt class="py-op">:</tt> </tt>
+<a name="L224"></a><tt class="py-lineno">224</tt>  <tt class="py-line">        <tt class="py-name">version</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L225"></a><tt class="py-lineno">225</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">t</tt> <tt class="py-op">&gt;=</tt> <tt class="py-name">date1</tt><tt class="py-op">:</tt> </tt>
+<a name="L226"></a><tt class="py-lineno">226</tt>  <tt class="py-line">        <tt class="py-name">version</tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L227"></a><tt class="py-lineno">227</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">t</tt> <tt class="py-op">&gt;=</tt> <tt class="py-name">date0</tt><tt class="py-op">:</tt> </tt>
+<a name="L228"></a><tt class="py-lineno">228</tt>  <tt class="py-line">        <tt class="py-name">version</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L229"></a><tt class="py-lineno">229</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L230"></a><tt class="py-lineno">230</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"No RUC data for this date exists."</tt><tt class="py-op">)</tt> </tt>
+<a name="L231"></a><tt class="py-lineno">231</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt> </tt>
+<a name="L232"></a><tt class="py-lineno">232</tt>  <tt class="py-line"> </tt>
+<a name="L233"></a><tt class="py-lineno">233</tt>  <tt class="py-line">    <tt class="py-comment"># print("This RUC file is Version {0}.".format(version))</tt> </tt>
+<a name="L234"></a><tt class="py-lineno">234</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">version</tt> </tt>
+</div><a name="L235"></a><tt class="py-lineno">235</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:52:27 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

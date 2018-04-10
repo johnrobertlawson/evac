@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.datafiles.gribfile</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.datafiles-module.html">Package&nbsp;datafiles</a> ::
+        Module&nbsp;gribfile
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.datafiles.gribfile-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="evac.datafiles.gribfile-module.html">Module evac.datafiles.gribfile</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pdb</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">N</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Variable evac.datafiles.gribfile.pygrib=evac.datafiles.gribfile-module.html#pygrib"><a title="evac.datafiles.gribfile.pygrib" class="py-name" href="#" onclick="return doclink('link-0', 'pygrib', 'link-0');">pygrib</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">except</tt> <tt class="py-name">ModuleNotFoundError</tt><tt class="py-op">:</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"Not using pygrib"</tt><tt class="py-op">)</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line">    <tt id="link-1" class="py-name"><a title="evac.datafiles.gribfile.pygrib" class="py-name" href="#" onclick="return doclink('link-1', 'pygrib', 'link-0');">pygrib</a></tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name" targets="Package evac=evac-module.html"><a title="evac" class="py-name" href="#" onclick="return doclink('link-2', 'evac', 'link-2');">evac</a></tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Package evac.datafiles=evac.datafiles-module.html"><a title="evac.datafiles" class="py-name" href="#" onclick="return doclink('link-3', 'datafiles', 'link-3');">datafiles</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Module evac.datafiles.datafile=evac.datafiles.datafile-module.html"><a title="evac.datafiles.datafile" class="py-name" href="#" onclick="return doclink('link-4', 'datafile', 'link-4');">datafile</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Class evac.datafiles.datafile.DataFile=evac.datafiles.datafile.DataFile-class.html"><a title="evac.datafiles.datafile.DataFile" class="py-name" href="#" onclick="return doclink('link-5', 'DataFile', 'link-5');">DataFile</a></tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"> </tt>
+<a name="GribFile"></a><div id="GribFile-def"><a name="L14"></a><tt class="py-lineno"> 14</tt> <a class="py-toggle" href="#" id="GribFile-toggle" onclick="return toggle('GribFile');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html">GribFile</a><tt class="py-op">(</tt><tt class="py-base-class">DataFile</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GribFile-expanded"><a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line">    <tt class="py-docstring">"""Generic load for Grib 1/2 files.</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring">    Args:</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">        fpath: Absolute path to grib file.</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">    Todo:</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring">        * Make general, i.e. remove HRRR etc specifics</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="GribFile.__init__"></a><div id="GribFile.__init__-def"><a name="L23"></a><tt class="py-lineno"> 23</tt> <a class="py-toggle" href="#" id="GribFile.__init__-toggle" onclick="return toggle('GribFile.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">fpath</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.__init__-expanded"><a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method evac.datafiles.binaryfile.BinaryFile.__init__()=evac.datafiles.binaryfile.BinaryFile-class.html#__init__,Method evac.datafiles.csvfile.CSVFile.__init__()=evac.datafiles.csvfile.CSVFile-class.html#__init__,Method evac.datafiles.datafile.DataFile.__init__()=evac.datafiles.datafile.DataFile-class.html#__init__,Method evac.datafiles.ecmwf.ECMWF.__init__()=evac.datafiles.ecmwf.ECMWF-class.html#__init__,Method evac.datafiles.ensemble.Ensemble.__init__()=evac.datafiles.ensemble.Ensemble-class.html#__init__,Method evac.datafiles.gefs.GEFS.__init__()=evac.datafiles.gefs.GEFS-class.html#__init__,Method evac.datafiles.gfs.GFS.__init__()=evac.datafiles.gfs.GFS-class.html#__init__,Method evac.datafiles.gribfile.GribFile.__init__()=evac.datafiles.gribfile.GribFile-class.html#__init__,Method evac.datafiles.hrrr.HRRR.__init__()=evac.datafiles.hrrr.HRRR-class.html#__init__,Method evac.datafiles.mrms.MRMS.__init__()=evac.datafiles.mrms.MRMS-class.html#__init__,Method evac.datafiles.ncfile.NCFile.__init__()=evac.datafiles.ncfile.NCFile-class.html#__init__,Method evac.datafiles.obs.Obs.__init__()=evac.datafiles.obs.Obs-class.html#__init__,Method evac.datafiles.pngfile.PNGFile.__init__()=evac.datafiles.pngfile.PNGFile-class.html#__init__,Method evac.datafiles.radar.Radar.__init__()=evac.datafiles.radar.Radar-class.html#__init__,Method evac.datafiles.ruc.RUC.__init__()=evac.datafiles.ruc.RUC-class.html#__init__,Method evac.datafiles.spclsr.SPCLSR.__init__()=evac.datafiles.spclsr.SPCLSR-class.html#__init__,Method evac.datafiles.stageiv.StageIV.__init__()=evac.datafiles.stageiv.StageIV-class.html#__init__,Method evac.datafiles.stormevents.StormEvents.__init__()=evac.datafiles.stormevents.StormEvents-class.html#__init__,Method evac.datafiles.wrfout.WRFOut.__init__()=evac.datafiles.wrfout.WRFOut-class.html#__init__,Method evac.lazy.ideal_profiles.Profile.__init__()=evac.lazy.ideal_profiles.Profile-class.html#__init__,Method evac.lazy.lazyensemble.LazyEnsemble.__init__()=evac.lazy.lazyensemble.LazyEnsemble-class.html#__init__,Method evac.lazy.lazywrf.LazyWRF.__init__()=evac.lazy.lazywrf.LazyWRF-class.html#__init__,Method evac.plot._rucplot.RUCPlot.__init__()=evac.plot._rucplot.RUCPlot-class.html#__init__,Method evac.plot._skewt.Profile.__init__()=evac.plot._skewt.Profile-class.html#__init__,Method evac.plot._skewt.SkewT.__init__()=evac.plot._skewt.SkewT-class.html#__init__,Method evac.plot._skewt2.SkewXAxis.__init__()=evac.plot._skewt2.SkewXAxis-class.html#__init__,Method evac.plot.birdseye.BirdsEye.__init__()=evac.plot.birdseye.BirdsEye-class.html#__init__,Method evac.plot.clicker.Clicker.__init__()=evac.plot.clicker.Clicker-class.html#__init__,Method evac.plot.domaingrid.DomainGrid.__init__()=evac.plot.domaingrid.DomainGrid-class.html#__init__,Method evac.plot.heatmap.HeatMap.__init__()=evac.plot.heatmap.HeatMap-class.html#__init__,Method evac.plot.linegraph.LineGraph.__init__()=evac.plot.linegraph.LineGraph-class.html#__init__,Method evac.plot.map.Map.__init__()=evac.plot.map.Map-class.html#__init__,Method evac.plot.performance.Performance.__init__()=evac.plot.performance.Performance-class.html#__init__,Method evac.plot.scales.Scales.__init__()=evac.plot.scales.Scales-class.html#__init__,Method evac.plot.skewt.SkewT.__init__()=evac.plot.skewt.SkewT-class.html#__init__,Method evac.plot.timeseries.TimeSeries.__init__()=evac.plot.timeseries.TimeSeries-class.html#__init__,Method evac.plot.xsection.CrossSection.__init__()=evac.plot.xsection.CrossSection-class.html#__init__,Method evac.stats._objects.ObjVerif.__init__()=evac.stats._objects.ObjVerif-class.html#__init__,Method evac.stats.casati.Casati.__init__()=evac.stats.casati.Casati-class.html#__init__,Method evac.stats.detscores.DetScores.__init__()=evac.stats.detscores.DetScores-class.html#__init__,Method evac.stats.forecastvalue.ForecastValue.__init__()=evac.stats.forecastvalue.ForecastValue-class.html#__init__,Method evac.stats.fss.FSS.__init__()=evac.stats.fss.FSS-class.html#__init__,Method evac.stats.objectbased.ObjectBased.__init__()=evac.stats.objectbased.ObjectBased-class.html#__init__,Method evac.stats.probscores.ProbScores.__init__()=evac.stats.probscores.ProbScores-class.html#__init__,Method evac.stats.roc.ROC.__init__()=evac.stats.roc.ROC-class.html#__init__,Method evac.stats.sal.SAL.__init__()=evac.stats.sal.SAL-class.html#__init__,Method evac.stoch.ifsfractal.IFSFractal.__init__()=evac.stoch.ifsfractal.IFSFractal-class.html#__init__,Method evac.utils.defaults.Defaults.__init__()=evac.utils.defaults.Defaults-class.html#__init__,Method evac.utils.exceptions.FormatError.__init__()=evac.utils.exceptions.FormatError-class.html#__init__,Method evac.utils.exceptions.NonsenseError.__init__()=evac.utils.exceptions.NonsenseError-class.html#__init__,Method evac.utils.exceptions.PrettyException.__init__()=evac.utils.exceptions.PrettyException-class.html#__init__,Method evac.utils.exceptions.QCError.__init__()=evac.utils.exceptions.QCError-class.html#__init__,Method evac.utils.exceptions.WRFError.__init__()=evac.utils.exceptions.WRFError-class.html#__init__,Method evac.utils.reproject_tools.HRRR_native_grid.__init__()=evac.utils.reproject_tools.HRRR_native_grid-class.html#__init__,Method evac.utils.reproject_tools.VerifGrid.__init__()=evac.utils.reproject_tools.VerifGrid-class.html#__init__,Method evac.utils.reproject_tools.WRF_native_grid.__init__()=evac.utils.reproject_tools.WRF_native_grid-class.html#__init__,Method evac.utils.timetool.TimeTool.__init__()=evac.utils.timetool.TimeTool-class.html#__init__"><a title="evac.datafiles.binaryfile.BinaryFile.__init__
+evac.datafiles.csvfile.CSVFile.__init__
+evac.datafiles.datafile.DataFile.__init__
+evac.datafiles.ecmwf.ECMWF.__init__
+evac.datafiles.ensemble.Ensemble.__init__
+evac.datafiles.gefs.GEFS.__init__
+evac.datafiles.gfs.GFS.__init__
+evac.datafiles.gribfile.GribFile.__init__
+evac.datafiles.hrrr.HRRR.__init__
+evac.datafiles.mrms.MRMS.__init__
+evac.datafiles.ncfile.NCFile.__init__
+evac.datafiles.obs.Obs.__init__
+evac.datafiles.pngfile.PNGFile.__init__
+evac.datafiles.radar.Radar.__init__
+evac.datafiles.ruc.RUC.__init__
+evac.datafiles.spclsr.SPCLSR.__init__
+evac.datafiles.stageiv.StageIV.__init__
+evac.datafiles.stormevents.StormEvents.__init__
+evac.datafiles.wrfout.WRFOut.__init__
+evac.lazy.ideal_profiles.Profile.__init__
+evac.lazy.lazyensemble.LazyEnsemble.__init__
+evac.lazy.lazywrf.LazyWRF.__init__
+evac.plot._rucplot.RUCPlot.__init__
+evac.plot._skewt.Profile.__init__
+evac.plot._skewt.SkewT.__init__
+evac.plot._skewt2.SkewXAxis.__init__
+evac.plot.birdseye.BirdsEye.__init__
+evac.plot.clicker.Clicker.__init__
+evac.plot.domaingrid.DomainGrid.__init__
+evac.plot.heatmap.HeatMap.__init__
+evac.plot.linegraph.LineGraph.__init__
+evac.plot.map.Map.__init__
+evac.plot.performance.Performance.__init__
+evac.plot.scales.Scales.__init__
+evac.plot.skewt.SkewT.__init__
+evac.plot.timeseries.TimeSeries.__init__
+evac.plot.xsection.CrossSection.__init__
+evac.stats._objects.ObjVerif.__init__
+evac.stats.casati.Casati.__init__
+evac.stats.detscores.DetScores.__init__
+evac.stats.forecastvalue.ForecastValue.__init__
+evac.stats.fss.FSS.__init__
+evac.stats.objectbased.ObjectBased.__init__
+evac.stats.probscores.ProbScores.__init__
+evac.stats.roc.ROC.__init__
+evac.stats.sal.SAL.__init__
+evac.stoch.ifsfractal.IFSFractal.__init__
+evac.utils.defaults.Defaults.__init__
+evac.utils.exceptions.FormatError.__init__
+evac.utils.exceptions.NonsenseError.__init__
+evac.utils.exceptions.PrettyException.__init__
+evac.utils.exceptions.QCError.__init__
+evac.utils.exceptions.WRFError.__init__
+evac.utils.reproject_tools.HRRR_native_grid.__init__
+evac.utils.reproject_tools.VerifGrid.__init__
+evac.utils.reproject_tools.WRF_native_grid.__init__
+evac.utils.timetool.TimeTool.__init__" class="py-name" href="#" onclick="return doclink('link-6', '__init__', 'link-6');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">        <tt class="py-comment"># self.fpath = fpath</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">G</tt> <tt class="py-op">=</tt> <tt id="link-7" class="py-name"><a title="evac.datafiles.gribfile.pygrib" class="py-name" href="#" onclick="return doclink('link-7', 'pygrib', 'link-0');">pygrib</a></tt><tt class="py-op">.</tt><tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">fpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_records</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">gg</tt> <tt class="py-keyword">for</tt> <tt class="py-name">gg</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">G</tt><tt class="py-op">]</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">G</tt><tt class="py-op">.</tt><tt class="py-name">seek</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> <tt class="py-comment"># Screw you GRIB!</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_list</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">gg</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">':'</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">gg</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">G</tt><tt class="py-op">]</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt class="py-comment"># pdb.set_trace()</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_array</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">array</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_list</tt><tt class="py-op">)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-comment"># Remove weird variables that aren't variables</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_unfiltered</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">unique</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_array</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-name">delrows</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">row</tt> <tt class="py-keyword">in</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">arange</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_unfiltered</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_unfiltered</tt><tt class="py-op">[</tt><tt class="py-name">row</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> <tt class="py-op">&lt;</tt> <tt class="py-number">5</tt><tt class="py-op">:</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">                <tt class="py-name">delrows</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">row</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">delete</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_unfiltered</tt><tt class="py-op">,</tt><tt class="py-name">delrows</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method evac.datafiles.gribfile.GribFile.projection()=evac.datafiles.gribfile.GribFile-class.html#projection,Method evac.datafiles.stageiv.StageIV.projection()=evac.datafiles.stageiv.StageIV-class.html#projection"><a title="evac.datafiles.gribfile.GribFile.projection
+evac.datafiles.stageiv.StageIV.projection" class="py-name" href="#" onclick="return doclink('link-8', 'projection', 'link-8');">projection</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">y_dim</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">x_dim</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-comment"># Only one time per file, right?</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">t_dim</tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method evac.datafiles.gribfile.GribFile.get_units()=evac.datafiles.gribfile.GribFile-class.html#get_units"><a title="evac.datafiles.gribfile.GribFile.get_units" class="py-name" href="#" onclick="return doclink('link-9', 'get_units', 'link-9');">get_units</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"> </tt>
+<a name="GribFile.get_units"></a><div id="GribFile.get_units-def"><a name="L46"></a><tt class="py-lineno"> 46</tt> <a class="py-toggle" href="#" id="GribFile.get_units-toggle" onclick="return toggle('GribFile.get_units');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#get_units">get_units</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.get_units-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.get_units-expanded"><a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-docstring">""" The units used for variables within.</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-docstring">        This should be overridden in children.</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">UNITS</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">'pressure'</tt><tt class="py-op">:</tt><tt class="py-string">'Pa'</tt><tt class="py-op">,</tt><tt class="py-op">}</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
+<a name="GribFile.get_record"></a><div id="GribFile.get_record-def"><a name="L53"></a><tt class="py-lineno"> 53</tt> <a class="py-toggle" href="#" id="GribFile.get_record-toggle" onclick="return toggle('GribFile.get_record');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#get_record">get_record</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">vrblkey</tt><tt class="py-op">,</tt><tt class="py-param">idx</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt><tt class="py-param">level</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.get_record-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.get_record-expanded"><a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">G</tt><tt class="py-op">.</tt><tt class="py-name">seek</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-name">ngg</tt> <tt class="py-op">=</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">G</tt><tt class="py-op">.</tt><tt class="py-name">select</tt><tt class="py-op">(</tt><tt id="link-10" class="py-name" targets="Variable evac.plot._skewt2.SkewXAxes.name=evac.plot._skewt2.SkewXAxes-class.html#name"><a title="evac.plot._skewt2.SkewXAxes.name" class="py-name" href="#" onclick="return doclink('link-10', 'name', 'link-10');">name</a></tt><tt class="py-op">=</tt><tt class="py-name">vrblkey</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-comment"># print(vrbl)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt class="py-comment"># pdb.set_trace()</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"There are {0} entries for the key {1}."</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt class="py-name">ngg</tt><tt class="py-op">,</tt><tt class="py-name">vrblkey</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt class="py-comment"># Not sure why this is needed - random wrong indices popping up</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">ngg</tt> <tt class="py-op">==</tt> <tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">            <tt class="py-name">idx</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">            <tt class="py-name">idx</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Method evac.datafiles.gribfile.GribFile.idx_from_lv()=evac.datafiles.gribfile.GribFile-class.html#idx_from_lv"><a title="evac.datafiles.gribfile.GribFile.idx_from_lv" class="py-name" href="#" onclick="return doclink('link-11', 'idx_from_lv', 'link-11');">idx_from_lv</a></tt><tt class="py-op">(</tt><tt class="py-name">vrblkey</tt><tt class="py-op">,</tt><tt class="py-name">lv</tt><tt class="py-op">=</tt><tt class="py-name">level</tt><tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-name">gg</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">G</tt><tt class="py-op">.</tt><tt class="py-name">select</tt><tt class="py-op">(</tt><tt id="link-12" class="py-name"><a title="evac.plot._skewt2.SkewXAxes.name" class="py-name" href="#" onclick="return doclink('link-12', 'name', 'link-10');">name</a></tt><tt class="py-op">=</tt><tt class="py-name">vrblkey</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-name">idx</tt><tt class="py-op">]</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"Picking index {0}."</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt class="py-name">idx</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">gg</tt> </tt>
+</div><a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"> </tt>
+<a name="GribFile.idx_from_lv"></a><div id="GribFile.idx_from_lv-def"><a name="L68"></a><tt class="py-lineno"> 68</tt> <a class="py-toggle" href="#" id="GribFile.idx_from_lv-toggle" onclick="return toggle('GribFile.idx_from_lv');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#idx_from_lv">idx_from_lv</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">vrblkey</tt><tt class="py-op">,</tt><tt class="py-param">lv</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.idx_from_lv-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.idx_from_lv-expanded"><a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt class="py-docstring">""" Return the index to load a requested level (in hPa).</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"><tt class="py-docstring">        If level doesn't exist, throw an exception.</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-name">rows</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">where</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_array</tt> <tt class="py-op">==</tt> <tt class="py-name">vrblkey</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-comment"># idxs = self.available_fields_array[rows,5]</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">rows</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">1</tt> <tt class="py-keyword">and</tt> <tt class="py-name">lv</tt> <tt class="py-op">==</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">            <tt class="py-comment"># return idxs[0]</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-number">0</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">        <tt class="py-name">lv_choice</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_array</tt><tt class="py-op">[</tt><tt class="py-name">rows</tt><tt class="py-op">,</tt><tt class="py-number">5</tt><tt class="py-op">]</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-comment"># Just assume Pa</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-name">lv_str</tt> <tt class="py-op">=</tt> <tt class="py-string">'{:d}'</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt class="py-name">lv</tt><tt class="py-op">*</tt><tt class="py-number">100</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-comment"># pdb.set_trace()</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">nl</tt><tt class="py-op">,</tt><tt id="link-13" class="py-name" targets="Variable evac.stoch.fractal_tools.l=evac.stoch.fractal_tools-module.html#l,Variable evac.stoch.lovejoy_fractal.l=evac.stoch.lovejoy_fractal-module.html#l,Variable evac.utils._fractal_tools.l=evac.utils._fractal_tools-module.html#l"><a title="evac.stoch.fractal_tools.l
+evac.stoch.lovejoy_fractal.l
+evac.utils._fractal_tools.l" class="py-name" href="#" onclick="return doclink('link-13', 'l', 'link-13');">l</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">enumerate</tt><tt class="py-op">(</tt><tt class="py-name">lv_choice</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">lv_str</tt> <tt class="py-keyword">in</tt> <tt id="link-14" class="py-name"><a title="evac.stoch.fractal_tools.l
+evac.stoch.lovejoy_fractal.l
+evac.utils._fractal_tools.l" class="py-name" href="#" onclick="return doclink('link-14', 'l', 'link-13');">l</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">nl</tt> </tt>
+</div><a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"> </tt>
+<a name="GribFile.get"></a><div id="GribFile.get-def"><a name="L86"></a><tt class="py-lineno"> 86</tt> <a class="py-toggle" href="#" id="GribFile.get-toggle" onclick="return toggle('GribFile.get');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#get">get</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">vrbl</tt><tt class="py-op">,</tt><tt class="py-param">idx</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-param">utc</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt><tt class="py-param">level</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt><tt class="py-param">lons</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt><tt class="py-param">lats</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.get-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.get-expanded"><a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"><tt class="py-docstring">        I don't think we need utc/lv - aren't all grib files one time? - but</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"><tt class="py-docstring">        it is here to enable compatibility with other get() APIs.</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-comment"># TODO: look up level in available fields array, return index</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">        <tt class="py-name">vrblkey</tt><tt class="py-op">,</tt> <tt class="py-name">idx</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Method evac.datafiles.gefs.GEFS.lookup_vrbl()=evac.datafiles.gefs.GEFS-class.html#lookup_vrbl,Method evac.datafiles.gfs.GFS.lookup_vrbl()=evac.datafiles.gfs.GFS-class.html#lookup_vrbl,Method evac.datafiles.gribfile.GribFile.lookup_vrbl()=evac.datafiles.gribfile.GribFile-class.html#lookup_vrbl,Method evac.datafiles.hrrr.HRRR.lookup_vrbl()=evac.datafiles.hrrr.HRRR-class.html#lookup_vrbl"><a title="evac.datafiles.gefs.GEFS.lookup_vrbl
+evac.datafiles.gfs.GFS.lookup_vrbl
+evac.datafiles.gribfile.GribFile.lookup_vrbl
+evac.datafiles.hrrr.HRRR.lookup_vrbl" class="py-name" href="#" onclick="return doclink('link-15', 'lookup_vrbl', 'link-15');">lookup_vrbl</a></tt><tt class="py-op">(</tt><tt id="link-16" class="py-name" targets="Module evac.derived.vrbl=evac.derived.vrbl-module.html"><a title="evac.derived.vrbl" class="py-name" href="#" onclick="return doclink('link-16', 'vrbl', 'link-16');">vrbl</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"Variable {0} has key {1} in Grib data."</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt id="link-17" class="py-name"><a title="evac.derived.vrbl" class="py-name" href="#" onclick="return doclink('link-17', 'vrbl', 'link-16');">vrbl</a></tt><tt class="py-op">,</tt><tt class="py-name">vrblkey</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-comment"># gg = self.get_record(vrblkey,idx=idx)</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-comment"># idx lookup should happen in get_record</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">        <tt class="py-name">gg</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name" targets="Method evac.datafiles.gribfile.GribFile.get_record()=evac.datafiles.gribfile.GribFile-class.html#get_record"><a title="evac.datafiles.gribfile.GribFile.get_record" class="py-name" href="#" onclick="return doclink('link-18', 'get_record', 'link-18');">get_record</a></tt><tt class="py-op">(</tt><tt class="py-name">vrblkey</tt><tt class="py-op">,</tt><tt class="py-name">level</tt><tt class="py-op">=</tt><tt class="py-name">level</tt><tt class="py-op">)</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">        <tt class="py-name">arr</tt> <tt class="py-op">=</tt> <tt class="py-name">gg</tt><tt class="py-op">.</tt><tt class="py-name">values</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method evac.datafiles.gribfile.GribFile.enforce_4d()=evac.datafiles.gribfile.GribFile-class.html#enforce_4d"><a title="evac.datafiles.gribfile.GribFile.enforce_4d" class="py-name" href="#" onclick="return doclink('link-19', 'enforce_4d', 'link-19');">enforce_4d</a></tt><tt class="py-op">(</tt><tt class="py-name">arr</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-comment"># pdb.set_trace()</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt class="py-comment"># return arr</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"> </tt>
+<a name="GribFile.enforce_4d"></a><div id="GribFile.enforce_4d-def"><a name="L102"></a><tt class="py-lineno">102</tt> <a class="py-toggle" href="#" id="GribFile.enforce_4d-toggle" onclick="return toggle('GribFile.enforce_4d');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#enforce_4d">enforce_4d</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">arr</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.enforce_4d-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.enforce_4d-expanded"><a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-docstring">"""TODO: move higher up to super-superclass?</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">arr</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">2</tt><tt class="py-op">:</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">            <tt class="py-name">arr4d</tt> <tt class="py-op">=</tt> <tt class="py-name">arr</tt><tt class="py-op">[</tt><tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">newaxis</tt><tt class="py-op">,</tt><tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">newaxis</tt><tt class="py-op">,</tt><tt class="py-op">:</tt><tt class="py-op">,</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">"Why is this data not 2d?"</tt><tt class="py-op">)</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">arr4d</tt> </tt>
+</div><a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"> </tt>
+<a name="GribFile.lookup_vrbl"></a><div id="GribFile.lookup_vrbl-def"><a name="L111"></a><tt class="py-lineno">111</tt> <a class="py-toggle" href="#" id="GribFile.lookup_vrbl-toggle" onclick="return toggle('GribFile.lookup_vrbl');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#lookup_vrbl">lookup_vrbl</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">vrbl</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.lookup_vrbl-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.lookup_vrbl-expanded"><a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-name">LOOKUP</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-comment"># Children should use the right keys/indices here</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-op">(</tt><tt id="link-20" class="py-name"><a title="evac.derived.vrbl" class="py-name" href="#" onclick="return doclink('link-20', 'vrbl', 'link-16');">vrbl</a></tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"> </tt>
+<a name="GribFile.return_latlon"></a><div id="GribFile.return_latlon-def"><a name="L116"></a><tt class="py-lineno">116</tt> <a class="py-toggle" href="#" id="GribFile.return_latlon-toggle" onclick="return toggle('GribFile.return_latlon');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#return_latlon">return_latlon</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.return_latlon-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.return_latlon-expanded"><a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">        <tt class="py-name">gg</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name" targets="Method evac.datafiles.ensemble.Ensemble.arbitrary_pick()=evac.datafiles.ensemble.Ensemble-class.html#arbitrary_pick,Method evac.datafiles.gribfile.GribFile.arbitrary_pick()=evac.datafiles.gribfile.GribFile-class.html#arbitrary_pick,Method evac.datafiles.stageiv.StageIV.arbitrary_pick()=evac.datafiles.stageiv.StageIV-class.html#arbitrary_pick"><a title="evac.datafiles.ensemble.Ensemble.arbitrary_pick
+evac.datafiles.gribfile.GribFile.arbitrary_pick
+evac.datafiles.stageiv.StageIV.arbitrary_pick" class="py-name" href="#" onclick="return doclink('link-21', 'arbitrary_pick', 'link-21');">arbitrary_pick</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-name">latlon</tt> <tt class="py-op">=</tt> <tt class="py-name">gg</tt><tt class="py-op">.</tt><tt class="py-name">latlons</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">        <tt class="py-name">lats</tt><tt class="py-op">,</tt> <tt class="py-name">lons</tt> <tt class="py-op">=</tt> <tt class="py-name">latlon</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">lats</tt><tt class="py-op">,</tt><tt class="py-name">lons</tt> </tt>
+</div><a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"> </tt>
+<a name="GribFile.projection"></a><div id="GribFile.projection-def"><a name="L122"></a><tt class="py-lineno">122</tt> <a class="py-toggle" href="#" id="GribFile.projection-toggle" onclick="return toggle('GribFile.projection');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#projection">projection</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.projection-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.projection-expanded"><a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-comment"># self.m = Basemap(projection='npstere',lon_0=-105.0,#lat_1=60.0,</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">                <tt class="py-comment"># llcrnrlon=lllon,llcrnrlat=lllat,urcrnrlon=urlon,urcrnrlat=urlat,</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">                            <tt class="py-comment"># boundinglat=24.701632)</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name" targets="Method evac.datafiles.gribfile.GribFile.return_latlon()=evac.datafiles.gribfile.GribFile-class.html#return_latlon,Method evac.datafiles.stageiv.StageIV.return_latlon()=evac.datafiles.stageiv.StageIV-class.html#return_latlon"><a title="evac.datafiles.gribfile.GribFile.return_latlon
+evac.datafiles.stageiv.StageIV.return_latlon" class="py-name" href="#" onclick="return doclink('link-22', 'return_latlon', 'link-22');">return_latlon</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt class="py-comment"># self.xx, self.yy = self.m(self.lons,self.lats)</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-comment"># pdb.set_trace()</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-comment"># self.mx, self.my = N.meshgrid(self.xx,self.yy)</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-comment"># lllon = -119.023</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lllon</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">        <tt class="py-comment"># lllat = 23.117</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lllat</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">        <tt class="py-comment"># urlon = -59.9044</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">urlon</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">        <tt class="py-comment"># urlat = 45.6147234</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">urlat</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line"> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">        <tt class="py-keyword">assert</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lats</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lons</tt><tt class="py-op">.</tt><tt class="py-name">shape</tt> </tt>
+</div><a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line"> </tt>
+<a name="GribFile.arbitrary_pick"></a><div id="GribFile.arbitrary_pick-def"><a name="L143"></a><tt class="py-lineno">143</tt> <a class="py-toggle" href="#" id="GribFile.arbitrary_pick-toggle" onclick="return toggle('GribFile.arbitrary_pick');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#arbitrary_pick">arbitrary_pick</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.arbitrary_pick-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.arbitrary_pick-expanded"><a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt id="link-23" class="py-name"><a title="evac.derived.vrbl" class="py-name" href="#" onclick="return doclink('link-23', 'vrbl', 'link-16');">vrbl</a></tt><tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">        <tt class="py-name">gg</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="evac.datafiles.gribfile.GribFile.get_record" class="py-name" href="#" onclick="return doclink('link-24', 'get_record', 'link-18');">get_record</a></tt><tt class="py-op">(</tt><tt id="link-25" class="py-name"><a title="evac.derived.vrbl" class="py-name" href="#" onclick="return doclink('link-25', 'vrbl', 'link-16');">vrbl</a></tt><tt class="py-op">,</tt><tt class="py-name">idx</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">gg</tt> </tt>
+</div><a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line"> </tt>
+<a name="GribFile.return_vrbl_records"></a><div id="GribFile.return_vrbl_records-def"><a name="L148"></a><tt class="py-lineno">148</tt> <a class="py-toggle" href="#" id="GribFile.return_vrbl_records-toggle" onclick="return toggle('GribFile.return_vrbl_records');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#return_vrbl_records">return_vrbl_records</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">vrbl</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.return_vrbl_records-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.return_vrbl_records-expanded"><a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">        <tt class="py-name">vidx</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">where</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_array</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">==</tt><tt id="link-26" class="py-name"><a title="evac.derived.vrbl" class="py-name" href="#" onclick="return doclink('link-26', 'vrbl', 'link-16');">vrbl</a></tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">idx</tt> <tt class="py-keyword">in</tt> <tt class="py-name">vidx</tt><tt class="py-op">:</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_array</tt><tt class="py-op">[</tt><tt class="py-name">idx</tt><tt class="py-op">,</tt><tt class="py-op">:</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div><a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"> </tt>
+<a name="GribFile.search_keyword"></a><div id="GribFile.search_keyword-def"><a name="L154"></a><tt class="py-lineno">154</tt> <a class="py-toggle" href="#" id="GribFile.search_keyword-toggle" onclick="return toggle('GribFile.search_keyword');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.gribfile.GribFile-class.html#search_keyword">search_keyword</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">keyword</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GribFile.search_keyword-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="GribFile.search_keyword-expanded"><a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">        <tt class="py-docstring">""" Look for record entries based on a keyword.</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">entry</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">available_fields_list</tt><tt class="py-op">:</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">x</tt> <tt class="py-keyword">in</tt> <tt class="py-name">entry</tt><tt class="py-op">:</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">keyword</tt> <tt class="py-keyword">in</tt> <tt class="py-name">x</tt><tt class="py-op">:</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">                    <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-name">entry</tt><tt class="py-op">)</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">                    <tt class="py-keyword">break</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+</div></div><a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:52:27 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

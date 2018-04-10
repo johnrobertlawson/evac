@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.datafiles.ruc.RUC</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.datafiles-module.html">Package&nbsp;datafiles</a> ::
+        <a href="evac.datafiles.ruc-module.html">Module&nbsp;ruc</a> ::
+        Class&nbsp;RUC
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.datafiles.ruc.RUC-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class RUC</h1><p class="nomargin-top"><span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+WEM.postWRF.postWRF.ncfile.NC --+    
+                                |    
+                    <a href="evac.datafiles.wrfout.WRFOut-class.html">wrfout.WRFOut</a> --+
+                                    |
+                                   <strong class="uidshort">RUC</strong>
+</pre>
+
+<hr />
+<pre class="literalblock">
+Subclass of :class:`~evac.datafiles.wrfout.WRFOut` for RUC/RAP data.
+
+Todo:
+    * RUC/RAP data can be cut down to fit a given WRF domain?
+
+Args:
+    fpath: Absolute path to RAP/RUC data file.
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ruc.RUC-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fpath</span>)</span><br />
+      Initialisation fetches and computes basic user-friendly
+variables that are most often accessed.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ruc.RUC-class.html#cut_to_wrf" class="summary-sig-name">cut_to_wrf</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">wrfpath</span>)</span><br />
+      Cut down domain to match a WRF file.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.cut_to_wrf">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_utc_time"></a><span class="summary-sig-name">get_utc_time</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">rawtime</span>,
+        <span class="summary-sig-arg">fmt</span>=<span class="summary-sig-default">'datenum'</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.get_utc_time">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ruc.RUC-class.html#check_compute" class="summary-sig-name">check_compute</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>)</span><br />
+      OVERRIDE WRFOUT VERSION</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.check_compute">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ruc.RUC-class.html#load" class="summary-sig-name">load</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>)</span><br />
+      OVERRIDE WRFOUT VERSION</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.load">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_MAYBE"></a><span class="summary-sig-name">get_MAYBE</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">utc</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">lats</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">lons</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">smooth</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">other</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Overwrite WRFOut method here.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.get_MAYBE">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="cut_lat_lon"></a><span class="summary-sig-name">cut_lat_lon</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Return a smaller array of data depending of specified limits</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.cut_lat_lon">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="cut_2D_array"></a><span class="summary-sig-name">cut_2D_array</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data_in</span>)</span><br />
+      Return a smaller array of data depending of specified limits</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.cut_2D_array">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_version"></a><span class="summary-sig-name">get_version</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.get_version">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="plot"></a><span class="summary-sig-name">plot</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">variables</span>,
+        <span class="summary-sig-arg">lv</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.plot">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="plot_streamlines"></a><span class="summary-sig-name">plot_streamlines</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">va</span>,
+        <span class="summary-sig-arg">lv</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.plot_streamlines">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="plot_variable"></a><span class="summary-sig-name">plot_variable</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">va</span>,
+        <span class="summary-sig-arg">lv</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.plot_variable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_OLD"></a><span class="summary-sig-name">get_OLD</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">va</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.get_OLD">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_latlon"></a><span class="summary-sig-name">get_latlon</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.get_latlon">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_time_seq"></a><span class="summary-sig-name">get_time_seq</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Makes sure time is time sequence (YYYY,MM,DD,HH,MM,SS)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.get_time_seq">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_fname"></a><span class="summary-sig-name">get_fname</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.get_fname">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="basemap_setup"></a><span class="summary-sig-name">basemap_setup</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.basemap_setup">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="colocate_WRF_map"></a><span class="summary-sig-name">colocate_WRF_map</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">wrfdir</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.colocate_WRF_map">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ruc.RUC-class.html#compute_shear_old" class="summary-sig-name">compute_shear_old</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">nc</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      top and bottom in km.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.compute_shear_old">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_wind10_2"></a><span class="summary-sig-name">compute_wind10_2</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">nc</span>)</span><br />
+      Version '3' for RAP has U10 and V10</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.compute_wind10_2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.ruc.RUC-class.html#get_p" class="summary-sig-name">get_p</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">level</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>)</span><br />
+      Return an pressure level isosurface of given variable.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.get_p">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_key"></a><span class="summary-sig-name">get_key</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>)</span><br />
+      Returns the netcdf key for the desired variable</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.get_key">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_grid_spacing"></a><span class="summary-sig-name">get_grid_spacing</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.get_grid_spacing">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_theta"></a><span class="summary-sig-name">compute_theta</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span><br />
+      Override due to lack of &quot;T&quot; in RUC.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.compute_theta">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="evac.datafiles.wrfout.WRFOut-class.html">wrfout.WRFOut</a></code></b>:
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#check_destagger">check_destagger</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#check_vcs">check_vcs</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#compute">compute</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#compute_ave">compute_ave</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#create_slice">create_slice</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#destagger">destagger</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#em_real_init">em_real_init</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#get">get</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#get_XY">get_XY</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#get_dimensions">get_dimensions</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#get_dims">get_dims</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#get_lat_idx">get_lat_idx</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#get_latlon_idx">get_latlon_idx</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#get_limited_domain">get_limited_domain</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#get_limits">get_limits</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#get_lon_idx">get_lon_idx</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#get_missing_axes">get_missing_axes</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#get_time_idx">get_time_idx</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#ideal_init">ideal_init</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#interp_to_p_fortran">interp_to_p_fortran</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#make_4D">make_4D</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#return_tbl">return_tbl</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#return_tidx_range">return_tidx_range</a></code>,
+      <code><a href="evac.datafiles.wrfout.WRFOut-class.html#wrftime_to_datenum">wrftime_to_datenum</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">fpath</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Initialisation fetches and computes basic user-friendly
+variables that are most often accessed.
+
+Args:
+    fpath    :    absolute path to netCDF4 (wrfout) file
+    fmt (str,optional)      : em_real or ideal or met_em
+    ncks (bool,optional)    : whether WRFOut file has been stripped to a few variables.
+                                Hence check for KeyErrors for variables
+
+</pre>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="evac.datafiles.wrfout.WRFOut-class.html#__init__">wrfout.WRFOut.__init__</a>
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="cut_to_wrf"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">cut_to_wrf</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">wrfpath</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.cut_to_wrf">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Cut down domain to match a WRF file.
+
+Args:
+    wrfpath: Absolute path to WRF file.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="check_compute"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">check_compute</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">vrbl</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.check_compute">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>OVERRIDE WRFOUT VERSION</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="evac.datafiles.wrfout.WRFOut-class.html#check_compute">wrfout.WRFOut.check_compute</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="load"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">load</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">vrbl</span>,
+        <span class="sig-arg">tidx</span>,
+        <span class="sig-arg">lvidx</span>,
+        <span class="sig-arg">lonidx</span>,
+        <span class="sig-arg">latidx</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.load">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>OVERRIDE WRFOUT VERSION</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="evac.datafiles.wrfout.WRFOut-class.html#load">wrfout.WRFOut.load</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_shear_old"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_shear_old</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">nc</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.compute_shear_old">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>top and bottom in km. kwargs['top'] kwargs['bottom']</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_p"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_p</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">vrbl</span>,
+        <span class="sig-arg">tidx</span>,
+        <span class="sig-arg">level</span>,
+        <span class="sig-arg">lonidx</span>,
+        <span class="sig-arg">latidx</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.ruc-pysrc.html#RUC.get_p">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Return an pressure level isosurface of given variable.
+Interpolation is linear so watch out.
+
+Dimensions returns as (height,lat,lon)
+Or is it (height,lon, lat!?)
+
+Todos:
+    * Need to include limited domain functionality
+
+if vrbl=='pressure',create constant grid.
+
+</pre>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="evac.datafiles.wrfout.WRFOut-class.html#get_p">wrfout.WRFOut.get_p</a>
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:52:27 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

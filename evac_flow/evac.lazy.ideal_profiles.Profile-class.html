@@ -1,0 +1,1162 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.lazy.ideal_profiles.Profile</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.lazy-module.html">Package&nbsp;lazy</a> ::
+        <a href="evac.lazy.ideal_profiles-module.html">Module&nbsp;ideal_profiles</a> ::
+        Class&nbsp;Profile
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.lazy.ideal_profiles.Profile-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Profile</h1><p class="nomargin-top"><span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+Class for generating idealised profiles for WRF runs.
+
+This script is in need of a lot of work...
+
+Todo:
+    * Everything.
+
+ROWS:
+line 1 is surface information
+lines 2 onwards is a point in profile
+
+COLUMNS:
+column 1 is surface pressure (hPa) for row 1
+--- set this as 1000.00.
+otherwise it is height (m) for rows 2 onwards
+--- increasing in height with row number
+
+column 2 is potential temperature (K)
+--- set row 1 as 300.0 K as reference, probably
+
+column 3 is vapour mixing ratio (g/kg)
+--- set row 1 as 14.00 g/kg, for instance
+
+column 4 is U wind (m/s)
+--- no row 1
+
+column 5 is V wind (m/s)
+--- no row 1
+
+METHODS FOR PROFILE GENERATION
+Temp:
+    - Weisman and Klemp
+    etc
+Wind:
+    - Blah
+
+Dewpoint:
+    - Blah
+
+Args:
+    z (N.ndarray)       :   Altitude above ground level (metres)
+    zL (int,float)      :   LCL (metres AGL)
+    E (int, float)      :   Specified CAPE
+    m (int, float)      :   Profile compression parameter
+    hodotype (str)      :   Hodograph type {'straight','curved'}
+    n (int)             :   Curvature parameter
+    V (int, float)      :   Maximum wind (m/s); overall vert. shear
+    fdir (str)          :   Directory for output file
+    PW (float,int,optional) :   Precip. water (mm)
+    fname (str, optional)   :   Filename for output
+    H (int, float, optional)    :   Vertical scale parameter
+    zT (int, float, optional)   :   Height of the tropopause (m).
+                                        Must be in z
+    RH (float, optional)    : Relative humidity above LCL (as a decimal)
+    method  (str)       :   {'MW01,} Paper from which to create profile
+    k2P (int, float, optional)  :   Pressure at &quot;model level 2&quot;, Pa
+    k2T, k2Td (int, float, optional)    :   Drybumb, dewpoint at &quot;model level 2&quot;, C
+    offset_spd, offset_dir (int, float) :   Speed and direction of background flow
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">z</span>,
+        <span class="summary-sig-arg">fdir</span>,
+        <span class="summary-sig-arg">zL</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">E</span>=<span class="summary-sig-default">2000</span>,
+        <span class="summary-sig-arg">m</span>=<span class="summary-sig-default">4.0</span>,
+        <span class="summary-sig-arg">hodotype</span>=<span class="summary-sig-default">'curved'</span>,
+        <span class="summary-sig-arg">n</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">V</span>=<span class="summary-sig-default">12.0</span>,
+        <span class="summary-sig-arg">PW</span>=<span class="summary-sig-default">30</span>,
+        <span class="summary-sig-arg">thT</span>=<span class="summary-sig-default">343</span>,
+        <span class="summary-sig-arg">tT</span>=<span class="summary-sig-default">213</span>,
+        <span class="summary-sig-arg">th0</span>=<span class="summary-sig-default">300</span>,
+        <span class="summary-sig-arg">qv0</span>=<span class="summary-sig-default">16E-3</span>,
+        <span class="summary-sig-arg">Us</span>=<span class="summary-sig-default">25</span>,
+        <span class="summary-sig-arg">fname</span>=<span class="summary-sig-default">'profile'</span>,
+        <span class="summary-sig-arg">H</span>=<span class="summary-sig-default">14500</span>,
+        <span class="summary-sig-arg">zT</span>=<span class="summary-sig-default">14000</span>,
+        <span class="summary-sig-arg">RH</span>=<span class="summary-sig-default">0.9</span>,
+        <span class="summary-sig-arg">zs</span>=<span class="summary-sig-default">3000</span>,
+        <span class="summary-sig-arg">method</span>=<span class="summary-sig-default">'MW01'</span>,
+        <span class="summary-sig-arg">k2P</span>=<span class="summary-sig-default">96500</span>,
+        <span class="summary-sig-arg">k2T</span>=<span class="summary-sig-default">296.65</span>,
+        <span class="summary-sig-arg">k2Td</span>=<span class="summary-sig-default">296.15</span>,
+        <span class="summary-sig-arg">k2z</span>=<span class="summary-sig-default">250</span>,
+        <span class="summary-sig-arg">offset_spd</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">offset_dir</span>=<span class="summary-sig-default">0</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.ideal_profiles.Profile-class.html#buoyancy" class="summary-sig-name">buoyancy</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Parcel buoyancy profile, or Eq.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.buoyancy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_std_P"></a><span class="summary-sig-name">compute_std_P</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">z</span>)</span><br />
+      Compute pressure in the tropopause as a function of height, for a 
+      standard atmosphere.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_std_P">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_drybulb"></a><span class="summary-sig-name">compute_drybulb</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">theta</span>,
+        <span class="summary-sig-arg">P</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_drybulb">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_RH"></a><span class="summary-sig-name">compute_RH</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Td</span>,
+        <span class="summary-sig-arg">T</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_RH">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.ideal_profiles.Profile-class.html#P_to_z" class="summary-sig-name">P_to_z</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">Pa</span>,
+        <span class="summary-sig-arg">refPa</span>=<span class="summary-sig-default">100000</span>)</span><br />
+      Convert pressure to altitude.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.P_to_z">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="z_to_P"></a><span class="summary-sig-name">z_to_P</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">z</span>,
+        <span class="summary-sig-arg">refPa</span>=<span class="summary-sig-default">100000</span>)</span><br />
+      Convert altitude to pressure.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.z_to_P">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_es"></a><span class="summary-sig-name">compute_es</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>)</span><br />
+      Approximation for saturation water pressure of water.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_es">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_e"></a><span class="summary-sig-name">compute_e</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Td</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">es</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">RH</span>=<span class="summary-sig-default">None</span>)</span><br />
+      RH is decimal.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_e">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_thetae"></a><span class="summary-sig-name">compute_thetae</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">r</span>,
+        <span class="summary-sig-arg">P</span>,
+        <span class="summary-sig-arg">Td</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">RH</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_thetae">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_thetae_2"></a><span class="summary-sig-name">compute_thetae_2</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">theta</span>,
+        <span class="summary-sig-arg">r</span>,
+        <span class="summary-sig-arg">TLCL</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_thetae_2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_thetae_3"></a><span class="summary-sig-name">compute_thetae_3</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">theta</span>,
+        <span class="summary-sig-arg">P</span>,
+        <span class="summary-sig-arg">Td</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">r</span>,
+        <span class="summary-sig-arg">TL</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_thetae_3">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_thetae_4"></a><span class="summary-sig-name">compute_thetae_4</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">p</span>,
+        <span class="summary-sig-arg">r</span>,
+        <span class="summary-sig-arg">TL</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_thetae_4">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_thetaep"></a><span class="summary-sig-name">compute_thetaep</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">p</span>,
+        <span class="summary-sig-arg">r</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">RH</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_thetaep">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_TLCL"></a><span class="summary-sig-name">compute_TLCL</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Td</span>,
+        <span class="summary-sig-arg">T</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_TLCL">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_Tstar"></a><span class="summary-sig-name">compute_Tstar</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">TK</span>,
+        <span class="summary-sig-arg">e</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_Tstar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_theta"></a><span class="summary-sig-name">compute_theta</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">thetae</span>,
+        <span class="summary-sig-arg">r</span>,
+        <span class="summary-sig-arg">TLCL</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_theta">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_Lv"></a><span class="summary-sig-name">compute_Lv</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_Lv">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_qs"></a><span class="summary-sig-name">compute_qs</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">es</span>,
+        <span class="summary-sig-arg">p</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_qs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.ideal_profiles.Profile-class.html#compute_thetae_profile" class="summary-sig-name">compute_thetae_profile</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">TK</span>,
+        <span class="summary-sig-arg">p</span>,
+        <span class="summary-sig-arg">r</span>,
+        <span class="summary-sig-arg">RH</span>)</span><br />
+      Bolton's theta E profile.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_thetae_profile">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_TL"></a><span class="summary-sig-name">compute_TL</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">TK</span>,
+        <span class="summary-sig-arg">rh</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_TL">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_w"></a><span class="summary-sig-name">compute_w</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">P</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_w">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.lazy.ideal_profiles.Profile-class.html#wind" class="summary-sig-name">wind</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Wind profiles.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.wind">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_P_levels"></a><span class="summary-sig-name">compute_P_levels</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">zz</span>,
+        <span class="summary-sig-arg">theta</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_P_levels">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="calc_theta"></a><span class="summary-sig-name">calc_theta</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">z</span>,
+        <span class="summary-sig-arg">ztr</span>=<span class="summary-sig-default">12000.0</span>,
+        <span class="summary-sig-arg">theta0</span>=<span class="summary-sig-default">300.0</span>,
+        <span class="summary-sig-arg">thetatr</span>=<span class="summary-sig-default">343</span>,
+        <span class="summary-sig-arg">Ttr</span>=<span class="summary-sig-default">213</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.calc_theta">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="calc_RH"></a><span class="summary-sig-name">calc_RH</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">z</span>,
+        <span class="summary-sig-arg">ztr</span>=<span class="summary-sig-default">12000.0</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.calc_RH">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="calc_U"></a><span class="summary-sig-name">calc_U</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">z</span>,
+        <span class="summary-sig-arg">us</span>,
+        <span class="summary-sig-arg">zs</span>=<span class="summary-sig-default">3000</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.calc_U">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="plot_skewT"></a><span class="summary-sig-name">plot_skewT</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.plot_skewT">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_Td"></a><span class="summary-sig-name">compute_Td</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">RH</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_Td">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_rv"></a><span class="summary-sig-name">compute_rv</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">p</span>,
+        <span class="summary-sig-arg">Td</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">RH</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">T</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_rv">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="RH_invert_RV"></a><span class="summary-sig-name">RH_invert_RV</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">P</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">RV</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.RH_invert_RV">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_P_at_z"></a><span class="summary-sig-name">compute_P_at_z</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Pbot</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">r</span>,
+        <span class="summary-sig-arg">dz</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_P_at_z">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_T_with_LCL"></a><span class="summary-sig-name">compute_T_with_LCL</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">P</span>,
+        <span class="summary-sig-arg">PLCL</span>,
+        <span class="summary-sig-arg">TLCL</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_T_with_LCL">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_T_invert_thetae"></a><span class="summary-sig-name">compute_T_invert_thetae</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">thetae</span>,
+        <span class="summary-sig-arg">P</span>,
+        <span class="summary-sig-arg">r</span>,
+        <span class="summary-sig-arg">TLCL</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_T_invert_thetae">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_theta_2"></a><span class="summary-sig-name">compute_theta_2</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">P</span>,
+        <span class="summary-sig-arg">T</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_theta_2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_Tv"></a><span class="summary-sig-name">compute_Tv</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">r</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_Tv">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_thetapert"></a><span class="summary-sig-name">compute_thetapert</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">B</span>,
+        <span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">r</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_thetapert">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="MWtemphum"></a><span class="summary-sig-name">MWtemphum</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.MWtemphum">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="MWwind"></a><span class="summary-sig-name">MWwind</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.MWwind">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="create_textfile"></a><span class="summary-sig-name">create_textfile</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.create_textfile">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_stdT"></a><span class="summary-sig-name">get_stdT</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">z</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.get_stdT">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_stdP"></a><span class="summary-sig-name">get_stdP</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">z</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.get_stdP">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="PPP"></a><span class="summary-sig-name">PPP</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Z</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.PPP">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="buoyancy"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">buoyancy</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.buoyancy">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Parcel buoyancy profile, or Eq. (A1) in MW01.
+
+Returns
+-------
+
+b   :   array_like
+    Atmospheric profile of buoyancy.
+qv  :   array_like
+    Atmospheric profile of mixing ratio
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="P_to_z"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">P_to_z</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">T</span>,
+        <span class="sig-arg">Pa</span>,
+        <span class="sig-arg">refPa</span>=<span class="sig-default">100000</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.P_to_z">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Convert pressure to altitude.
+
+Parameters
+----------
+T   :   int, float, array_like
+    Dry-bulb temperature. If array, must be identical to Pa in size
+Pa  :   int, float, array_like
+    Pressure (Pa). If array, must be identical to T in size
+refPa   :   int, float, optional
+    Reference pressure (Pa).
+
+Returns
+-------
+z   :   float, array_like
+    Height(s) above ground level (m), same size as Pa, T.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_thetae_profile"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_thetae_profile</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">TK</span>,
+        <span class="sig-arg">p</span>,
+        <span class="sig-arg">r</span>,
+        <span class="sig-arg">RH</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.compute_thetae_profile">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Bolton's theta E profile.
+
+Parameters
+----------
+TK  :   int, float
+    Temp at initial level (K)
+p   :   int, float
+    Pressure at initial level (Pa)
+r   :   int, float
+    Mixing ratio at initial level (g/kg?)
+RH  :   int, float
+    RH...where? (percent)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="wind"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">wind</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.lazy.ideal_profiles-pysrc.html#Profile.wind">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Wind profiles.
+
+Parameters
+----------
+
+Returns
+-------
+u, v    :   array-like
+    Arrays of u and v profiles
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:52:27 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

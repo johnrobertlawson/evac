@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.plot.xsection.CrossSection</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.plot-module.html">Package&nbsp;plot</a> ::
+        <a href="evac.plot.xsection-module.html">Module&nbsp;xsection</a> ::
+        Class&nbsp;CrossSection
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.plot.xsection.CrossSection-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class CrossSection</h1><p class="nomargin-top"><span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+figure.Figure --+
+                |
+               <strong class="uidshort">CrossSection</strong>
+</pre>
+
+<hr />
+<pre class="literalblock">
+Create cross-sections through WRF data.
+
+This can be time-height or distance-height.
+The height can be pressure, model, geometric, or geopotential
+
+The output can be saved to a pickle file.
+This can be useful for creating composites
+
+Input lat/lon can be either specified or from x,y co-ords
+calculated from manually clicking on a map with overlaid
+data (reflectivity, etc).
+
+Todo:
+    * Make sure the refactoring from WEM is complete.
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.xsection.CrossSection-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">wrfout</span>,
+        <span class="summary-sig-arg">latA</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">lonA</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">latB</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">lonB</span>=<span class="summary-sig-default">0</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.xsection.CrossSection-class.html#translate_xs" class="summary-sig-name">translate_xs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">sh</span>)</span><br />
+      Translate the cross-section up or down a certain number of points.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.translate_xs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_xs_slice"></a><span class="summary-sig-name">get_xs_slice</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.get_xs_slice">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.xsection.CrossSection-class.html#popup_transect" class="summary-sig-name">popup_transect</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Pops up window for user to select start and end point for the 
+      cross-section.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.popup_transect">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_latlon_from_xy"></a><span class="summary-sig-name">get_latlon_from_xy</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">y</span>)</span><br />
+      Look up lat/lon in wrfout file from x and y coordinates.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.get_latlon_from_xy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="mouseclick"></a><span class="summary-sig-name">mouseclick</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.mouseclick">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.xsection.CrossSection-class.html#get_xy_from_latlon" class="summary-sig-name">get_xy_from_latlon</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">lat</span>,
+        <span class="summary-sig-arg">lon</span>)</span><br />
+      Return x and y coordinates for given lat/lon.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.get_xy_from_latlon">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_wrfout_slice"></a><span class="summary-sig-name">get_wrfout_slice</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">utc</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">x</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">y</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.get_wrfout_slice">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.xsection.CrossSection-class.html#get_height" class="summary-sig-name">get_height</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">t</span>,
+        <span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">y</span>,
+        <span class="summary-sig-arg">z</span>,
+        <span class="summary-sig-arg">pts</span>)</span><br />
+      Return terrain heights along cross-section</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.get_height">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.xsection.CrossSection-class.html#interp" class="summary-sig-name">interp</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">geopot</span>,
+        <span class="summary-sig-arg">pres</span>,
+        <span class="summary-sig-arg">p</span>)</span><br />
+      Returns the interpolated geopotential at p using the values in pres.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.interp">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="plot_average"></a><span class="summary-sig-name">plot_average</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">avepts</span>,
+        <span class="summary-sig-arg">ttime</span>,
+        <span class="summary-sig-arg">outpath</span>,
+        <span class="summary-sig-arg">clvs</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">ztop</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">f_suffix</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">cmap</span>=<span class="summary-sig-default">'jet'</span>,
+        <span class="summary-sig-arg">contour_vrbl</span>=<span class="summary-sig-default">'skip'</span>,
+        <span class="summary-sig-arg">contour_clvs</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">cflabel</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">cftix</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.plot_average">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.xsection.CrossSection-class.html#plot_xs" class="summary-sig-name">plot_xs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">ttime</span>,
+        <span class="summary-sig-arg">outpath</span>,
+        <span class="summary-sig-arg">clvs</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">ztop</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">f_suffix</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">cmap</span>=<span class="summary-sig-default">'jet'</span>,
+        <span class="summary-sig-arg">contour_vrbl</span>=<span class="summary-sig-default">'skip'</span>,
+        <span class="summary-sig-arg">contour_clvs</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Inputs:
+vrbl        :   variable to plot, from this list:
+                parawind,perpwind,wind,U,V,W,T,RH,
+ttime       :   time in ...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.plot_xs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="draw_transect"></a><span class="summary-sig-name">draw_transect</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">outpath</span>,
+        <span class="summary-sig-arg">fname</span>,
+        <span class="summary-sig-arg">radar</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.draw_transect">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.plot.xsection.CrossSection-class.html#create_linenormal_xs" class="summary-sig-name">create_linenormal_xs</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">y</span>,
+        <span class="summary-sig-arg">length_pts</span>=<span class="summary-sig-default">3</span>)</span><br />
+      Return a cross-section that runs normal to the existing cross-section
+      contained in self.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.create_linenormal_xs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">wrfout</span>,
+        <span class="sig-arg">latA</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">lonA</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">latB</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">lonB</span>=<span class="sig-default">0</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        figure.Figure.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="translate_xs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">translate_xs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">sh</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.translate_xs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Translate the cross-section up or down a certain number of points. For
+  simplicity with grid spacing, the logic allows for 45 degree translation 
+  only.</p>
+  <p>sh  :   number of points to shift</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="popup_transect"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">popup_transect</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.popup_transect">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Pops up window for user to select start and end point for the 
+  cross-section.</p>
+  <p>Optional: this map can be overlaid with data to better guide the 
+  decision.</p>
+  <p>Optional: the transect can be saved as an image with/without the 
+  overlaid data, useful for publication.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_xy_from_latlon"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_xy_from_latlon</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">lat</span>,
+        <span class="sig-arg">lon</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.get_xy_from_latlon">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return x and y coordinates for given lat/lon.</p>
+  <p>exactlat, exactlon      :   exact coordinates of closest x/y</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_height"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_height</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">t</span>,
+        <span class="sig-arg">x</span>,
+        <span class="sig-arg">y</span>,
+        <span class="sig-arg">z</span>,
+        <span class="sig-arg">pts</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.get_height">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return terrain heights along cross-section</p>
+  <p>TODO: What's the diff between the outputs?</p>
+  <p>Inputs: t       :   time index as int x       :   x indices, as int y
+  :   y imdices, as int z       :   number of levels, as int pts     :   
+  number of points along the x-sec</p>
+  <p>Outputs: terrain_z   :   ter0,rain height heighthalf  :   who 
+  knows?</p>
+  <p>Assuming t=0</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="interp"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">interp</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">geopot</span>,
+        <span class="sig-arg">pres</span>,
+        <span class="sig-arg">p</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.interp">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns the interpolated geopotential at p using the values in pres. 
+  The geopotential for an element in pres must be given by the 
+  corresponding element in geopot. The length of the geopot and pres arrays
+  must be the same.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="plot_xs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">plot_xs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">vrbl</span>,
+        <span class="sig-arg">ttime</span>,
+        <span class="sig-arg">outpath</span>,
+        <span class="sig-arg">clvs</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">ztop</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">f_suffix</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">cmap</span>=<span class="sig-default">'jet'</span>,
+        <span class="sig-arg">contour_vrbl</span>=<span class="sig-default">'skip'</span>,
+        <span class="sig-arg">contour_clvs</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.plot_xs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Inputs:
+vrbl        :   variable to plot, from this list:
+                parawind,perpwind,wind,U,V,W,T,RH,
+ttime       :   time in ... format
+outpath     :   absolute path to directory to save output
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="create_linenormal_xs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">create_linenormal_xs</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">x</span>,
+        <span class="sig-arg">y</span>,
+        <span class="sig-arg">length_pts</span>=<span class="sig-default">3</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.plot.xsection-pysrc.html#CrossSection.create_linenormal_xs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return a cross-section that runs normal to the existing cross-section 
+  contained in self.</p>
+  <p>x,y         :   coordinates of intersection length_pts  :   length of 
+  normal line in grid points</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:52:27 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

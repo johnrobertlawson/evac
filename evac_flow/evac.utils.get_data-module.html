@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.utils.get_data</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.utils-module.html">Package&nbsp;utils</a> ::
+        Module&nbsp;get_data
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.utils.get_data-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module get_data</h1><p class="nomargin-top"><span class="codelink"><a href="evac.utils.get_data-pysrc.html">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+A collection of functions to download weather forecast/observed data.
+
+Todo:
+    * Integrate with :any:`evac.datafiles.obs` and other related things
+    * Clean up - it's pretty messy in here!
+
+</pre>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.get_data-module.html#getgefs" class="summary-sig-name">getgefs</a>(<span class="summary-sig-arg">dates</span>,
+        <span class="summary-sig-arg">download</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">split</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">lowres</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">custom_ens</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">control</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">coord</span>=<span class="summary-sig-default">'latlon'</span>)</span><br />
+      This script downloads all variables for GEFS R2 reforecasts.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.get_data-pysrc.html#getgefs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.get_data-module.html#getgfs" class="summary-sig-name">getgfs</a>(<span class="summary-sig-arg">dates</span>,
+        <span class="summary-sig-arg">hours</span>)</span><br />
+      Downloads GFS analysis data.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.get_data-pysrc.html#getgfs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.get_data-module.html#getnam" class="summary-sig-name">getnam</a>(<span class="summary-sig-arg">dates</span>,
+        <span class="summary-sig-arg">hours</span>,
+        <span class="summary-sig-arg">datatype</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Downloads NAM analysis and forecast data.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.get_data-pysrc.html#getnam">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getruc"></a><span class="summary-sig-name">getruc</span>(<span class="summary-sig-arg">utc</span>,
+        <span class="summary-sig-arg">ncpath</span>=<span class="summary-sig-default">'./'</span>,
+        <span class="summary-sig-arg">convert2nc</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">duplicate</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.get_data-pysrc.html#getruc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="RUC_fname"></a><span class="summary-sig-name">RUC_fname</span>(<span class="summary-sig-arg">utc</span>,
+        <span class="summary-sig-arg">filetype</span>=<span class="summary-sig-default">'grib'</span>)</span><br />
+      Returns RUC filename for date.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.get_data-pysrc.html#RUC_fname">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="RUC_URL"></a><span class="summary-sig-name">RUC_URL</span>(<span class="summary-sig-arg">utc</span>)</span><br />
+      Returns URL to download RUC file from nomads.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.get_data-pysrc.html#RUC_URL">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="RUC_version"></a><span class="summary-sig-name">RUC_version</span>(<span class="summary-sig-arg">utc</span>,
+        <span class="summary-sig-arg">fname</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">URL</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Returns the version/fname of RUC file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.get_data-pysrc.html#RUC_version">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="getgefs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getgefs</span>(<span class="sig-arg">dates</span>,
+        <span class="sig-arg">download</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">split</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">lowres</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">custom_ens</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">control</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">coord</span>=<span class="sig-default">'latlon'</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.get_data-pysrc.html#getgefs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>This script downloads all variables for GEFS R2 reforecasts. All runs 
+  are initialised at 0000 UTC.</p>
+  <p>Inputs (all optional unless stated): dates       :   YYYYMMDD, list of
+  strings (mandatory) download    :   whether to download the data split
+  :   whether to split up the data lowres      :   whether to download 
+  times after T+190 custom_ens  :   a custom list of perturbation ensemble 
+  members control     :   whether to download the control member coord
+  :   latlon/gaussian grid</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getgfs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getgfs</span>(<span class="sig-arg">dates</span>,
+        <span class="sig-arg">hours</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.get_data-pysrc.html#getgfs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Downloads GFS analysis data.</p>
+  <p>Inputs: dates       :   List of strings, YYYYMMDD hours       :   List
+  of strings, HH</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getnam"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getnam</span>(<span class="sig-arg">dates</span>,
+        <span class="sig-arg">hours</span>,
+        <span class="sig-arg">datatype</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.get_data-pysrc.html#getnam">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Downloads NAM analysis and forecast data.</p>
+  <p>Inputs: dates       :   List of strings, YYYYMMDD hours       :   List
+  of strings, HH datatype    :   analysis or forecast.</p>
+  <p>Optional arguments for forecasts via kwargs: tmax        :   maximum 
+  forecast time to download (inclusive) tint        :   internal (hr) 
+  between fetched forecasts</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:52:27 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
