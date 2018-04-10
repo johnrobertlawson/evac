@@ -69,8 +69,12 @@ class Verif:
             V = Verif(E,ST4)
 
     """
-    def __init__(self,ensemble,outdir,datadir=False,*args):
-        self.E = ensemble    
+    def __init__(self,ensembles,obs,outdir,datadir=False,):
+        # A tuple of obs objects
+        self.obs = obs
+        # A tuple of forecast ensembles (for same times)
+        self.E = ensembles    
+
         self.outdir = outdir
         self.obdict = *args
         self.datadir = datadir
@@ -123,6 +127,19 @@ class Verif:
                 return True
         return False
 
+    def plot_violin(self,vrbl,*args,**kwargs):
+        """ Plot violin plot
+
+        Args:
+            vrbl (str): name of variable to evaluate
+
+        This is an alternative to box-and-whisker.
+        """
+        self.__get_plot_options(*args,**kwargs)
+        self.create_dict(models='all')
+        VP = ViolinPlot()
+        VP.plot()
+        
 
     def plot_thumbnails(self,vrbl,ensmembers='all',ob='auto',
                         mplargs=None,mplkwargs=None,verif_first=True

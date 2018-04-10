@@ -328,3 +328,5 @@ class Figure:
           # Save data before plotting
           clskwargs['save_data'] = kwargs.get('save_data',False)
           return clskwargs,plotkwargs,mplkwargs
+
+    def 
