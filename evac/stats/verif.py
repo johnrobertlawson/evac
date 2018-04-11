@@ -54,7 +54,7 @@ import multiprocessing
 
 import numpy as N
 
-from evac.plot.thumbnails import Thumbnails
+# from evac.plot.thumbnails import Thumbnails
 from evac.plot.linegraph import LineGraph
 from evac.stats.detscores import DetScores
 from evac.stats.probscores import ProbScores
