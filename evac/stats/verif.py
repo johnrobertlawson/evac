@@ -110,9 +110,9 @@ class Verif:
 
     """
     _STATS = dict(
-            contingency = cls.compute_contingency,
-            crps = cls.compute_crps,
-            rmse = cls.compute_rmse,
+            contingency = self.compute_contingency,
+            crps = self.compute_crps,
+            rmse = self.compute_rmse,
             )
 
     def __init__(self,ensemble,obs,outdir=False,datadir=False,
