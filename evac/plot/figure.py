@@ -72,7 +72,7 @@ class Figure:
         """
         if len(naming) == 0:
             if use_time:
-                return = utils.generate_timestamp_fname(filetype)
+                utc = utils.generate_timestamp_fname(filetype)
             else:
                 raise Exception("What are we creating the filename from?")
         fname = joiner.join([str(a) for a in naming])
