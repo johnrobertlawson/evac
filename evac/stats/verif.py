@@ -161,7 +161,7 @@ class Verif:
     
     ##### INTERFACE METHODS - COMPUTE #####
     
-    def compute_stats(self,stats,verif_times,dom=1,ncpus=1,
+    def compute_stats(self,stats,vrbl,verif_times,dom=1,ncpus=1,
                         **kwargs):
         """ Megascript to control all stats computations.
 
@@ -240,7 +240,7 @@ class Verif:
         xa = self.do_reprojection(obdata,oblons,oblats)
         P = ProbScores(xfs=xfs,xa=xa)
         # for thresh in self.crps_thresholds:
-            crps = P.compute_crps(self.crps_thresholds)
+        crps = P.compute_crps(self.crps_thresholds)
 
         # Save to disk
         # def save_npy(self,data.vrbl,score,lv,fchr,dom,ens,):
