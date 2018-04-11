@@ -282,51 +282,50 @@ class Figure:
 
         return clskwargs, mplkwargs, plotkwargs
 
-      def __get_plot_options1(self,vrbl,*args,**kwargs):
-          """ Filter arguments and key-word arguments for plotting methods.
+    def __get_plot_options1(self,vrbl,*args,**kwargs):
+        """ Filter arguments and key-word arguments for plotting methods.
 
-          Whatever is in dictionary will overwrite defaults in the plotting
-          method.
+        Whatever is in dictionary will overwrite defaults in the plotting
+        method.
 
-          These may be
-              * fhrs (forecast hour plotting times - or all)
-              * ensmems (ensemble members, or all)
+        These may be
+          * fhrs (forecast hour plotting times - or all)
+          * ensmems (ensemble members, or all)
 
 
-          """
-          # Get plotting levels if not already given
-          # TODO: rewrite this using hasattr() or something.
-          S = Scales(vrbl)
-          if not 'levels' in kwargs:
-              kwargs['levels'] = S.clvs
-          if not 'cmap' in kwargs:
-              kwargs['cmap'] = S.cm
+        """
+        # Get plotting levels if not already given
+        # TODO: rewrite this using hasattr() or something.
+        S = Scales(vrbl)
+        if not 'levels' in kwargs:
+          kwargs['levels'] = S.clvs
+        if not 'cmap' in kwargs:
+          kwargs['cmap'] = S.cm
 
-          # Specific things for certain variables
-          if vrbl in ('REFL_10CM',"REFL_comp"):
-              pass
+        # Specific things for certain variables
+        if vrbl in ('REFL_10CM',"REFL_comp"):
+          pass
 
-          # Save all figures to a subdirectory
-          if subdir in kwargs:
-              utils.trycreate(subdir,is_folder=True)
+        # Save all figures to a subdirectory
+        if subdir in kwargs:
+          utils.trycreate(subdir,is_folder=True)
 
-          # What times are being plotted?
-          # If all, return list of all times
-          if 'utc' in kwargs:
-              pass
-          elif ('fchr' not in kwargs) or (kwargs['fchr'] == 'all'):
-              kwargs['utc'] = E.list_of_times
-          # Does this pick up on numpy arange?
-          elif isinstance(kwargs['fchr'], (list,tuple)):
-              kwargs['utc'] = []
-              for f in kwargs['fchr']:
-                  utc = self.inittime + datetime.timedelta(seconds=3600*f)
-                  kwargs['fchr'].append(utc)
+        # What times are being plotted?
+        # If all, return list of all times
+        if 'utc' in kwargs:
+          pass
+        elif ('fchr' not in kwargs) or (kwargs['fchr'] == 'all'):
+          kwargs['utc'] = E.list_of_times
+        # Does this pick up on numpy arange?
+        elif isinstance(kwargs['fchr'], (list,tuple)):
+          kwargs['utc'] = []
+          for f in kwargs['fchr']:
+              utc = self.inittime + datetime.timedelta(seconds=3600*f)
+              kwargs['fchr'].append(utc)
 
-          # Make domain smaller if requested
+        # Make domain smaller if requested
 
-          # Save data before plotting
-          clskwargs['save_data'] = kwargs.get('save_data',False)
-          return clskwargs,plotkwargs,mplkwargs
+        # Save data before plotting
+        clskwargs['save_data'] = kwargs.get('save_data',False)
+        return clskwargs,plotkwargs,mplkwargs
 
-    def 
