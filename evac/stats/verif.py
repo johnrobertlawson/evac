@@ -244,7 +244,7 @@ class Verif:
 
         # Save to disk
         # def save_npy(self,data.vrbl,score,lv,fchr,dom,ens,):
-        self.save_npy(data,vrbl,'CRPS',lv,fchr,dom.'mean')
+        self.save_npy(data,vrbl,'CRPS',lv,fchr,dom,'mean')
 
     ##### INTERFACE METHODS - PLOT #####
 
@@ -479,7 +479,8 @@ class Verif:
         """
         arbdict = {}
         for dom in self.doms:
-            arbdict[dom] = E.arbitrary_pick(dom=dom,dataobj=False,give_path=True)
+            arbdict[dom] = E.arbitrary_pick(dom=dom,
+                                    dataobj=False,give_path=True)
         return arbdict
 
     def check_ensemble_domains(self):
