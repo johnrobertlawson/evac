@@ -268,7 +268,7 @@ class Verif:
         
 
     def plot_thumbnails(self,vrbl,ensmembers='all',ob='auto',
-                        mplargs=None,mplkwargs=None,verif_first=True
+                        mplargs=None,mplkwargs=None,verif_first=True,
                         *args,**kwargs):
         """ Plot postage stamps or thumbnails of ensemble members listed
         (by default, this is all).
