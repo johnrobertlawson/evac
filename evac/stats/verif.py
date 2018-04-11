@@ -243,7 +243,8 @@ class Verif:
             crps = P.compute_crps(self.crps_thresholds)
 
         # Save to disk
-        self.save_npy(data,ens='mean',...)
+        # def save_npy(self,data.vrbl,score,lv,fchr,dom,ens,):
+        self.save_npy(data,vrbl,'CRPS',lv,fchr,dom.'mean')
 
     ##### INTERFACE METHODS - PLOT #####
 
@@ -583,8 +584,10 @@ class Verif:
         return False
         
 
-    def save_npy(self,data):
-        fpath = self.generate_npy_fname(fullpath=True)
+    def save_npy(self,data.vrbl,score,lv,fchr,dom,ens,):
+        fpath = self.generate_npy_fname(vrbl,score,lv,fchr,
+                                dom,ens,fullpath=True)
+        utils.trycreate(fpath)
         N.save(data,fpath)
         print("Saved data to {}".format(fpath))
         return
