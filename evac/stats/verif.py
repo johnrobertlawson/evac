@@ -402,7 +402,7 @@ class Verif:
         clskwargs['save_data'] = kwargs.get('save_data',False)
         return clskwargs,plotkwargs,mplkwargs
             
-    def generate_npy_fname(self,vrbl,score,lv,fchr.dom,ens,
+    def generate_npy_fname(self,vrbl,score,lv,fchr,dom,ens,
                             fullpath=False,*args,**kwargs):
         """ Save to disc with a naming scheme.
 
