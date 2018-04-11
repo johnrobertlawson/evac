@@ -12,7 +12,7 @@ import matplotlib as M
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 
-from evac.utils.defaults import Defaults
+# from evac.utils.defaults import Defaults
 import evac.utils as utils
 # import evac.utils.reproject as reproject
 # import evac.utils.unix_tools as unix_tools
