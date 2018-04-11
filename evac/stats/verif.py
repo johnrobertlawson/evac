@@ -109,11 +109,6 @@ class Verif:
             reprojection to a common domain is done with these options
 
     """
-    _STATS = dict(
-            contingency = self.compute_contingency,
-            crps = self.compute_crps,
-            rmse = self.compute_rmse,
-            )
 
     def __init__(self,ensemble,obs,outdir=False,datadir=False,
                     reproject_dict=None):
@@ -158,6 +153,10 @@ class Verif:
         # Check all settings are in reproject_dict?
         self.RD = reproject_dict
         self.newgrid = self.create_newgrid()
+
+        # Look up stats methods here
+        self._STATS = self.generate_lookup_table()
+
     
     ##### INTERFACE METHODS - COMPUTE #####
     
@@ -528,12 +527,24 @@ class Verif:
         self.pool = Pool(ncpus)
         return
 
-    @classmethod
-    def lookup_statfunc(cls,stat):
+    # @classmethod
+    def lookup_statfunc(self,stat):
+    # def lookup_statfunc(cls,stat):
         """ Dictionary lookup for stat-compute methods.
 
+        Todo:
+            * Why won't it work as classmethod?
         """
-        return cls._STATS[stat]
+        return self._STATS[stat]
+        # return cls._STATS[stat]
+
+    def generate_lookup_table(self):
+        STATS = dict(
+                contingency = self.compute_contingency,
+                crps = self.compute_crps,
+                rmse = self.compute_rmse,
+                )
+        return STATS
 
     def get_domlist(self,dom):
         """ Get list of domains.
