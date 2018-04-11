@@ -15,7 +15,8 @@ try:
 except ImportError:
     print("Module paramiko unavailable. Ignoring import.")
 
-import evac.utils.gis_tools as gis_tools
+# import evac.utils.gis_tools as gis_tools
+from . import gis_tools
 
 def bridge_multi(orders,fromlist=False,todir=False,
                     return_newlist=False):
