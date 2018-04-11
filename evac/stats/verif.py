@@ -50,7 +50,9 @@ Todo:
 import os
 import pdb
 import copy
-import multiprocessing
+from multiprocessing import Pool, Lock
+import itertools
+import datetime
 
 import numpy as N
 
@@ -61,6 +63,8 @@ from evac.stats.probscores import ProbScores
 from evac.plot.scorecard import ScoreCard
 from evac.datafiles.obs import Obs
 import evac.utils as utils
+from evac.utils.reproject_tools import reproject, WRF_native_grid, create_new_grid, VerifGrid
+
 
 class Verif:
     """ A suite of verification scripts.
@@ -110,6 +114,7 @@ class Verif:
 
     """
 
+
     def __init__(self,ensemble,obs,outdir=False,datadir=False,
                     reproject_dict=None):
         self.E = ensemble
@@ -117,11 +122,14 @@ class Verif:
         # A tuple of obs objects, or just one.
         # So a bunch of Radar objects for different times is no problem,
         # as we can search for the right one.
+
         if isinstance(obs,(list,tuple)):
             self.obs = obs
         else:
-            if isinstance(obs,Obs):
-                self.obs = (obs,)
+            self.obs = (obs,)
+            # if isinstance(obs,Obs):
+                # self.obs = (obs,)
+        self.obdict = self.generate_obdict()
 
         # These are optional, for later use
         self.outdir = outdir
@@ -159,9 +167,12 @@ class Verif:
 
     
     ##### INTERFACE METHODS - COMPUTE #####
-    
+   
+    def compute_rmse(self,):
+        pass
+
     def compute_stats(self,stats,vrbl,verif_times,dom=1,ncpus=1,
-                        **kwargs):
+                        lvs=None,**kwargs):
         """ Megascript to control all stats computations.
 
         Args:
@@ -169,7 +180,7 @@ class Verif:
                 :func:`lookup_stats` for a list.
             verif_times: one, or list/tuple of datetime.datetimes.
             dom (int): domain(s) to loop over
-            lvs: levels to loop over
+            lvs: levels to loop over - default is None for surface etc
             ncpus (int): number of CPUs for parallel computing.
             kwargs: settings to pass to compute.
 
@@ -183,9 +194,14 @@ class Verif:
         """
         self.start_your_engines(ncpus)
 
+        # This is written silly for debugging
+        verif_times1 = self.ensure_list(verif_times)
+        verif_times2 = self.ensure_integers(verif_times1)
+        verif_times = verif_times2
+
         # add kwargs to class
         self.allowed_compute_kwargs = ['crps_thresholds',]
-        for k,v in kwargs:
+        for k,v in kwargs.items():
             if k in self.allowed_compute_kwargs:
                 setattr(self,k,v)
             else:
@@ -196,7 +212,7 @@ class Verif:
         domlist = self.get_domlist(dom)
 
         # Create iterable of times and stats to iterate over
-        itr = self.create_stats_iterable(self,vrbl,verif_times=verif_times,
+        itr = self.create_stats_iterable(vrbl=vrbl,verif_times=verif_times,
                                         doms=domlist,lvs=lvs)
 
         for stat in stats:
@@ -204,8 +220,9 @@ class Verif:
             statfunc = self.lookup_statfunc(stat)
             if ncpus == 1:
                 # Serial mode, good for debugging
-                for chunk in len(itr):
-                    statfunc(next(itr))
+                for chunk in itr:
+                    #statfunc(next(itr))
+                    statfunc(chunk)
             else:
                 result = pool.map(statfunc,itr,chunksize=1)
                 pool.close()
@@ -213,11 +230,11 @@ class Verif:
         return
 
     def compute_crps(self,itr):
-        fcsthr,dom,lv,vrbl = itr
+        fchr,dom,lv,vrbl = itr
 
         # Check we have options 
         # This is something like 0 to 100 for 1-h QPF
-        assert self.crps_thresholds
+        assert 'crps_thresholds' in self.__dict__
 
         # Get raw data
 
@@ -225,17 +242,25 @@ class Verif:
         # Save for each.
         # TODO: implement fchr in E.get to look up accum_precip,
         # or instantaneous variables (validtime? utc?)
-        fdata = E.get(vrbl,valid_fchr=fchr,dom=dom,lv=lv)
+        # TODO: Not hard code QPF accum.
+        fdata = self.reduce_data_dims(self.E.get(vrbl,fcsthr=fchr,dom=dom,
+                                level=lv,accum_hr=1))
         
+
         # Load verification
         utc = self.lookup_validtime(fchr)
         # Make lv ignored if it's nonsense
         # Need to implement get() in all obs type.
         # Do this in parent class and override.
-        obdata = self.get_ob_instance(vrbl).get(utc,lv=lv)
+        obobj = self.get_ob_instance(vrbl)
+        obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
 
         # Reproject and compute
+        flats, flons = self.E.get_latlons(dom=dom)
         xfs = self.do_reprojection(fdata,flons,flats)
+
+        oblats = obobj.lats
+        oblons = obobj.lons
         xa = self.do_reprojection(obdata,oblons,oblats)
         P = ProbScores(xfs=xfs,xa=xa)
         # for thresh in self.crps_thresholds:
@@ -389,7 +414,7 @@ class Verif:
         elif ('fchr' not in kwargs) or (kwargs['fchr'] == 'all'):
             kwargs['utc'] = E.list_of_times
         # Does this pick up on numpy arange?
-        elif isinstance(kwargs['fchr'], (list,tuple)):
+        elif isinstance(kwargs['fchr'], (list,tuple,N.ndarray)):
             kwargs['utc'] = []
             for f in kwargs['fchr']:
                 utc = self.inittime + datetime.timedelta(seconds=3600*f)
@@ -479,7 +504,7 @@ class Verif:
         """
         arbdict = {}
         for dom in self.doms:
-            arbdict[dom] = E.arbitrary_pick(dom=dom,
+            arbdict[dom] = self.E.arbitrary_pick(dom=dom,
                                     dataobj=False,give_path=True)
         return arbdict
 
@@ -487,10 +512,10 @@ class Verif:
         # This should be a list of doms, not number.
         assert isinstance(self.E.doms,list)
         # doms should not be Python numbering~
-        assert doms[0] == 1
+        assert self.E.doms[0] == 1
         
         doms = self.E.doms
-        ndoms = len(E.doms)
+        ndoms = self.E.ndoms
         return doms,ndoms
 
     @staticmethod
@@ -503,7 +528,7 @@ class Verif:
         """
         if isinstance(a,list):
             return a
-        elif isinstance(a,tuple):
+        elif isinstance(a,(tuple,N.ndarray)):
             return list(a)
         else:
             return (a,)
@@ -535,7 +560,8 @@ class Verif:
         Todo:
             * Why won't it work as classmethod?
         """
-        return self._STATS[stat]
+        lc_stat = stat.lower()
+        return self._STATS[lc_stat]
         # return cls._STATS[stat]
 
     def generate_lookup_table(self):
@@ -581,18 +607,24 @@ class Verif:
         `isinstance(k, StageIV)` but this involves importing a lot
         of unnecessary classes that should be instead invoked only
         by the user.
+
+        Note:
+            Must use lower case for all references. This might cause problems
+                with saving plots/data though.
         """
-        if vrbl == ('accum_precip','stageiv'):
-            classname = 'StageIV'
+        if vrbl in ('accum_precip','stageiv'):
+            classname = 'stageiv'
         elif vrbl in ('REFL_comp','REFL_10CM','radar'):
-            classname = 'Radar'
+            classname = 'radar'
         elif vrbl in ('stormreports','spclsr'):
             raise Exception("Not written yet.")
+        else:
+            raise Exception("Not implemented.")
 
-        for k,v in self.obdict:
+        for k,v in self.obdict.items():
             # if isinstance(k, classname):
             # This needs to be something like
-            if k.__name__ == classname:
+            if k == classname:
                 return v
         return False
         
@@ -616,13 +648,24 @@ class Verif:
         Returns:
             Data from new domain.
         """
+        def reproj_func(data):
+            data_ng = reproject(data,xx_orig=data_ng_xx,
+                    yy_orig=data_ng_yy,xx_new=self.newgrid.xx,
+                    yy_new=self.newgrid.yy,method='linear')
+            return data_ng
+
         # New array for interpolated data.
-        # data_ng = N.zeros(data.shape[0],self.ng_ny,self.ng_nx)
         # x/y coordinates of reprojected data.
-        data_ng_xx, data_ng_yy = self.newgrid(lons,lats)
-        data_ng = reproject(data,xx_orig=data_ng_xx,
-                    yy_orig=data_ng_yy,xx_new=newgrid.xx,
-                    yy_new=newgrid.yy,method='linear')
+        data_ng_xx, data_ng_yy = self.newgrid.m(lons,lats)
+        print("Reprojecting data.")
+        if data.ndim == 3:
+            data_ng = N.zeros((data.shape[0],self.ng_ny,self.ng_nx))
+            for ens in range(data.shape[0]):
+                data_ng[ens,:,:] = reproj_func(data[ens,:,:])
+        elif data.ndim == 2:
+            data_ng = reproj_func(data)
+        else:
+            raise Exception
         return data_ng
 
     def trim_radar_forever(self,bbdict):
@@ -639,11 +682,46 @@ class Verif:
         return R2
 
     @staticmethod
-    def get_2D_data(lats=None,lons=None,level=None,utc=None):
+    def reduce_data_dims(data,lats=None,lons=None,level=None,utc=None):
         """ Get data from ensemble and deliver in 2-D chunks.
 
         Example:
             To return 
-            get_2D_data(E) 
+            reduce_data_dims(E) 
         """
-        pass
+        if data.ndim == 5:
+            return data[:,0,0,:,:]
+        elif data.ndim == 4:
+            return data[0,0,:,:]
+        else:
+            raise Exception
+
+    @staticmethod
+    def ensure_integers(lst):
+        # if isinstance(lst,N.ndarray):
+            # return N.arra
+        for n,x in enumerate(lst):
+            lst[n] = int(x)
+        return lst
+
+    @staticmethod
+    def ensure_floats(lst):
+        for n,x in enumerate(lst):
+            lst[n] = float(x)
+        return lst
+            
+    def generate_obdict(self):
+        obdict = {}
+        for o in self.obs:
+            n = self.get_object_name(o)
+            obdict[n] = o
+        return obdict
+
+    @staticmethod
+    def get_object_name(obj):
+        """ This returns the name of the class instance, in lower case.
+
+        There's surely a better way to do this...
+        """
+        a = str(obj.__class__).lower().split('.')[-1].split("'")[0]
+        return a

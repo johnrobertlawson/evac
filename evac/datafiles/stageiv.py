@@ -86,11 +86,13 @@ class StageIV(GribFile):
 
         self.projection()
 
-    def get(self,utc,accum_hr='01h'):
+    def get(self,utc,accum_hr='01h',lv=None):
         """
         Get a given time, in similar manner to WRFOut.
 
         Wrapper for return_array with reshape to 4D
+
+        lv is always None (compatibility with other gets).
         """
         data2D = self.return_array(utc,accum_hr=accum_hr)
         data4D = data2D[N.newaxis,N.newaxis,:,:]
