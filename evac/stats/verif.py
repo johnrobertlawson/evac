@@ -425,7 +425,8 @@ class Verif:
         domstr = 'd{:02d}'.format(dom)
         ensstr = ens
         
-        fname = '_'.join((vrblstr,scorestr,domstr,lvstr,fchrstr,*args)) + '.npy'
+        joinlist = [vrblstr,scorestr,domstr,lvstr,fchrstr] + list(args) 
+        fname = '_'.join(joinlist) + '.npy'
 
         if fullpath:
             return os.path.join(self.outdir,fname)
@@ -573,7 +574,7 @@ class Verif:
         if vrbl == ('accum_precip','stageiv'):
             classname = 'StageIV'
         elif vrbl in ('REFL_comp','REFL_10CM','radar'):
-            classname = 'Radar':
+            classname = 'Radar'
         elif vrbl in ('stormreports','spclsr'):
             raise Exception("Not written yet.")
 
@@ -585,7 +586,7 @@ class Verif:
         return False
         
 
-    def save_npy(self,data.vrbl,score,lv,fchr,dom,ens,):
+    def save_npy(self,data,vrbl,score,lv,fchr,dom,ens,):
         fpath = self.generate_npy_fname(vrbl,score,lv,fchr,
                                 dom,ens,fullpath=True)
         utils.trycreate(fpath)
@@ -622,8 +623,8 @@ class Verif:
             * Maybe we should put the copied, trimmed version back into
                 the instance's obdict rather than returning it.
         """
-        R2 = copy.copy(self.get_ob_instance(radar)
-        R2.get_subdomain(**bbdict,overwrite=True)
+        R2 = copy.copy(self.get_ob_instance(radar))
+        R2.get_subdomain(overwrite=True,**bbdict)
         return R2
 
     @staticmethod
