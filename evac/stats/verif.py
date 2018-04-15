@@ -636,12 +636,14 @@ class Verif:
         
 
     def save_npy(self,data,vrbl,score,lv,fchr,dom,ens,):
-        if not isinstance(data,N.ndarray):
-            data = N.array(data)
+        # TODO
+        # if not evac.number.int/float...
+        # if not isinstance(data,N.ndarray):
+            # data = N.array(data)
         fpath = self.generate_npy_fname(vrbl,score,lv,fchr,
                                 dom,ens,fullpath=True)
         utils.trycreate(fpath)
-        N.save(data,fpath)
+        N.save(fpath,data)
         print("Saved data to {}".format(fpath))
         return
 
