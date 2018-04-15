@@ -224,8 +224,7 @@ class Verif:
                     #statfunc(next(itr))
                     statfunc(chunk)
             else:
-                # result = self.pool.map(statfunc,itr,)#chunksize=1)
-                result = self.pool.map(self.compute_crps,itr,)#chunksize=1)
+                result = self.pool.map(statfunc,itr,)#chunksize=1)
                 self.pool.close()
                 self.pool.join()
         return
@@ -235,7 +234,10 @@ class Verif:
 
         # Check we have options 
         # This is something like 0 to 100 for 1-h QPF
-        assert 'crps_thresholds' in self.__dict__
+
+        # TODO
+        # Try again when not parallel
+        # assert 'crps_thresholds' in self.__dict__
 
         # Get raw data
 
