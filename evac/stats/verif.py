@@ -228,11 +228,55 @@ class Verif:
                 # self.pool.close()
                 # self.pool.join()
                 for chunk in itr:
-                    self.pool.apply_async(statfunc,chunk)
+                    # self.pool.apply_async(statfunc<F3>,chunk)
 
-                    # statfunc = self.compute_crps_mp
-                    # statfunc(chunk)
+                    fchr,dom,lv,vrbl = itr
 
+                    # get_fcst_data
+                    fcst = self.E.get(vrbl,fcsthr=fchr,Vdom=dom,level=lv,accum_hr=1)
+                    fdata = self.reduce_data_dims(fcst)
+
+                    # get_ob_data
+                    utc = self.lookup_validtime(fchr)
+                    obobj,obname = self.get_ob_instance(vrbl,return_name)
+                    obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
+
+                    # One parallel loop (async it)
+                    # try to load reproject
+                    rpj_fpath_f = check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
+                                            dom=dom,ens='all',return_fpath=True)
+                    if not rpj_fpath_f:
+                        # reproject if not, PARALLEL, and save
+                        flats, flons = self.E.get_latlons(dom=dom)
+                        x
+                        xfs = self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
+                    else:
+                        xfs = N.load(rpj_fpath_f)
+
+                    rpj_fpath_o = check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+                                            dom=None,ens=None,return_fpath=True)
+                    if not rpj_fpath_0:
+                        oblats = obobj.lats
+                        oblons = obobj.lons
+                        xa = self.do_reprojection(obdata,oblons,oblats,save=rpk_fpath_o)
+                    else:
+                        xa = N.load(rpk_fpath_o)
+
+                    # Next parallel loop
+                    # Run statfunc and exit
+
+                    statfunc = self.compute_crps_mp
+                    kw = dict(xfs=xfs,xa=xa,vrbl=vrbl,lv=lv,fchr=fchr,dom=dom)
+                    self.pool.apply_async(statfunc,args=chunk,kwargs=kw)
+        return
+
+    def compute_crps_mp(self,xfs,xa,vrbl,lv,fchr,dom,):
+        P = ProbScores(xfs=xfs,xa=xa)
+        crps = P.compute_crps(self.crps_thresholds)
+
+        fpath = self.generate_npy_fname(vrbl,'CRPS',lv,fchr,
+                            dom,'mean',fullpath=True)
+        self.save_npy(crps,vrbl,'CRPS',lv,fchr,dom,'mean',fpath=fpath)
         return
 
     def compute_crps(self,itr):
@@ -252,7 +296,7 @@ class Verif:
         # TODO: implement fchr in E.get to look up accum_precip,
         # or instantaneous variables (validtime? utc?)
         # TODO: Not hard code QPF accum.
-        fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
+        fcst = self.E.get(vrbl,fcsthr=fchr,Vdom=dom,level=lv,accum_hr=1)
         fdata = self.reduce_data_dims(fcst)
         
 
@@ -438,8 +482,9 @@ class Verif:
         clskwargs['save_data'] = kwargs.get('save_data',False)
         return clskwargs,plotkwargs,mplkwargs
             
-    def generate_npy_fname(self,vrbl,score,lv,fchr,dom,ens,
-                            fullpath=False,*args,**kwargs):
+    def generate_npy_fname(self,vrbl,score,lv,fchr,dom=None,ens=None,
+                            fullpath=False,prefix=None,
+                            *args,**kwargs):
         """ Save to disc with a naming scheme.
 
         A separate directory per init time (Ensemble instance) is
@@ -454,20 +499,34 @@ class Verif:
             args: a number of suffixes to add before the extension
                 (in case A/B testing is needed on the same product)
         """
-        def lv_str(lv):
-            if lv == None:
-                return "sfc"
+        def set_default(x,if_none,action=1):
+            if x == None:
+                return if_none
             else:
-                return str(lv)
+                if action == 1:
+                    return str(x)
+                elif action == 'dom':
+                    return 'd{:02d}'.format(x)
+                else:
+                    return x
+
+        # def lv_str(lv):
+            # if lv == None:
+                # return "sfc"
+            # else:
+                # return str(lv)
 
         vrblstr = vrbl
         scorestr = score
-        lvstr = lv_str(lv)
+        lvstr = set_default(lv,'sfc',)
+        # lvstr = lv_str(lv)
         fchrstr = '{}h'.format(fchr)
-        domstr = 'd{:02d}'.format(dom)
-        ensstr = ens
+        domstr = set_default(dom,if_none='',action='dom')
+        ensstr = set_default(ens,if_none='',)
         
-        joinlist = [vrblstr,scorestr,domstr,lvstr,fchrstr] + list(args) 
+        prefix = set_default(prefix,if_none='',)
+
+        joinlist = [prefix,] + [vrblstr,scorestr,domstr,lvstr,fchrstr] + list(args) 
         fname = '_'.join(joinlist) + '.npy'
 
         if fullpath:
@@ -619,7 +678,7 @@ class Verif:
         """
 
 
-    def get_ob_instance(self,vrbl):
+    def get_ob_instance(self,vrbl,return_name=False):
         """ Check original observation instances passed to init
         to see if it is available. Logic here could be easier using, e.g.
         `isinstance(k, StageIV)` but this involves importing a lot
@@ -643,7 +702,10 @@ class Verif:
             # if isinstance(k, classname):
             # This needs to be something like
             if k == classname:
-                return v
+                if return_name:
+                    return (v,classname)
+                else:
+                    return v
         return False
         
 
@@ -660,6 +722,36 @@ class Verif:
         print("Saved data to {}".format(fpath))
         return
 
+
+    def naming_for_reproj(self,vrbl,model,lv,utc,dom=None,
+                            ens=None,fullpath=True):
+        fpath = self.generate_npy_fname(vrbl=vrbl,score=model,lv=lv,fchr=utc,
+                                        dom=dom,ens=ens,fullpath=fullpath,
+                                        prefix='REPROJ')
+        return fpath
+    
+    def check_for_reproj(self,vrbl,model,lv,utc,dom=None,ens=None):
+        fpath = self.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,
+                                        dom=dom,ens=ens,fullpath=True,)
+        if os.path.exists(fpath):
+            print("Reprojection exists.")
+            return True
+        else:
+            return False
+
+    def save_reproj(self,data,vrbl,model,lv,utc,dom=None,ens=None)
+        fpath = self.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,
+                                        dom=dom,ens=ens,fullpath=True,)
+        utils.trycreate(fpath)
+        N.save(fpath,data)
+        print("Saved reprojection data to {}".format(fpath)
+        return
+
+    def load_reproj(self):
+        arr = N.load(fpath)
+        print("Loaded array from {}".format(fpath)
+        return arr
+
     @staticmethod
     def _reproj_func(data):
         data_ng = reproject(data,xx_orig=data_ng_xx,
@@ -667,7 +759,7 @@ class Verif:
                 yy_new=self.newgrid.yy,)#method='linear')
         return data_ng
 
-    def do_reprojection(self,data,lons,lats):
+    def do_reprojection(self,data,lons,lats,save=None):
         """ Reproject data. If arguments are multiple, these
         are put onto common grid.
 
@@ -691,6 +783,10 @@ class Verif:
             data_ng = self._reproj_func(data)
         else:
             raise Exception
+
+        if save is not None:
+            fpath = save
+            self.save_reproj(fpath,data_ng)
         return data_ng
 
     def trim_radar_forever(self,bbdict):
