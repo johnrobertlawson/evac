@@ -636,6 +636,8 @@ class Verif:
         
 
     def save_npy(self,data,vrbl,score,lv,fchr,dom,ens,):
+        if not isinstance(data,N.ndarray):
+            data = N.array(data)
         fpath = self.generate_npy_fname(vrbl,score,lv,fchr,
                                 dom,ens,fullpath=True)
         utils.trycreate(fpath)
