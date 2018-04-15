@@ -450,7 +450,7 @@ class Verif:
 
         vrblstr = vrbl
         scorestr = score
-        lvstr = def lv_str(lv)
+        lvstr = lv_str(lv)
         fchrstr = '{}h'.format(fchr)
         domstr = 'd{:02d}'.format(dom)
         ensstr = ens
