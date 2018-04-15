@@ -744,12 +744,12 @@ class Verif:
                                         dom=dom,ens=ens,fullpath=True,)
         utils.trycreate(fpath)
         N.save(fpath,data)
-        print("Saved reprojection data to {}".format(fpath)
+        print("Saved reprojection data to {}".format(fpath)A)
         return
 
     def load_reproj(self):
         arr = N.load(fpath)
-        print("Loaded array from {}".format(fpath)
+        print("Loaded array from {}".format(fpath))
         return arr
 
     @staticmethod
