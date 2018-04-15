@@ -459,7 +459,7 @@ class Verif:
         fname = '_'.join(joinlist) + '.npy'
 
         if fullpath:
-            return os.path.join(self.outdir,fname)
+            return os.path.join(self.datadir,fname)
         else:
             return fname
 
