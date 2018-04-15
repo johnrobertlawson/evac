@@ -336,6 +336,7 @@ def compute_FSS(indata,ST4,itime,ftime,lv,missingdata,
             MSE[th] = {}
             FSS[th] = {}
             # Convert to binary using thresholds
+            A
             fc = N.copy(reproj_fc)
             ob = N.copy(reproj_ob)
             fc[fc < th] = False

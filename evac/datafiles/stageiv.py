@@ -86,7 +86,7 @@ class StageIV(GribFile):
 
         self.projection()
 
-    def get(self,utc,accum_hr='01h',lv=None):
+    def get(self,utc,accum_hr='01h',lv=None,return_masked=False):
         """
         Get a given time, in similar manner to WRFOut.
 
@@ -96,7 +96,10 @@ class StageIV(GribFile):
         """
         data2D = self.return_array(utc,accum_hr=accum_hr)
         data4D = data2D[N.newaxis,N.newaxis,:,:]
-        return data4D
+        if return_masked:
+            return data4D
+        else:
+            return data4D.data
 
     def date_from_fname(self,f):
         _1, d, _2 = f.split('.')
