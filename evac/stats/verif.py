@@ -224,7 +224,7 @@ class Verif:
                     #statfunc(next(itr))
                     statfunc(chunk)
             else:
-                result = self.pool.map(statfunc,itr,chunksize=1)
+                result = self.pool.map(statfunc,itr,)#chunksize=1)
                 self.pool.close()
                 self.pool.join()
         return
@@ -647,6 +647,13 @@ class Verif:
         print("Saved data to {}".format(fpath))
         return
 
+    @staticmethod
+    def _reproj_func(data):
+        data_ng = reproject(data,xx_orig=data_ng_xx,
+                yy_orig=data_ng_yy,xx_new=self.newgrid.xx,
+                yy_new=self.newgrid.yy,)#method='linear')
+        return data_ng
+
     def do_reprojection(self,data,lons,lats):
         """ Reproject data. If arguments are multiple, these
         are put onto common grid.
@@ -658,11 +665,6 @@ class Verif:
         Returns:
             Data from new domain.
         """
-        def reproj_func(data):
-            data_ng = reproject(data,xx_orig=data_ng_xx,
-                    yy_orig=data_ng_yy,xx_new=self.newgrid.xx,
-                    yy_new=self.newgrid.yy,)#method='linear')
-            return data_ng
 
         # New array for interpolated data.
         # x/y coordinates of reprojected data.
@@ -671,9 +673,9 @@ class Verif:
         if data.ndim == 3:
             data_ng = N.zeros((data.shape[0],self.ng_ny,self.ng_nx))
             for ens in range(data.shape[0]):
-                data_ng[ens,:,:] = reproj_func(data[ens,:,:])
+                data_ng[ens,:,:] = self._reproj_func(data[ens,:,:])
         elif data.ndim == 2:
-            data_ng = reproj_func(data)
+            data_ng = self._reproj_func(data)
         else:
             raise Exception
         return data_ng
