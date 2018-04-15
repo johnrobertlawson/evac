@@ -268,7 +268,7 @@ class Verif:
 
         # Save to disk
         # def save_npy(self,data.vrbl,score,lv,fchr,dom,ens,):
-        self.save_npy(data,vrbl,'CRPS',lv,fchr,dom,'mean')
+        self.save_npy(crps,vrbl,'CRPS',lv,fchr,dom,'mean')
 
     ##### INTERFACE METHODS - PLOT #####
 
