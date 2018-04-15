@@ -233,7 +233,7 @@ class Verif:
                     fchr,dom,lv,vrbl = chunk
 
                     # get_fcst_data
-                    fcst = self.E.get(vrbl,fcsthr=fchr,Vdom=dom,level=lv,accum_hr=1)
+                    fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
                     fdata = self.reduce_data_dims(fcst)
 
                     # get_ob_data
