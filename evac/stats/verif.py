@@ -651,7 +651,7 @@ class Verif:
         def reproj_func(data):
             data_ng = reproject(data,xx_orig=data_ng_xx,
                     yy_orig=data_ng_yy,xx_new=self.newgrid.xx,
-                    yy_new=self.newgrid.yy,method='linear')
+                    yy_new=self.newgrid.yy,)#method='linear')
             return data_ng
 
         # New array for interpolated data.
