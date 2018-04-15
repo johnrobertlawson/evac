@@ -238,7 +238,7 @@ class Verif:
 
                     # get_ob_data
                     utc = self.lookup_validtime(fchr)
-                    obobj,obname = self.get_ob_instance(vrbl,return_name)
+                    obobj,obname = self.get_ob_instance(vrbl,return_name=True)
                     obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
 
                     # One parallel loop (async it)
