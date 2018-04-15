@@ -224,7 +224,8 @@ class Verif:
                     #statfunc(next(itr))
                     statfunc(chunk)
             else:
-                result = self.pool.map(statfunc,itr,)#chunksize=1)
+                # result = self.pool.map(statfunc,itr,)#chunksize=1)
+                result = self.pool.map(self.compute_crps,itr,)#chunksize=1)
                 self.pool.close()
                 self.pool.join()
         return
