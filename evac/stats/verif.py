@@ -271,7 +271,10 @@ class Verif:
 
         # Save to disk
         # def save_npy(self,data.vrbl,score,lv,fchr,dom,ens,):
-        self.save_npy(crps,vrbl,'CRPS',lv,fchr,dom,'mean')
+        fpath = self.generate_npy_fname(vrbl,'CRPS',lv,fchr,
+                                dom,'mean',fullpath=True)
+        self.save_npy(crps,vrbl,'CRPS',lv,fchr,dom,'mean',fpath=fpath)
+        return
 
     ##### INTERFACE METHODS - PLOT #####
 
@@ -638,12 +641,13 @@ class Verif:
         return False
         
 
-    def save_npy(self,data,vrbl,score,lv,fchr,dom,ens,):
+    def save_npy(self,data,vrbl,score,lv,fchr,dom,ens,fpath=False):
         # TODO
         # if not evac.number.int/float...
         # if not isinstance(data,N.ndarray):
             # data = N.array(data)
-        fpath = self.generate_npy_fname(vrbl,score,lv,fchr,
+        if not fpath:
+            fpath = self.generate_npy_fname(vrbl,score,lv,fchr,
                                 dom,ens,fullpath=True)
         utils.trycreate(fpath)
         N.save(fpath,data)
