@@ -224,9 +224,15 @@ class Verif:
                     #statfunc(next(itr))
                     statfunc(chunk)
             else:
-                result = self.pool.map(statfunc,itr,)#chunksize=1)
-                self.pool.close()
-                self.pool.join()
+                # result = self.pool.map(statfunc,itr,)#chunksize=1)
+                # self.pool.close()
+                # self.pool.join()
+                for chunk in itr:
+                    self.pool.apply_async(statfunc,chunk)
+
+                    # statfunc = self.compute_crps_mp
+                    # statfunc(chunk)
+
         return
 
     def compute_crps(self,itr):
@@ -246,8 +252,8 @@ class Verif:
         # TODO: implement fchr in E.get to look up accum_precip,
         # or instantaneous variables (validtime? utc?)
         # TODO: Not hard code QPF accum.
-        fdata = self.reduce_data_dims(self.E.get(vrbl,fcsthr=fchr,dom=dom,
-                                level=lv,accum_hr=1))
+        fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
+        fdata = self.reduce_data_dims(fcst)
         
 
         # Load verification
