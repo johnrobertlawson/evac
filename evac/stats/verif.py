@@ -230,7 +230,7 @@ class Verif:
                 for chunk in itr:
                     # self.pool.apply_async(statfunc<F3>,chunk)
 
-                    fchr,dom,lv,vrbl = itr
+                    fchr,dom,lv,vrbl = chunk
 
                     # get_fcst_data
                     fcst = self.E.get(vrbl,fcsthr=fchr,Vdom=dom,level=lv,accum_hr=1)
