@@ -442,9 +442,15 @@ class Verif:
             args: a number of suffixes to add before the extension
                 (in case A/B testing is needed on the same product)
         """
+        def lv_str(lv):
+            if lv == None:
+                return "sfc"
+            else:
+                return str(lv)
+
         vrblstr = vrbl
         scorestr = score
-        lvstr = lv
+        lvstr = def lv_str(lv)
         fchrstr = '{}h'.format(fchr)
         domstr = 'd{:02d}'.format(dom)
         ensstr = ens
