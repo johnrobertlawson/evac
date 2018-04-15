@@ -744,7 +744,7 @@ class Verif:
                                         dom=dom,ens=ens,fullpath=True,)
         utils.trycreate(fpath)
         N.save(fpath,data)
-        print("Saved reprojection data to {}".format(fpath)A)
+        print("Saved reprojection data to {}".format(fpath))
         return
 
     def load_reproj(self):
