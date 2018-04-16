@@ -172,7 +172,7 @@ class Verif:
         pass
 
     def compute_stats(self,stats,vrbl,verif_times,dom=1,ncpus=1,
-                        lvs=None,**kwargs):
+                        lvs=None,method=1,**kwargs):
         """ Megascript to control all stats computations.
 
         Args:
@@ -223,7 +223,7 @@ class Verif:
                 for chunk in itr:
                     #statfunc(next(itr))
                     statfunc(chunk)
-            else:
+            elif method == 1:
                 # result = self.pool.map(statfunc,itr,)#chunksize=1)
                 # self.pool.close()
                 # self.pool.join()
@@ -248,7 +248,6 @@ class Verif:
                     if not rpj_fpath_f:
                         # reproject if not, PARALLEL, and save
                         flats, flons = self.E.get_latlons(dom=dom)
-                        x
                         xfs = self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
                     else:
                         xfs = N.load(rpj_fpath_f)
@@ -268,7 +267,74 @@ class Verif:
                     statfunc = self.compute_crps_mp
                     kw = dict(xfs=xfs,xa=xa,vrbl=vrbl,lv=lv,fchr=fchr,dom=dom)
                     self.pool.apply_async(statfunc,args=chunk,kwargs=kw)
+            elif method == 2:
+                codedict = {}
+                for chunk in itr:
+                    # fchr,dom,lv,vrbl = chunk
+                    rpj_fpath_f = check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
+                                            dom=dom,ens='all',return_fpath=True)
+                    if not rpj_fpath_f:
+                        codedict[code] = [rpj_fpath_f,]
+                        
+
+                    rpj_fpath_o = check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+                                            dom=None,ens=None,return_fpath=True)
+                    if not rpj_fpath_o:
+                        codedict[code].append(rpj_fpath_o)
+
+                # We now have a list of all chunks that need reprojection.
+                # For fcst:
+                for chunk in itr:
+                    fchr,dom,lv,vrbl = chunk
+                    code = _get_loop_code(chunk)
+
+                    if codedict[code][0]:
+                        flats, flons = self.E.get_latlons(dom=dom)
+                        fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
+                        fdata = self.reduce_data_dims(fcst)
+                        # self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
+                        ar = (fdata,flons,flats)
+                        kar = dict(save=rpj_fpath_f)
+                        result = self.pool.apply_sync(self.do_reprojection,args=ar,kwargs=kar)
+                    self.pool.join()
+
+
+                # For obs:
+                for chunk in itr:
+                    fchr,dom,lv,vrbl = chunk
+                    code = _get_loop_code(chunk)
+
+                    if codedict[code][1]:
+                        utc = self.lookup_validtime(fchr)
+                        oblats = obobj.lats
+                        oblons = obobj.lons
+                        obobj,obname = self.get_ob_instance(vrbl,return_name=True)
+                        obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
+                        # xa = self.do_reprojection(obdata,oblons,oblats,save=rpk_fpath_o)
+                        ar = (obdata,oblons,oblats)
+                        kar = dict(save=rpj_fpath_o)
+                        result = self.pool.apply_sync(self.do_reprojection,args=ar,kwargs=kar)
+                    self.pool.join()
+
+                    # self.pool.close()
+                
+                for chunk in itr:
+                    xfs = N.load(rpj_fpath_f)
+                    xa = N.load(rpj_fpath_o)
+                    statfunc = self.compute_crps_mp
+                    fchr,dom,lv,vrbl = chunk
+                    kw = dict(xfs=xfs,xa=xa,vrbl=vrbl,lv=lv,fchr=fchr,dom=dom)
+                    self.pool.apply_async(statfunc,args=chunk,kwargs=kw)
+                self.pool.join()
+                    
+
         return
+
+    def _get_loop_code(itr):
+        """ Merge iter items as one string for looking up later.
+        """
+        s = '_'.join(*itr)
+        return s
 
     def compute_crps_mp(self,xfs,xa,vrbl,lv,fchr,dom,):
         P = ProbScores(xfs=xfs,xa=xa)
@@ -296,7 +362,7 @@ class Verif:
         # TODO: implement fchr in E.get to look up accum_precip,
         # or instantaneous variables (validtime? utc?)
         # TODO: Not hard code QPF accum.
-        fcst = self.E.get(vrbl,fcsthr=fchr,Vdom=dom,level=lv,accum_hr=1)
+        fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
         fdata = self.reduce_data_dims(fcst)
         
 
@@ -309,14 +375,26 @@ class Verif:
         obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
 
         # Reproject and compute
-        flats, flons = self.E.get_latlons(dom=dom)
-        xfs = self.do_reprojection(fdata,flons,flats)
+        rpj_fpath_f = check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
+                                dom=dom,ens='all',return_fpath=True)
+        if not rpj_fpath_f:
+            flats, flons = self.E.get_latlons(dom=dom)
+            xfs = self.do_reprojection(fdata,flons,flats)
+        else:
+            xfs = N.load(rpj_fpath_f)
 
-        oblats = obobj.lats
-        oblons = obobj.lons
-        xa = self.do_reprojection(obdata,oblons,oblats)
+        
+        rpj_fpath_o = check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+                                dom=None,ens=None,return_fpath=True)
+        if not rpj_fpath_0:
+            oblats = obobj.lats
+            oblons = obobj.lons
+            xa = self.do_reprojection(obdata,oblons,oblats)
+        else:
+            xa = N.load(rpj_fpath_0)
+
         P = ProbScores(xfs=xfs,xa=xa)
-        # for thresh in self.crps_thresholds:
+        # fr thresh in self.crps_thresholds:
         crps = P.compute_crps(self.crps_thresholds)
 
         # Save to disk
