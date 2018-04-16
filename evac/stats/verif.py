@@ -257,9 +257,9 @@ class Verif:
                     if not rpj_fpath_o:
                         oblats = obobj.lats
                         oblons = obobj.lons
-                        xa = self.do_reprojection(obdata,oblons,oblats,save=rpk_fpath_o)
+                        xa = self.do_reprojection(obdata,oblons,oblats,save=rpj_fpath_o)
                     else:
-                        xa = N.load(rpk_fpath_o)
+                        xa = N.load(rpj_fpath_o)
 
                     # Next parallel loop
                     # Run statfunc and exit
@@ -314,7 +314,7 @@ class Verif:
                         oblons = obobj.lons
                         obobj,obname = self.get_ob_instance(vrbl,return_name=True)
                         obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
-                        # xa = self.do_reprojection(obdata,oblons,oblats,save=rpk_fpath_o)
+                        # xa = self.do_reprojection(obdata,oblons,oblats,save=rpj_fpath_o)
                         ar = (obdata,oblons,oblats)
                         kar = dict(save=rpj_fpath_o)
                         result = self.pool.apply_sync(self.do_reprojection,args=ar,kwargs=kar)
@@ -388,7 +388,7 @@ class Verif:
             fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
             fdata = self.reduce_data_dims(fcst)
             flats, flons = self.E.get_latlons(dom=dom)
-            xfs = self.do_reprojection(fdata,flons,flats)
+            xfs = self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
         else:
             xfs = N.load(rpj_fpath_f)
 
@@ -399,7 +399,7 @@ class Verif:
             obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
             oblats = obobj.lats
             oblons = obobj.lons
-            xa = self.do_reprojection(obdata,oblons,oblats)
+            xa = self.do_reprojection(obdata,oblons,oblats,save=rpj_fpath_o)
         else:
             xa = N.load(rpj_fpath_o)
 
