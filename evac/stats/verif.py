@@ -333,13 +333,13 @@ class Verif:
 
         return
 
-    def _get_loop_code(itr):
+    def _get_loop_code(*itr):
         """ Merge iter items as one string for looking up later.
         """
         itr = list(itr)
-        for i in itr:
+        for n,i in enumerate(itr):
             if i == None:
-                i = 'None'
+                itr[n] = 'None'
         s = '_'.join(*itr)
         return s
 
