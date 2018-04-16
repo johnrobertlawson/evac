@@ -334,7 +334,7 @@ class Verif:
         return
 
     @staticmethod
-    def _get_loop_code(*itr):
+    def _get_loop_code(itr):
         """ Merge iter items as one string for looking up later.
         """
         itr = list(itr)
