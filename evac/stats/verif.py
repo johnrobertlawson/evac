@@ -845,10 +845,12 @@ class Verif:
         return arr
 
     @staticmethod
-    def _reproj_func(data):
-        data_ng = reproject(data,xx_orig=data_ng_xx,
-                yy_orig=data_ng_yy,xx_new=self.newgrid.xx,
-                yy_new=self.newgrid.yy,)#method='linear')
+    def _reproj_func(data,xx1,yy1,newgrid):
+        # data_ng = reproject(data,xx_orig=data_ng_xx,
+                # yy_orig=data_ng_yy,xx_new=self.newgrid.xx,
+                # yy_new=self.newgrid.yy,)#method='linear')
+        data_ng = reproject(data,xx_orig=xx1,yy_orig=yy1,
+                    xx_new=newgrid.xx,yy_new=newgrid.yy)
         return data_ng
 
     def do_reprojection(self,data,lons,lats,save=None):
@@ -870,9 +872,12 @@ class Verif:
         if data.ndim == 3:
             data_ng = N.zeros((data.shape[0],self.ng_ny,self.ng_nx))
             for ens in range(data.shape[0]):
-                data_ng[ens,:,:] = self._reproj_func(data[ens,:,:])
+                data_ng[ens,:,:] = self._reproj_func(data[ens,:,:],
+                                        data_ng_xx,data_ng_yy,
+                                        self.newgrid)
         elif data.ndim == 2:
-            data_ng = self._reproj_func(data)
+            data_ng = self._reproj_func(data,data_ng_xx,data_ng_yy,
+                                        self.newgrid)
         else:
             raise Exception
 
