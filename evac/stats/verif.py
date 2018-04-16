@@ -372,8 +372,6 @@ class Verif:
         # TODO: implement fchr in E.get to look up accum_precip,
         # or instantaneous variables (validtime? utc?)
         # TODO: Not hard code QPF accum.
-        fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
-        fdata = self.reduce_data_dims(fcst)
         
 
         # Load verification
@@ -381,13 +379,14 @@ class Verif:
         # Make lv ignored if it's nonsense
         # Need to implement get() in all obs type.
         # Do this in parent class and override.
-        obobj = self.get_ob_instance(vrbl)
-        obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
+        obobj,obname = self.get_ob_instance(vrbl,return_name=True)
 
         # Reproject and compute
         rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
                                 dom=dom,ens='all',return_fpath=True)
         if not rpj_fpath_f:
+            fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
+            fdata = self.reduce_data_dims(fcst)
             flats, flons = self.E.get_latlons(dom=dom)
             xfs = self.do_reprojection(fdata,flons,flats)
         else:
@@ -397,6 +396,7 @@ class Verif:
         rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
                                 dom=None,ens=None,return_fpath=True)
         if not rpj_fpath_0:
+            obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
             oblats = obobj.lats
             oblons = obobj.lons
             xa = self.do_reprojection(obdata,oblons,oblats)
