@@ -340,7 +340,7 @@ class Verif:
         for n,i in enumerate(itr):
             if i == None:
                 itr[n] = 'None'
-        s = '_'.join(*itr)
+        s = '_'.join(itr)
         return s
 
     def compute_crps_mp(self,xfs,xa,vrbl,lv,fchr,dom,):
