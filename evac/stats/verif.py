@@ -172,7 +172,7 @@ class Verif:
         pass
 
     def compute_stats(self,stats,vrbl,verif_times,dom=1,ncpus=1,
-                        lvs=None,method=1,**kwargs):
+                        lvs=None,method=2,**kwargs):
         """ Megascript to control all stats computations.
 
         Args:
@@ -243,7 +243,7 @@ class Verif:
 
                     # One parallel loop (async it)
                     # try to load reproject
-                    rpj_fpath_f = check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
+                    rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
                                             dom=dom,ens='all',return_fpath=True)
                     if not rpj_fpath_f:
                         # reproject if not, PARALLEL, and save
@@ -252,7 +252,7 @@ class Verif:
                     else:
                         xfs = N.load(rpj_fpath_f)
 
-                    rpj_fpath_o = check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+                    rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
                                             dom=None,ens=None,return_fpath=True)
                     if not rpj_fpath_0:
                         oblats = obobj.lats
@@ -271,13 +271,13 @@ class Verif:
                 codedict = {}
                 for chunk in itr:
                     # fchr,dom,lv,vrbl = chunk
-                    rpj_fpath_f = check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
+                    rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
                                             dom=dom,ens='all',return_fpath=True)
                     if not rpj_fpath_f:
                         codedict[code] = [rpj_fpath_f,]
                         
 
-                    rpj_fpath_o = check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+                    rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
                                             dom=None,ens=None,return_fpath=True)
                     if not rpj_fpath_o:
                         codedict[code].append(rpj_fpath_o)
@@ -375,7 +375,7 @@ class Verif:
         obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
 
         # Reproject and compute
-        rpj_fpath_f = check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
+        rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
                                 dom=dom,ens='all',return_fpath=True)
         if not rpj_fpath_f:
             flats, flons = self.E.get_latlons(dom=dom)
@@ -384,7 +384,7 @@ class Verif:
             xfs = N.load(rpj_fpath_f)
 
         
-        rpj_fpath_o = check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+        rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
                                 dom=None,ens=None,return_fpath=True)
         if not rpj_fpath_0:
             oblats = obobj.lats
