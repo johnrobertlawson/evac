@@ -810,10 +810,10 @@ class Verif:
                                         prefix='REPROJ')
         return fpath
     
-    def check_for_reproj(self,vrbl,model,lv,utc,dom=None,ens=None):
+    def check_for_reproj(self,vrbl,model,lv,utc,dom=None,ens=None,
+                                        return_fpath=False):
         fpath = self.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,
-                                        dom=dom,ens=ens,fullpath=True,
-                                        return_fpath=False)
+                                        dom=dom,ens=ens,fullpath=True,)
         if os.path.exists(fpath):
             print("Reprojection exists.")
             if return_fpath:
