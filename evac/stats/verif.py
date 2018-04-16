@@ -243,18 +243,18 @@ class Verif:
 
                     # One parallel loop (async it)
                     # try to load reproject
-                    rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
+                    exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
                                             dom=dom,ens='all',return_fpath=True)
-                    if not rpj_fpath_f:
+                    if not exists:
                         # reproject if not, PARALLEL, and save
                         flats, flons = self.E.get_latlons(dom=dom)
                         xfs = self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
                     else:
                         xfs = N.load(rpj_fpath_f)
 
-                    rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+                    exists, rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
                                             dom=None,ens=None,return_fpath=True)
-                    if not rpj_fpath_o:
+                    if not exists:
                         oblats = obobj.lats
                         oblons = obobj.lons
                         xa = self.do_reprojection(obdata,oblons,oblats,save=rpj_fpath_o)
@@ -275,15 +275,15 @@ class Verif:
                     utc = self.lookup_validtime(fchr)
                     obobj,obname = self.get_ob_instance(vrbl,return_name=True)
 
-                    rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=fchr,
+                    exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=fchr,
                                             dom=dom,ens='all',return_fpath=True)
-                    if not rpj_fpath_f:
+                    if not exists:
                         codedict[code] = [rpj_fpath_f,]
                         
 
-                    rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+                    exists,rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
                                             dom=None,ens=None,return_fpath=True)
-                    if not rpj_fpath_o:
+                    if not exists:
                         codedict[code].append(rpj_fpath_o)
 
                 # We now have a list of all chunks that need reprojection.
@@ -382,9 +382,9 @@ class Verif:
         obobj,obname = self.get_ob_instance(vrbl,return_name=True)
 
         # Reproject and compute
-        rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
+        exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
                                 dom=dom,ens='all',return_fpath=True)
-        if not rpj_fpath_f:
+        if not rpj_exists:
             fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
             fdata = self.reduce_data_dims(fcst)
             flats, flons = self.E.get_latlons(dom=dom)
@@ -824,12 +824,14 @@ class Verif:
                                         dom=dom,ens=ens,fullpath=True,)
         if os.path.exists(fpath):
             print("Reprojection exists.")
-            if return_fpath:
-                return fpath
-            else:
-                return True
+            ans = True
         else:
-            return False
+            ans = False
+
+        if return_fpath:
+            return ans,fpath
+        else:
+            return ans
 
     def save_reproj(self,data,vrbl=None,model=None,lv=None,utc=None,
                         dom=None,ens=None,fpath=None):
