@@ -271,7 +271,7 @@ class Verif:
                 codedict = {}
                 for chunk in itr:
                     fchr,dom,lv,vrbl = chunk
-                    code = _get_loop_code(chunk)
+                    code = self._get_loop_code(chunk)
                     utc = self.lookup_validtime(fchr)
 
                     rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=fchr,
@@ -289,7 +289,7 @@ class Verif:
                 # For fcst:
                 for chunk in itr:
                     fchr,dom,lv,vrbl = chunk
-                    code = _get_loop_code(chunk)
+                    code = self._get_loop_code(chunk)
 
                     if codedict[code][0]:
                         flats, flons = self.E.get_latlons(dom=dom)
@@ -305,7 +305,7 @@ class Verif:
                 # For obs:
                 for chunk in itr:
                     fchr,dom,lv,vrbl = chunk
-                    code = _get_loop_code(chunk)
+                    code = self._get_loop_code(chunk)
 
                     if codedict[code][1]:
                         utc = self.lookup_validtime(fchr)
