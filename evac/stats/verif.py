@@ -270,9 +270,10 @@ class Verif:
             elif method == 2:
                 codedict = {}
                 for chunk in itr:
-                    # fchr,dom,lv,vrbl = chunk
                     fchr,dom,lv,vrbl = chunk
-                    rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
+                    utc = self.lookup_validtime(fchr)
+
+                    rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=fchr,
                                             dom=dom,ens='all',return_fpath=True)
                     if not rpj_fpath_f:
                         codedict[code] = [rpj_fpath_f,]
