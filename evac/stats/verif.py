@@ -384,7 +384,7 @@ class Verif:
         # Reproject and compute
         exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
                                 dom=dom,ens='all',return_fpath=True)
-        if not rpj_exists:
+        if not exists:
             fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
             fdata = self.reduce_data_dims(fcst)
             flats, flons = self.E.get_latlons(dom=dom)
@@ -393,9 +393,9 @@ class Verif:
             xfs = N.load(rpj_fpath_f)
 
         
-        rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+        exists,rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
                                 dom=None,ens=None,return_fpath=True)
-        if not rpj_fpath_o:
+        if not exists:
             obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
             oblats = obobj.lats
             oblons = obobj.lons
