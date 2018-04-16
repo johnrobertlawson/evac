@@ -336,6 +336,10 @@ class Verif:
     def _get_loop_code(itr):
         """ Merge iter items as one string for looking up later.
         """
+        itr = list(itr)
+        for i in itr:
+            if i == None:
+                i = 'None'
         s = '_'.join(*itr)
         return s
 
