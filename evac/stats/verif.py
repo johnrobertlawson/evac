@@ -254,7 +254,7 @@ class Verif:
 
                     rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
                                             dom=None,ens=None,return_fpath=True)
-                    if not rpj_fpath_0:
+                    if not rpj_fpath_o:
                         oblats = obobj.lats
                         oblons = obobj.lons
                         xa = self.do_reprojection(obdata,oblons,oblats,save=rpk_fpath_o)
@@ -395,13 +395,13 @@ class Verif:
         
         rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
                                 dom=None,ens=None,return_fpath=True)
-        if not rpj_fpath_0:
+        if not rpj_fpath_o:
             obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
             oblats = obobj.lats
             oblons = obobj.lons
             xa = self.do_reprojection(obdata,oblons,oblats)
         else:
-            xa = N.load(rpj_fpath_0)
+            xa = N.load(rpj_fpath_o)
 
         P = ProbScores(xfs=xfs,xa=xa)
         # fr thresh in self.crps_thresholds:
