@@ -831,8 +831,10 @@ class Verif:
         else:
             return False
 
-    def save_reproj(self,data,vrbl,model,lv,utc,dom=None,ens=None):
-        fpath = self.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,
+    def save_reproj(self,data,vrbl=None,model=None,lv=None,utc=None,
+                        dom=None,ens=None,fpath=None):
+        if not fpath:
+            fpath = self.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,
                                         dom=dom,ens=ens,fullpath=True,)
         utils.trycreate(fpath)
         N.save(fpath,data)
@@ -883,7 +885,7 @@ class Verif:
 
         if save is not None:
             fpath = save
-            self.save_reproj(fpath,data_ng)
+            self.save_reproj(data_ng,fpath=fpath)
         return data_ng
 
     def trim_radar_forever(self,bbdict):
