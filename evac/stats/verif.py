@@ -355,6 +355,7 @@ class Verif:
         self.save_npy(crps,vrbl,'CRPS',lv,fchr,dom,'mean',fpath=fpath)
         return
 
+
     def compute_crps(self,itr):
         fchr,dom,lv,vrbl = itr
 
@@ -373,6 +374,12 @@ class Verif:
         # or instantaneous variables (validtime? utc?)
         # TODO: Not hard code QPF accum.
         
+        # If output exists, don't repeat
+        fpath = self.generate_npy_fname(vrbl,'CRPS',lv,fchr,
+                                dom,'mean',fullpath=True)
+        if os.path.exists(fpath):
+            print("Skipping - file already created.")
+            return
 
         # Load verification
         utc = self.lookup_validtime(fchr)
@@ -408,11 +415,19 @@ class Verif:
         crps = P.compute_crps(self.crps_thresholds)
 
         # Save to disk
-        # def save_npy(self,data.vrbl,score,lv,fchr,dom,ens,):
-        fpath = self.generate_npy_fname(vrbl,'CRPS',lv,fchr,
-                                dom,'mean',fullpath=True)
         self.save_npy(crps,vrbl,'CRPS',lv,fchr,dom,'mean',fpath=fpath)
         return
+
+    def compute_detscores(self,xfs,xa,vrbl,lv,fchr,dom,*args,**kwargs):
+        for thresh in kwargs['det_thresholds']:
+            tstr = '{:02d}mmh'.format(thresh)
+            for n,ens in enumerate(self.E.member_names):
+                DS = DetScores(fcst_arr=xfs[n,:,:],obs_arr=xa,
+                                thresh=thresh,overunder='over')
+                fpath = self.generate_npy_fname(vrbl,'contingency',lv,fchr,
+                                dom,ens,fullpath=True,suffix=tstr)
+                scores = DS.compute_all(datadir=self.datadir,fname=fpath)
+            return
 
     ##### INTERFACE METHODS - PLOT #####
 
@@ -494,15 +509,6 @@ class Verif:
             LG = LineGraph(self.outdir,fname=fname)
             LG.plot_score(xdata,ydata,hold=False)
 
-    def return_detscores(self,fcst,obs,datafname=None):
-        # Get data into right format.
-        for utc in kwargs['list_of_times']:
-            fcst = 0
-            obs = 0
-            DS = DetScores(fcst_arr=fcst,obs_arr=obs)
-
-            scores = DS.compute_all(datadir=self.datadir,fname=datafname)
-            return scores
 
     def plot_all_probscores(self,vrbl,scores='all',average='all',
                     *args,**kwargs):
@@ -571,8 +577,7 @@ class Verif:
         return clskwargs,plotkwargs,mplkwargs
             
     def generate_npy_fname(self,vrbl,score,lv,fchr,dom=None,ens=None,
-                            fullpath=False,prefix=None,
-                            *args,**kwargs):
+                            fullpath=False,prefix=None,suffix=None,):
         """ Save to disc with a naming scheme.
 
         A separate directory per init time (Ensemble instance) is
@@ -584,8 +589,8 @@ class Verif:
 
         Args:
             fullpath (bool): if True, give absolute path.
-            args: a number of suffixes to add before the extension
-                (in case A/B testing is needed on the same product)
+            prefix/suffix: a string to add at the start, or before the extension
+            (in case A/B testing is needed on the same product)
         """
         def set_default(x,if_none,action=1):
             if x == None:
@@ -612,9 +617,15 @@ class Verif:
         domstr = set_default(dom,if_none='',action='dom')
         ensstr = set_default(ens,if_none='',)
         
-        prefix = set_default(prefix,if_none='',)
+        prefixstr = set_default(prefix,if_none='',)
+        suffixstr = set_default(suffix,if_none='',)
 
-        joinlist = [prefix,] + [vrblstr,scorestr,domstr,lvstr,fchrstr] + list(args) 
+        joinlist = [vrblstr,scorestr,domstr,lvstr,fchrstr] 
+        if suffix:
+            joinlist.append(suffix)
+        if prefix:
+            joinlist.prepend(prefix)
+
         fname = '_'.join(joinlist) + '.npy'
 
         if fullpath:
