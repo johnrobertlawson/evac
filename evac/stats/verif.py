@@ -341,6 +341,7 @@ class Verif:
         for n,i in enumerate(itr):
             if i == None:
                 itr[n] = 'None'
+            itr[n] = str(itr[n])
         s = '_'.join(itr)
         return s
 
