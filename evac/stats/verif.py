@@ -271,6 +271,7 @@ class Verif:
                 codedict = {}
                 for chunk in itr:
                     # fchr,dom,lv,vrbl = chunk
+                    fchr,dom,lv,vrbl = chunk
                     rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
                                             dom=dom,ens='all',return_fpath=True)
                     if not rpj_fpath_f:
