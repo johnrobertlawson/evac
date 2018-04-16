@@ -273,6 +273,7 @@ class Verif:
                     fchr,dom,lv,vrbl = chunk
                     code = self._get_loop_code(chunk)
                     utc = self.lookup_validtime(fchr)
+                    obobj,obname = self.get_ob_instance(vrbl,return_name=True)
 
                     rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=fchr,
                                             dom=dom,ens='all',return_fpath=True)
