@@ -58,6 +58,8 @@ import numpy as N
 
 # from evac.plot.thumbnails import Thumbnails
 from evac.plot.linegraph import LineGraph
+from evac.plot.boxplot import BoxPlot
+from evac.plot.violinplot import ViolinPlot
 from evac.stats.detscores import DetScores
 from evac.stats.probscores import ProbScores
 from evac.plot.scorecard import ScoreCard
@@ -185,8 +187,10 @@ class Verif:
             kwargs: settings to pass to compute.
 
         Todo:
-            Implement options, assign to self and then it can be seen
+            * Implement options, assign to self and then it can be seen
                 by all compute_* methods.
+            * Check if product has already been generated/saved. If not,
+                also check that reprojection has been saved.
 
         Returns:
             A numpy save file is created for each chunk looped over.
@@ -200,7 +204,7 @@ class Verif:
         verif_times = verif_times2
 
         # add kwargs to class
-        self.allowed_compute_kwargs = ['crps_thresholds',]
+        self.allowed_compute_kwargs = ['crps_thresholds','det_thresholds']
         for k,v in kwargs.items():
             if k in self.allowed_compute_kwargs:
                 setattr(self,k,v)
@@ -215,25 +219,23 @@ class Verif:
         itr = self.create_stats_iterable(vrbl=vrbl,verif_times=verif_times,
                                         doms=domlist,lvs=lvs)
 
+        debug= 0
         for stat in stats:
             print("Generating {} stats now.".format(stat))
             statfunc = self.lookup_statfunc(stat)
-            if ncpus == 1:
+            if method == 3:
                 # Serial mode, good for debugging
                 for chunk in itr:
-                    #statfunc(next(itr))
                     statfunc(chunk)
             elif method == 1:
-                # result = self.pool.map(statfunc,itr,)#chunksize=1)
-                # self.pool.close()
-                # self.pool.join()
                 for chunk in itr:
-                    # self.pool.apply_async(statfunc<F3>,chunk)
-
                     fchr,dom,lv,vrbl = chunk
+    
+                    # Check to see if stat has been computed/saved
 
                     # get_fcst_data
                     fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
+                    # pdb.set_trace()
                     fdata = self.reduce_data_dims(fcst)
 
                     # get_ob_data
@@ -243,13 +245,18 @@ class Verif:
 
                     # One parallel loop (async it)
                     # try to load reproject
-                    exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
+                    exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,fchr=fchr,
                                             dom=dom,ens='all',return_fpath=True)
                     if not exists:
                         # reproject if not, PARALLEL, and save
                         flats, flons = self.E.get_latlons(dom=dom)
                         xfs = self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
                     else:
+                        if debug:
+                            flats, flons = self.E.get_latlons(dom=dom)
+                            xfs = self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
+                            pdb.set_trace()
+
                         xfs = N.load(rpj_fpath_f)
 
                     exists, rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
@@ -264,9 +271,9 @@ class Verif:
                     # Next parallel loop
                     # Run statfunc and exit
 
-                    statfunc = self.compute_crps_mp
                     kw = dict(xfs=xfs,xa=xa,vrbl=vrbl,lv=lv,fchr=fchr,dom=dom)
-                    self.pool.apply_async(statfunc,args=chunk,kwargs=kw)
+                    # self.pool.apply_async(statfunc,args=chunk,kwargs=kw)
+                    statfunc(**kw)
             elif method == 2:
                 codedict = {}
                 for chunk in itr:
@@ -275,7 +282,7 @@ class Verif:
                     utc = self.lookup_validtime(fchr)
                     obobj,obname = self.get_ob_instance(vrbl,return_name=True)
 
-                    exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=fchr,
+                    exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,fchr=fchr,
                                             dom=dom,ens='all',return_fpath=True)
                     if not exists:
                         codedict[code] = [rpj_fpath_f,]
@@ -347,12 +354,16 @@ class Verif:
         return s
 
     def compute_crps_mp(self,xfs,xa,vrbl,lv,fchr,dom,):
+        fpath = self.generate_npy_fname(vrbl,'CRPS',lv=lv,fchr=fchr,
+                            dom=dom,ens='mean',fullpath=True,)
+        if os.path.exists(fpath):
+            print("Skipping - file already created.")
+            return
+
         P = ProbScores(xfs=xfs,xa=xa)
         crps = P.compute_crps(self.crps_thresholds)
 
-        fpath = self.generate_npy_fname(vrbl,'CRPS',lv,fchr,
-                            dom,'mean',fullpath=True)
-        self.save_npy(crps,vrbl,'CRPS',lv,fchr,dom,'mean',fpath=fpath)
+        self.save_npy(crps,vrbl,'CRPS',lv=lv,fchr=fchr,dom=dom,ens='mean',fpath=fpath)
         return
 
 
@@ -375,6 +386,7 @@ class Verif:
         # TODO: Not hard code QPF accum.
         
         # If output exists, don't repeat
+
         fpath = self.generate_npy_fname(vrbl,'CRPS',lv,fchr,
                                 dom,'mean',fullpath=True)
         if os.path.exists(fpath):
@@ -389,7 +401,7 @@ class Verif:
         obobj,obname = self.get_ob_instance(vrbl,return_name=True)
 
         # Reproject and compute
-        exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,utc=utc,
+        exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,fchr=fchr,
                                 dom=dom,ens='all',return_fpath=True)
         if not exists:
             fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
@@ -418,16 +430,25 @@ class Verif:
         self.save_npy(crps,vrbl,'CRPS',lv,fchr,dom,'mean',fpath=fpath)
         return
 
-    def compute_detscores(self,xfs,xa,vrbl,lv,fchr,dom,*args,**kwargs):
-        for thresh in kwargs['det_thresholds']:
-            tstr = '{:02d}mmh'.format(thresh)
+    def compute_detscores(self,xfs,xa,vrbl,lv,fchr,dom,debug=0):
+        for thresh in self.det_thresholds:
+            thstr = '{:02d}mmh'.format(thresh)
             for n,ens in enumerate(self.E.member_names):
-                DS = DetScores(fcst_arr=xfs[n,:,:],obs_arr=xa,
+                fpath = self.generate_npy_fname(vrbl,'contingency',lv=lv,fchr=fchr,
+                                dom=dom,ens=ens,fullpath=True,suffix=thstr,npy_extension=False)
+                # pdb.set_trace()
+                if not os.path.exists(fpath+'.npz'):
+                    DS = DetScores(fcst_arr=xfs[n,:,:],obs_arr=xa,
                                 thresh=thresh,overunder='over')
-                fpath = self.generate_npy_fname(vrbl,'contingency',lv,fchr,
-                                dom,ens,fullpath=True,suffix=tstr)
-                scores = DS.compute_all(datadir=self.datadir,fname=fpath)
-            return
+                    scores = DS.compute_all(datadir=self.datadir,fname=fpath)
+                else:
+                    if debug:
+                        DS = DetScores(fcst_arr=xfs[n,:,:],obs_arr=xa,
+                                    thresh=thresh,overunder='over')
+                        scores = DS.compute_all(datadir=self.datadir,fname=fpath)
+                        pdb.set_trace()
+                    print("Skipping; scores exist for",fpath)
+        return
 
     ##### INTERFACE METHODS - PLOT #####
 
@@ -435,9 +456,111 @@ class Verif:
         """ Wrapper to plot domains of forecast or observation domains.
         """
         pass
-        
+    
+    @classmethod
+    def plot_trails(cls,init_dict,score,vrbl,doms,interval=1,
+                    use_hours=True,lv='sfc',ens='all',loop_prefix=None,
+                    loop_suffix=None,mplargs=None,mplkwargs=None,
+                    plotargs=None,plotkwargs=None,
+                    outdir='~/',fname='test.png'):
+        """ Plot stats for every x min for all domains.
 
-    def plot_violin(self,vrbl,*args,**kwargs):
+        Args:
+            init_dict (dict): dict(datetime.datetime:rootdir)
+            score (str): 'crps', etc
+            vrbl (str): 'accum_precip', etc
+            doms: list, tuple, N.array of domain names/codes
+            interval (int): interval in minutes (or hours) to plot
+            use_hours (bool): if True, use hours for interval (for
+                when loading data, when plotting, and setting interval)
+            lv: By default, this is 'sfc'
+            ens: By default, this is 'all'
+            loop_suffix, loop_prefix (bool): when set (list of strings),
+                script can loop over e.g. thresholds, etc
+        """ 
+        # TODO: make this just class variable doms
+        COLORS = (('red','tomato'),
+                    ('blue','slateblue'),
+                    ('darkgreen','forestgreen'),
+                    ('darkorchid','mediumorchid'),)
+        DATA = {}
+        LG = LineGraph(outdir,fname=fname,vrbl=vrbl,
+                        figsize=(6,6))
+        # initutcs = init_dict.keys()
+        for ninit,(initutc,rootdir) in enumerate(init_dict.items()):
+            
+            # (dom, score_at_valid_time)
+            # number of valid times:
+            nvts = 3 # needs to be dynamic
+            validtimes = N.arange(1,nvts+1)
+            actualtimes = [initutc + datetime.timedelta(seconds=3600*int(v)) for v in validtimes]
+            #DATA[initutc] = N.zeros(ndoms,nvts,)
+            for ndom,dom in enumerate(doms):
+                data = N.zeros(nvts)
+                for nt,t in enumerate(validtimes):
+                    # Loops here for suffix, prefix
+                    # TODO: npz extension and score extraction...
+                    fname = cls.generate_npy_fname(cls,vrbl=vrbl,score=score,lv=lv,fchr=t,
+                                dom=dom,ens=ens,fullpath=False,npy_extension=True)
+                                # dom=dom,ens=ens,fullpath=False,suffix=thstr,npy_extension=False)
+                    fpath = os.path.join(rootdir,fname)
+                    data[nt] = cls.load_data(fpath)
+                plotkwargs['color'] = COLORS[ninit][ndom]
+                # LG.plot_score(xdata=actualtimes,ydata=data,hold=True,mplkwargs=mplkwargs)
+                LG.plot_score(use_plot_date=True,xdata=actualtimes,
+                        ydata=data,hold=True,plotkwargs=plotkwargs)
+                # LG.plot_score(xdata=validtimes,ydata=data,hold=True,mplkwargs=mplkwargs)
+                # pdb.set_trace()
+
+
+        LG.save()
+        pdb.set_trace()
+
+    @classmethod
+    def plot_stats(cls,plot,
+                    # init_dict,score,vrbl,
+                    ndoms=1,outdir='./',
+                    # interval=1,
+                    # use_hours=True,lv='sfc',ens='all',loop_prefix=None,
+                    # loop_suffix=None,
+                    # outdir='~/',fname='test.png',
+                    mplargs=None,mplkwargs=None,
+                    plotargs=None,plotkwargs=None,
+                    *args,**kwargs):
+        """ Master script for plotting anything.
+        """
+        if not mplargs:
+            mplargs = {}
+        if not mplkwargs:
+            mplkwargs = {}
+        if not plotargs:
+            plotargs = {}
+        if not plotkwargs:
+            plotkwargs = {}
+        doms = N.arange(1,ndoms+1)
+        plotfunc = cls.lookup_plotfunc(plot)
+        plotfunc(doms=doms,outdir=outdir,
+                    mplargs=mplargs,mplkwargs=mplkwargs,
+                    plotargs=plotargs,plotkwargs=plotkwargs,
+                    *args,**kwargs)
+
+    @classmethod
+    def lookup_plotfunc(cls,plot):
+        STATFUNCS = {}
+        STATFUNCS['trails'] = cls.plot_trails
+        STATFUNCS['violin'] = cls.plot_violin
+
+        plot = plot.lower()
+        return STATFUNCS[plot]
+
+    @classmethod
+    def plot_violin(cls,outdir,
+                    init_dict,score,vrbl,doms,
+                    interval=1, use_hours=True,lv='sfc',ens='all',
+                    loop_prefix=None,loop_suffix=None,
+                    set_prefix=None,set_suffix=None,
+                    nens=18,
+                    *args,**kwargs):
         """ Plot violin plot
 
         Args:
@@ -445,10 +568,54 @@ class Verif:
 
         This is an alternative to box-and-whisker.
         """
-        self.__get_plot_options(*args,**kwargs)
-        self.create_dict(models='all')
-        VP = ViolinPlot()
-        VP.plot()
+        figsize = kwargs.get('figsize',(6,6))
+        thresh = kwargs.get('thresh',5)
+
+        nvts = 3 # needs to be dynamic
+        validtimes = N.arange(1,nvts+1)
+        # actualtimes = [initutc + datetime.timedelta(seconds=3600*int(v)) for v in validtimes]
+        # Data is (inittime,validtime,dom,ensmember)
+        data = {}
+        for ninit,(initutc,rootdir) in enumerate(init_dict.items()):
+            data[initutc] = {}
+            for nt,t in enumerate(validtimes):
+                data[initutc][t] = {}
+                for nd,dom in enumerate(doms):
+                    data[initutc][t][dom] = []
+                    for ne,ens in enumerate(N.arange(1,nens+1)):
+                        fname = cls.generate_npy_fname(cls,vrbl=vrbl,score='contingency',
+                                            lv=lv,fchr=t,dom=dom,ens='m{:02d}'.format(ens),
+                                            fullpath=False,npy_extension='npz',
+                                            suffix='{:02d}mmh'.format(thresh))
+                        fpath = os.path.join(rootdir,fname)
+                        data[initutc][t][dom].append(cls.load_data(fpath)[score])
+                    data[initutc][t][dom] = N.array(data[initutc][t][dom])
+
+        # Group ensemble members together?
+        fname1 = 'all_violin_{}.png'.format(score)
+        VP = ViolinPlot(outdir,fname=fname1,figsize=figsize)
+        fname2 = 'all_boxplot_{}.png'.format(score)
+        BX = BoxPlot(outdir,fname=fname2,figsize=figsize)
+        # list of 1D arrays for each member
+        plotlist = []
+        pos_it = N.array([1,2,4,5,7,8])
+        pos_lb = ['d01','d02'] * 12
+        posns = pos_it.copy()
+        for n,initutc in enumerate(init_dict):
+            if n > 0:
+                posns = N.hstack((posns,pos_it+(n*12)))
+            for t in validtimes:
+                for dom in doms:
+                    plotlist.append(data[initutc][t][dom])
+        # pdb.set_trace()
+        pos = posns.flatten()
+        VP.plot(dataset=plotlist,positions=pos,vert=True,)
+        BX.plot(plotlist,positions=pos,vert=True,labels=pos_lb,
+                autorange=True)
+
+        # if score == 'CSI':
+            # pdb.set_trace()
+
         
 
     def plot_thumbnails(self,vrbl,ensmembers='all',ob='auto',
@@ -576,8 +743,8 @@ class Verif:
         clskwargs['save_data'] = kwargs.get('save_data',False)
         return clskwargs,plotkwargs,mplkwargs
             
-    def generate_npy_fname(self,vrbl,score,lv,fchr,dom=None,ens=None,
-                            fullpath=False,prefix=None,suffix=None,):
+    def generate_npy_fname(self,vrbl,score,lv,fchr=None,utc=None,dom=None,ens=None,
+                            fullpath=False,prefix=None,suffix=None,npy_extension=True):
         """ Save to disc with a naming scheme.
 
         A separate directory per init time (Ensemble instance) is
@@ -599,7 +766,10 @@ class Verif:
                 if action == 1:
                     return str(x)
                 elif action == 'dom':
-                    return 'd{:02d}'.format(x)
+                    if isinstance(x,str):
+                        return x
+                    else:
+                        return 'd{:02d}'.format(x)
                 else:
                     return x
 
@@ -613,20 +783,33 @@ class Verif:
         scorestr = score
         lvstr = set_default(lv,'sfc',)
         # lvstr = lv_str(lv)
-        fchrstr = '{}h'.format(fchr)
+        if utc:
+            timestr = utils.string_from_time('output',utc)
+        else:
+            timestr = '{}h'.format(fchr)
         domstr = set_default(dom,if_none='',action='dom')
         ensstr = set_default(ens,if_none='',)
         
         prefixstr = set_default(prefix,if_none='',)
         suffixstr = set_default(suffix,if_none='',)
 
-        joinlist = [vrblstr,scorestr,domstr,lvstr,fchrstr] 
+        joinlist = [vrblstr,scorestr,domstr,lvstr,timestr,ensstr] 
         if suffix:
             joinlist.append(suffix)
         if prefix:
-            joinlist.prepend(prefix)
+            joinlist.insert(0,prefix)
 
-        fname = '_'.join(joinlist) + '.npy'
+        fname = '_'.join(joinlist) 
+
+        if npy_extension:
+            if npy_extension == True:
+                ext = 'npy'
+            elif isinstance(npy_extension,str):
+                ext = npy_extension
+
+            if not ext.startswith('.'):
+                ext = '.' + ext
+            fname = fname + ext
 
         if fullpath:
             return os.path.join(self.datadir,fname)
@@ -743,8 +926,10 @@ class Verif:
     def generate_lookup_table(self):
         STATS = dict(
                 contingency = self.compute_contingency,
-                crps = self.compute_crps,
+                # crps = self.compute_crps,
+                crps = self.compute_crps_mp,
                 rmse = self.compute_rmse,
+                detscores = self.compute_detscores,
                 )
         return STATS
 
@@ -822,16 +1007,19 @@ class Verif:
         return
 
 
-    def naming_for_reproj(self,vrbl,model,lv,utc,dom=None,
+    def naming_for_reproj(self,vrbl,model,lv,utc=None,fchr=None,dom=None,
                             ens=None,fullpath=True):
-        fpath = self.generate_npy_fname(vrbl=vrbl,score=model,lv=lv,fchr=utc,
-                                        dom=dom,ens=ens,fullpath=fullpath,
+        # utcstr = utils.string_from_time('output',utc,strlen='minute')
+        fpath = self.generate_npy_fname(vrbl=vrbl,score=model,lv=lv,utc=utc,
+                                        dom=dom,ens=ens,fullpath=fullpath,fchr=fchr,
                                         prefix='REPROJ')
         return fpath
     
-    def check_for_reproj(self,vrbl,model,lv,utc,dom=None,ens=None,
-                                        return_fpath=False):
-        fpath = self.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,
+    def check_for_reproj(self,vrbl,model,lv,utc=None,fchr=None,
+                        dom=None,ens=None,return_fpath=False):
+        """ Check saved data exists.
+        """
+        fpath = self.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,fchr=fchr,
                                         dom=dom,ens=ens,fullpath=True,)
         if os.path.exists(fpath):
             print("Reprojection exists.")
@@ -854,7 +1042,16 @@ class Verif:
         print("Saved reprojection data to {}".format(fpath))
         return
 
-    def load_reproj(self):
+    @staticmethod
+    def load_reproj(fpath):
+        arr = N.load(fpath)
+        print("Loaded array from {}".format(fpath))
+        return arr
+
+    @staticmethod
+    def load_data(fpath):
+        """ Variation on load_reproj to load data.
+        """
         arr = N.load(fpath)
         print("Loaded array from {}".format(fpath))
         return arr

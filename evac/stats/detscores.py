@@ -1,5 +1,6 @@
 import math
 import pdb
+import os
 
 import numpy as N
 
@@ -54,6 +55,9 @@ class DetScores:
         self.bn = self.b/self.n
         self.cn = self.c/self.n
         self.dn = self.d/self.n
+
+        # Lookup table for methods
+        self.scores = self.assign_scores_lookup()
 
     def check_approx(self,x,y):
         if not math.isclose(x,y,rel_tol=0.0001):
@@ -178,39 +182,41 @@ class DetScores:
         SR = 1.0 - self.compute_falsealarmratio()
         return SR
 
+    def assign_scores_lookup(self):
+        scores = {'HR':self.compute_hitrate,
+                'FAR':self.compute_falsealarmratio,
+                'TS':self.compute_threat,
+                'POD':self.compute_pod,
+                'PFD':self.compute_pfd,
+                'BIAS':self.compute_bias,
+                'KSS':self.compute_kss,
+                'CSI':self.compute_csi,
+                'PCLI':self.compute_pcli,
+                'F':self.compute_falsealarmrate,
+                'PC':self.compute_propcorrect,
+                'HSS':self.compute_heidke,
+                'PSS':self.compute_peirce,
+                'GSS':self.compute_gilbert,
+                'Q':self.compute_yuleq,
+                'SR':self.compute_successrate,
+                }
+        return scores
+
     def get(self,score):
         """ Getter method for obtaining a score via string.
         """
-        scores = {'HR':self.compute_hitrate,
-                    'FAR':self.compute_falsealarmratio,
-                    'TS':self.compute_threat,
-                    'POD':self.compute_pod,
-                    'PFD':self.compute_pfd,
-                    'BIAS':self.compute_bias,
-                    'KSS':self.compute_kss,
-                    'CSI':self.compute_csi,
-                    'PCLI':self.compute_pcli,
-                    'F':self.compute_falsealarmrate,
-                    'PC':self.compute_propcorrect,
-                    'HSS':self.compute_heidke,
-                    'PSS':self.compute_peirce,
-                    'GSS':self.compute_gilbert,
-                    'Q':self.compute_yuleq,
-                    'SR':self.compute_successrate,
-                    }
-
-        if score in scores.keys():
-            val = scores[score]()
+        if score in self.scores.keys():
+            val = self.scores[score]()
             return val
         else:
-            raise Exception("Specify from the following: \n{}".format(scores.keys()))
+            raise Exception("Specify from the following: \n{}".format(self.scores.keys()))
 
     def compute_all(self,datadir=None,fname=None,):
         """ If datadir/fname are not None, computed stats are saved.
         Else, they are just returned in the dictionary.
         """
         SCORES = dict(a=self.a, b=self.b, c=self.c, d=self.d)
-        for score in scores:
+        for score in self.scores.keys():
             SCORES[score] = self.get(score)
             
         if datadir:
@@ -219,3 +225,4 @@ class DetScores:
             N.savez(file=datapath,**SCORES)
             print("Saved.")
         return SCORES
+        

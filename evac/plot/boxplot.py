@@ -1,11 +1,11 @@
-""" Plot scores as a violin plot.
+""" Plot scores as a box plot.
 """
 
 import pdb
 
 from evac.plot.figure import Figure
 
-class ViolinPlot(Figure):
+class BoxPlot(Figure):
     """ Plot box-and-whisker in violin style.
 
     Examples:
@@ -27,7 +27,7 @@ class ViolinPlot(Figure):
         self.outdir = outdir
         super().__init__(self,*args,**kwargs)
 
-    def plot(self,mplargs=None,mplkwargs=None,
+    def plot(self,data,mplargs=None,mplkwargs=None,
                     plotargs=None,plotkwargs=None,
             *args,**kwargs):
         """ Plot the things.
@@ -37,7 +37,7 @@ class ViolinPlot(Figure):
                             # vrbl=self.vrbl,
                             *args,**kwargs)
         # self.get_options?
-        self.ax.violinplot(*args,**kwargs)
+        self.ax.boxplot(data,*args,**kwargs)
         # TODO: implement a setter method.
         # self.pass_mpl_settings()
 

@@ -451,7 +451,8 @@ class Ensemble:
 
                 all_ens_data[ens_no-1,tn,:,:,:] = m_t_data
 
-            return all_ens_data
+        # pdb.set_trace()
+        return all_ens_data
 
     def accumulated(self,vrbl='RAINNC',itime=0,ftime=-1,level=False,Nlim=False,
                     Elim=False,Slim=False,Wlim=False,inclusive=False,
