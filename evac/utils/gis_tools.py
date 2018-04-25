@@ -1205,7 +1205,12 @@ def return_subdomain(data,lats,lons,Nlim,Elim,Slim,Wlim,
     Returns smaller domain of data and lats/lons based
     on specified limits.
     """
-    # import pdb; pdb.set_trace()
+    # TODO - might need changing
+    # if lats.ndim == 2:
+        # lats = lats[:,0]
+    # if lons.ndim == 2:
+        # lons = lons[0,:]
+
     Nidx = closest(lats,Nlim)
     Eidx = closest(lons,Elim)
     Sidx = closest(lats,Slim)
@@ -1237,6 +1242,7 @@ def return_subdomain(data,lats,lons,Nlim,Elim,Slim,Wlim,
         raise Exception
     # Radar data: latlon, N<S, W<E
     # data = data[Nidx:Sidx+1,Widx:Eidx+1]
+    pdb.set_trace()
 
     data = data[xmin:xmax+1,ymin:ymax+1]
 

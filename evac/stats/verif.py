@@ -53,16 +53,18 @@ import copy
 from multiprocessing import Pool, Lock
 import itertools
 import datetime
+import time
 
 import numpy as N
 
-# from evac.plot.thumbnails import Thumbnails
+from evac.plot.thumbnails import ThumbNails
 from evac.plot.linegraph import LineGraph
 from evac.plot.boxplot import BoxPlot
 from evac.plot.violinplot import ViolinPlot
 from evac.stats.detscores import DetScores
 from evac.stats.probscores import ProbScores
 from evac.plot.scorecard import ScoreCard
+from evac.datafiles.radar import Radar
 from evac.datafiles.obs import Obs
 import evac.utils as utils
 from evac.utils.reproject_tools import reproject, WRF_native_grid, create_new_grid, VerifGrid
@@ -139,6 +141,7 @@ class Verif:
 
         # Might attach self.E attributes such as times and member 
         # names to the class instance?
+        self.initutc = self.E.initutc
 
         # NOT IMPLEMENTED
         # self.fcst_times = {d:E.times(dom=d) for d in self.doms}
@@ -306,7 +309,7 @@ class Verif:
                         # self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
                         ar = (fdata,flons,flats)
                         kar = dict(save=rpj_fpath_f)
-                        result = self.pool.apply_sync(self.do_reprojection,args=ar,kwargs=kar)
+                        result = self.pool.apply_async(self.do_reprojection,args=ar,kwargs=kar)
                     self.pool.join()
 
 
@@ -324,7 +327,7 @@ class Verif:
                         # xa = self.do_reprojection(obdata,oblons,oblats,save=rpj_fpath_o)
                         ar = (obdata,oblons,oblats)
                         kar = dict(save=rpj_fpath_o)
-                        result = self.pool.apply_sync(self.do_reprojection,args=ar,kwargs=kar)
+                        result = self.pool.apply_async(self.do_reprojection,args=ar,kwargs=kar)
                     self.pool.join()
 
                     # self.pool.close()
@@ -347,7 +350,7 @@ class Verif:
         """
         itr = list(itr)
         for n,i in enumerate(itr):
-            if i == None:
+            if i is None:
                 itr[n] = 'None'
             itr[n] = str(itr[n])
         s = '_'.join(itr)
@@ -430,7 +433,7 @@ class Verif:
         self.save_npy(crps,vrbl,'CRPS',lv,fchr,dom,'mean',fpath=fpath)
         return
 
-    def compute_detscores(self,xfs,xa,vrbl,lv,fchr,dom,debug=0):
+    def compute_detscores(self,xfs,xa,vrbl,lv,fchr,dom,debug=1):
         for thresh in self.det_thresholds:
             thstr = '{:02d}mmh'.format(thresh)
             for n,ens in enumerate(self.E.member_names):
@@ -446,6 +449,9 @@ class Verif:
                         DS = DetScores(fcst_arr=xfs[n,:,:],obs_arr=xa,
                                     thresh=thresh,overunder='over')
                         scores = DS.compute_all(datadir=self.datadir,fname=fpath)
+                        print("initutc {}, dom {}, thresh {} = {}".format(self.initutc,
+                                                    dom,thresh,scores['BIAS']))
+                        # time.sleep(1)
                         pdb.set_trace()
                     print("Skipping; scores exist for",fpath)
         return
@@ -618,22 +624,69 @@ class Verif:
 
         
 
-    def plot_thumbnails(self,vrbl,ensmembers='all',ob='auto',
+    def plot_thumbnails(self,vrbl,radardir=None,ensmembers='all',fchrs='all',
+                        doms='all',limdict='auto',outdir=None,fname='auto',
                         mplargs=None,mplkwargs=None,verif_first=True,
+                        lv=None,
                         *args,**kwargs):
         """ Plot postage stamps or thumbnails of ensemble members listed
         (by default, this is all).
+
+        Todo:
+            * radardir should be more general to loading verification.
+            * should be able to plot reprojections resulting from 
+                score calculations.
+            * Remove `radardir` to make this more general. The obs
+                should be passed into the init script. How will this
+                be done when Radar is only for one time?! We need a
+                "obs ensemble" class.
 
         Args:
             verif_first (bool): If True, the first axis (thumbnail/subplot)
                 will be the observations. Method exits if verification does
                 not exist in self.obdict.
         """
-        self.__get_plot_options(*args,**kwargs)
-        if verif_first:
-            self.get_ob_instance(vrbl)
-        TN = Thumbnails(verif_first=verif_first)
-        B
+        # self.__get_plot_options(*args,**kwargs)
+        if outdir == None:
+            outdir = self.outdir
+
+        if fchrs == 'all':
+            raise Exception("Need to implement this")
+            # Use N.arange(1,4)
+
+        if doms == 'all':
+            doms = self.doms
+
+    
+        elif limdict is None:
+            limdict = {}
+
+
+        for fchr in fchrs:
+            plotutc = self.lookup_validtime(fchr)
+            for dom in doms:
+                if limdict == 'auto':
+                    ld = self.E.get_limits(dom=dom)
+                else:
+                    ld = limdict
+                if fname == 'auto':
+                    outfname = self.make_plot_fname('thumbnails',vrbl=vrbl,dom=dom,fchr=fchr,
+                                                    lv=lv)
+                TN = ThumbNails(outdir=outdir,fname=outfname)
+                if verif_first:
+                    OB = self.get_ob_instance(vrbl)
+                    # R = Radar(plotutc,radardir)
+                    # R.get_subdomain(**ld,overwrite=True)
+                    OB.get_subdomain(**ld,overwrite=True)
+                    TN.plot_verif(data=OB,utc=plotutc)
+
+                arbW = self.get_arb(dom=dom,fpath_only=False)
+                cen_lat,cen_lon = self.E.get_cenlatlons(dom=dom)
+                fcstdata = self.reduce_data_dims(self.E.get(
+                            vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1))
+                TN.plot_fcst(data=fcstdata,vrbl=vrbl,W=arbW,
+                        cen_lat=cen_lat,cen_lon=cen_lon,
+                        titles=self.E.member_names)
         return
 
     def plot_scorecard(self,detscores='all',probscores='all'):
@@ -743,8 +796,45 @@ class Verif:
         clskwargs['save_data'] = kwargs.get('save_data',False)
         return clskwargs,plotkwargs,mplkwargs
             
-    def generate_npy_fname(self,vrbl,score,lv,fchr=None,utc=None,dom=None,ens=None,
-                            fullpath=False,prefix=None,suffix=None,npy_extension=True):
+
+    def _set_default(self,x,if_none,action=1):
+        """ Default naming for fname generation methods.
+        """
+        if x == None:
+            return if_none
+        else:
+            if action == 1:
+                return str(x)
+            elif action == 'dom':
+                if isinstance(x,str):
+                    return x
+                else:
+                    return 'd{:02d}'.format(x)
+            else:
+                return x
+
+    def make_plot_fname(self,plottype,
+                            # vrbl=None,dom=None,fcst=None,lv=None,
+                            # fullpath=False,
+                            *args,**kwargs):
+        """ Wrapper for generate_fname.
+        """
+        f = self.generate_fname(score=plottype,*args,**kwargs)
+        return f
+
+    def generate_npy_fname(self,
+                            # vrbl,score,lv,fchr=None,utc=None,dom=None,ens=None,
+                            # fullpath=False,prefix=None,suffix=None,
+                            *args,**kwargs):
+        """ Wrapper for generate fname.
+        """
+        kwargs['npy_extension'] = kwargs.get('npy_extension',True)
+        f = self.generate_fname(*args,**kwargs)
+        return f
+
+    def generate_fname(self,vrbl=None,score=None,lv=None,fchr=None,utc=None,
+                            dom=None,ens=None,fullpath=False,prefix=None,
+                            suffix=None,npy_extension=False):
         """ Save to disc with a naming scheme.
 
         A separate directory per init time (Ensemble instance) is
@@ -759,19 +849,6 @@ class Verif:
             prefix/suffix: a string to add at the start, or before the extension
             (in case A/B testing is needed on the same product)
         """
-        def set_default(x,if_none,action=1):
-            if x == None:
-                return if_none
-            else:
-                if action == 1:
-                    return str(x)
-                elif action == 'dom':
-                    if isinstance(x,str):
-                        return x
-                    else:
-                        return 'd{:02d}'.format(x)
-                else:
-                    return x
 
         # def lv_str(lv):
             # if lv == None:
@@ -781,17 +858,17 @@ class Verif:
 
         vrblstr = vrbl
         scorestr = score
-        lvstr = set_default(lv,'sfc',)
+        lvstr = self._set_default(lv,'sfc',)
         # lvstr = lv_str(lv)
         if utc:
             timestr = utils.string_from_time('output',utc)
         else:
             timestr = '{}h'.format(fchr)
-        domstr = set_default(dom,if_none='',action='dom')
-        ensstr = set_default(ens,if_none='',)
+        domstr = self._set_default(dom,if_none='',action='dom')
+        ensstr = self._set_default(ens,if_none='',)
         
-        prefixstr = set_default(prefix,if_none='',)
-        suffixstr = set_default(suffix,if_none='',)
+        prefixstr = self._set_default(prefix,if_none='',)
+        suffixstr = self._set_default(suffix,if_none='',)
 
         joinlist = [vrblstr,scorestr,domstr,lvstr,timestr,ensstr] 
         if suffix:
@@ -854,6 +931,20 @@ class Verif:
         newgrid = VerifGrid(W,nx=self.RD['nx'],ny=self.RD['ny'])
         return newgrid
 
+    def get_arb(self,dom,fpath_only=False):
+        """ 
+        Todo: 
+            * Remove the arbdict and just use this to look
+                up arbitrary WRFOuts or their paths.
+        """
+        if fpath_only:
+            dataobj = False
+            give_path = True
+        else:
+            dataobj = True
+            give_path = False
+        arb = self.E.arbitrary_pick(dom=dom,dataobj=dataobj,give_path=give_path)
+        return arb
 
     def make_arbdict(self,):
         """

@@ -137,7 +137,7 @@ class DetScores:
         return Q
 
     def compute_threat(self):
-        """ Accuracy.
+        """ Accuracy - same as CSI.
 
         Eq. 7 in B01."""
         TS = self.a/(self.a+self.b+self.c)
@@ -182,7 +182,7 @@ class DetScores:
         SR = 1.0 - self.compute_falsealarmratio()
         return SR
 
-    def assign_scores_lookup(self):
+    def assign_scores_lookup(self,remove_duplicates=False):
         scores = {'HR':self.compute_hitrate,
                 'FAR':self.compute_falsealarmratio,
                 'TS':self.compute_threat,
@@ -200,6 +200,11 @@ class DetScores:
                 'Q':self.compute_yuleq,
                 'SR':self.compute_successrate,
                 }
+
+        dup_list = ('SR','F','TS')
+        if remove_duplicates:
+            for k in dup_list:
+                _ = scores.pop(k)
         return scores
 
     def get(self,score):

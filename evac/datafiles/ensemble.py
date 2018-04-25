@@ -91,8 +91,8 @@ class Ensemble:
             raise Exception("Length of main datafile prefixes must "
                                 "match number of domains.")
         self.isctrl = True if ctrl else False
-        self.member_names = []
         self.members, self.fdt = self.get_members(f_prefix=f_prefix)
+        self.member_names = sorted(self.members.keys())
         self.nmems = len(self.member_names)
         self.nperts = self.nmems - self.isctrl
 
@@ -216,8 +216,8 @@ class Ensemble:
                         print("Looking at member {0}".format(member))
                     if member not in members:
                         members[member] = {d:{} for d in doms}
-                    if dom==1:
-                        self.member_names.append(member)
+                    # if dom==1:
+                        # self.member_names.append(member)
                     t = self.initutc
                     while True:
                         if not self.ncf:
@@ -416,7 +416,6 @@ class Ensemble:
             members = (members,)
         else:
             pass
-
 
         for nm,mem in enumerate(members):
             if self.debug:

@@ -10,8 +10,9 @@ from evac.datafiles.pngfile import PNGFile
 import evac.utils as utils
 import evac.plot.colourtables as ct
 from evac.plot.birdseye import BirdsEye
+from evac.datafiles.obs import Obs
 
-class Radar(PNGFile):
+class Radar(PNGFile,Obs):
     """ Radar data download, manipulation, and plotting via :any:`evac.plot.birdseye`.
 
     This uses composite reflectivity data stored on Iowa State Univ.
@@ -166,8 +167,9 @@ class Radar(PNGFile):
         self.m.drawstates()
         self.m.drawcountries()
 
-    def get_subdomain(self,Nlim,Elim,Slim,Wlim,overwrite=False):
+    def __get_subdomain(self,Nlim,Elim,Slim,Wlim,overwrite=False):
         """
+        This has now been moved to superclass Obs.
         Return data array between bounds
 
         If overwrite is True, replace class data with new subdomain
@@ -194,6 +196,12 @@ class Radar(PNGFile):
         elif self.fmt == 'n0r':
             dBZ = (data*5.0)-30
         return dBZ
+
+    def plot(self,*args,**kwargs):
+        """ Wrapper for plot_radar.
+        """
+        ret = self.plot_radar(*args,**kwargs)
+        return ret
 
     def plot_radar(self,outdir=False,fig=False,ax=False,fname=False,Nlim=False,
                     Elim=False, Slim=False,Wlim=False,cb=True,

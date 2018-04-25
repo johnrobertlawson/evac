@@ -13,6 +13,7 @@ import os
 import pdb
 
 import numpy as N
+import evac.utils.met_constants as mc
 
 def cold_pool_strength(parent,X,time,swath_width=100,env=0,dz=0):
     """
@@ -265,12 +266,12 @@ def compute_frontogenesis(parent,time,level):
         omega = -rho * mc.g * W
 
         # Time difference in sec
-        dt = parent.utc[tidx+1]-self.utc[tidx]
-        dTdt, dTdz, dTdy, dTdx = N.gradient(T,dt,dp*100.0,parent.dy, self.dx)
+        dt = parent.utc[tidx+1]-parent.utc[tidx]
+        dTdt, dTdz, dTdy, dTdx = N.gradient(T,dt,dp*100.0,parent.dy, parent.dx)
         # Gradient part
         grad = (dTdx**2 + dTdy**2)**0.5
         # Full derivative - value wrong for dgraddz here
-        dgraddt, dgraddz, dgraddy, dgraddx = N.gradient(grad,dt,dp*100.0,parent.dy, self.dx)
+        dgraddt, dgraddz, dgraddy, dgraddx = N.gradient(grad,dt,dp*100.0,parent.dy, parent.dx)
         # Full equation
         Front = dgraddt[1,1,:,:] + U[1,1,:,:]*dgraddx[1,1,:,:] + V[1,1,:,:]*dgraddy[1,1,:,:] # + omega[1,1,:,:]*dgraddz[1,1,:,:]
     return Front
@@ -319,11 +320,11 @@ def compute_Td_2(parent,tidx,lvidx,lonidx,latidx,other='C'):
     return Td
 
 def compute_derivatives(parent,U,V,axis=None):
-    dargs = (parent.dx,self.dx)
+    dargs = (parent.dx,parent.dx)
     dkwargs = {'axis':None}
     if len(U.shape) == 2:
-        dudx, dudy = N.gradient(U,parent.dx,self.dx)
-        dvdx, dvdy = N.gradient(V,parent.dx,self.dx)
+        dudx, dudy = N.gradient(U,parent.dx,parent.dx)
+        dvdx, dvdy = N.gradient(V,parent.dx,parent.dx)
     elif len(U.shape) == 3:
         nt = U.shape[0]
         dudx = N.zeros_like(U)
@@ -331,8 +332,8 @@ def compute_derivatives(parent,U,V,axis=None):
         dudy = N.zeros_like(U)
         dvdy = N.zeros_like(U)
         for t in range(nt):
-            dudx[t,...], dudy[t,...] = N.gradient(U[t,...],parent.dx,self.dx)
-            dvdx[t,...], dvdy[t,...] = N.gradient(V[t,...],parent.dx,self.dx)
+            dudx[t,...], dudy[t,...] = N.gradient(U[t,...],parent.dx,parent.dx)
+            dvdx[t,...], dvdy[t,...] = N.gradient(V[t,...],parent.dx,parent.dx)
     return dudx, dudy, dvdx, dvdy
 
 def compute_stretch_deformation(parent,U,V):
@@ -426,6 +427,49 @@ def compute_density(parent,tidx,lvidx,lonidx,latidx,other):
     return rho
 
 def compute_CAPE(parent,tidx,lvidx,lonidx,latidx,other):
+    """CAPE, taken from Pat Skinner's cookbook.
+    """
+    kwargs = dict(tidx=tidx,lvidx=lvidx,lonidx=lonidx,latidx=latidx,other=other)
+    # Environmental temperature
+    t_env = parent.get('drybulb',**kwargs)
+    # Lifted parcel temperature
+    t_parc = parent.get('LPT',**kwargs)
+    # Environmental pressure
+    p = parent.get('pressure',**kwargs)
+    # LCL pressure
+    lcl_p = parent.get('LCL_P',**kwargs)
+    # Vertical grid spacing at each grid point
+    dz = parent.get('dz',**kwargs)
+
+    t_diff = t_parc-t_env
+    t_diff[t_diff > 0] = 0
+    
+    for lv in range(1,t_diff.shape[0]):
+        t_diff[lv,:,:] = N.where(p[lv,:,:] > lcl_p, 0.0, t_diff[lv,:,:])
+
+    CAPE = mc.g * N.trapz((t_diff/t_env),dx=dz[:-1,:,:],axis=0)
+    return CAPE
+
+def compute_lifted_parcel_temp(parent,tidx,lvidx,lonidx,latidx,other):
+    assert True is False
+    # TODO....
+
+    kwargs = dict(tidx=tidx,lvidx=lvidx,lonidx=lonidx,latidx=latidx,other=other)
+    # t = parent.get('drybulb',**kwargs)
+    # th = parent.get('theta',**kwargs)
+    p = parent.get('pressure',**kwargs)
+
+    # 2D slices for the layer to be lifted.
+    the_base = 0
+    p_base = 0
+    t_base = 0
+
+    # t_parcel = N.zeros_like()
+    # th_parcel = N.zeros_like()
+
+    return
+
+def __compute_CAPE(parent,tidx,lvidx,lonidx,latidx,other):
     """
     INCOMPLETE!
 
@@ -537,21 +581,21 @@ def compute_temp_advection(parent,tidx,lvidx,lonidx,latidx,other):
     U = parent.get('U',tidx,lvidx,lonidx,latidx)[0,0,:,:]
     V = parent.get('V',tidx,lvidx,lonidx,latidx)[0,0,:,:]
     T = parent.get('drybulb',tidx,lvidx,lonidx,latidx)[0,0,:,:]
-    dTdx, dTdy = N.gradient(T,parent.DX,self.DY)
+    dTdx, dTdy = N.gradient(T,parent.DX,parent.DY)
     field = -U*dTdx - V*dTdy
     # pdb.set_trace()
     return field
 
 def compute_PMSL_gradient(parent,tidx,lvidx,lonidx,latidx,other):
     P = parent.get('PMSL',tidx,lvidx,lonidx,latidx)[0,0,:,:]
-    dPdx, dPdy = N.gradient(P,parent.dx,self.dy)
+    dPdx, dPdy = N.gradient(P,parent.dx,parent.dy)
     field = N.sqrt(dPdx**2 + dPdy**2)
     # import pdb; pdb.set_trace()
     return field
 
 def compute_T2_gradient(parent,tidx,lvidx,lonidx,latidx,other):
     T2 = parent.get('T2',tidx,lvidx,lonidx,latidx)[0,0,:,:]
-    dTdx, dTdy = N.gradient(T2,parent.dx,self.dy)
+    dTdx, dTdy = N.gradient(T2,parent.dx,parent.dy)
     field = N.sqrt(dTdx**2 + dTdy**2)
     # import pdb; pdb.set_trace()
     return field
@@ -651,12 +695,12 @@ def compute_dpt(parent,tidx,lvidx,lonidx,latidx,other):
     return dpt
 
 def compute_geopotential_height(parent,tidx,lvidx,lonidx,latidx,other):
-    geopotential = parent.get('PH',tidx,lvidx,lonidx,latidx) + self.get('PHB',tidx,lvidx,lonidx,latidx)
+    geopotential = parent.get('PH',tidx,lvidx,lonidx,latidx) + parent.get('PHB',tidx,lvidx,lonidx,latidx)
     Z = geopotential/9.81
     return Z
 
 def compute_geopotential(parent,tidx,lvidx,lonidx,latidx,other):
-    geopotential = parent.get('PH',tidx,lvidx,lonidx,latidx) + self.get('PHB',tidx,lvidx,lonidx,latidx)
+    geopotential = parent.get('PH',tidx,lvidx,lonidx,latidx) + parent.get('PHB',tidx,lvidx,lonidx,latidx)
     return geopotential
 
 def compute_wind10(parent,tidx,lvidx,lonidx,latidx,other):
@@ -717,10 +761,10 @@ def compute_shear(parent,tidx,lvidx,lonidx,latidx,other=False):
     v = parent.get('V',tidx,lvidx,lonidx,latidx)
     Z = parent.get('Z',tidx,lvidx,lonidx,latidx)
 
-    topidx = N.zeros((parent.y_dim,self.x_dim))
-    botidx = N.zeros((parent.y_dim,self.x_dim))
-    ushear = N.zeros((parent.y_dim,self.x_dim))
-    vshear = N.zeros((parent.y_dim,self.x_dim))
+    topidx = N.zeros((parent.y_dim,parent.x_dim))
+    botidx = N.zeros((parent.y_dim,parent.x_dim))
+    ushear = N.zeros((parent.y_dim,parent.x_dim))
+    vshear = N.zeros((parent.y_dim,parent.x_dim))
 
     for j in range(parent.x_dim):
         for i in range(parent.y_dim):

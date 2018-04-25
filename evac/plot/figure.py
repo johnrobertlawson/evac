@@ -39,7 +39,7 @@ class Figure:
 
     def __init__(self,ax=None,fig=None,layout='normal',
                     mplargs=None,mplkwargs=None,use_defaults=False,
-                    figsize=None):
+                    figsize=None,ncols=None,nrows=None):
         # self.D = Defaults()
         if mplargs == None:
             mplargs = ()
@@ -47,6 +47,11 @@ class Figure:
             mplkwargs = {}
         self.save_figure = True
         self.use_defaults = use_defaults
+
+        if ncols:
+            assert nrows is not None
+            mplkwargs['ncols'] = ncols
+            mplkwargs['nrows'] = nrows
 
         # Create main figure
         if ax is not None and fig is not None:
@@ -265,6 +270,8 @@ class Figure:
         if hasattr(self,'W'):
             if self.W is not None:
                 x,y = m(self.W.lons,self.W.lats)
+            elif lons.ndim == 2:
+                x,y = m(lons,lats)
             else:
                 x,y = m(*N.meshgrid(lons,lats))
                 # x,y = m(N.meshgrid(lons,lats))
