@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.datafiles.gribfile.GribFile</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.datafiles-module.html">Package&nbsp;datafiles</a> ::
+        <a href="evac.datafiles.gribfile-module.html">Module&nbsp;gribfile</a> ::
+        Class&nbsp;GribFile
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.datafiles.gribfile.GribFile-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class GribFile</h1><p class="nomargin-top"><span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="class_hierarchy_for_gribfile" name="class_hierarchy_for_gribfile">
+<area shape="rect" id="node1" href="evac.datafiles.datafile.DataFile-class.html" title="datafile.DataFile" alt="" coords="5,5,129,31"/>
+<area shape="rect" id="node2" href="evac.datafiles.gribfile.GribFile-class.html" title="GribFile" alt="" coords="153,5,221,31"/>
+</map>
+  <img src="class_hierarchy_for_gribfile.gif" alt='' usemap="#class_hierarchy_for_gribfile" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<pre class="literalblock">
+Generic load for Grib 1/2 files.
+
+Args:
+    fpath: Absolute path to grib file.
+
+Todo:
+    * Make general, i.e. remove HRRR etc specifics
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.gribfile.GribFile-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fpath</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.gribfile.GribFile-class.html#get_units" class="summary-sig-name">get_units</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      The units used for variables within.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.get_units">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_record"></a><span class="summary-sig-name">get_record</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrblkey</span>,
+        <span class="summary-sig-arg">idx</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.get_record">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.datafiles.gribfile.GribFile-class.html#idx_from_lv" class="summary-sig-name">idx_from_lv</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrblkey</span>,
+        <span class="summary-sig-arg">lv</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Return the index to load a requested level (in hPa).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.idx_from_lv">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get"></a><span class="summary-sig-name">get</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">idx</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">utc</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">lons</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">lats</span>=<span class="summary-sig-default">None</span>)</span><br />
+      I don't think we need utc/lv - aren't all grib files one time? - but 
+      it is here to enable compatibility with other get() APIs.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.get">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="enforce_4d"></a><span class="summary-sig-name">enforce_4d</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">arr</span>)</span><br />
+      TODO: move higher up to super-superclass?</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.enforce_4d">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="lookup_vrbl"></a><span class="summary-sig-name">lookup_vrbl</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.lookup_vrbl">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="return_latlon"></a><span class="summary-sig-name">return_latlon</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.return_latlon">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="projection"></a><span class="summary-sig-name">projection</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.projection">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="arbitrary_pick"></a><span class="summary-sig-name">arbitrary_pick</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.arbitrary_pick">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="return_vrbl_records"></a><span class="summary-sig-name">return_vrbl_records</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">vrbl</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.return_vrbl_records">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="search_keyword"></a><span class="summary-sig-name">search_keyword</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">keyword</span>)</span><br />
+      Look for record entries based on a keyword.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.search_keyword">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">fpath</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="evac.datafiles.datafile.DataFile-class.html#__init__">datafile.DataFile.__init__</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_units"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_units</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.get_units">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>The units used for variables within. This should be overridden in 
+  children.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="idx_from_lv"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">idx_from_lv</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">vrblkey</span>,
+        <span class="sig-arg">lv</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.datafiles.gribfile-pysrc.html#GribFile.idx_from_lv">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return the index to load a requested level (in hPa). If level doesn't 
+  exist, throw an exception.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

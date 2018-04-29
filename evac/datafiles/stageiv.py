@@ -1,21 +1,26 @@
+"""
+Todo:
+    * Rework the _get/_set_subdomain logic. This needs to be done at the
+        superclass level and have consistent API across all classes/methods.
+"""
 import os
 import glob
 import datetime
+import pdb
 
 import numpy as N
 from mpl_toolkits.basemap import Basemap
 
+from evac.plot.birdseye import BirdsEye
 from evac.datafiles.gribfile import GribFile
+from evac.datafiles.obs import Obs
+import evac.utils as utils
 
-class StageIV(GribFile):
+class StageIV(GribFile,Obs):
     """ Class that holds Stage IV verification data.
 
     Args:
-        dir_or_file: if directory, it scans for all files
-            If file, it loads that one file.
-        load_1h (bool): if True, load the hourly data files.
-        load_6h (bool): if True, load the six-hourly data files.
-        load_24h (bool): if True, load the daily data files.
+        fpath: Absolute path to Stage IV file. 
         loadobj (bool): if True, load the data as instances of 
             :class:`~evac.datafiles.gribfile.GribFile()`.
 
@@ -24,8 +29,7 @@ class StageIV(GribFile):
         * Consistency: are we loading one or a group of files?
 
     """
-    def __init__(self,dir_or_file,load_1h=True,load_6h=False,load_24h=False,
-                    loadobj=False):
+    def __init__(self,fpath):
 
         try:
             import pygrib
@@ -35,131 +39,96 @@ class StageIV(GribFile):
         else:
             self.pygrib = pygrib
 
-        self.loadobj = loadobj
-
-        # Determine whether to load one file or search in directory
-        if os.path.isdir(dir_or_file):
-        # try:
-        # except OSError:
-            ST4s = os.path.join(dir_or_file,'ST4*')
-            print("Loading files in {0}".format(ST4s))
-            fps = glob.glob(ST4s)
-        else:
-            G = self.pygrib.open(dir_or_file)
-            fps = [dir_or_file,]
-
-        self.DATA = {}
-        if load_1h:
-            self.DATA['01h'] = {}
-        if load_6h:
-            self.DATA['06h'] = {}
-        if load_24h:
-            self.DATA['24h'] = {}
-        for fp in fps:
-            # fp is the full path to the (grib?) file
-            # f is the name of the file only
-            f = os.path.basename(fp)
-            t = self.date_from_fname(f)
-
-            # if f.endswith('01h'):
-                # d1h[t] = self.load_data(f)
-            # elif f.endswith('06h'):
-                # d6h[t] = self.load_data(f)
-            # elif f.endswith('24h'):
-                # d24h[t] = self.load_data(f)
-            # else:
-                # pass
-            for accum_t in ('01h','06h','24h'):
-                if f.endswith(accum_t) and (accum_t in self.DATA.keys()):
-                    answer = self.load_data(fp,loadobj)
-                    if answer is not False:
-                        self.DATA[accum_t][t] = answer
-                else:
-                    pass
-
-        # Assign all projection stats
-        # pdb.set_trace()
-        # print("All files in ",ST4s)
-        # for fp in fps:
-            # print(fp)
-        # print("-"*10)
+        self.fpath = fpath
+        self.G = self.pygrib.open(fpath)
+        self.fname = os.path.basename(self.fpath)
+        self.utc = self.date_from_fname(self.fname)
 
         self.projection()
+        self.lats, self.lons = self.return_latlon()
+        self.return_subdomain = False
 
-    def get(self,utc,accum_hr='01h'):
+    def get(self,utc=None,lv=None,return_masked=False,check=True):
         """
         Get a given time, in similar manner to WRFOut.
 
         Wrapper for return_array with reshape to 4D
-        """
-        data2D = self.return_array(utc,accum_hr=accum_hr)
-        data4D = data2D[N.newaxis,N.newaxis,:,:]
-        return data4D
 
-    def date_from_fname(self,f):
+        lv is always None (compatibility with other gets).
+
+        Args:
+            check: if True, raise Exception if the data is not
+                a legitimate array (e.g., shape = (0,0)
+
+        """
+        data2D = self.return_array(utc,accum_hr=accum_hr,check=check)
+        # pdb.set_trace()
+
+        if self.return_subdomain is not False:
+            assert return_masked is False
+            data2D = self.return_subdomain(data2D.data)
+
+        data4D = data2D[N.newaxis,N.newaxis,:,:]
+
+        if return_masked:
+            return data4D
+        return data4D.data
+
+    @staticmethod
+    def date_from_fname(f):
         _1, d, _2 = f.split('.')
         fmt = '%Y%m%d%H'
         utc = datetime.datetime.strptime(d,fmt)
         return utc
 
-    def load_data(self,f,loadobj=False):
-        if loadobj:
-            # Return Pygrib object if valid grib file
-            try:
-                G = self.pygrib.open(f)
-            except OSError:
-                return False
-            else:
-                return G
-        else:
-            # Return file path if valid grib file
-            try:
-                G_test = self.pygrib.open(f)
-            except OSError:
-                return False
-            else:
-                return f
-
-    def load_gribpart(self,G):
-        if G is None:
-            G = self.arbitrary_pick()
-        if isinstance(G,str):
-            G = self.load_data(G,loadobj=True)
-        G.seek(0)
+    def load_gribpart(self):
+        # self.G = self.load_data(self.G,loadobj=True)
+        self.G.seek(0)
         gg = G.select(name='Total Precipitation')[0]
         return gg
 
-    def load_accum(self,G):
-        gg = self.load_gribpart(G)
-        arr = gg.values
-        return arr
+    def load_accum(self):
+        raise Exception("Now use return_array.")
+        return
 
-    def return_latlon(self,G):
-        if G is None:
-            G = self.arbitrary_pick()
-        gg = self.load_gribpart(G)
+    def return_latlon(self):
+        gg = self.load_gribpart()
         latlon = gg.latlons()
         lats, lons = latlon
         return lats,lons
 
-    def return_array(self,utc,accum_hr='01h'):
-        G = self.DATA[accum_hr][utc]
-        return self.load_accum(G)
+    def check_quality(self,arr):
+        """ Probably needs better logic than this. TODO.
+        """
+        if arr == arr[0,0]:
+            return False
+        return True
 
-    def return_point(self,utc,lat,lon,accum_hr='01h'):
-        lats, lons = self.return_latlon(None)
-        latidx,lonidx = utils.get_latlon_idx(lats,lons,lat,lon)
-        arr = self.return_array(utc,accum_hr=accum_hr)
-        # pdb.set_trace()
+    def return_array(self,check=True):
+        """ 
+        Return the (masked) array.
+
+        Args:
+            check: if True, raise exception if no data.
+        """
+        gg = self.load_gribpart()
+        arr = gg.values
+
+        if check:
+            OK = self.check_quality(arr)
+            if not OK:
+                raise Exception("These data are rubbish.")
+        return arr
+
+    def return_point(self,lat,lon):
+        latidx,lonidx = utils.get_latlon_idx(self.lats,self.lons,lat,lon)
+        arr = self.return_array()
         return arr[latidx,lonidx]
-
 
     def projection(self):
         self.m = Basemap(projection='npstere',lon_0=-105.0,#lat_1=60.0,
                 # llcrnrlon=lllon,llcrnrlat=lllat,urcrnrlon=urlon,urcrnrlat=urlat,
                             boundinglat=24.701632)
-        G = self.arbitrary_pick()
-        self.lats, self.lons = self.return_latlon(G)
         self.xx, self.yy = self.m(self.lons,self.lats)
         # pdb.set_trace()
         # self.mx, self.my = N.meshgrid(self.xx,self.yy)
@@ -176,8 +145,94 @@ class StageIV(GribFile):
         self.shape = self.lats.shape
         assert self.lats.shape == self.lons.shape
 
-    def arbitrary_pick(self):
-        # pdb.set_trace()
-        accum = list(self.DATA.keys())[0]
-        utc = list(self.DATA[accum].keys())[0]
-        return self.DATA[accum][utc]
+    def __get_subdomain(self,Nlim,Elim,Slim,Wlim,overwrite=False):
+        """ Overriden method from parent.
+
+        This is because StageIV uses a catalogue of data arrays,
+            rather than a single array. Future TODO is to 
+            make ST4 just one file, and do another class
+            that is a 'data ensemble'.
+        """
+        # This is just here for compatibility with API
+        overwrite = False
+
+        self.set_subdomain(Nlim,Elim,Slim,Wlim,enable=True)
+        return
+
+    def __set_subdomain(self,Nlim,Elim,Slim,Wlim,enable=True):
+        """ A partner of get_subdomain().
+        
+        Call signature changed from Obs method, to
+        enable a time to be chosen, and data to be
+        returned (not overridden). These settings are
+        kept for future get() commands.
+        """
+        self.Nlim = Nlim
+        self.Elim = Elim
+        self.Slim = Slim
+        self.Wlim = Wlim
+
+        if enable:
+            self.return_subdomain = self._return_subdomain
+        return 
+
+    def _return_subdomain(self,data):
+        data,lats,lons = super().get_subdomain(self.Nlim,self.Elim,self.Slim,
+                                                self.Wlim,data=data)
+        # Store the new lat/lon array just in case.
+        self._subdom_lats = lats
+        self._subdom_lons = lons
+        return data
+
+        
+    def __plot(self,data=None,outdir=False,fig=False,ax=False,fname=False,
+                    # Nlim=False, Elim=False, Slim=False,Wlim=False,
+                    cb=True,drawcounties=False,save='auto',
+                    lats=None,lons=None,proj='merc',
+                    utc=None):
+        """ Plot data.
+
+        Todo:
+            * This doesn't feel right. Plotting should be done elsewhere.
+
+        Args:
+
+        save        :   (str,bool) - If 'auto', saving will only occur if
+                        fig and ax are not specified.
+                        If True, the figure is saved; if False, not.
+        """
+        # if isinstance(Nlim,float):
+            # data, lats, lons = self.get_subdomain(Nlim,Elim,Slim,Wlim)
+        # else:
+            # if not given, try to use self's
+
+        if data == None:
+            assert utc is not None
+            data = self.get(utc=utc)
+        # data = getattr(self,'data',data)
+        if lats == None:
+            lats = self.lats 
+        # lats = getattr(self,'lats',lats)
+        if lons == None:
+            lons = self.lons
+        # lons = getattr(self,'lons',lons)
+
+        # Need to implement options for this
+        cmap = None
+        clvs = None
+
+        if not fname:
+            tstr = utils.string_from_time('output',utc)
+            fname = 'verif_ST4_{0}.png'.format(tstr)
+        F = BirdsEye(fig=fig,ax=ax,proj=proj)
+        if cb:
+            cb = 'horizontal'
+        if save == 'auto':
+            if (fig is not False) and (ax is not False):
+                save = False
+            else:
+                save = True
+        F.plot2D(data,fname,outdir=outdir,lats=lats,lons=lons,
+                    cmap=cmap,clvs=clvs,
+                    cb=cb,cblabel='Accumulated precipitation (mm)',
+                    drawcounties=drawcounties,save=save,lat_ts=50.0,)

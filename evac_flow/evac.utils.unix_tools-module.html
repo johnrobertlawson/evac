@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.utils.unix_tools</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.utils-module.html">Package&nbsp;utils</a> ::
+        Module&nbsp;unix_tools
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.utils.unix_tools-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module unix_tools</h1><p class="nomargin-top"><span class="codelink"><a href="evac.utils.unix_tools-pysrc.html">source&nbsp;code</a></span></p>
+<p>A collection of *nix utility scripts.</p>
+  <p>These help with directory, file, etc issues.</p>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.unix_tools-module.html#bridge_multi" class="summary-sig-name">bridge_multi</a>(<span class="summary-sig-arg">orders</span>,
+        <span class="summary-sig-arg">fromlist</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">todir</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">return_newlist</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Soft-link, copy, or move multiple items.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#bridge_multi">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.unix_tools-module.html#bridge" class="summary-sig-name">bridge</a>(<span class="summary-sig-arg">command</span>,
+        <span class="summary-sig-arg">frompath</span>,
+        <span class="summary-sig-arg">topath</span>,
+        <span class="summary-sig-arg">catch_overwrite</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">return_newpath</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Copy, move, soft-link.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#bridge">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.unix_tools-module.html#wowprint" class="summary-sig-name">wowprint</a>(<span class="summary-sig-arg">message</span>,
+        <span class="summary-sig-arg">color</span>=<span class="summary-sig-default">'red'</span>,
+        <span class="summary-sig-arg">bold</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">underline</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">formatargs</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Print with colour/bold emphasis on certain things!</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#wowprint">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.unix_tools-module.html#_bridge" class="summary-sig-name" onclick="show_private();">_bridge</a>(<span class="summary-sig-arg">cmd</span>,
+        <span class="summary-sig-arg">frompath</span>,
+        <span class="summary-sig-arg">topath</span>,
+        <span class="summary-sig-arg">mv</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">cp</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">ln</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Olde version.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#_bridge">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.unix_tools-module.html#trycreate" class="summary-sig-name">trycreate</a>(<span class="summary-sig-arg">loc</span>,
+        <span class="summary-sig-arg">parents</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">exist_ok</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">loc_is_dir</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Args:</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#trycreate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.unix_tools-module.html#softlink" class="summary-sig-name">softlink</a>(<span class="summary-sig-arg">frompath</span>,
+        <span class="summary-sig-arg">topath</span>)</span><br />
+      Arguments must be path objects or strings.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#softlink">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="enforce_pathobj"></a><span class="summary-sig-name">enforce_pathobj</span>(<span class="summary-sig-arg">obj</span>,
+        <span class="summary-sig-arg">path_type</span>=<span class="summary-sig-default">'posix'</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#enforce_pathobj">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.unix_tools-module.html#dir_from_naming" class="summary-sig-name">dir_from_naming</a>(<span class="summary-sig-arg">root</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Generate file path from arguments</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#dir_from_naming">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ssh_client"></a><span class="summary-sig-name">ssh_client</span>(<span class="summary-sig-arg">ky</span>,
+        <span class="summary-sig-arg">domain</span>,
+        <span class="summary-sig-arg">username</span>,
+        <span class="summary-sig-arg">password</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#ssh_client">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="edit_namelist"></a><span class="summary-sig-name">edit_namelist</span>(<span class="summary-sig-arg">f</span>,
+        <span class="summary-sig-arg">sett</span>,
+        <span class="summary-sig-arg">newval</span>,
+        <span class="summary-sig-arg">absolute</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">doms</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">samealldoms</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#edit_namelist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="generate_timestamp_fname"></a><span class="summary-sig-name">generate_timestamp_fname</span>(<span class="summary-sig-arg">extension</span>)</span><br />
+      Returns a file name based on current time.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#generate_timestamp_fname">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="bridge_multi"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">bridge_multi</span>(<span class="sig-arg">orders</span>,
+        <span class="sig-arg">fromlist</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">todir</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">return_newlist</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#bridge_multi">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Soft-link, copy, or move multiple items.
+
+Args:
+orders      :   dictionary with the following layout:
+                dict( (frompath,topath)=cmd)
+                If orders is string, treat it as command,
+                and require arguments fromlist and todir.
+
+where
+
+cmd is 'copy','softlink', or 'move'
+frompath/topath is absolute path of origin/destination
+
+return_newlist (bool): if True, return a list with the new absolute
+                            path of all files.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="bridge"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">bridge</span>(<span class="sig-arg">command</span>,
+        <span class="sig-arg">frompath</span>,
+        <span class="sig-arg">topath</span>,
+        <span class="sig-arg">catch_overwrite</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">return_newpath</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#bridge">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Copy, move, soft-link.
+
+Args:
+
+command     :   (str) - must be one of &quot;copy&quot;, &quot;softlink&quot;,
+                &quot;move&quot;.
+frompath    :   (str,Path) - absolute path to origin directory or file
+topath      :   (str,Path) - absolute path to destination directory or
+                file. If topath is only a directory, the link will
+                be the same filename as the origin.
+catch_overwrite     :   (bool) - if True, raise Exception if
+                        topath already exists
+return_newpath (bool): if True, return the new absolute path of the file
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="wowprint"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">wowprint</span>(<span class="sig-arg">message</span>,
+        <span class="sig-arg">color</span>=<span class="sig-default">'red'</span>,
+        <span class="sig-arg">bold</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">underline</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">formatargs</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#wowprint">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Print with colour/bold emphasis on certain things!
+
+message      :   (str) - string with any emphasised
+                item surrounded by two asterisks on both
+                sides. These are replaced.
+color        :   (str,bool) - the colour of the emphasised
+                text. If False, don't emphasise.
+
+Usage:
+
+wowprint(&quot;The program **prog** is broken&quot;,color='red')
+wowprint(&quot;The program {} is broken&quot;,formatargs=('prog',),color='blue',
+                        underline=True)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_bridge"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_bridge</span>(<span class="sig-arg">cmd</span>,
+        <span class="sig-arg">frompath</span>,
+        <span class="sig-arg">topath</span>,
+        <span class="sig-arg">mv</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">cp</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">ln</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#_bridge">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Olde version. Soft-link, copy, or move item.</p>
+  <p>Create folder if it doesn't exist</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="trycreate"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">trycreate</span>(<span class="sig-arg">loc</span>,
+        <span class="sig-arg">parents</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">exist_ok</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">loc_is_dir</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#trycreate">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Args:
+
+loc     :   (Path,str) - path-like object or string to directory
+            or file. If loc is a directory, this method will attempt to
+            create a folder if it doesn't already exist. If loc is
+            a file, its parent directory will be treated as loc.
+parents  :   (bool) - if True, then equivalent to mkdir -p &lt;/path/&gt;
+exist_ok    :   (bool) - if True, then warnings are ignored about folder already
+                existing.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="softlink"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">softlink</span>(<span class="sig-arg">frompath</span>,
+        <span class="sig-arg">topath</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#softlink">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Arguments must be path objects or strings.
+
+Args:
+
+frompath    :   (str,Path) - absolute path to origin directory or file
+topath      :   (str,Path) - absolute path to destination directory or
+                file. If topath is only a directory, the link will
+                be the same filename as the origin.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="dir_from_naming"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">dir_from_naming</span>(<span class="sig-arg">root</span>,
+        <span class="sig-arg">*args</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.unix_tools-pysrc.html#dir_from_naming">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Generate file path from arguments</p>
+  <p>Inputs: root    :    file path base args     :    list of arguments to
+  join as separate folders</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

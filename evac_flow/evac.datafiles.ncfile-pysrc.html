@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.datafiles.ncfile</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.datafiles-module.html">Package&nbsp;datafiles</a> ::
+        Module&nbsp;ncfile
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.datafiles.ncfile-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="evac.datafiles.ncfile-module.html">Module evac.datafiles.ncfile</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pdb</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">netCDF4</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Dataset</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package evac=evac-module.html"><a title="evac" class="py-name" href="#" onclick="return doclink('link-0', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package evac.datafiles=evac.datafiles-module.html"><a title="evac.datafiles" class="py-name" href="#" onclick="return doclink('link-1', 'datafiles', 'link-1');">datafiles</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module evac.datafiles.datafile=evac.datafiles.datafile-module.html"><a title="evac.datafiles.datafile" class="py-name" href="#" onclick="return doclink('link-2', 'datafile', 'link-2');">datafile</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Class evac.datafiles.datafile.DataFile=evac.datafiles.datafile.DataFile-class.html"><a title="evac.datafiles.datafile.DataFile" class="py-name" href="#" onclick="return doclink('link-3', 'DataFile', 'link-3');">DataFile</a></tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"> </tt>
+<a name="NCFile"></a><div id="NCFile-def"><a name="L8"></a><tt class="py-lineno"> 8</tt> <a class="py-toggle" href="#" id="NCFile-toggle" onclick="return toggle('NCFile');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="evac.datafiles.ncfile.NCFile-class.html">NCFile</a><tt class="py-op">(</tt><tt class="py-base-class">DataFile</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NCFile-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="NCFile-expanded"><a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line">    <tt class="py-docstring">"""Generic netCDF class.</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-docstring">    Subclass of generic DataFile class.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="NCFile.__init__"></a><div id="NCFile.__init__-def"><a name="L13"></a><tt class="py-lineno">13</tt> <a class="py-toggle" href="#" id="NCFile.__init__-toggle" onclick="return toggle('NCFile.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.datafiles.ncfile.NCFile-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">fpath</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NCFile.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="NCFile.__init__-expanded"><a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method evac.datafiles.binaryfile.BinaryFile.__init__()=evac.datafiles.binaryfile.BinaryFile-class.html#__init__,Method evac.datafiles.csvfile.CSVFile.__init__()=evac.datafiles.csvfile.CSVFile-class.html#__init__,Method evac.datafiles.datafile.DataFile.__init__()=evac.datafiles.datafile.DataFile-class.html#__init__,Method evac.datafiles.ecmwf.ECMWF.__init__()=evac.datafiles.ecmwf.ECMWF-class.html#__init__,Method evac.datafiles.ensemble.Ensemble.__init__()=evac.datafiles.ensemble.Ensemble-class.html#__init__,Method evac.datafiles.gefs.GEFS.__init__()=evac.datafiles.gefs.GEFS-class.html#__init__,Method evac.datafiles.gfs.GFS.__init__()=evac.datafiles.gfs.GFS-class.html#__init__,Method evac.datafiles.gribfile.GribFile.__init__()=evac.datafiles.gribfile.GribFile-class.html#__init__,Method evac.datafiles.hrrr.HRRR.__init__()=evac.datafiles.hrrr.HRRR-class.html#__init__,Method evac.datafiles.mrms.MRMS.__init__()=evac.datafiles.mrms.MRMS-class.html#__init__,Method evac.datafiles.ncfile.NCFile.__init__()=evac.datafiles.ncfile.NCFile-class.html#__init__,Method evac.datafiles.obs.Obs.__init__()=evac.datafiles.obs.Obs-class.html#__init__,Method evac.datafiles.pngfile.PNGFile.__init__()=evac.datafiles.pngfile.PNGFile-class.html#__init__,Method evac.datafiles.radar.Radar.__init__()=evac.datafiles.radar.Radar-class.html#__init__,Method evac.datafiles.ruc.RUC.__init__()=evac.datafiles.ruc.RUC-class.html#__init__,Method evac.datafiles.spclsr.SPCLSR.__init__()=evac.datafiles.spclsr.SPCLSR-class.html#__init__,Method evac.datafiles.stageiv.StageIV.__init__()=evac.datafiles.stageiv.StageIV-class.html#__init__,Method evac.datafiles.stormevents.StormEvents.__init__()=evac.datafiles.stormevents.StormEvents-class.html#__init__,Method evac.datafiles.wrfout.WRFOut.__init__()=evac.datafiles.wrfout.WRFOut-class.html#__init__,Method evac.lazy.ideal_profiles.Profile.__init__()=evac.lazy.ideal_profiles.Profile-class.html#__init__,Method evac.lazy.lazyensemble.LazyEnsemble.__init__()=evac.lazy.lazyensemble.LazyEnsemble-class.html#__init__,Method evac.lazy.lazywrf.LazyWRF.__init__()=evac.lazy.lazywrf.LazyWRF-class.html#__init__,Method evac.plot._rucplot.RUCPlot.__init__()=evac.plot._rucplot.RUCPlot-class.html#__init__,Method evac.plot._skewt.Profile.__init__()=evac.plot._skewt.Profile-class.html#__init__,Method evac.plot._skewt.SkewT.__init__()=evac.plot._skewt.SkewT-class.html#__init__,Method evac.plot._skewt2.SkewXAxis.__init__()=evac.plot._skewt2.SkewXAxis-class.html#__init__,Method evac.plot.birdseye.BirdsEye.__init__()=evac.plot.birdseye.BirdsEye-class.html#__init__,Method evac.plot.clicker.Clicker.__init__()=evac.plot.clicker.Clicker-class.html#__init__,Method evac.plot.domaingrid.DomainGrid.__init__()=evac.plot.domaingrid.DomainGrid-class.html#__init__,Method evac.plot.heatmap.HeatMap.__init__()=evac.plot.heatmap.HeatMap-class.html#__init__,Method evac.plot.linegraph.LineGraph.__init__()=evac.plot.linegraph.LineGraph-class.html#__init__,Method evac.plot.map.Map.__init__()=evac.plot.map.Map-class.html#__init__,Method evac.plot.performance.Performance.__init__()=evac.plot.performance.Performance-class.html#__init__,Method evac.plot.scales.Scales.__init__()=evac.plot.scales.Scales-class.html#__init__,Method evac.plot.skewt.SkewT.__init__()=evac.plot.skewt.SkewT-class.html#__init__,Method evac.plot.timeseries.TimeSeries.__init__()=evac.plot.timeseries.TimeSeries-class.html#__init__,Method evac.plot.xsection.CrossSection.__init__()=evac.plot.xsection.CrossSection-class.html#__init__,Method evac.stats._objects.ObjVerif.__init__()=evac.stats._objects.ObjVerif-class.html#__init__,Method evac.stats.casati.Casati.__init__()=evac.stats.casati.Casati-class.html#__init__,Method evac.stats.detscores.DetScores.__init__()=evac.stats.detscores.DetScores-class.html#__init__,Method evac.stats.forecastvalue.ForecastValue.__init__()=evac.stats.forecastvalue.ForecastValue-class.html#__init__,Method evac.stats.fss.FSS.__init__()=evac.stats.fss.FSS-class.html#__init__,Method evac.stats.objectbased.ObjectBased.__init__()=evac.stats.objectbased.ObjectBased-class.html#__init__,Method evac.stats.probscores.ProbScores.__init__()=evac.stats.probscores.ProbScores-class.html#__init__,Method evac.stats.roc.ROC.__init__()=evac.stats.roc.ROC-class.html#__init__,Method evac.stats.sal.SAL.__init__()=evac.stats.sal.SAL-class.html#__init__,Method evac.stoch.ifsfractal.IFSFractal.__init__()=evac.stoch.ifsfractal.IFSFractal-class.html#__init__,Method evac.utils.defaults.Defaults.__init__()=evac.utils.defaults.Defaults-class.html#__init__,Method evac.utils.exceptions.FormatError.__init__()=evac.utils.exceptions.FormatError-class.html#__init__,Method evac.utils.exceptions.NonsenseError.__init__()=evac.utils.exceptions.NonsenseError-class.html#__init__,Method evac.utils.exceptions.PrettyException.__init__()=evac.utils.exceptions.PrettyException-class.html#__init__,Method evac.utils.exceptions.QCError.__init__()=evac.utils.exceptions.QCError-class.html#__init__,Method evac.utils.exceptions.WRFError.__init__()=evac.utils.exceptions.WRFError-class.html#__init__,Method evac.utils.reproject_tools.HRRR_native_grid.__init__()=evac.utils.reproject_tools.HRRR_native_grid-class.html#__init__,Method evac.utils.reproject_tools.VerifGrid.__init__()=evac.utils.reproject_tools.VerifGrid-class.html#__init__,Method evac.utils.reproject_tools.WRF_native_grid.__init__()=evac.utils.reproject_tools.WRF_native_grid-class.html#__init__,Method evac.utils.timetool.TimeTool.__init__()=evac.utils.timetool.TimeTool-class.html#__init__"><a title="evac.datafiles.binaryfile.BinaryFile.__init__
+evac.datafiles.csvfile.CSVFile.__init__
+evac.datafiles.datafile.DataFile.__init__
+evac.datafiles.ecmwf.ECMWF.__init__
+evac.datafiles.ensemble.Ensemble.__init__
+evac.datafiles.gefs.GEFS.__init__
+evac.datafiles.gfs.GFS.__init__
+evac.datafiles.gribfile.GribFile.__init__
+evac.datafiles.hrrr.HRRR.__init__
+evac.datafiles.mrms.MRMS.__init__
+evac.datafiles.ncfile.NCFile.__init__
+evac.datafiles.obs.Obs.__init__
+evac.datafiles.pngfile.PNGFile.__init__
+evac.datafiles.radar.Radar.__init__
+evac.datafiles.ruc.RUC.__init__
+evac.datafiles.spclsr.SPCLSR.__init__
+evac.datafiles.stageiv.StageIV.__init__
+evac.datafiles.stormevents.StormEvents.__init__
+evac.datafiles.wrfout.WRFOut.__init__
+evac.lazy.ideal_profiles.Profile.__init__
+evac.lazy.lazyensemble.LazyEnsemble.__init__
+evac.lazy.lazywrf.LazyWRF.__init__
+evac.plot._rucplot.RUCPlot.__init__
+evac.plot._skewt.Profile.__init__
+evac.plot._skewt.SkewT.__init__
+evac.plot._skewt2.SkewXAxis.__init__
+evac.plot.birdseye.BirdsEye.__init__
+evac.plot.clicker.Clicker.__init__
+evac.plot.domaingrid.DomainGrid.__init__
+evac.plot.heatmap.HeatMap.__init__
+evac.plot.linegraph.LineGraph.__init__
+evac.plot.map.Map.__init__
+evac.plot.performance.Performance.__init__
+evac.plot.scales.Scales.__init__
+evac.plot.skewt.SkewT.__init__
+evac.plot.timeseries.TimeSeries.__init__
+evac.plot.xsection.CrossSection.__init__
+evac.stats._objects.ObjVerif.__init__
+evac.stats.casati.Casati.__init__
+evac.stats.detscores.DetScores.__init__
+evac.stats.forecastvalue.ForecastValue.__init__
+evac.stats.fss.FSS.__init__
+evac.stats.objectbased.ObjectBased.__init__
+evac.stats.probscores.ProbScores.__init__
+evac.stats.roc.ROC.__init__
+evac.stats.sal.SAL.__init__
+evac.stoch.ifsfractal.IFSFractal.__init__
+evac.utils.defaults.Defaults.__init__
+evac.utils.exceptions.FormatError.__init__
+evac.utils.exceptions.NonsenseError.__init__
+evac.utils.exceptions.PrettyException.__init__
+evac.utils.exceptions.QCError.__init__
+evac.utils.exceptions.WRFError.__init__
+evac.utils.reproject_tools.HRRR_native_grid.__init__
+evac.utils.reproject_tools.VerifGrid.__init__
+evac.utils.reproject_tools.WRF_native_grid.__init__
+evac.utils.timetool.TimeTool.__init__" class="py-name" href="#" onclick="return doclink('link-4', '__init__', 'link-4');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nc</tt> <tt class="py-op">=</tt> <tt class="py-name">Dataset</tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">,</tt><tt class="py-string">'r'</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

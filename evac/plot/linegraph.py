@@ -35,17 +35,22 @@ class LineGraph(Figure):
             G.plot_fv(FV,hold=False)
             
     """
-    def __init__(self,outdir,fname=None):
+    def __init__(self,outdir,vrbl,fname=None,figsize=None):
         # From superclass
-        self.name = self.create_fname(fname=fname)
+        #self.name = self.create_fname(fname=fname)
         # outfpath = os.path.join(self.outdir)
         self.outdir = outdir
+        self.fname = fname
+        self.vrbl = vrbl
 
-        super().__init__(ncols=1,nrows=1)
+        super().__init__(self,figsize=figsize)#ncol=1,nrow=1)
 
         
-    def plot_score(self,xdata,ydata,mplargs=None,mplkwargs=None,
-                    labels=None, *args,**kwargs):
+    def plot_score(self,xdata,ydata,
+                    use_plot_date=False,labels=None, 
+                    mplargs=None,mplkwargs=None,
+                    plotargs=None,plotkwargs=None,
+                    *args,**kwargs):
         """ Plot e.g. deterministic scores.
         
         Examples:
@@ -55,14 +60,23 @@ class LineGraph(Figure):
         Todo:
             * Can the labels argument be put into mplkwargs?
         """
-        clskwargs, mplkwargs, plotkwargs = self.__get_plot_options(
-                                                    *args,**kwargs)
+        clskwargs, mplkwargs, plotkwargs = self._get_plot_options2(plotargs=plotargs,
+                            plotkwargs=plotkwargs,mplargs=mplargs,mplkwargs=mplkwargs,
+                                                # vrbl=self.vrbl,
+                                                *args,**kwargs)
 
-        self.ax.plot(xdata,ydata,**plotkwargs)
+        if use_plot_date:
+            plotfunc = self.ax.plot_date
+            plotkwargs['xdate'] = True
+            plotkwargs['marker'] = '.'
+            plotkwargs['linestyle'] = 'solid'
+        else:
+            plotfunc = self.ax.plot
+        plotfunc(xdata,ydata,**plotkwargs)
 
         # For legend, xlabel, title, xticks, etc
         self.ax.set(**mplkwargs)
 
-        if not clskwargs['hold']:
+        if clskwargs['save']:
             self.save()
 

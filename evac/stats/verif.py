@@ -5,25 +5,70 @@ lat/lon if required)
 The idea is that no actual plotting is done herein, but that this class
 calls the relevant class methods outside of `Verif` to do this.
 
+Note:
+    Logic for parallelised stats, for both domains on an ensemble,
+    for a range of times, and for QPF, goes as follows:
+
+        * User needs to create Ensemble, StageIV etc instances
+        * --- USER INSTANTIATES VERIF ---
+        * init takes: directory info for data, images
+        * Reprojection grids formed
+        * --- USER COMPUTES STATS ---
+        * Set up pool of CPU workers
+        * Generate iterable from stats, times, domains (fixed vrbl)
+        * Need to find correct verification object and pass it in
+        * Compute stats by reprojecting and etc
+        * Save output to disk with complex naming
+        * Join/close pool
+        * --- USER CALLS PLOT SCRIPTS ---
+        * For list of stats/variable, load data from above, and plot
+        * Call master script, process kwargs (user settings like hold),
+            plotargs (e.g., posterior settings like title), and
+            mplargs (e.g., plot-time settings like cmap). This sets default
+            that aren't specified.
+        * Plot might be simple linegraph at one time
+        * Plot may also compare multiple times/domains, with averages
+        * Hence having lots of little .npy data files is good
+
 Todo:
+    * Order methods so interface comes top.
+    * Create Fields() class like create_newgrid(), and attach to all obs,
+        ensemble, wrfout classes as an attribute.
+    * Protect methods with _ and __ where users won't use it (find/replace!)
+    * Create an Obs class (things like QC data, save/load). This should be
+        inherited by all datatypes that are also classes (mix-in). Make
+        sure any methods have exclusive names to not clash (use _/__?)
     * Create a `evac.plot.thumbnails` class
     * Ensure all figure subtypes has a "print" call to notify of path to figure
     * Save numpy files of computed data for CPU-intense calculations.
     * Decorate all plotting/computation processes with timeme().
     * Be aware if saved data already exists - load if that's the case.
     * Wrap __get_plot_options into figure().
+    * Parallelise!
 
 """
 import os
 import pdb
 import copy
+from multiprocessing import Pool, Lock
+import itertools
+import datetime
+import time
 
-from evac.plot.thumbnails import Thumbnails
+import numpy as N
+
+from evac.plot.thumbnails import ThumbNails
 from evac.plot.linegraph import LineGraph
+from evac.plot.boxplot import BoxPlot
+from evac.plot.violinplot import ViolinPlot
 from evac.stats.detscores import DetScores
 from evac.stats.probscores import ProbScores
 from evac.plot.scorecard import ScoreCard
+from evac.datafiles.radar import Radar
+from evac.datafiles.obs import Obs
 import evac.utils as utils
+from evac.utils.reproject_tools import reproject, WRF_native_grid, create_new_grid, VerifGrid
+
 
 class Verif:
     """ A suite of verification scripts.
@@ -43,11 +88,6 @@ class Verif:
     Also note that anything listed in the dictionaries mplargs and 
     mplkwargs is passed to matplotlib when plotting.
 
-    Args:
-        ensemble: Class instance of `evac.datatypes.ensemble.Ensemble`.
-        outdir: path to output files
-        datadir (optional): Path to which .npy data files will be saved
-        ST4 (optional): Class instance of `evac.datatypes.stageiv.StageIV`.
 
     Todo:
         * Each method should all option to change bounding area of the plot.
@@ -68,27 +108,53 @@ class Verif:
             ST4 = StageIV(...)
             V = Verif(E,ST4)
 
+    Args:
+        ensemble: Class instance of `evac.datatypes.ensemble.Ensemble`.
+        obs: instance, or list/tuple of instances, of Obs subclasses
+        outdir (optional): path to output files
+        datadir (optional): Path to which .npy data files will be saved
+        reproject_dict (dict): if None, no reprojection. Otherwise,
+            reprojection to a common domain is done with these options
+
     """
-    def __init__(self,ensemble,outdir,datadir=False,*args):
-        self.E = ensemble    
+
+
+    def __init__(self,ensemble,obs,outdir=False,datadir=False,
+                    reproject_dict=None):
+        self.E = ensemble
+
+        # A tuple of obs objects, or just one.
+        # So a bunch of Radar objects for different times is no problem,
+        # as we can search for the right one.
+
+        if isinstance(obs,(list,tuple)):
+            self.obs = obs
+        else:
+            self.obs = (obs,)
+            # if isinstance(obs,Obs):
+                # self.obs = (obs,)
+        self.obdict = self.generate_obdict()
+
+        # These are optional, for later use
         self.outdir = outdir
-        self.obdict = *args
         self.datadir = datadir
 
         # Might attach self.E attributes such as times and member 
         # names to the class instance?
+        self.initutc = self.E.initutc
 
-        # This should be a list of doms, not number.
-        assert isinstance(self.E.doms,list)
-        # doms should not be Python numbering~
-        assert doms[0] == 1
-        self.doms = self.E.doms
-        self.ndoms = len(E.doms)
+        # NOT IMPLEMENTED
+        # self.fcst_times = {d:E.times(dom=d) for d in self.doms}
 
-        # Get some useful things common to all plots
+        # Mutual forecast times for each domain
+        # NOT IMPLEMENTED
+        # self.fcst_times['intersection'] = intersection(self.fcst_times)
+
+        # Compute dom information
+        self.doms, self.ndoms = self.check_ensemble_domains()
 
         # Dictionary of aribtrary WRFOut objects 
-        self.arbW = {E.arbitrary_pick(dom=dom,dataobj=True) for dom in self.doms}
+        self.arbdict = self.make_arbdict()
 
         # lats and lons for each domain
         self.lats = {}
@@ -96,49 +162,531 @@ class Verif:
         for dom in self.doms:
             self.lats[dom],self.lons[dom] = self.E.get_latlons(dom=dom)
 
+        # Reprojection - define a new domain to reproject to
+        # Check all settings are in reproject_dict?
+        self.RD = reproject_dict
+        self.newgrid = self.create_newgrid()
+
+        # Look up stats methods here
+        self._STATS = self.generate_lookup_table()
+
+    
+    ##### INTERFACE METHODS - COMPUTE #####
+   
+    def compute_rmse(self,):
+        pass
+
+    def compute_stats(self,stats,vrbl,verif_times,dom=1,ncpus=1,
+                        lvs=None,method=2,**kwargs):
+        """ Megascript to control all stats computations.
+
+        Args:
+            stats: list/tuple of stats to compute. See 
+                :func:`lookup_stats` for a list.
+            verif_times: one, or list/tuple of datetime.datetimes.
+            dom (int): domain(s) to loop over
+            lvs: levels to loop over - default is None for surface etc
+            ncpus (int): number of CPUs for parallel computing.
+            kwargs: settings to pass to compute.
+
+        Todo:
+            * Implement options, assign to self and then it can be seen
+                by all compute_* methods.
+            * Check if product has already been generated/saved. If not,
+                also check that reprojection has been saved.
+
+        Returns:
+            A numpy save file is created for each chunk looped over.
+
+        """
+        self.start_your_engines(ncpus)
+
+        # This is written silly for debugging
+        verif_times1 = self.ensure_list(verif_times)
+        verif_times2 = self.ensure_integers(verif_times1)
+        verif_times = verif_times2
+
+        # add kwargs to class
+        self.allowed_compute_kwargs = ['crps_thresholds','det_thresholds']
+        for k,v in kwargs.items():
+            if k in self.allowed_compute_kwargs:
+                setattr(self,k,v)
+            else:
+                raise Exception("{} is not a valid keyword arg,".format(k))
+
+        lvs = self.ensure_list(lvs)
+        stats = self.ensure_list(stats)
+        domlist = self.get_domlist(dom)
+
+        # Create iterable of times and stats to iterate over
+        itr = self.create_stats_iterable(vrbl=vrbl,verif_times=verif_times,
+                                        doms=domlist,lvs=lvs)
+
+        debug= 0
+        for stat in stats:
+            print("Generating {} stats now.".format(stat))
+            statfunc = self.lookup_statfunc(stat)
+            if method == 3:
+                # Serial mode, good for debugging
+                for chunk in itr:
+                    statfunc(chunk)
+            elif method == 1:
+                for chunk in itr:
+                    fchr,dom,lv,vrbl = chunk
+    
+                    # Check to see if stat has been computed/saved
+
+                    # get_fcst_data
+                    fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
+                    # pdb.set_trace()
+                    fdata = self.reduce_data_dims(fcst)
+
+                    # get_ob_data
+                    utc = self.lookup_validtime(fchr)
+                    obobj,obname = self.get_ob_instance(vrbl,return_name=True)
+                    obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
+
+                    # One parallel loop (async it)
+                    # try to load reproject
+                    exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,fchr=fchr,
+                                            dom=dom,ens='all',return_fpath=True)
+                    if not exists:
+                        # reproject if not, PARALLEL, and save
+                        flats, flons = self.E.get_latlons(dom=dom)
+                        xfs = self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
+                    else:
+                        if debug:
+                            flats, flons = self.E.get_latlons(dom=dom)
+                            xfs = self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
+                            pdb.set_trace()
+
+                        xfs = N.load(rpj_fpath_f)
+
+                    exists, rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+                                            dom=None,ens=None,return_fpath=True)
+                    if not exists:
+                        oblats = obobj.lats
+                        oblons = obobj.lons
+                        xa = self.do_reprojection(obdata,oblons,oblats,save=rpj_fpath_o)
+                    else:
+                        xa = N.load(rpj_fpath_o)
+
+                    # Next parallel loop
+                    # Run statfunc and exit
+
+                    kw = dict(xfs=xfs,xa=xa,vrbl=vrbl,lv=lv,fchr=fchr,dom=dom)
+                    # self.pool.apply_async(statfunc,args=chunk,kwargs=kw)
+                    statfunc(**kw)
+            elif method == 2:
+                codedict = {}
+                for chunk in itr:
+                    fchr,dom,lv,vrbl = chunk
+                    code = self._get_loop_code(chunk)
+                    utc = self.lookup_validtime(fchr)
+                    obobj,obname = self.get_ob_instance(vrbl,return_name=True)
+
+                    exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,fchr=fchr,
+                                            dom=dom,ens='all',return_fpath=True)
+                    if not exists:
+                        codedict[code] = [rpj_fpath_f,]
+                        
+
+                    exists,rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+                                            dom=None,ens=None,return_fpath=True)
+                    if not exists:
+                        codedict[code].append(rpj_fpath_o)
+
+                # We now have a list of all chunks that need reprojection.
+                # For fcst:
+                for chunk in itr:
+                    fchr,dom,lv,vrbl = chunk
+                    code = self._get_loop_code(chunk)
+
+                    if codedict[code][0]:
+                        flats, flons = self.E.get_latlons(dom=dom)
+                        fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
+                        fdata = self.reduce_data_dims(fcst)
+                        # self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
+                        ar = (fdata,flons,flats)
+                        kar = dict(save=rpj_fpath_f)
+                        result = self.pool.apply_async(self.do_reprojection,args=ar,kwargs=kar)
+                    self.pool.join()
+
+
+                # For obs:
+                for chunk in itr:
+                    fchr,dom,lv,vrbl = chunk
+                    code = self._get_loop_code(chunk)
+
+                    if codedict[code][1]:
+                        utc = self.lookup_validtime(fchr)
+                        oblats = obobj.lats
+                        oblons = obobj.lons
+                        obobj,obname = self.get_ob_instance(vrbl,return_name=True)
+                        obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
+                        # xa = self.do_reprojection(obdata,oblons,oblats,save=rpj_fpath_o)
+                        ar = (obdata,oblons,oblats)
+                        kar = dict(save=rpj_fpath_o)
+                        result = self.pool.apply_async(self.do_reprojection,args=ar,kwargs=kar)
+                    self.pool.join()
+
+                    # self.pool.close()
+                
+                for chunk in itr:
+                    xfs = N.load(rpj_fpath_f)
+                    xa = N.load(rpj_fpath_o)
+                    statfunc = self.compute_crps_mp
+                    fchr,dom,lv,vrbl = chunk
+                    kw = dict(xfs=xfs,xa=xa,vrbl=vrbl,lv=lv,fchr=fchr,dom=dom)
+                    self.pool.apply_async(statfunc,args=chunk,kwargs=kw)
+                self.pool.join()
+                    
+
+        return
+
+    @staticmethod
+    def _get_loop_code(itr):
+        """ Merge iter items as one string for looking up later.
+        """
+        itr = list(itr)
+        for n,i in enumerate(itr):
+            if i is None:
+                itr[n] = 'None'
+            itr[n] = str(itr[n])
+        s = '_'.join(itr)
+        return s
+
+    def compute_crps_mp(self,xfs,xa,vrbl,lv,fchr,dom,):
+        fpath = self.generate_npy_fname(vrbl,'CRPS',lv=lv,fchr=fchr,
+                            dom=dom,ens='mean',fullpath=True,)
+        if os.path.exists(fpath):
+            print("Skipping - file already created.")
+            return
+
+        P = ProbScores(xfs=xfs,xa=xa)
+        crps = P.compute_crps(self.crps_thresholds)
+
+        self.save_npy(crps,vrbl,'CRPS',lv=lv,fchr=fchr,dom=dom,ens='mean',fpath=fpath)
+        return
+
+
+    def compute_crps(self,itr):
+        fchr,dom,lv,vrbl = itr
+
+        # Check we have options 
+        # This is something like 0 to 100 for 1-h QPF
+
+        # TODO
+        # Try again when not parallel
+        # assert 'crps_thresholds' in self.__dict__
+
+        # Get raw data
+
+        # If this was a detscore, we'd need to loop over members.
+        # Save for each.
+        # TODO: implement fchr in E.get to look up accum_precip,
+        # or instantaneous variables (validtime? utc?)
+        # TODO: Not hard code QPF accum.
+        
+        # If output exists, don't repeat
+
+        fpath = self.generate_npy_fname(vrbl,'CRPS',lv,fchr,
+                                dom,'mean',fullpath=True)
+        if os.path.exists(fpath):
+            print("Skipping - file already created.")
+            return
+
+        # Load verification
+        utc = self.lookup_validtime(fchr)
+        # Make lv ignored if it's nonsense
+        # Need to implement get() in all obs type.
+        # Do this in parent class and override.
+        obobj,obname = self.get_ob_instance(vrbl,return_name=True)
+
+        # Reproject and compute
+        exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,fchr=fchr,
+                                dom=dom,ens='all',return_fpath=True)
+        if not exists:
+            fcst = self.E.get(vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1)
+            fdata = self.reduce_data_dims(fcst)
+            flats, flons = self.E.get_latlons(dom=dom)
+            xfs = self.do_reprojection(fdata,flons,flats,save=rpj_fpath_f)
+        else:
+            xfs = N.load(rpj_fpath_f)
+
+        
+        exists,rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
+                                dom=None,ens=None,return_fpath=True)
+        if not exists:
+            obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
+            oblats = obobj.lats
+            oblons = obobj.lons
+            xa = self.do_reprojection(obdata,oblons,oblats,save=rpj_fpath_o)
+        else:
+            xa = N.load(rpj_fpath_o)
+
+        P = ProbScores(xfs=xfs,xa=xa)
+        # fr thresh in self.crps_thresholds:
+        crps = P.compute_crps(self.crps_thresholds)
+
+        # Save to disk
+        self.save_npy(crps,vrbl,'CRPS',lv,fchr,dom,'mean',fpath=fpath)
+        return
+
+    def compute_detscores(self,xfs,xa,vrbl,lv,fchr,dom,debug=1):
+        for thresh in self.det_thresholds:
+            thstr = '{:02d}mmh'.format(thresh)
+            for n,ens in enumerate(self.E.member_names):
+                fpath = self.generate_npy_fname(vrbl,'contingency',lv=lv,fchr=fchr,
+                                dom=dom,ens=ens,fullpath=True,suffix=thstr,npy_extension=False)
+                # pdb.set_trace()
+                if not os.path.exists(fpath+'.npz'):
+                    DS = DetScores(fcst_arr=xfs[n,:,:],obs_arr=xa,
+                                thresh=thresh,overunder='over')
+                    scores = DS.compute_all(datadir=self.datadir,fname=fpath)
+                else:
+                    if debug:
+                        DS = DetScores(fcst_arr=xfs[n,:,:],obs_arr=xa,
+                                    thresh=thresh,overunder='over')
+                        scores = DS.compute_all(datadir=self.datadir,fname=fpath)
+                        print("initutc {}, dom {}, thresh {} = {}".format(self.initutc,
+                                                    dom,thresh,scores['BIAS']))
+                        # time.sleep(1)
+                        pdb.set_trace()
+                    print("Skipping; scores exist for",fpath)
+        return
+
+    ##### INTERFACE METHODS - PLOT #####
+
     def plot_domains(self,ensemble_domains='all',ob_domains='all'):
         """ Wrapper to plot domains of forecast or observation domains.
         """
         pass
+    
+    @classmethod
+    def plot_trails(cls,init_dict,score,vrbl,doms,interval=1,
+                    use_hours=True,lv='sfc',ens='all',loop_prefix=None,
+                    loop_suffix=None,mplargs=None,mplkwargs=None,
+                    plotargs=None,plotkwargs=None,
+                    outdir='~/',fname='test.png'):
+        """ Plot stats for every x min for all domains.
+
+        Args:
+            init_dict (dict): dict(datetime.datetime:rootdir)
+            score (str): 'crps', etc
+            vrbl (str): 'accum_precip', etc
+            doms: list, tuple, N.array of domain names/codes
+            interval (int): interval in minutes (or hours) to plot
+            use_hours (bool): if True, use hours for interval (for
+                when loading data, when plotting, and setting interval)
+            lv: By default, this is 'sfc'
+            ens: By default, this is 'all'
+            loop_suffix, loop_prefix (bool): when set (list of strings),
+                script can loop over e.g. thresholds, etc
+        """ 
+        # TODO: make this just class variable doms
+        COLORS = (('red','tomato'),
+                    ('blue','slateblue'),
+                    ('darkgreen','forestgreen'),
+                    ('darkorchid','mediumorchid'),)
+        DATA = {}
+        LG = LineGraph(outdir,fname=fname,vrbl=vrbl,
+                        figsize=(6,6))
+        # initutcs = init_dict.keys()
+        for ninit,(initutc,rootdir) in enumerate(init_dict.items()):
+            
+            # (dom, score_at_valid_time)
+            # number of valid times:
+            nvts = 3 # needs to be dynamic
+            validtimes = N.arange(1,nvts+1)
+            actualtimes = [initutc + datetime.timedelta(seconds=3600*int(v)) for v in validtimes]
+            #DATA[initutc] = N.zeros(ndoms,nvts,)
+            for ndom,dom in enumerate(doms):
+                data = N.zeros(nvts)
+                for nt,t in enumerate(validtimes):
+                    # Loops here for suffix, prefix
+                    # TODO: npz extension and score extraction...
+                    fname = cls.generate_npy_fname(cls,vrbl=vrbl,score=score,lv=lv,fchr=t,
+                                dom=dom,ens=ens,fullpath=False,npy_extension=True)
+                                # dom=dom,ens=ens,fullpath=False,suffix=thstr,npy_extension=False)
+                    fpath = os.path.join(rootdir,fname)
+                    data[nt] = cls.load_data(fpath)
+                plotkwargs['color'] = COLORS[ninit][ndom]
+                # LG.plot_score(xdata=actualtimes,ydata=data,hold=True,mplkwargs=mplkwargs)
+                LG.plot_score(use_plot_date=True,xdata=actualtimes,
+                        ydata=data,hold=True,plotkwargs=plotkwargs)
+                # LG.plot_score(xdata=validtimes,ydata=data,hold=True,mplkwargs=mplkwargs)
+                # pdb.set_trace()
+
+
+        LG.save()
+        pdb.set_trace()
+
+    @classmethod
+    def plot_stats(cls,plot,
+                    # init_dict,score,vrbl,
+                    ndoms=1,outdir='./',
+                    # interval=1,
+                    # use_hours=True,lv='sfc',ens='all',loop_prefix=None,
+                    # loop_suffix=None,
+                    # outdir='~/',fname='test.png',
+                    mplargs=None,mplkwargs=None,
+                    plotargs=None,plotkwargs=None,
+                    *args,**kwargs):
+        """ Master script for plotting anything.
+        """
+        if not mplargs:
+            mplargs = {}
+        if not mplkwargs:
+            mplkwargs = {}
+        if not plotargs:
+            plotargs = {}
+        if not plotkwargs:
+            plotkwargs = {}
+        doms = N.arange(1,ndoms+1)
+        plotfunc = cls.lookup_plotfunc(plot)
+        plotfunc(doms=doms,outdir=outdir,
+                    mplargs=mplargs,mplkwargs=mplkwargs,
+                    plotargs=plotargs,plotkwargs=plotkwargs,
+                    *args,**kwargs)
+
+    @classmethod
+    def lookup_plotfunc(cls,plot):
+        STATFUNCS = {}
+        STATFUNCS['trails'] = cls.plot_trails
+        STATFUNCS['violin'] = cls.plot_violin
+
+        plot = plot.lower()
+        return STATFUNCS[plot]
+
+    @classmethod
+    def plot_violin(cls,outdir,
+                    init_dict,score,vrbl,doms,
+                    interval=1, use_hours=True,lv='sfc',ens='all',
+                    loop_prefix=None,loop_suffix=None,
+                    set_prefix=None,set_suffix=None,
+                    nens=18,
+                    *args,**kwargs):
+        """ Plot violin plot
+
+        Args:
+            vrbl (str): name of variable to evaluate
+
+        This is an alternative to box-and-whisker.
+        """
+        figsize = kwargs.get('figsize',(6,6))
+        thresh = kwargs.get('thresh',5)
+
+        nvts = 3 # needs to be dynamic
+        validtimes = N.arange(1,nvts+1)
+        # actualtimes = [initutc + datetime.timedelta(seconds=3600*int(v)) for v in validtimes]
+        # Data is (inittime,validtime,dom,ensmember)
+        data = {}
+        for ninit,(initutc,rootdir) in enumerate(init_dict.items()):
+            data[initutc] = {}
+            for nt,t in enumerate(validtimes):
+                data[initutc][t] = {}
+                for nd,dom in enumerate(doms):
+                    data[initutc][t][dom] = []
+                    for ne,ens in enumerate(N.arange(1,nens+1)):
+                        fname = cls.generate_npy_fname(cls,vrbl=vrbl,score='contingency',
+                                            lv=lv,fchr=t,dom=dom,ens='m{:02d}'.format(ens),
+                                            fullpath=False,npy_extension='npz',
+                                            suffix='{:02d}mmh'.format(thresh))
+                        fpath = os.path.join(rootdir,fname)
+                        data[initutc][t][dom].append(cls.load_data(fpath)[score])
+                    data[initutc][t][dom] = N.array(data[initutc][t][dom])
+
+        # Group ensemble members together?
+        fname1 = 'all_violin_{}.png'.format(score)
+        VP = ViolinPlot(outdir,fname=fname1,figsize=figsize)
+        fname2 = 'all_boxplot_{}.png'.format(score)
+        BX = BoxPlot(outdir,fname=fname2,figsize=figsize)
+        # list of 1D arrays for each member
+        plotlist = []
+        pos_it = N.array([1,2,4,5,7,8])
+        pos_lb = ['d01','d02'] * 12
+        posns = pos_it.copy()
+        for n,initutc in enumerate(init_dict):
+            if n > 0:
+                posns = N.hstack((posns,pos_it+(n*12)))
+            for t in validtimes:
+                for dom in doms:
+                    plotlist.append(data[initutc][t][dom])
+        # pdb.set_trace()
+        pos = posns.flatten()
+        VP.plot(dataset=plotlist,positions=pos,vert=True,)
+        BX.plot(plotlist,positions=pos,vert=True,labels=pos_lb,
+                autorange=True)
+
+        # if score == 'CSI':
+            # pdb.set_trace()
+
         
 
-    def get_ob_instance(self,vrbl):
-        """ Check original observation instances passed to init
-        to see if it is available. Logic here could be easier using, e.g.
-        `isinstance(k, StageIV)` but this involves importing a lot
-        of unnecessary classes that should be instead invoked only
-        by the user.
-        """
-        if vrbl == ('accum_precip','stageiv'):
-            classname = 'StageIV'
-        elif vrbl in ('REFL_comp','REFL_10CM','radar'):
-            classname = 'Radar':
-        elif vrbl in ('stormreports','spclsr'):
-            raise Exception("Not written yet.")
-
-        for k in self.obdict.items():
-            # if isinstance(k, classname):
-            # This needs to be something like
-            if k.__name__ == classname:
-                return True
-        return False
-
-
-    def plot_thumbnails(self,vrbl,ensmembers='all',ob='auto',
-                        mplargs=None,mplkwargs=None,verif_first=True
+    def plot_thumbnails(self,vrbl,radardir=None,ensmembers='all',fchrs='all',
+                        doms='all',limdict='auto',outdir=None,fname='auto',
+                        mplargs=None,mplkwargs=None,verif_first=True,
+                        lv=None,
                         *args,**kwargs):
         """ Plot postage stamps or thumbnails of ensemble members listed
         (by default, this is all).
+
+        Todo:
+            * radardir should be more general to loading verification.
+            * should be able to plot reprojections resulting from 
+                score calculations.
+            * Remove `radardir` to make this more general. The obs
+                should be passed into the init script. How will this
+                be done when Radar is only for one time?! We need a
+                "obs ensemble" class.
 
         Args:
             verif_first (bool): If True, the first axis (thumbnail/subplot)
                 will be the observations. Method exits if verification does
                 not exist in self.obdict.
         """
-        self.__get_plot_options(*args,**kwargs)
-        if verif_first:
-            self.get_ob_instance(vrbl)
-        TN = Thumbnails(verif_first=verif_first)
+        # self.__get_plot_options(*args,**kwargs)
+        if outdir == None:
+            outdir = self.outdir
+
+        if fchrs == 'all':
+            raise Exception("Need to implement this")
+            # Use N.arange(1,4)
+
+        if doms == 'all':
+            doms = self.doms
+
+    
+        elif limdict is None:
+            limdict = {}
+
+
+        for fchr in fchrs:
+            plotutc = self.lookup_validtime(fchr)
+            for dom in doms:
+                if limdict == 'auto':
+                    ld = self.E.get_limits(dom=dom)
+                else:
+                    ld = limdict
+                if fname == 'auto':
+                    outfname = self.make_plot_fname('thumbnails',vrbl=vrbl,dom=dom,fchr=fchr,
+                                                    lv=lv)
+                TN = ThumbNails(outdir=outdir,fname=outfname)
+                if verif_first:
+                    OB = self.get_ob_instance(vrbl)
+                    # R = Radar(plotutc,radardir)
+                    # R.get_subdomain(**ld,overwrite=True)
+                    OB.get_subdomain(**ld,overwrite=True)
+                    TN.plot_verif(data=OB,utc=plotutc)
+
+                arbW = self.get_arb(dom=dom,fpath_only=False)
+                cen_lat,cen_lon = self.E.get_cenlatlons(dom=dom)
+                fcstdata = self.reduce_data_dims(self.E.get(
+                            vrbl,fcsthr=fchr,dom=dom,level=lv,accum_hr=1))
+                TN.plot_fcst(data=fcstdata,vrbl=vrbl,W=arbW,
+                        cen_lat=cen_lat,cen_lon=cen_lon,
+                        titles=self.E.member_names)
         return
 
     def plot_scorecard(self,detscores='all',probscores='all'):
@@ -154,41 +702,6 @@ class Verif:
         # Evaluate probscores - save?
 
         # Plot to scorecard.
-
-    def generate_mutual_grid(self,):
-        """ Create a new domain that all forecast and observation
-        fields can be interpolated to.
-        """
-
-    def do_reprojection(self,):
-        """ Reproject data. If arguments are multiple, these
-        are put onto common grid.
-        """
-        # self.lats[dom] 
-        pass
-
-    def trim_radar_forever(self,bbdict):
-        """ Make a copy of self.obdict[R], where R is the `Radar()`
-        object, and return it with a smaller bounding box
-        as specified.
-
-        Todo:
-            * Maybe we should put the copied, trimmed version back into
-                the instance's obdict rather than returning it.
-        """
-        R2 = copy.copy(self.get_ob_instance(radar)
-        R2.get_subdomain(**bbdict,overwrite=True)
-        return R2
-
-    @staticmethod
-    def get_2D_data(lats=None,lons=None,level=None,utc=None):
-        """ Get data from ensemble and deliver in 2-D chunks.
-
-        Example:
-            To return 
-            get_2D_data(E) 
-        """
-        pass
 
     def plot_all_detscores(self,scores='all',average='all',
                             *args,**kwargs):
@@ -216,15 +729,6 @@ class Verif:
             LG = LineGraph(self.outdir,fname=fname)
             LG.plot_score(xdata,ydata,hold=False)
 
-    def return_detscores(self,fcst,obs,datafname=None):
-        # Get data into right format.
-        for utc in kwargs['list_of_times']:
-            fcst = 0
-            obs = 0
-            DS = DetScores(fcst_arr=fcst,obs_arr=obs)
-
-            scores = DS.compute_all(datadir=self.datadir,fname=datafname)
-            return scores
 
     def plot_all_probscores(self,vrbl,scores='all',average='all',
                     *args,**kwargs):
@@ -242,6 +746,8 @@ class Verif:
                 scores will be plotted for every time.
         """
         args, kwargs = self.__get_plot_options(vrbl,*args,**kwargs)
+
+    ##### PRIVATE METHODS #####
 
     def __get_plot_options(self,vrbl,*args,**kwargs):
         """ Filter arguments and key-word arguments for plotting methods.
@@ -278,7 +784,7 @@ class Verif:
         elif ('fchr' not in kwargs) or (kwargs['fchr'] == 'all'):
             kwargs['utc'] = E.list_of_times
         # Does this pick up on numpy arange?
-        elif isinstance(kwargs['fchr'], (list,tuple)):
+        elif isinstance(kwargs['fchr'], (list,tuple,N.ndarray)):
             kwargs['utc'] = []
             for f in kwargs['fchr']:
                 utc = self.inittime + datetime.timedelta(seconds=3600*f)
@@ -290,3 +796,453 @@ class Verif:
         clskwargs['save_data'] = kwargs.get('save_data',False)
         return clskwargs,plotkwargs,mplkwargs
             
+
+    def _set_default(self,x,if_none,action=1):
+        """ Default naming for fname generation methods.
+        """
+        if x == None:
+            return if_none
+        else:
+            if action == 1:
+                return str(x)
+            elif action == 'dom':
+                if isinstance(x,str):
+                    return x
+                else:
+                    return 'd{:02d}'.format(x)
+            else:
+                return x
+
+    def make_plot_fname(self,plottype,
+                            # vrbl=None,dom=None,fcst=None,lv=None,
+                            # fullpath=False,
+                            *args,**kwargs):
+        """ Wrapper for generate_fname.
+        """
+        f = self.generate_fname(score=plottype,*args,**kwargs)
+        return f
+
+    def generate_npy_fname(self,
+                            # vrbl,score,lv,fchr=None,utc=None,dom=None,ens=None,
+                            # fullpath=False,prefix=None,suffix=None,
+                            *args,**kwargs):
+        """ Wrapper for generate fname.
+        """
+        kwargs['npy_extension'] = kwargs.get('npy_extension',True)
+        f = self.generate_fname(*args,**kwargs)
+        return f
+
+    def generate_fname(self,vrbl=None,score=None,lv=None,fchr=None,utc=None,
+                            dom=None,ens=None,fullpath=False,prefix=None,
+                            suffix=None,npy_extension=False):
+        """ Save to disc with a naming scheme.
+
+        A separate directory per init time (Ensemble instance) is
+        needed to avoid overwriting.
+
+        Note:
+            ens is the ensemble member (name) or product (average, etc)
+
+
+        Args:
+            fullpath (bool): if True, give absolute path.
+            prefix/suffix: a string to add at the start, or before the extension
+            (in case A/B testing is needed on the same product)
+        """
+
+        # def lv_str(lv):
+            # if lv == None:
+                # return "sfc"
+            # else:
+                # return str(lv)
+
+        vrblstr = vrbl
+        scorestr = score
+        lvstr = self._set_default(lv,'sfc',)
+        # lvstr = lv_str(lv)
+        if utc:
+            timestr = utils.string_from_time('output',utc)
+        else:
+            timestr = '{}h'.format(fchr)
+        domstr = self._set_default(dom,if_none='',action='dom')
+        ensstr = self._set_default(ens,if_none='',)
+        
+        prefixstr = self._set_default(prefix,if_none='',)
+        suffixstr = self._set_default(suffix,if_none='',)
+
+        joinlist = [vrblstr,scorestr,domstr,lvstr,timestr,ensstr] 
+        if suffix:
+            joinlist.append(suffix)
+        if prefix:
+            joinlist.insert(0,prefix)
+
+        fname = '_'.join(joinlist) 
+
+        if npy_extension:
+            if npy_extension == True:
+                ext = 'npy'
+            elif isinstance(npy_extension,str):
+                ext = npy_extension
+
+            if not ext.startswith('.'):
+                ext = '.' + ext
+            fname = fname + ext
+
+        if fullpath:
+            return os.path.join(self.datadir,fname)
+        else:
+            return fname
+
+    def lookup_validtime(self,fchr,intersect_only=True):
+        """ Convert a forecast hour to a verification time.
+
+        Args:
+            intersect_only (bool): If True, raise error if 
+                the time is not present for all domains.
+                NOT IMPLEMENTED!
+        """
+        return self.E.initutc + datetime.timedelta(seconds=3600*fchr)
+
+
+    def create_newgrid(self):
+        """ Create neutral domain to reproject to.
+
+        Done by creating generic Fields.
+
+        Todo:
+            * Refactor so that user selects domain to interp. to?
+        """
+        # DATA is the WRFOut or obs object.
+
+        # Shouldn't all the obs/ensemble classes have a 
+        # Field class attribute with the info of
+        # x,y,lats,lons,bmapi,cen_lat,cen_lon,truelat1,
+        # truelat2, Nlim/urlat, Elim etc
+
+        # newgrid = Field(proj='lcc',...)
+
+        # For now we'll use something else.
+        # Make grid the smallest domain present.
+
+        self.ng_nx = self.RD['nx']
+        self.ng_ny = self.RD['ny']
+
+        W = WRF_native_grid(self.arbdict[max(self.doms)])
+        newgrid = VerifGrid(W,nx=self.RD['nx'],ny=self.RD['ny'])
+        return newgrid
+
+    def get_arb(self,dom,fpath_only=False):
+        """ 
+        Todo: 
+            * Remove the arbdict and just use this to look
+                up arbitrary WRFOuts or their paths.
+        """
+        if fpath_only:
+            dataobj = False
+            give_path = True
+        else:
+            dataobj = True
+            give_path = False
+        arb = self.E.arbitrary_pick(dom=dom,dataobj=dataobj,give_path=give_path)
+        return arb
+
+    def make_arbdict(self,):
+        """
+
+        Todo:
+            * Make WRF_native_grid take objects or fpaths alike.
+        """
+        arbdict = {}
+        for dom in self.doms:
+            arbdict[dom] = self.E.arbitrary_pick(dom=dom,
+                                    dataobj=False,give_path=True)
+        return arbdict
+
+    def check_ensemble_domains(self):
+        # This should be a list of doms, not number.
+        assert isinstance(self.E.doms,list)
+        # doms should not be Python numbering~
+        assert self.E.doms[0] == 1
+        
+        doms = self.E.doms
+        ndoms = self.E.ndoms
+        return doms,ndoms
+
+    @staticmethod
+    def ensure_list(a):
+        """ Make sure the argument is a list
+
+        Todo:
+            * Move to utils.
+
+        """
+        if isinstance(a,list):
+            return a
+        elif isinstance(a,(tuple,N.ndarray)):
+            return list(a)
+        else:
+            return (a,)
+
+
+    def create_stats_iterable(self,vrbl,verif_times,doms,lvs):
+        """ Generator for computing stats in parallel.
+
+        Note:
+            * All arguments must be lists/tuples.
+            * vrbl is always the same. Limiting complexity...
+
+        """
+        for t,d,l in itertools.product(verif_times,
+                                    doms,lvs):
+            yield t,d,l,vrbl
+
+    def start_your_engines(self,ncpus):
+        """ Start multiprocessing pool.
+        """
+        self.pool = Pool(ncpus)
+        return
+
+    # @classmethod
+    def lookup_statfunc(self,stat):
+    # def lookup_statfunc(cls,stat):
+        """ Dictionary lookup for stat-compute methods.
+
+        Todo:
+            * Why won't it work as classmethod?
+        """
+        lc_stat = stat.lower()
+        return self._STATS[lc_stat]
+        # return cls._STATS[stat]
+
+    def generate_lookup_table(self):
+        STATS = dict(
+                contingency = self.compute_contingency,
+                # crps = self.compute_crps,
+                crps = self.compute_crps_mp,
+                rmse = self.compute_rmse,
+                detscores = self.compute_detscores,
+                )
+        return STATS
+
+    def get_domlist(self,dom):
+        """ Get list of domains.
+
+        Could merge/use ensure_list?
+        """
+        if dom == 'all':
+            domlist = self.doms
+        elif isinstance(dom,int):
+            domlist = (dom,)
+        elif isinstance(dom,(list,tuple)):
+            domlist = dom
+        else:
+            raise Exception
+
+        return domlist
+
+    def compute_contingency(self,dom='all'):
+        """ Computed the 2x2 table over the whole ensemble
+        """
+
+        resultdict = self.analogue_dictionary(dom=dom)
+        abcd = compute_contingency(fc,ob,th,'over')
+
+    def analogue_dictionary(self,dom=1):
+        """ Create a mirror-structure dictionary to
+        the ensemble and domain requested.
+        """
+
+
+    def get_ob_instance(self,vrbl,return_name=False):
+        """ Check original observation instances passed to init
+        to see if it is available. Logic here could be easier using, e.g.
+        `isinstance(k, StageIV)` but this involves importing a lot
+        of unnecessary classes that should be instead invoked only
+        by the user.
+
+        Note:
+            Must use lower case for all references. This might cause problems
+                with saving plots/data though.
+        """
+        if vrbl in ('accum_precip','stageiv'):
+            classname = 'stageiv'
+        elif vrbl in ('REFL_comp','REFL_10CM','radar'):
+            classname = 'radar'
+        elif vrbl in ('stormreports','spclsr'):
+            raise Exception("Not written yet.")
+        else:
+            raise Exception("Not implemented.")
+
+        for k,v in self.obdict.items():
+            # if isinstance(k, classname):
+            # This needs to be something like
+            if k == classname:
+                if return_name:
+                    return (v,classname)
+                else:
+                    return v
+        return False
+        
+
+    def save_npy(self,data,vrbl,score,lv,fchr,dom,ens,fpath=False):
+        # TODO
+        # if not evac.number.int/float...
+        # if not isinstance(data,N.ndarray):
+            # data = N.array(data)
+        if not fpath:
+            fpath = self.generate_npy_fname(vrbl,score,lv,fchr,
+                                dom,ens,fullpath=True)
+        utils.trycreate(fpath)
+        N.save(fpath,data)
+        print("Saved data to {}".format(fpath))
+        return
+
+
+    def naming_for_reproj(self,vrbl,model,lv,utc=None,fchr=None,dom=None,
+                            ens=None,fullpath=True):
+        # utcstr = utils.string_from_time('output',utc,strlen='minute')
+        fpath = self.generate_npy_fname(vrbl=vrbl,score=model,lv=lv,utc=utc,
+                                        dom=dom,ens=ens,fullpath=fullpath,fchr=fchr,
+                                        prefix='REPROJ')
+        return fpath
+    
+    def check_for_reproj(self,vrbl,model,lv,utc=None,fchr=None,
+                        dom=None,ens=None,return_fpath=False):
+        """ Check saved data exists.
+        """
+        fpath = self.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,fchr=fchr,
+                                        dom=dom,ens=ens,fullpath=True,)
+        if os.path.exists(fpath):
+            print("Reprojection exists.")
+            ans = True
+        else:
+            ans = False
+
+        if return_fpath:
+            return ans,fpath
+        else:
+            return ans
+
+    def save_reproj(self,data,vrbl=None,model=None,lv=None,utc=None,
+                        dom=None,ens=None,fpath=None):
+        if not fpath:
+            fpath = self.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,
+                                        dom=dom,ens=ens,fullpath=True,)
+        utils.trycreate(fpath)
+        N.save(fpath,data)
+        print("Saved reprojection data to {}".format(fpath))
+        return
+
+    @staticmethod
+    def load_reproj(fpath):
+        arr = N.load(fpath)
+        print("Loaded array from {}".format(fpath))
+        return arr
+
+    @staticmethod
+    def load_data(fpath):
+        """ Variation on load_reproj to load data.
+        """
+        arr = N.load(fpath)
+        print("Loaded array from {}".format(fpath))
+        return arr
+
+    @staticmethod
+    def _reproj_func(data,xx1,yy1,newgrid):
+        # data_ng = reproject(data,xx_orig=data_ng_xx,
+                # yy_orig=data_ng_yy,xx_new=self.newgrid.xx,
+                # yy_new=self.newgrid.yy,)#method='linear')
+        data_ng = reproject(data,xx_orig=xx1,yy_orig=yy1,
+                    xx_new=newgrid.xx,yy_new=newgrid.yy)
+        return data_ng
+
+    def do_reprojection(self,data,lons,lats,save=None):
+        """ Reproject data. If arguments are multiple, these
+        are put onto common grid.
+
+        Args:
+            data: 2D array of data
+            lons: longitudes of data
+            lats: latitudes of data
+        Returns:
+            Data from new domain.
+        """
+
+        # New array for interpolated data.
+        # x/y coordinates of reprojected data.
+        data_ng_xx, data_ng_yy = self.newgrid.m(lons,lats)
+        print("Reprojecting data.")
+        if data.ndim == 3:
+            data_ng = N.zeros((data.shape[0],self.ng_ny,self.ng_nx))
+            for ens in range(data.shape[0]):
+                data_ng[ens,:,:] = self._reproj_func(data[ens,:,:],
+                                        data_ng_xx,data_ng_yy,
+                                        self.newgrid)
+        elif data.ndim == 2:
+            data_ng = self._reproj_func(data,data_ng_xx,data_ng_yy,
+                                        self.newgrid)
+        else:
+            raise Exception
+
+        if save is not None:
+            fpath = save
+            self.save_reproj(data_ng,fpath=fpath)
+        return data_ng
+
+    def trim_radar_forever(self,bbdict):
+        """ Make a copy of self.obdict[R], where R is the `Radar()`
+        object, and return it with a smaller bounding box
+        as specified.
+
+        Todo:
+            * Maybe we should put the copied, trimmed version back into
+                the instance's obdict rather than returning it.
+        """
+        R2 = copy.copy(self.get_ob_instance(radar))
+        R2.get_subdomain(overwrite=True,**bbdict)
+        return R2
+
+    @staticmethod
+    def reduce_data_dims(data,lats=None,lons=None,level=None,utc=None):
+        """ Get data from ensemble and deliver in 2-D chunks.
+
+        Example:
+            To return 
+            reduce_data_dims(E) 
+        """
+        if data.ndim == 5:
+            return data[:,0,0,:,:]
+        elif data.ndim == 4:
+            return data[0,0,:,:]
+        else:
+            raise Exception
+
+    @staticmethod
+    def ensure_integers(lst):
+        # if isinstance(lst,N.ndarray):
+            # return N.arra
+        for n,x in enumerate(lst):
+            lst[n] = int(x)
+        return lst
+
+    @staticmethod
+    def ensure_floats(lst):
+        for n,x in enumerate(lst):
+            lst[n] = float(x)
+        return lst
+            
+    def generate_obdict(self):
+        obdict = {}
+        for o in self.obs:
+            n = self.get_object_name(o)
+            obdict[n] = o
+        return obdict
+
+    @staticmethod
+    def get_object_name(obj):
+        """ This returns the name of the class instance, in lower case.
+
+        There's surely a better way to do this...
+        """
+        a = str(obj.__class__).lower().split('.')[-1].split("'")[0]
+        return a

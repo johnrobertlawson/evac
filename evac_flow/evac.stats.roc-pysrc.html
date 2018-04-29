@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.stats.roc</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.stats-module.html">Package&nbsp;stats</a> ::
+        Module&nbsp;roc
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.stats.roc-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="evac.stats.roc-module.html">Module evac.stats.roc</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pdb</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">N</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package evac=evac-module.html"><a title="evac" class="py-name" href="#" onclick="return doclink('link-0', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package evac.stats=evac.stats-module.html"><a title="evac.stats" class="py-name" href="#" onclick="return doclink('link-1', 'stats', 'link-1');">stats</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module evac.stats.detscores=evac.stats.detscores-module.html"><a title="evac.stats.detscores" class="py-name" href="#" onclick="return doclink('link-2', 'detscores', 'link-2');">detscores</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Class evac.stats.detscores.DetScores=evac.stats.detscores.DetScores-class.html"><a title="evac.stats.detscores.DetScores" class="py-name" href="#" onclick="return doclink('link-3', 'DetScores', 'link-3');">DetScores</a></tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-4" class="py-name"><a title="evac" class="py-name" href="#" onclick="return doclink('link-4', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name"><a title="evac.stats" class="py-name" href="#" onclick="return doclink('link-5', 'stats', 'link-1');">stats</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module evac.stats.probscores=evac.stats.probscores-module.html"><a title="evac.stats.probscores" class="py-name" href="#" onclick="return doclink('link-6', 'probscores', 'link-6');">probscores</a></tt> <tt class="py-keyword">import</tt> <tt id="link-7" class="py-name" targets="Class evac.stats.probscores.ProbScores=evac.stats.probscores.ProbScores-class.html"><a title="evac.stats.probscores.ProbScores" class="py-name" href="#" onclick="return doclink('link-7', 'ProbScores', 'link-7');">ProbScores</a></tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-8" class="py-name"><a title="evac" class="py-name" href="#" onclick="return doclink('link-8', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name"><a title="evac.stats" class="py-name" href="#" onclick="return doclink('link-9', 'stats', 'link-1');">stats</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Module evac.stats.misc_stats=evac.stats.misc_stats-module.html"><a title="evac.stats.misc_stats" class="py-name" href="#" onclick="return doclink('link-10', 'misc_stats', 'link-10');">misc_stats</a></tt> <tt class="py-keyword">import</tt> <tt id="link-11" class="py-name" targets="Function evac.stats.misc_stats.compute_contingency()=evac.stats.misc_stats-module.html#compute_contingency"><a title="evac.stats.misc_stats.compute_contingency" class="py-name" href="#" onclick="return doclink('link-11', 'compute_contingency', 'link-11');">compute_contingency</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"> </tt>
+<a name="ROC"></a><div id="ROC-def"><a name="L9"></a><tt class="py-lineno"> 9</tt> <a class="py-toggle" href="#" id="ROC-toggle" onclick="return toggle('ROC');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="evac.stats.roc.ROC-class.html">ROC</a><tt class="py-op">(</tt><tt class="py-base-class">DetScores</tt><tt class="py-op">,</tt><tt class="py-base-class">ProbScores</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ROC-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="ROC-expanded"><a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line">    <tt class="py-docstring">"""Relative Operative Statistics.</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-docstring">    Mixin of deterministic and probabilistic scores. Can be used to generate a</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-docstring">    2x2 contingency table for ensembles.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">    Args:</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">        nens        :   number of ensemble members</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring">        pf          :   probability of an event (1d array)</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring">        ob (bool)   :   whether it happened (1d array)</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-docstring">        ensemble    :   Ensemble instance.</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">        obs_array   :   2D array (lats,lons) for verification</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring">        threshold   :   float to create binary condition</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt class="py-docstring">        overunder   :   operator for threshold.</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="ROC.__init__"></a><div id="ROC.__init__-def"><a name="L24"></a><tt class="py-lineno">24</tt> <a class="py-toggle" href="#" id="ROC.__init__-toggle" onclick="return toggle('ROC.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stats.roc.ROC-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">nens</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt><tt class="py-param">pf</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt><tt class="py-param">ob</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt><tt class="py-param">ensemble</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">                    <tt class="py-param">obs_array</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt><tt class="py-param">thresholds</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt><tt class="py-param">overunder</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ROC.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ROC.__init__-expanded"><a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-12" class="py-name" targets="Variable evac.lazy._namelist_edit.nens=evac.lazy._namelist_edit-module.html#nens"><a title="evac.lazy._namelist_edit.nens" class="py-name" href="#" onclick="return doclink('link-12', 'nens', 'link-12');">nens</a></tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt class="py-name">pf</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt class="py-name">ob</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">            <tt class="py-comment"># Logic here to compute the arrays</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">            <tt class="py-keyword">pass</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">        <tt class="py-comment">#5D array (members, times, lvs, lats, lons)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt class="py-comment">#Should be (nens,1,1,nlats,nlons) in shape</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="evac.lazy._namelist_edit.nens" class="py-name" href="#" onclick="return doclink('link-13', 'nens', 'link-12');">nens</a></tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name"><a title="evac.lazy._namelist_edit.nens" class="py-name" href="#" onclick="return doclink('link-14', 'nens', 'link-12');">nens</a></tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pf</tt> <tt class="py-op">=</tt> <tt class="py-name">pf</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ob</tt> <tt class="py-op">=</tt> <tt class="py-name">ob</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-comment"># self.a,self.b,self.c,self.d = self.compute_roc()</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">a</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">b</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">c</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">d</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Method evac.stats.roc.ROC.compute_roc_contingency()=evac.stats.roc.ROC-class.html#compute_roc_contingency"><a title="evac.stats.roc.ROC.compute_roc_contingency" class="py-name" href="#" onclick="return doclink('link-15', 'compute_roc_contingency', 'link-15');">compute_roc_contingency</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">        <tt class="py-comment"># self.a,self.b,self.c,self.d = compute_contingency(forecast,obs,thresh,overunder)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line"> </tt>
+<a name="ROC.compute_roc_contingency"></a><div id="ROC.compute_roc_contingency-def"><a name="L41"></a><tt class="py-lineno">41</tt> <a class="py-toggle" href="#" id="ROC.compute_roc_contingency-toggle" onclick="return toggle('ROC.compute_roc_contingency');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stats.roc.ROC-class.html#compute_roc_contingency">compute_roc_contingency</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ROC.compute_roc_contingency-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ROC.compute_roc_contingency-expanded"><a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-comment"># ws contains all prob thresholds</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-name">ws</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">linspace</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="evac.lazy._namelist_edit.nens" class="py-name" href="#" onclick="return doclink('link-16', 'nens', 'link-12');">nens</a></tt><tt class="py-op">+</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">        <tt class="py-name">a</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">zeros</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">ws</tt><tt class="py-op">)</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">        <tt class="py-name">b</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">copy</tt><tt class="py-op">(</tt><tt class="py-name">a</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-name">c</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">copy</tt><tt class="py-op">(</tt><tt class="py-name">a</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-name">d</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">copy</tt><tt class="py-op">(</tt><tt class="py-name">a</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt><tt class="py-op">,</tt><tt class="py-name">w</tt> <tt class="py-keyword">in</tt> <tt class="py-name">enumerate</tt><tt class="py-op">(</tt><tt class="py-name">ws</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">            <tt class="py-name">a</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-name">b</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-name">c</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-17" class="py-name"><a title="evac.stats.misc_stats.compute_contingency" class="py-name" href="#" onclick="return doclink('link-17', 'compute_contingency', 'link-11');">compute_contingency</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pf</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ob</tt><tt class="py-op">,</tt><tt class="py-name">w</tt><tt class="py-op">,</tt><tt class="py-string">'over'</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">a</tt><tt class="py-op">,</tt><tt class="py-name">b</tt><tt class="py-op">,</tt><tt class="py-name">c</tt><tt class="py-op">,</tt><tt class="py-name">d</tt> </tt>
+</div><a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line"> </tt>
+<a name="ROC._compute_roc"></a><div id="ROC._compute_roc-def"><a name="L53"></a><tt class="py-lineno">53</tt> <a class="py-toggle" href="#" id="ROC._compute_roc-toggle" onclick="return toggle('ROC._compute_roc');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stats.roc.ROC-class.html#_compute_roc">_compute_roc</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ROC._compute_roc-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ROC._compute_roc-expanded"><a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"><tt class="py-docstring">        w is the probability threshold list.</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">        <tt class="py-name">w</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">        <tt class="py-name">X</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">zeros</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="evac.lazy._namelist_edit.nens" class="py-name" href="#" onclick="return doclink('link-18', 'nens', 'link-12');">nens</a></tt><tt class="py-op">]</tt><tt class="py-op">)</tt>  </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">        <tt class="py-name">Y</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">zeros</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="evac.lazy._namelist_edit.nens" class="py-name" href="#" onclick="return doclink('link-19', 'nens', 'link-12');">nens</a></tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">nidx</tt><tt class="py-op">,</tt><tt id="link-20" class="py-name" targets="Variable evac.stoch.fractal_tools.n=evac.stoch.fractal_tools-module.html#n,Variable evac.stoch.lovejoy_fractal.n=evac.stoch.lovejoy_fractal-module.html#n,Variable evac.utils._fractal_tools.n=evac.utils._fractal_tools-module.html#n"><a title="evac.stoch.fractal_tools.n
+evac.stoch.lovejoy_fractal.n
+evac.utils._fractal_tools.n" class="py-name" href="#" onclick="return doclink('link-20', 'n', 'link-20');">n</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">enumerate</tt><tt class="py-op">(</tt><tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="evac.lazy._namelist_edit.nens" class="py-name" href="#" onclick="return doclink('link-21', 'nens', 'link-12');">nens</a></tt><tt class="py-op">+</tt><tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">            <tt class="py-name">w</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt id="link-22" class="py-name"><a title="evac.stoch.fractal_tools.n
+evac.stoch.lovejoy_fractal.n
+evac.utils._fractal_tools.n" class="py-name" href="#" onclick="return doclink('link-22', 'n', 'link-20');">n</a></tt><tt class="py-op">/</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name"><a title="evac.lazy._namelist_edit.nens" class="py-name" href="#" onclick="return doclink('link-23', 'nens', 'link-12');">nens</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pf</tt><tt class="py-op">[</tt><tt class="py-name">nidx</tt><tt class="py-op">]</tt> <tt class="py-op">&lt;</tt> <tt class="py-name">w</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">ob</tt><tt class="py-op">[</tt><tt class="py-name">nidx</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">                    <tt class="py-name">X</tt><tt class="py-op">[</tt><tt class="py-name">nidx</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt><tt class="py-op">+</tt> <tt class="py-number">1</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">                <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">                    <tt class="py-name">Y</tt><tt class="py-op">[</tt><tt class="py-name">nidx</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt><tt class="py-op">+</tt> <tt class="py-number">1</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line"> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">        <tt class="py-name">a</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">zeros</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">w</tt><tt class="py-op">)</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">        <tt class="py-name">b</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">copy</tt><tt class="py-op">(</tt><tt class="py-name">a</tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">        <tt class="py-name">c</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">copy</tt><tt class="py-op">(</tt><tt class="py-name">a</tt><tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">        <tt class="py-name">d</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">copy</tt><tt class="py-op">(</tt><tt class="py-name">a</tt><tt class="py-op">)</tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">thidx</tt><tt class="py-op">,</tt><tt class="py-name">th</tt> <tt class="py-keyword">in</tt> <tt class="py-name">enumerate</tt><tt class="py-op">(</tt><tt class="py-name">w</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line">            <tt class="py-name">a</tt><tt class="py-op">[</tt><tt class="py-name">thidx</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt><tt class="py-name">X</tt><tt class="py-op">[</tt><tt class="py-name">thidx</tt><tt class="py-op">+</tt><tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line">            <tt class="py-name">b</tt><tt class="py-op">[</tt><tt class="py-name">thidx</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt><tt class="py-name">Y</tt><tt class="py-op">[</tt><tt class="py-name">thidx</tt><tt class="py-op">+</tt><tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">            <tt class="py-name">c</tt><tt class="py-op">[</tt><tt class="py-name">thidx</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt><tt class="py-name">X</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-name">thidx</tt><tt class="py-op">+</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line">            <tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-name">thidx</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt><tt class="py-name">Y</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-name">thidx</tt><tt class="py-op">+</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line"> </tt>
+<a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">w</tt> <tt class="py-op">=</tt> <tt class="py-name">w</tt> </tt>
+<a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">a</tt><tt class="py-op">,</tt><tt class="py-name">b</tt><tt class="py-op">,</tt><tt class="py-name">c</tt><tt class="py-op">,</tt><tt class="py-name">d</tt> </tt>
+</div><a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line"> </tt>
+<a name="ROC.compute_roca"></a><div id="ROC.compute_roca-def"><a name="L81"></a><tt class="py-lineno">81</tt> <a class="py-toggle" href="#" id="ROC.compute_roca-toggle" onclick="return toggle('ROC.compute_roca');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stats.roc.ROC-class.html#compute_roca">compute_roca</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ROC.compute_roca-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ROC.compute_roca-expanded"><a name="L82"></a><tt class="py-lineno">82</tt>  <tt class="py-line">        <tt class="py-docstring">"""Area under ROC curve.</tt> </tt>
+<a name="L83"></a><tt class="py-lineno">83</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L84"></a><tt class="py-lineno">84</tt>  <tt class="py-line"><tt class="py-docstring">        TODO."""</tt> </tt>
+<a name="L85"></a><tt class="py-lineno">85</tt>  <tt class="py-line">        <tt class="py-name">FAR</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">compute_falsealarm</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno">86</tt>  <tt class="py-line">        <tt class="py-name">HR</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Method evac.stats.detscores.DetScores.compute_hitrate()=evac.stats.detscores.DetScores-class.html#compute_hitrate"><a title="evac.stats.detscores.DetScores.compute_hitrate" class="py-name" href="#" onclick="return doclink('link-24', 'compute_hitrate', 'link-24');">compute_hitrate</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno">87</tt>  <tt class="py-line">        <tt class="py-name">ROCA</tt> <tt class="py-op">=</tt> <tt class="py-name">N</tt><tt class="py-op">.</tt><tt class="py-name">trapz</tt><tt class="py-op">(</tt><tt class="py-name">HR</tt><tt class="py-op">,</tt><tt class="py-name">x</tt><tt class="py-op">=</tt><tt class="py-name">FAR</tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno">88</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">ROCA</tt> </tt>
+</div><a name="L89"></a><tt class="py-lineno">89</tt>  <tt class="py-line"> </tt>
+<a name="ROC.compute_rocas"></a><div id="ROC.compute_rocas-def"><a name="L90"></a><tt class="py-lineno">90</tt> <a class="py-toggle" href="#" id="ROC.compute_rocas-toggle" onclick="return toggle('ROC.compute_rocas');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.stats.roc.ROC-class.html#compute_rocas">compute_rocas</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ROC.compute_rocas-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="ROC.compute_rocas-expanded"><a name="L91"></a><tt class="py-lineno">91</tt>  <tt class="py-line">        <tt class="py-docstring">"""ROC area skill score.</tt> </tt>
+<a name="L92"></a><tt class="py-lineno">92</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L93"></a><tt class="py-lineno">93</tt>  <tt class="py-line">        <tt class="py-keyword">pass</tt> </tt>
+</div></div><a name="L94"></a><tt class="py-lineno">94</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

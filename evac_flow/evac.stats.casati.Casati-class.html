@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.stats.casati.Casati</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.stats-module.html">Package&nbsp;stats</a> ::
+        <a href="evac.stats.casati-module.html">Module&nbsp;casati</a> ::
+        Class&nbsp;Casati
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.stats.casati.Casati-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Casati</h1><p class="nomargin-top"><span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+Scale-aware verification scheme from Casati et al. 2004, Meteorol. Appl.
+
+All data in SI units (mm). 
+
+Access attributes by a threshold then spatial key.
+
+Attributes:
+    self.father, self.mother    :   wavelet decompositions (in do_BED)
+    self.MSE, self.MSE_total    :   Mean Square Error (by scale and total)
+    self.SS                     :   Skill score
+
+Example:
+    self.SS[4][3] will return the skill score for 4 mm/hr threshold 
+        and the L=3 spatial scale (= 2**3 grid points)
+
+Args:
+    fcstdata (N.ndarray)    :   forecast 2D array
+    verifdata (N.ndarray)   :   verification 2D array
+    thresholds (tuple,list,optional)    :   thresholds for stats
+    store_all_arrays (bool,optional)    :   If False, delete arrays
+        to conserve memory.
+    recalibration (bool,optional)       :   whether to remove bias
+
+</pre>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fcstdata</span>,
+        <span class="summary-sig-arg">verifdata</span>,
+        <span class="summary-sig-arg">thresholds</span>=<span class="summary-sig-default">(0.5,1,4,16,64)</span>,
+        <span class="summary-sig-arg">store_all_arrays</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">recalibration</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="enforce_2D"></a><span class="summary-sig-name">enforce_2D</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Make sure the grid is 2-D.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.enforce_2D">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_square_check"></a><span class="summary-sig-name">do_square_check</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Assert that the grid is a power of 2.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.do_square_check">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.casati.Casati-class.html#do_QC" class="summary-sig-name">do_QC</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">print_location</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">min_thresh</span>=<span class="summary-sig-default">0.0</span>,
+        <span class="summary-sig-arg">max_thresh</span>=<span class="summary-sig-default">500</span>,
+        <span class="summary-sig-arg">fatal_exception</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Check for stupid values in data.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.do_QC">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_dithering"></a><span class="summary-sig-name">do_dithering</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dithrange</span>=<span class="summary-sig-default">(1/64)</span>)</span><br />
+      Apply dithering to non-zero precipitation values.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.do_dithering">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.casati.Casati-class.html#__do_norain_pixels" class="summary-sig-name" onclick="show_private();">__do_norain_pixels</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>=<span class="summary-sig-default">-6</span>)</span><br />
+      Now incorporated into norm_func.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.__do_norain_pixels">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="norm_func"></a><span class="summary-sig-name">norm_func</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">orig</span>)</span><br />
+      More QC here with negative values?</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.norm_func">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_normalize"></a><span class="summary-sig-name">do_normalize</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Normalise data by base 2 where it isn't -6.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.do_normalize">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.casati.Casati-class.html#do_recalibration" class="summary-sig-name">do_recalibration</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">method</span>=<span class="summary-sig-default">'faster'</span>)</span><br />
+      Yr = (1/Fx) * Fy</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.do_recalibration">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.casati.Casati-class.html#calc_ecdf" class="summary-sig-name">calc_ecdf</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">arr</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Do empirical cumulative distribution of an array.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.calc_ecdf">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.casati.Casati-class.html#do_BED" class="summary-sig-name">do_BED</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Binary error decomposition.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.do_BED">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="BED"></a><span class="summary-sig-name">BED</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">pixel</span>,
+        <span class="summary-sig-arg">thresh</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.BED">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="Haar"></a><span class="summary-sig-name">Haar</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">Z</span>)</span><br />
+      Z14 is Eq 14 from paper.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.Haar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_MSE"></a><span class="summary-sig-name">do_MSE</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.do_MSE">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_SS"></a><span class="summary-sig-name">do_SS</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.do_SS">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="do_QC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_QC</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">print_location</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">min_thresh</span>=<span class="sig-default">0.0</span>,
+        <span class="sig-arg">max_thresh</span>=<span class="sig-default">500</span>,
+        <span class="sig-arg">fatal_exception</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.do_QC">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Check for stupid values in data.
+
+Optional:
+print_location (bool) - if True, print the array location where
+                        the nonsensical values exist
+min_thresh, max_thresh (float,int) - min and max values of allowable
+                                        range, to raise Exception
+fatal_exception     -   if True, kill script if there are out-of-range vals.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="__do_norain_pixels"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__do_norain_pixels</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>=<span class="sig-default">-6</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.__do_norain_pixels">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Now incorporated into norm_func.</p>
+  <p>Assign value to no-rain pixels. TODO: Should be range around 0, not 
+  exactly, due to round-off?</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="do_recalibration"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_recalibration</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">method</span>=<span class="sig-default">'faster'</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.do_recalibration">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Yr = (1/Fx) * Fy</p>
+  <p>Yr = recalibrated forecast Fx = Empirical cum. dist. of verif Fy = 
+  Empirical cum. dist. of fcst</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="calc_ecdf"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">calc_ecdf</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">arr</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.calc_ecdf">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Do empirical cumulative distribution of an array.</p>
+  <p>arr -   N.ndarray val -   threshold</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="do_BED"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">do_BED</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.casati-pysrc.html#Casati.do_BED">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Binary error decomposition.</p>
+  <p>Yr = Recalibrated forecast X = Normalized analysis/verif Z3 = Binary 
+  error (Eq. 3 in paper) IYr = Binary image for recal. fcst (Eq.2 in paper)
+  Ix = Binary image for norm. verif (Eq.2 in paper) Zf, Zm = Father and 
+  mother wavelets from Eq. 4 / Appendix in paper Z = binary error image, 
+  post-Haar</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

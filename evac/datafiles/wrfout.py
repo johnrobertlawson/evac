@@ -490,7 +490,8 @@ class WRFOut(NC):
         """
         Returns a dictionary to look up method for computing a variable
         Todos:
-            * merge with derived/_derived.py
+            * merge with derived/derived.py
+            * Shouldn't this be in derived?
         """
         tbl = {}
         tbl['shear'] = derived.compute_shear
@@ -529,6 +530,8 @@ class WRFOut(NC):
         tbl['T2_gradient'] = derived.compute_T2_gradient
         tbl['Q_pert'] = derived.compute_Q_pert
         tbl['vorticity'] = derived.return_vorticity
+        tbl['LPT'] = derived.lifted_parcel_temperature
+
 
         return tbl
 

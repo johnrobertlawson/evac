@@ -1,0 +1,1833 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.utils.gis_tools</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.utils-module.html">Package&nbsp;utils</a> ::
+        Module&nbsp;gis_tools
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.utils.gis_tools-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module gis_tools</h1><p class="nomargin-top"><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+A collection of geographical-related functions.
+
+Todo:
+    * Make sure other utils functions are imported explicitly, so
+        we can remove the star import in util's `__init__.py`.
+
+</pre>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#decompose_wind" class="summary-sig-name">decompose_wind</a>(<span class="summary-sig-arg">wspd</span>,
+        <span class="summary-sig-arg">wdir</span>,
+        <span class="summary-sig-arg">wdir_fmt</span>=<span class="summary-sig-default">'deg'</span>)</span><br />
+      Turn a wind speed and direction into u and v components.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#decompose_wind">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#convert_velocity_units" class="summary-sig-name">convert_velocity_units</a>(<span class="summary-sig-arg">V</span>,
+        <span class="summary-sig-arg">conversion</span>)</span><br />
+      Convert a velocity from one unit to another.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#convert_velocity_units">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="combine_wind_components"></a><span class="summary-sig-name">combine_wind_components</span>(<span class="summary-sig-arg">u</span>,
+        <span class="summary-sig-arg">v</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#combine_wind_components">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="dewpoint"></a><span class="summary-sig-name">dewpoint</span>(<span class="summary-sig-arg">T</span>,
+        <span class="summary-sig-arg">RH</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#dewpoint">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="csvprocess"></a><span class="summary-sig-name">csvprocess</span>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">names</span>,
+        <span class="summary-sig-arg">convert</span>=<span class="summary-sig-default">0</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#csvprocess">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_cross_section"></a><span class="summary-sig-name">get_cross_section</span>(<span class="summary-sig-arg">Alat</span>,
+        <span class="summary-sig-arg">Alon</span>,
+        <span class="summary-sig-arg">Blat</span>,
+        <span class="summary-sig-arg">Blon</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#get_cross_section">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="generate_image_loop"></a><span class="summary-sig-name">generate_image_loop</span>(<span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">'d03'</span>,
+        <span class="summary-sig-arg">fpath</span>=<span class="summary-sig-default">'./'</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#generate_image_loop">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="p_interpol"></a><span class="summary-sig-name">p_interpol</span>(<span class="summary-sig-arg">dom</span>,
+        <span class="summary-sig-arg">var</span>,
+        <span class="summary-sig-arg">ncfolder</span>,
+        <span class="summary-sig-arg">datestr</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#p_interpol">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="hgt_from_sigma"></a><span class="summary-sig-name">hgt_from_sigma</span>(<span class="summary-sig-arg">nc</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#hgt_from_sigma">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="find_time_index"></a><span class="summary-sig-name">find_time_index</span>(<span class="summary-sig-arg">wrftime</span>,
+        <span class="summary-sig-arg">reqtimetuple</span>,
+        <span class="summary-sig-arg">tupleformat</span>=<span class="summary-sig-default">1</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#find_time_index">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="TimeSfcLatLon"></a><span class="summary-sig-name">TimeSfcLatLon</span>(<span class="summary-sig-arg">nc</span>,
+        <span class="summary-sig-arg">varlist</span>,
+        <span class="summary-sig-arg">times</span>,
+        <span class="summary-sig-arg">latslons</span>=<span class="summary-sig-default">'all'</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#TimeSfcLatLon">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="latlon_1D"></a><span class="summary-sig-name">latlon_1D</span>(<span class="summary-sig-arg">nc</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#latlon_1D">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#netcdf_files_in" class="summary-sig-name">netcdf_files_in</a>(<span class="summary-sig-arg">folder</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">init_time</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">model</span>=<span class="summary-sig-default">'auto'</span>,
+        <span class="summary-sig-arg">return_model</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Hunt through given folder to find the right netcdf file for data.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#netcdf_files_in">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#wrfout_files_in" class="summary-sig-name">wrfout_files_in</a>(<span class="summary-sig-arg">folders</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">init_time</span>=<span class="summary-sig-default">'notset'</span>,
+        <span class="summary-sig-arg">descend</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">avoid</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">unambiguous</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Hunt through given folder(s) to find all occurrences of wrfout
+files.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#wrfout_files_in">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getXY"></a><span class="summary-sig-name">getXY</span>(<span class="summary-sig-arg">lats</span>,
+        <span class="summary-sig-arg">lons</span>,
+        <span class="summary-sig-arg">ptlat</span>,
+        <span class="summary-sig-arg">ptlon</span>)</span><br />
+      Output is lat, lon so y,x</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#getXY">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="gettopo"></a><span class="summary-sig-name">gettopo</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#gettopo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="xs_distance"></a><span class="summary-sig-name">xs_distance</span>(<span class="summary-sig-arg">Alat</span>,
+        <span class="summary-sig-arg">Alon</span>,
+        <span class="summary-sig-arg">Blat</span>,
+        <span class="summary-sig-arg">Blon</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#xs_distance">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="thinned_barbs"></a><span class="summary-sig-name">thinned_barbs</span>(<span class="summary-sig-arg">pres</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#thinned_barbs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="padded_times"></a><span class="summary-sig-name">padded_times</span>(<span class="summary-sig-arg">timeseq</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#padded_times">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#string_from_time" class="summary-sig-name">string_from_time</a>(<span class="summary-sig-arg">usage</span>,
+        <span class="summary-sig-arg">t</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">strlen</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">convention</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Generate a string from a given time.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#string_from_time">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="lookup_time"></a><span class="summary-sig-name">lookup_time</span>(<span class="summary-sig-arg">str</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#lookup_time">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_level_naming"></a><span class="summary-sig-name">get_level_naming</span>(<span class="summary-sig-arg">va</span>,
+        <span class="summary-sig-arg">lv</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#get_level_naming">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="check_vertical_coordinate"></a><span class="summary-sig-name">check_vertical_coordinate</span>(<span class="summary-sig-arg">level</span>)</span><br />
+      Check to see what type of level is requested by user.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#check_vertical_coordinate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#closest" class="summary-sig-name">closest</a>(<span class="summary-sig-arg">arr</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Find index of closest value.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#closest">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#closest_datetime" class="summary-sig-name">closest_datetime</a>(<span class="summary-sig-arg">times</span>,
+        <span class="summary-sig-arg">t</span>,
+        <span class="summary-sig-arg">round</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Find closest value in list of datetimes.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#closest_datetime">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#dstack_loop" class="summary-sig-name">dstack_loop</a>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">obj</span>)</span><br />
+      Tries to stack numpy array (data) into 'stack' object (obj).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#dstack_loop">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#dstack_loop_v2" class="summary-sig-name">dstack_loop_v2</a>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">obj</span>)</span><br />
+      Need to set obj = 0 at start of loop in master script</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#dstack_loop_v2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#vstack_loop" class="summary-sig-name">vstack_loop</a>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">obj</span>)</span><br />
+      Need to set obj = 0 at start of loop in master script</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#vstack_loop">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#generate_times" class="summary-sig-name">generate_times</a>(<span class="summary-sig-arg">idate</span>,
+        <span class="summary-sig-arg">fdate</span>,
+        <span class="summary-sig-arg">interval</span>,
+        <span class="summary-sig-arg">fmt</span>=<span class="summary-sig-default">'timetuple'</span>,
+        <span class="summary-sig-arg">inclusive</span>=<span class="summary-sig-default">False</span>)</span><br />
+      :param itime:       Start date/time.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#generate_times">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#generate_colours" class="summary-sig-name">generate_colours</a>(<span class="summary-sig-arg">M</span>,
+        <span class="summary-sig-arg">n</span>)</span><br />
+      M       :   Matplotlib instance n       :   number of colours you 
+      want</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#generate_colours">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#get_sequence" class="summary-sig-name">get_sequence</a>(<span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">sos</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Returns a sequence (tuple or list) for iteration.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#get_sequence">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="convert_tuple_to_dntimes"></a><span class="summary-sig-name">convert_tuple_to_dntimes</span>(<span class="summary-sig-arg">times</span>)</span><br />
+      Convert tuple or tuple of tuples to datenum date format.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#convert_tuple_to_dntimes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#ensure_datenum" class="summary-sig-name">ensure_datenum</a>(<span class="summary-sig-arg">times</span>,
+        <span class="summary-sig-arg">fmt</span>=<span class="summary-sig-default">'int'</span>)</span><br />
+      Make sure times are in list-of-datenums format.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#ensure_datenum">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#ensure_timetuple" class="summary-sig-name">ensure_timetuple</a>(<span class="summary-sig-arg">times</span>,
+        <span class="summary-sig-arg">fmt</span>=<span class="summary-sig-default">'single'</span>)</span><br />
+      MAke sure time(s) are in six-item tuple format
+(YYYY,MM,DD,HH,MM,SS)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#ensure_timetuple">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ensure_datetime"></a><span class="summary-sig-name">ensure_datetime</span>(<span class="summary-sig-arg">t</span>)</span><br />
+      Possibilities: times = 123456                                      #1
+      times = (123456,)                                   #2 times = 
+      (123456,234567)                             #3 times = 
+      (2011,12,1,18,0,0)                          #4 times = 
+      ((2011,12,1,18,0,0),(2011,12,2,6,0,0))      #5 times = 
+      datetime.datetime                           #6 times = 
+      (datetime.datetime, datetime.datetime)      #7</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#ensure_datetime">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="datetime_to_timetuple"></a><span class="summary-sig-name">datetime_to_timetuple</span>(<span class="summary-sig-arg">utc</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#datetime_to_timetuple">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="timetuple_to_datetime"></a><span class="summary-sig-name">timetuple_to_datetime</span>(<span class="summary-sig-arg">utc</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#timetuple_to_datetime">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#dt_from_fnames" class="summary-sig-name">dt_from_fnames</a>(<span class="summary-sig-arg">f1</span>,
+        <span class="summary-sig-arg">f2</span>,
+        <span class="summary-sig-arg">model</span>)</span><br />
+      Work out time difference between two data files
+from their naming scheme.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#dt_from_fnames">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_netcdf_naming"></a><span class="summary-sig-name">get_netcdf_naming</span>(<span class="summary-sig-arg">model</span>,
+        <span class="summary-sig-arg">t</span>,
+        <span class="summary-sig-arg">dom</span>=<span class="summary-sig-default">0</span>)</span><br />
+      By default: wrfout files don't have an extension other files have .nc
+      extension (convert first)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#get_netcdf_naming">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#determine_model" class="summary-sig-name">determine_model</a>(<span class="summary-sig-arg">fname</span>)</span><br />
+      Return model depending on naming convention.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#determine_model">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="save_data"></a><span class="summary-sig-name">save_data</span>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">folder</span>,
+        <span class="summary-sig-arg">fname</span>,
+        <span class="summary-sig-arg">format</span>=<span class="summary-sig-default">'pickle'</span>)</span><br />
+      Save array to file.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#save_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="load_data"></a><span class="summary-sig-name">load_data</span>(<span class="summary-sig-arg">folder</span>,
+        <span class="summary-sig-arg">fname</span>,
+        <span class="summary-sig-arg">format</span>=<span class="summary-sig-default">'pickle'</span>)</span><br />
+      Load array from file.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#load_data">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="return_subdomain"></a><span class="summary-sig-name">return_subdomain</span>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">lats</span>,
+        <span class="summary-sig-arg">lons</span>,
+        <span class="summary-sig-arg">Nlim</span>,
+        <span class="summary-sig-arg">Elim</span>,
+        <span class="summary-sig-arg">Slim</span>,
+        <span class="summary-sig-arg">Wlim</span>,
+        <span class="summary-sig-arg">fmt</span>=<span class="summary-sig-default">'latlon'</span>)</span><br />
+      Returns smaller domain of data and lats/lons based on specified 
+      limits.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#return_subdomain">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="interp_latlon"></a><span class="summary-sig-name">interp_latlon</span>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">lat</span>,
+        <span class="summary-sig-arg">lon</span>,
+        <span class="summary-sig-arg">lats</span>,
+        <span class="summary-sig-arg">lons</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#interp_latlon">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="interp2point"></a><span class="summary-sig-name">interp2point</span>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">lat_loc</span>,
+        <span class="summary-sig-arg">lon_loc</span>,
+        <span class="summary-sig-arg">lat</span>,
+        <span class="summary-sig-arg">lon</span>,
+        <span class="summary-sig-arg">lvidx</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">xyidx</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#interp2point">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#haversine_baker" class="summary-sig-name">haversine_baker</a>(<span class="summary-sig-arg">lon1</span>,
+        <span class="summary-sig-arg">lat1</span>,
+        <span class="summary-sig-arg">lon2</span>,
+        <span class="summary-sig-arg">lat2</span>,
+        <span class="summary-sig-arg">radians</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">earth_rad</span>=<span class="summary-sig-default">6371.227</span>)</span><br />
+      Allows to calculate geographical distance using the haversine 
+      formula.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#haversine_baker">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_latlon_idx"></a><span class="summary-sig-name">get_latlon_idx</span>(<span class="summary-sig-arg">lats</span>,
+        <span class="summary-sig-arg">lons</span>,
+        <span class="summary-sig-arg">lat</span>,
+        <span class="summary-sig-arg">lon</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#get_latlon_idx">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="make_subplot_label"></a><span class="summary-sig-name">make_subplot_label</span>(<span class="summary-sig-arg">ax</span>,
+        <span class="summary-sig-arg">label</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#make_subplot_label">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#check_same_dimensions" class="summary-sig-name">check_same_dimensions</a>(<span class="summary-sig-arg">*args</span>)</span><br />
+      Args:
+    ``*args``       :   A number of N.ndarray types</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#check_same_dimensions">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#merge_netcdfs" class="summary-sig-name">merge_netcdfs</a>(<span class="summary-sig-arg">outpath</span>,
+        <span class="summary-sig-arg">filelist</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">globpath</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Merge numerous netcdf files.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#merge_netcdfs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#pretty_fhr" class="summary-sig-name">pretty_fhr</a>(<span class="summary-sig-arg">fhr</span>,
+        <span class="summary-sig-arg">in_fmt</span>=<span class="summary-sig-default">'hours'</span>,
+        <span class="summary-sig-arg">out_fmt</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Returns a pretty time stamp suitable for looping plots
+over numerous forecast times.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#pretty_fhr">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.gis_tools-module.html#hr_to_sec" class="summary-sig-name">hr_to_sec</a>(<span class="summary-sig-arg">hr</span>,
+        <span class="summary-sig-arg">fmt</span>=<span class="summary-sig-default">int</span>)</span><br />
+      Converts hours to seconds.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#hr_to_sec">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="rE"></a><span class="summary-name">rE</span> = <code title="6378100">6378100</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="decompose_wind"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">decompose_wind</span>(<span class="sig-arg">wspd</span>,
+        <span class="sig-arg">wdir</span>,
+        <span class="sig-arg">wdir_fmt</span>=<span class="sig-default">'deg'</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#decompose_wind">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Turn a wind speed and direction into u and v components.
+
+Uses meteorological convention - so a westerly wind is 270.
+
+TODO: Add option to use bearings (westerly wind is 90) or mathematical
+(i.e., zero begins at 3 o'clock)
+
+Arguments:
+    wspd        :   Wind speed. Can be float, integer, or N.ndarray
+    wdir        :   Wind direction. Can be float, integer, or N.ndarray.
+Optional:
+    wdir_fmt    :   wdir is degrees by default ('deg'). Use 'rad' to use radians.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="convert_velocity_units"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">convert_velocity_units</span>(<span class="sig-arg">V</span>,
+        <span class="sig-arg">conversion</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#convert_velocity_units">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Convert a velocity from one unit to another.
+
+Args:
+    V       :   a number (int, float, array)
+    convert :   'ms_kt' converts the output from m/s to knots.
+                'ms_mph' converts from m/s to mph.
+                'kt_ms' converts from knots to m/s.
+                'kt_mph' converts from knots to mph.
+                'mph_kt' converts from mph to knots.
+                'mph_ms' converts from mph to m/s.
+Todo:
+    * add km/h
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="netcdf_files_in"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">netcdf_files_in</span>(<span class="sig-arg">folder</span>,
+        <span class="sig-arg">dom</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">init_time</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">model</span>=<span class="sig-default">'auto'</span>,
+        <span class="sig-arg">return_model</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#netcdf_files_in">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Hunt through given folder to find the right netcdf file for data.
+Return ncpath (absolute path to file) and model (RUC, WRF, etc).
+
+
+Args:
+    folder      :   Absolute path to directory
+    dom         :   specify domain. None specified if zero.
+    init_time   :   initialisation time. Can be tuple or datenum.
+                    If zero, then folder must contain one unambiguous file.
+    model       :   Default: automatically detect the type of netcdf file
+                    (RUC data, wrfout file, etc)
+
+Returns:
+    ncpath      :   Absolute path to file
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="wrfout_files_in"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">wrfout_files_in</span>(<span class="sig-arg">folders</span>,
+        <span class="sig-arg">dom</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">init_time</span>=<span class="sig-default">'notset'</span>,
+        <span class="sig-arg">descend</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">avoid</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">unambiguous</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#wrfout_files_in">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Hunt through given folder(s) to find all occurrences of wrfout
+files.
+
+Args:
+    folders     :   list of absolute paths to directories
+    dom         :   specify domain. None specified if zero.
+    init_time   :   tuple of initialisation time
+    descend     :   boolean: go into subfolders
+    avoid       :   string of filenames. if a subfolder contains
+                the string, do not descend into this one.
+    unambiguous :   only return a single absolute path, else throw
+                an Exception.
+
+Returns:
+    wrfouts     :   list of absolute paths to wrfout files
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="string_from_time"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">string_from_time</span>(<span class="sig-arg">usage</span>,
+        <span class="sig-arg">t</span>,
+        <span class="sig-arg">dom</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">strlen</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">convention</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#string_from_time">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Generate a string from a given time.
+
+Example:
+    Various formats for 2016/3/31/18/0/0::
+    
+        # usage == 'output':
+        201603311800
+        # usage == 'title':
+        18:00Z on 31/03/2016
+        # usage == 'skip':
+        (2016, 3, 31, 18, 0, 0)
+        # usage == 'wrfout':
+        wrfout_d01_2016-03-31_18:00:00
+        # usage == 'ruc':
+        ruc2_252_{0:04d}{1:02d}{2:02d}_1800_000.nc
+        # usage == 'dir':
+        2016033118
+
+Args:
+    usage (str): the format to output
+    t: date/time, in tuple or datetime.datetime formats
+    strlen: Minimum unit to output. &quot;hour&quot;,&quot;minute&quot; etc
+    convention: convention of MM/DD versus DD/MM
+
+Returns:
+    Formatted string.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="closest"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">closest</span>(<span class="sig-arg">arr</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#closest">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Find index of closest value. Only working on 1D array right now.</p>
+  <p>Inputs: val     :   required value arr     :   array of values</p>
+  <p>Output:</p>
+  <p>idx     :   index of closest value</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="closest_datetime"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">closest_datetime</span>(<span class="sig-arg">times</span>,
+        <span class="sig-arg">t</span>,
+        <span class="sig-arg">round</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#closest_datetime">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Find closest value in list of datetimes.
+Return index of closest.
+
+Args:
+    times (list,tuple)      : collection of datetimes.
+    t (datetime.datetime)   : required time
+    round (bool,str)        : If False, return closest index only.
+        If 'afterinc', return index of first time after t.
+        (If closest time is identical to t, return that index)
+        If 'afterexc', same, but if closest time = t, return one after.
+        If 'beforeinc', return index of last time before t.
+        (If closest time is identical to t, return that index)
+        If 'beforeexc', same, but if closest time = t, return one before.
+
+Returns:
+    idx (int): Index of times requests
+    dtss[idx] (int): Number of seconds difference between the two.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="dstack_loop"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">dstack_loop</span>(<span class="sig-arg">data</span>,
+        <span class="sig-arg">obj</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#dstack_loop">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Tries to stack numpy array (data) into 'stack' object (obj). If obj 
+  doesn't exist, then initialise it If obj does exist, stack data.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="dstack_loop_v2"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">dstack_loop_v2</span>(<span class="sig-arg">data</span>,
+        <span class="sig-arg">obj</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#dstack_loop_v2">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Need to set obj = 0 at start of loop in master script</p>
+  <p>Tries to stack numpy array (data) into 'stack' object (obj). If obj 
+  doesn't exist, then initialise it If obj does exist, stack data.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="vstack_loop"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">vstack_loop</span>(<span class="sig-arg">data</span>,
+        <span class="sig-arg">obj</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#vstack_loop">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Need to set obj = 0 at start of loop in master script</p>
+  <p>Tries to stack numpy array (data) into 'stack' object (obj). If obj 
+  doesn't exist, then initialise it If obj does exist, stack data.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="generate_times"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">generate_times</span>(<span class="sig-arg">idate</span>,
+        <span class="sig-arg">fdate</span>,
+        <span class="sig-arg">interval</span>,
+        <span class="sig-arg">fmt</span>=<span class="sig-default">'timetuple'</span>,
+        <span class="sig-arg">inclusive</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#generate_times">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+:param itime:       Start date/time. Format is
+                    YYYY,MM,DD,HH,MM,SS (calendar.timegm).
+:type itime:        list,tuple
+:param ftime:       End date/time. Same format as itime.
+:type ftime:        list,tuple
+:param interval:    interval between output times, in seconds.
+:type interval:     int
+:returns:           list of times in datenum format.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="generate_colours"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">generate_colours</span>(<span class="sig-arg">M</span>,
+        <span class="sig-arg">n</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#generate_colours">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>M       :   Matplotlib instance n       :   number of colours you 
+  want</p>
+  <p>Returns</p>
+  <p>Usage: when cycling over n plots, the colour should be 
+  colourlist[n].</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_sequence"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_sequence</span>(<span class="sig-arg">x</span>,
+        <span class="sig-arg">sos</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#get_sequence">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns a sequence (tuple or list) for iteration. Avoids an error for 
+  strings/integers. SoS = 1 enables the check for a sequence of sequences 
+  (list of dates)</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="ensure_datenum"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">ensure_datenum</span>(<span class="sig-arg">times</span>,
+        <span class="sig-arg">fmt</span>=<span class="sig-default">'int'</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#ensure_datenum">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Make sure times are in list-of-datenums format.
+If not, convert them.
+
+Possibilities:
+times = 123456                                      #1
+times = (123456,)                                   #2
+times = (123456,234567)                             #3
+times = (2011,12,1,18,0,0)                          #4
+times = ((2011,12,1,18,0,0),(2011,12,2,6,0,0))      #5
+
+fmt     :   whether to return list of integers or an integer
+            'int' or 'list'
+
+Output:
+dntimes = (123456,) or (123456,234567)
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="ensure_timetuple"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">ensure_timetuple</span>(<span class="sig-arg">times</span>,
+        <span class="sig-arg">fmt</span>=<span class="sig-default">'single'</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#ensure_timetuple">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+MAke sure time(s) are in six-item tuple format
+(YYYY,MM,DD,HH,MM,SS)
+
+fmt     :   whether to return a list of tuples or single tuple.
+            'list' or 'single'
+
+Possibilities:
+times = 123456                                      #1
+times = (123456,)                                   #2
+times = (123456,234567)                             #3
+times = (2011,12,1,18,0,0)                          #4
+times = ((2011,12,1,18,0,0),(2011,12,2,6,0,0))      #5
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="dt_from_fnames"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">dt_from_fnames</span>(<span class="sig-arg">f1</span>,
+        <span class="sig-arg">f2</span>,
+        <span class="sig-arg">model</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#dt_from_fnames">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Work out time difference between two data files
+from their naming scheme.
+
+
+Arguments:
+    f1,f2 (str): filename, with or without extension
+    model (str): model used to generate data
+Returns:
+    Difference between files, in seconds.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="determine_model"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">determine_model</span>(<span class="sig-arg">fname</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#determine_model">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return model depending on naming convention.</p>
+  <p>If no model exists, return false.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="haversine_baker"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">haversine_baker</span>(<span class="sig-arg">lon1</span>,
+        <span class="sig-arg">lat1</span>,
+        <span class="sig-arg">lon2</span>,
+        <span class="sig-arg">lat2</span>,
+        <span class="sig-arg">radians</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">earth_rad</span>=<span class="sig-default">6371.227</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#haversine_baker">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Allows to calculate geographical distance using the haversine formula.
+  :param lon1: longitude of the first set of locations :type lon1: 
+  numpy.ndarray :param lat1: latitude of the frist set of locations :type 
+  lat1: numpy.ndarray :param lon2: longitude of the second set of locations
+  :type lon2: numpy.float64 :param lat2: latitude of the second set of 
+  locations :type lat2: numpy.float64 :keyword radians: states if locations
+  are given in terms of radians :type radians: bool :keyword earth_rad: 
+  radius of the earth in km :type earth_rad: float :returns: geographical 
+  distance in km :rtype: numpy.ndarray</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="check_same_dimensions"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">check_same_dimensions</span>(<span class="sig-arg">*args</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#check_same_dimensions">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Args:
+    ``*args``       :   A number of N.ndarray types
+
+Returns:
+    True if all arrays have the same size.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="merge_netcdfs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">merge_netcdfs</span>(<span class="sig-arg">outpath</span>,
+        <span class="sig-arg">filelist</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">globpath</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#merge_netcdfs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Merge numerous netcdf files.
+
+Args:
+    filelist (list,tuple): Absolute paths to all netcdf files.
+    globpath (str): Absolute path with glob search
+    outpath (str): Absolute path to merged file.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="pretty_fhr"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">pretty_fhr</span>(<span class="sig-arg">fhr</span>,
+        <span class="sig-arg">in_fmt</span>=<span class="sig-default">'hours'</span>,
+        <span class="sig-arg">out_fmt</span>=<span class="sig-default">1</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#pretty_fhr">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Returns a pretty time stamp suitable for looping plots
+over numerous forecast times.
+
+Todo:
+    * Merge with :class:`~evac.utils.timetool`?
+
+Args:
+    fhr: offset from initialisation time (units given by in_fmt).
+    in_fmt (str): 'hours', 'minutes', or 'seconds'
+    out_fmt (int): selects the format of the output string.
+                    out_fmt=1 is &quot;{h}h_{mm}m&quot;
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="hr_to_sec"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">hr_to_sec</span>(<span class="sig-arg">hr</span>,
+        <span class="sig-arg">fmt</span>=<span class="sig-default">int</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.gis_tools-pysrc.html#hr_to_sec">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Converts hours to seconds.
+
+Args:
+    hr (int,float): number of hours
+    fmt (type): file type of output. Integer, by default.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

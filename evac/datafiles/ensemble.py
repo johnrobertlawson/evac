@@ -55,7 +55,7 @@ class Ensemble:
             Set None for a method to determine
             the file name using default outputs from e.g. WRF.
     """
-    def __init__(self,rootdir,initutc,doms=1,ctrl='ctrl',aux=False,
+    def __init__(self,rootdir,initutc,ndoms=1,ctrl='ctrl',aux=False,
                 model='wrf',fmt='em_real',f_prefix='default',loadobj=True,
                 ncf=False,debug=False,onefolder=False,fileformat='netcdf',
                 gefsformat=False):
@@ -70,8 +70,10 @@ class Ensemble:
         else:
             raise NotImplementedError()
 
+        self.ndoms = ndoms
+        self.doms = list(range(1,ndoms+1))
         if f_prefix is 'default':
-            f_prefix = ['wrfout_d{0:02d}'.format(n+1) for n in range(doms)]
+            f_prefix = ['wrfout_d{0:02d}'.format(d) for d in self.doms]
 
         self.debug = debug
         self.fileformat = fileformat
@@ -79,20 +81,18 @@ class Ensemble:
         # Remove any trailing slash!
         self.rootdir = rootdir.rstrip("/")
         self.initutc = initutc
-        self.doms = doms
         self.fmt = fmt
         self.loadobj = loadobj
         self.aux = aux
         self.ncf = ncf
 
         self.isaux = True if isinstance(self.aux,dict) else False
-        if f_prefix is not None and len(f_prefix) is not doms:
+        if f_prefix is not None and len(f_prefix) is not self.ndoms:
             raise Exception("Length of main datafile prefixes must "
                                 "match number of domains.")
         self.isctrl = True if ctrl else False
-        # self.ndoms = len(self.doms)
-        self.member_names = []
         self.members, self.fdt = self.get_members(f_prefix=f_prefix)
+        self.member_names = sorted(self.members.keys())
         self.nmems = len(self.member_names)
         self.nperts = self.nmems - self.isctrl
 
@@ -176,7 +176,8 @@ class Ensemble:
     def get_wrf_members(self,f_prefix=None):
         members = {}
         fdt = None
-        doms = range(1,self.doms+1)
+        # TODO: refactor to use self.
+        doms = self.doms 
         for domn, dom in enumerate(doms):
             # Get file name for initialisation time and domain
             # main_fname = self.get_data_fname(dom=dom,prod='main')
@@ -215,8 +216,8 @@ class Ensemble:
                         print("Looking at member {0}".format(member))
                     if member not in members:
                         members[member] = {d:{} for d in doms}
-                    if dom==1:
-                        self.member_names.append(member)
+                    # if dom==1:
+                        # self.member_names.append(member)
                     t = self.initutc
                     while True:
                         if not self.ncf:
@@ -373,7 +374,8 @@ class Ensemble:
     def get(self,vrbl,level=None,utc=None,itime=False,ftime=False,
                         fcsttime=False,Nlim=None,Elim=None,
                         Slim=None,Wlim=None,inclusive=False,
-                        lats=None,lons=None,dom=1,members=None):
+                        lats=None,lons=None,dom=1,members=None,
+                        accum_hr=1,fcsthr=None):
         """
         Returns 5D array of data for ranges.
 
@@ -385,7 +387,9 @@ class Ensemble:
         Args:
             inclusive (bool, optional): if True, included time specified
                 at ftime in the time range. Default is False (like Python).
-
+            fcsthr: in hours
+            fcsttime: as datetime.datetime
+            itime,ftime: datetime.datetime or integer indices
         Todos:
             * lat/lon box is in the correct projection?
             * Implement bounding lat/lon box.
@@ -393,8 +397,9 @@ class Ensemble:
             * fcsttime and utc are the same to maintain compatibility
             because get() APIs in different areas of evac/WEM
         """
-
-        if utc is not None:
+        if fcsthr and (not fcsttime) and (not itime) and (not ftime) and (not utc):
+            fcsttime = self.initutc + datetime.timedelta(seconds=3600*fcsthr)
+        elif utc is not None:
             fcsttime = utc
         ens_no = 0
         # pdb.set_trace()
@@ -402,7 +407,8 @@ class Ensemble:
             qpf = self.accumulated(vrbl='RAINNC',itime=itime,ftime=ftime,
                             level=level,Nlim=Nlim,Elim=Elim,
                             Slim=Slim,Wlim=Wlim,inclusive=inclusive,
-                            lons=lons,lats=lats,dom=dom)
+                            lons=lons,lats=lats,dom=dom,fcsttime=fcsttime,
+                            accum_hr=accum_hr)
             return qpf
         if members is None:
             members = self.member_names
@@ -410,7 +416,6 @@ class Ensemble:
             members = (members,)
         else:
             pass
-
 
         for nm,mem in enumerate(members):
             if self.debug:
@@ -445,11 +450,12 @@ class Ensemble:
 
                 all_ens_data[ens_no-1,tn,:,:,:] = m_t_data
 
-            return all_ens_data
+        # pdb.set_trace()
+        return all_ens_data
 
     def accumulated(self,vrbl='RAINNC',itime=0,ftime=-1,level=False,Nlim=False,
                     Elim=False,Slim=False,Wlim=False,inclusive=False,
-                    lons=None,lats=None,dom=1):
+                    lons=None,lats=None,dom=1,fcsttime=None,accum_hr=1):
         """Accumulate, for every ensemble member, at each grid point,
         the variable specified. Usually precipitation.
 
@@ -459,9 +465,12 @@ class Ensemble:
                 start of the data file...
 
         """
-        if itime==0:
+        if (itime == False) and (ftime == False) and (fcsttime != None):
+            ftime = fcsttime
+            itime = ftime - datetime.timedelta(seconds=3600*accum_hr)
+        elif itime==0:
             itime = self.itime
-        if ftime==-1:
+        elif ftime==-1:
             ftime = self.ftime
 
         if vrbl is 'RAINNC':

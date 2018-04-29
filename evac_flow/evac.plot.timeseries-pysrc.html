@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.plot.timeseries</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.plot-module.html">Package&nbsp;plot</a> ::
+        Module&nbsp;timeseries
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.plot.timeseries-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="evac.plot.timeseries-module.html">Module evac.plot.timeseries</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pdb</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">matplotlib</tt><tt class="py-op">.</tt><tt class="py-name">pyplot</tt> <tt class="py-keyword">as</tt> <tt class="py-name">plt</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package evac=evac-module.html"><a title="evac" class="py-name" href="#" onclick="return doclink('link-0', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Method evac.datafiles.ecmwf.ECMWF.plot()=evac.datafiles.ecmwf.ECMWF-class.html#plot,Method evac.datafiles.ruc.RUC.plot()=evac.datafiles.ruc.RUC-class.html#plot,Method evac.datafiles.stormevents.StormEvents.plot()=evac.datafiles.stormevents.StormEvents-class.html#plot,Package evac.plot=evac.plot-module.html,Method evac.plot._rucplot.RUCPlot.plot()=evac.plot._rucplot.RUCPlot-class.html#plot,Method evac.plot.heatmap.HeatMap.plot()=evac.plot.heatmap.HeatMap-class.html#plot"><a title="evac.datafiles.ecmwf.ECMWF.plot
+evac.datafiles.ruc.RUC.plot
+evac.datafiles.stormevents.StormEvents.plot
+evac.plot
+evac.plot._rucplot.RUCPlot.plot
+evac.plot.heatmap.HeatMap.plot" class="py-name" href="#" onclick="return doclink('link-1', 'plot', 'link-1');">plot</a></tt><tt class="py-op">.</tt><tt class="py-name">figure</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Figure</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name"><a title="evac" class="py-name" href="#" onclick="return doclink('link-2', 'evac', 'link-0');">evac</a></tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Package evac.datafiles=evac.datafiles-module.html"><a title="evac.datafiles" class="py-name" href="#" onclick="return doclink('link-3', 'datafiles', 'link-3');">datafiles</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Module evac.datafiles.wrfout=evac.datafiles.wrfout-module.html"><a title="evac.datafiles.wrfout" class="py-name" href="#" onclick="return doclink('link-4', 'wrfout', 'link-4');">wrfout</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Class evac.datafiles.wrfout.WRFOut=evac.datafiles.wrfout.WRFOut-class.html"><a title="evac.datafiles.wrfout.WRFOut" class="py-name" href="#" onclick="return doclink('link-5', 'WRFOut', 'link-5');">WRFOut</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"> </tt>
+<a name="TimeSeries"></a><div id="TimeSeries-def"><a name="L9"></a><tt class="py-lineno"> 9</tt> <a class="py-toggle" href="#" id="TimeSeries-toggle" onclick="return toggle('TimeSeries');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="evac.plot.timeseries.TimeSeries-class.html">TimeSeries</a><tt class="py-op">(</tt><tt class="py-base-class">Figure</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TimeSeries-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="TimeSeries-expanded"><a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line">    <tt class="py-docstring">""" Create time series of variable(s) for certain period at location.</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-docstring">    Can use .TS files (?)</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-docstring">    Can use model output.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="TimeSeries.__init__"></a><div id="TimeSeries.__init__-def"><a name="L16"></a><tt class="py-lineno">16</tt> <a class="py-toggle" href="#" id="TimeSeries.__init__-toggle" onclick="return toggle('TimeSeries.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.plot.timeseries.TimeSeries-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">ensemble</tt><tt class="py-op">,</tt><tt class="py-param">latlon</tt><tt class="py-op">,</tt><tt class="py-param">locname</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TimeSeries.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="TimeSeries.__init__-expanded"><a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">        <tt class="py-comment"># This is a list of instances</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module evac.datafiles.ensemble=evac.datafiles.ensemble-module.html"><a title="evac.datafiles.ensemble" class="py-name" href="#" onclick="return doclink('link-6', 'ensemble', 'link-6');">ensemble</a></tt> <tt class="py-op">=</tt> <tt id="link-7" class="py-name"><a title="evac.datafiles.ensemble" class="py-name" href="#" onclick="return doclink('link-7', 'ensemble', 'link-6');">ensemble</a></tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-comment"># lat/lon of location</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lat</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lon</tt> <tt class="py-op">=</tt> <tt class="py-name">latlon</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">locname</tt> <tt class="py-op">=</tt> <tt class="py-name">locname</tt> </tt>
+</div><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"> </tt>
+<a name="TimeSeries.meteogram"></a><div id="TimeSeries.meteogram-def"><a name="L23"></a><tt class="py-lineno">23</tt> <a class="py-toggle" href="#" id="TimeSeries.meteogram-toggle" onclick="return toggle('TimeSeries.meteogram');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="evac.plot.timeseries.TimeSeries-class.html#meteogram">meteogram</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">vrbl</tt><tt class="py-op">,</tt><tt class="py-param">utc</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">outdir</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">ncf</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">                        <tt class="py-param">nct</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-param">dom</tt><tt class="py-op">=</tt><tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TimeSeries.meteogram-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="TimeSeries.meteogram-expanded"><a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">        <tt class="py-name">fig</tt><tt class="py-op">,</tt> <tt class="py-name">ax</tt> <tt class="py-op">=</tt> <tt class="py-name">plt</tt><tt class="py-op">.</tt><tt class="py-name">subplots</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">W</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name"><a title="evac.datafiles.ensemble" class="py-name" href="#" onclick="return doclink('link-8', 'ensemble', 'link-6');">ensemble</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">            <tt class="py-comment"># W = self.get_netcdf(enspath,ncf=ncf,nct=nct,dom=dom)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">            <tt class="py-comment"># W = WRFOut(enspath)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">            <tt class="py-name">times</tt> <tt class="py-op">=</tt> <tt class="py-name">W</tt><tt class="py-op">.</tt><tt class="py-name">utc</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">            <tt class="py-name">ts</tt> <tt class="py-op">=</tt> <tt class="py-name">W</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method evac.datafiles.ecmwf.ECMWF.get()=evac.datafiles.ecmwf.ECMWF-class.html#get,Method evac.datafiles.ensemble.Ensemble.get()=evac.datafiles.ensemble.Ensemble-class.html#get,Method evac.datafiles.gribfile.GribFile.get()=evac.datafiles.gribfile.GribFile-class.html#get,Method evac.datafiles.stageiv.StageIV.get()=evac.datafiles.stageiv.StageIV-class.html#get,Method evac.datafiles.wrfout.WRFOut.get()=evac.datafiles.wrfout.WRFOut-class.html#get,Method evac.plot._rucplot.RUCPlot.get()=evac.plot._rucplot.RUCPlot-class.html#get,Method evac.stats.detscores.DetScores.get()=evac.stats.detscores.DetScores-class.html#get"><a title="evac.datafiles.ecmwf.ECMWF.get
+evac.datafiles.ensemble.Ensemble.get
+evac.datafiles.gribfile.GribFile.get
+evac.datafiles.stageiv.StageIV.get
+evac.datafiles.wrfout.WRFOut.get
+evac.plot._rucplot.RUCPlot.get
+evac.stats.detscores.DetScores.get" class="py-name" href="#" onclick="return doclink('link-9', 'get', 'link-9');">get</a></tt><tt class="py-op">(</tt><tt id="link-10" class="py-name" targets="Module evac.derived.vrbl=evac.derived.vrbl-module.html"><a title="evac.derived.vrbl" class="py-name" href="#" onclick="return doclink('link-10', 'vrbl', 'link-10');">vrbl</a></tt><tt class="py-op">,</tt><tt class="py-name">utc</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">,</tt><tt class="py-name">lats</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lat</tt><tt class="py-op">,</tt><tt class="py-name">lons</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">lon</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt id="link-11" class="py-name"><a title="evac.derived.vrbl" class="py-name" href="#" onclick="return doclink('link-11', 'vrbl', 'link-10');">vrbl</a></tt> <tt class="py-op">==</tt> <tt class="py-string">'T2'</tt><tt class="py-op">:</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">                <tt class="py-name">ts</tt> <tt class="py-op">-=</tt> <tt class="py-number">273.15</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">            <tt class="py-comment"># import pdb; pdb.set_trace()</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">            <tt class="py-name">ax</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="evac.datafiles.ecmwf.ECMWF.plot
+evac.datafiles.ruc.RUC.plot
+evac.datafiles.stormevents.StormEvents.plot
+evac.plot
+evac.plot._rucplot.RUCPlot.plot
+evac.plot.heatmap.HeatMap.plot" class="py-name" href="#" onclick="return doclink('link-12', 'plot', 'link-1');">plot</a></tt><tt class="py-op">(</tt><tt class="py-name">ts</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"Plotting ensemble members."</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line"> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-name">fname</tt> <tt class="py-op">=</tt> <tt class="py-string">'meteogram_{0}_{1}.png'</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt id="link-13" class="py-name"><a title="evac.derived.vrbl" class="py-name" href="#" onclick="return doclink('link-13', 'vrbl', 'link-10');">vrbl</a></tt><tt class="py-op">,</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">locname</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">        <tt class="py-name">fpath</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Variable evac.lazy._monte2.path=evac.lazy._monte2-module.html#path"><a title="evac.lazy._monte2.path" class="py-name" href="#" onclick="return doclink('link-14', 'path', 'link-14');">path</a></tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">outdir</tt><tt class="py-op">,</tt><tt class="py-name">fname</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">        <tt class="py-name">fig</tt><tt class="py-op">.</tt><tt class="py-name">savefig</tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-string">"Saved meteogram to {0}"</tt><tt class="py-op">.</tt><tt class="py-name">format</tt><tt class="py-op">(</tt><tt class="py-name">fpath</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

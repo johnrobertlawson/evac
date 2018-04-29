@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.utils.reproject_tools</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.utils-module.html">Package&nbsp;utils</a> ::
+        Module&nbsp;reproject_tools
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.utils.reproject_tools-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module reproject_tools</h1><p class="nomargin-top"><span class="codelink"><a href="evac.utils.reproject_tools-pysrc.html">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+A collection of classes and functions to reproject data.
+
+Todo:
+    * Rewrite using cartopy
+    * Can some of this be merged with :any:`~evac.utils.gis_tools`?
+    * These classes need to be put in their own file.
+    * Long term, we probably need a new directory, 'geog' or 'reproj',
+        which deals with reprojection, and gathers a lot of functions
+        and classes that are scattered around evac.
+    * Rewrite without any WEM imports.
+
+</pre>
+
+<!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Classes</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Classes"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="evac.utils.reproject_tools.VerifGrid-class.html" class="summary-name">VerifGrid</a><br />
+      The verification grid should be inside the 1 km domain.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="evac.utils.reproject_tools.WRF_native_grid-class.html" class="summary-name">WRF_native_grid</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="evac.utils.reproject_tools.HRRR_native_grid-class.html" class="summary-name">HRRR_native_grid</a><br />
+      AS WRF_native_grid, but with some info about operational HRRR.
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.reproject_tools-module.html#create_new_grid" class="summary-sig-name">create_new_grid</a>(<span class="summary-sig-arg">Nlim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">Elim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">Slim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">Wlim</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">proj</span>=<span class="summary-sig-default">'merc'</span>,
+        <span class="summary-sig-arg">lat_ts</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">resolution</span>=<span class="summary-sig-default">'i'</span>,
+        <span class="summary-sig-arg">nx</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">ny</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">tlat1</span>=<span class="summary-sig-default">30.0</span>,
+        <span class="summary-sig-arg">tlat2</span>=<span class="summary-sig-default">60.0</span>,
+        <span class="summary-sig-arg">cen_lat</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">cen_lon</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">lats</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">lons</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Create new domain for interpolating to, for instance.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.reproject_tools-pysrc.html#create_new_grid">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.utils.reproject_tools-module.html#create_WRFgrid" class="summary-sig-name">create_WRFgrid</a>(<span class="summary-sig-arg">f</span>)</span><br />
+      Constructs an instance of WRF_native_grid to return the vitals.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.reproject_tools-pysrc.html#create_WRFgrid">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="reproject"></a><span class="summary-sig-name">reproject</span>(<span class="summary-sig-arg">data_orig</span>,
+        <span class="summary-sig-arg">xx_orig</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">yy_orig</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">lats_orig</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">lons_orig</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">newgrid</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">xx_new</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">yy_new</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">method</span>=<span class="summary-sig-default">'linear'</span>,
+        <span class="summary-sig-arg">debug</span>=<span class="summary-sig-default">False</span>)</span><br />
+      data_orig               -   N.ndarray of original data (2D?) 
+      xx_orig,yy_orig         -   x-/y-axis indices of original data 
+      straight out a m(lons,lats) lats_orig,lons_orig     -   lats/lons of 
+      original data (shape?) newgrid                 -   basemap class 
+      classobject</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.utils.reproject_tools-pysrc.html#reproject">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="create_new_grid"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">create_new_grid</span>(<span class="sig-arg">Nlim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">Elim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">Slim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">Wlim</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">proj</span>=<span class="sig-default">'merc'</span>,
+        <span class="sig-arg">lat_ts</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">resolution</span>=<span class="sig-default">'i'</span>,
+        <span class="sig-arg">nx</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">ny</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">tlat1</span>=<span class="sig-default">30.0</span>,
+        <span class="sig-arg">tlat2</span>=<span class="sig-default">60.0</span>,
+        <span class="sig-arg">cen_lat</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">cen_lon</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">lats</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">lons</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.reproject_tools-pysrc.html#create_new_grid">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create new domain for interpolating to, for instance.</p>
+  <p>The following are mandatory arguments for mercator ('merc'): 
+  Nlim,Elim,Slim,Wlim = lat/lon/lat/lon limits for north/east/south/west 
+  respectively lat_ts = latitude of true scale? nx,ny = number of points in
+  the x/y direction respectively</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="create_WRFgrid"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">create_WRFgrid</span>(<span class="sig-arg">f</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.utils.reproject_tools-pysrc.html#create_WRFgrid">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Constructs an instance of WRF_native_grid to return the vitals.</p>
+  <p>f   -   absolute path to wrfout file.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

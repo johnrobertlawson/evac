@@ -43,6 +43,10 @@ commenting.
 ## TO DO
 * Folder naming - should it clash with scripts within the directories?
 * Create stable master branch, release version 1.0, and fork for edits 
+* Consistency with API (utc, doms, get, etc)
+* Consistency with convention (datetimes, custom integers, pathlib)
+* Do tutorial for running ensembles with `LazyEnsemble`, and
+    verifying (stats/plot) using `Verif`.
 
 ## Contributors & Attributions
 

@@ -1,0 +1,1616 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.derived.derived</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.derived-module.html">Package&nbsp;derived</a> ::
+        Module&nbsp;derived
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.derived.derived-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module derived</h1><p class="nomargin-top"><span class="codelink"><a href="evac.derived.derived-pysrc.html">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+For computing derived variables from existing fields.
+
+Todo:
+    * Steal a lot of these from WRFOut.
+    * There might be some overlap from stats.
+    * Resolve the API. Do all functions start with a parent to inherit
+        from? What if the user wants to call without the parent (e.g.,
+        using arrays of data that already exist)? 
+
+For every class, parent is the class from which to &quot;inherit&quot; from.
+
+</pre>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.derived.derived-module.html#cold_pool_strength" class="summary-sig-name">cold_pool_strength</a>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">X</span>,
+        <span class="summary-sig-arg">time</span>,
+        <span class="summary-sig-arg">swath_width</span>=<span class="summary-sig-default">100</span>,
+        <span class="summary-sig-arg">env</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">dz</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Returns array the same shape as WRF domain.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#cold_pool_strength">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.derived.derived-module.html#compute_cpdz" class="summary-sig-name">compute_cpdz</a>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">y</span>,
+        <span class="summary-sig-arg">dpt</span>,
+        <span class="summary-sig-arg">heights</span>,
+        <span class="summary-sig-arg">dpt_env</span>)</span><br />
+      Cold pool depth</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_cpdz">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.derived.derived-module.html#compute_C2" class="summary-sig-name">compute_C2</a>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">y</span>,
+        <span class="summary-sig-arg">dpt</span>,
+        <span class="summary-sig-arg">heights</span>,
+        <span class="summary-sig-arg">dpt_env</span>)</span><br />
+      C^2 as found in James et al.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_C2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="cold_pool_depth"></a><span class="summary-sig-name">cold_pool_depth</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">dpt</span>,
+        <span class="summary-sig-arg">heights</span>,
+        <span class="summary-sig-arg">dpt_env</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#cold_pool_depth">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.derived.derived-module.html#find_gust_front" class="summary-sig-name">find_gust_front</a>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">wind_slice</span>,
+        <span class="summary-sig-arg">T2_slice</span>,
+        <span class="summary-sig-arg">angle</span>,
+        <span class="summary-sig-arg">method</span>=<span class="summary-sig-default">3</span>)</span><br />
+      Find location of maximum shear in the horizontal wind along a
+1D slice.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#find_gust_front">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.derived.derived-module.html#compute_frontogenesis" class="summary-sig-name">compute_frontogenesis</a>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">time</span>,
+        <span class="summary-sig-arg">level</span>)</span><br />
+      Note that all variables fetched with parent.get have been
+destaggered and are at the same location.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_frontogenesis">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_accum_rain"></a><span class="summary-sig-name">compute_accum_rain</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">utc</span>,
+        <span class="summary-sig-arg">accum_hr</span>)</span><br />
+      Needs to be expanded to include other precip</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_accum_rain">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_satvappres"></a><span class="summary-sig-name">compute_satvappres</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_satvappres">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_vappres"></a><span class="summary-sig-name">compute_vappres</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_vappres">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_spechum"></a><span class="summary-sig-name">compute_spechum</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_spechum">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_Td_2"></a><span class="summary-sig-name">compute_Td_2</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>=<span class="summary-sig-default">'C'</span>)</span><br />
+      Another version of Td From p70 Djuric Weather Analysis</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_Td_2">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_derivatives"></a><span class="summary-sig-name">compute_derivatives</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">U</span>,
+        <span class="summary-sig-arg">V</span>,
+        <span class="summary-sig-arg">axis</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_derivatives">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_stretch_deformation"></a><span class="summary-sig-name">compute_stretch_deformation</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">U</span>,
+        <span class="summary-sig-arg">V</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_stretch_deformation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_shear_deformation"></a><span class="summary-sig-name">compute_shear_deformation</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">U</span>,
+        <span class="summary-sig-arg">V</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_shear_deformation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_total_deformation"></a><span class="summary-sig-name">compute_total_deformation</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">U</span>,
+        <span class="summary-sig-arg">V</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_total_deformation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.derived.derived-module.html#compute_vorticity" class="summary-sig-name">compute_vorticity</a>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">U</span>,
+        <span class="summary-sig-arg">V</span>)</span><br />
+      Returns vertical vorticity.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_vorticity">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="return_vorticity"></a><span class="summary-sig-name">return_vorticity</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#return_vorticity">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_fluid_trapping_diagnostic"></a><span class="summary-sig-name">compute_fluid_trapping_diagnostic</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_fluid_trapping_diagnostic">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_divergence"></a><span class="summary-sig-name">compute_divergence</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">U</span>,
+        <span class="summary-sig-arg">V</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_divergence">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_instantaneous_local_Lyapunov"></a><span class="summary-sig-name">compute_instantaneous_local_Lyapunov</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_instantaneous_local_Lyapunov">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="return_axis_of_dilatation_components"></a><span class="summary-sig-name">return_axis_of_dilatation_components</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">lonidx</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">latidx</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">other</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#return_axis_of_dilatation_components">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_omega"></a><span class="summary-sig-name">compute_omega</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_omega">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_density"></a><span class="summary-sig-name">compute_density</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_density">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.derived.derived-module.html#compute_CAPE" class="summary-sig-name">compute_CAPE</a>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span><br />
+      INCOMPLETE!</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_CAPE">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_RH"></a><span class="summary-sig-name">compute_RH</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_RH">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_temp_advection"></a><span class="summary-sig-name">compute_temp_advection</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_temp_advection">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_PMSL_gradient"></a><span class="summary-sig-name">compute_PMSL_gradient</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_PMSL_gradient">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_T2_gradient"></a><span class="summary-sig-name">compute_T2_gradient</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_T2_gradient">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_dryairmass"></a><span class="summary-sig-name">compute_dryairmass</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_dryairmass">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_pmsl"></a><span class="summary-sig-name">compute_pmsl</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_pmsl">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_buoyancy"></a><span class="summary-sig-name">compute_buoyancy</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Method from Adams-Selin et al., 2013, WAF</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_buoyancy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_mixing_ratios"></a><span class="summary-sig-name">compute_mixing_ratios</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_mixing_ratios">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_qtotal"></a><span class="summary-sig-name">compute_qtotal</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_qtotal">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_dptp"></a><span class="summary-sig-name">compute_dptp</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_dptp">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_T2_pertub"></a><span class="summary-sig-name">compute_T2_pertub</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_T2_pertub">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_Q_pert"></a><span class="summary-sig-name">compute_Q_pert</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_Q_pert">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.derived.derived-module.html#compute_dpt" class="summary-sig-name">compute_dpt</a>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span><br />
+      Potential: if surface level is requested, choose sigma level just 
+      about the surface.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_dpt">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_geopotential_height"></a><span class="summary-sig-name">compute_geopotential_height</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_geopotential_height">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_geopotential"></a><span class="summary-sig-name">compute_geopotential</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_geopotential">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_wind10"></a><span class="summary-sig-name">compute_wind10</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_wind10">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_pressure"></a><span class="summary-sig-name">compute_pressure</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_pressure">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_drybulb"></a><span class="summary-sig-name">compute_drybulb</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>=<span class="summary-sig-default">'K'</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_drybulb">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_theta"></a><span class="summary-sig-name">compute_theta</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_theta">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_wind"></a><span class="summary-sig-name">compute_wind</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_wind">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.derived.derived-module.html#compute_shear" class="summary-sig-name">compute_shear</a>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Args:
+    other   :      dictionary of 'top' and 'bottom' levels, km</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_shear">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_olr"></a><span class="summary-sig-name">compute_olr</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_olr">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_REFL_comp"></a><span class="summary-sig-name">compute_REFL_comp</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_REFL_comp">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_comp_ref"></a><span class="summary-sig-name">compute_comp_ref</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span><br />
+      Amend this so variables obtain at start fetch only correct date, 
+      lats, lons All levels need to be fetched as this is composite 
+      reflectivity</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_comp_ref">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_simref_atlevel"></a><span class="summary-sig-name">compute_simref_atlevel</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">1</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_simref_atlevel">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_DCP"></a><span class="summary-sig-name">compute_DCP</span>(<span class="summary-sig-arg">parent</span>)</span><br />
+      Derecho Composite Parameter (Evans and Doswell, 2001, WAF) And info 
+      from SPC Mesoanalyses</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_DCP">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_DCAPE"></a><span class="summary-sig-name">compute_DCAPE</span>(<span class="summary-sig-arg">parent</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_DCAPE">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_thetae"></a><span class="summary-sig-name">compute_thetae</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_thetae">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_Td"></a><span class="summary-sig-name">compute_Td</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span><br />
+      Using HootPy equation</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_Td">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="compute_strongest_wind"></a><span class="summary-sig-name">compute_strongest_wind</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">tidx</span>,
+        <span class="summary-sig-arg">lvidx</span>,
+        <span class="summary-sig-arg">lonidx</span>,
+        <span class="summary-sig-arg">latidx</span>,
+        <span class="summary-sig-arg">other</span>)</span><br />
+      Pass the array of time indices and it will find the max along that 
+      axis.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_strongest_wind">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.derived.derived-module.html#compute_updraught_helicity" class="summary-sig-name">compute_updraught_helicity</a>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">u</span>,
+        <span class="summary-sig-arg">v</span>,
+        <span class="summary-sig-arg">w</span>,
+        <span class="summary-sig-arg">dz</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">z</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">z0</span>=<span class="summary-sig-default">2000</span>,
+        <span class="summary-sig-arg">z1</span>=<span class="summary-sig-default">5000</span>)</span><br />
+      Eq.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_updraught_helicity">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="cold_pool_strength"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">cold_pool_strength</span>(<span class="sig-arg">parent</span>,
+        <span class="sig-arg">X</span>,
+        <span class="sig-arg">time</span>,
+        <span class="sig-arg">swath_width</span>=<span class="sig-default">100</span>,
+        <span class="sig-arg">env</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">dz</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.derived.derived-pysrc.html#cold_pool_strength">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Returns array the same shape as WRF domain.
+
+Args:
+    X   :   cross-section object with given path
+                This path goes front-to-back through a bow
+    km  :   width in the line-normal direction
+    env :   (x,y) for location to sample environmental dpt
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_cpdz"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_cpdz</span>(<span class="sig-arg">parent</span>,
+        <span class="sig-arg">x</span>,
+        <span class="sig-arg">y</span>,
+        <span class="sig-arg">dpt</span>,
+        <span class="sig-arg">heights</span>,
+        <span class="sig-arg">dpt_env</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_cpdz">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Cold pool depth
+
+Args:
+    x       :   x location in domain
+    y       :   y location in domain
+    dpt     :   density potential temperature slice
+    heights :   height AGL slice
+    dpt_env :   environmental dpt, column
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_C2"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_C2</span>(<span class="sig-arg">parent</span>,
+        <span class="sig-arg">x</span>,
+        <span class="sig-arg">y</span>,
+        <span class="sig-arg">dpt</span>,
+        <span class="sig-arg">heights</span>,
+        <span class="sig-arg">dpt_env</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_C2">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+C^2 as found in James et al. 2006 MWR
+
+Args:
+    x       :   x location in domain
+    y       :   y location in domain
+    dpt     :   density potential temperature slice
+    heights :   height AGL slice
+    dpt_env :   environmental dpt, column
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="find_gust_front"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">find_gust_front</span>(<span class="sig-arg">parent</span>,
+        <span class="sig-arg">wind_slice</span>,
+        <span class="sig-arg">T2_slice</span>,
+        <span class="sig-arg">angle</span>,
+        <span class="sig-arg">method</span>=<span class="sig-default">3</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.derived.derived-pysrc.html#find_gust_front">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Find location of maximum shear in the horizontal wind along a
+1D slice.
+
+Args:
+    wind_slice      :   1D numpy array
+    T2_slice        :   temp 2m slice
+    angle           :   angle of slice cross-section
+    method          :   way to locate gust front
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_frontogenesis"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_frontogenesis</span>(<span class="sig-arg">parent</span>,
+        <span class="sig-arg">time</span>,
+        <span class="sig-arg">level</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_frontogenesis">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Note that all variables fetched with parent.get have been
+destaggered and are at the same location.
+
+Returns:
+    Front       :   Frontgenesis in Kelvin per second.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_vorticity"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_vorticity</span>(<span class="sig-arg">parent</span>,
+        <span class="sig-arg">U</span>,
+        <span class="sig-arg">V</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_vorticity">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns vertical vorticity. In future, change to allow all thre 
+  components to be be returned.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_CAPE"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_CAPE</span>(<span class="sig-arg">parent</span>,
+        <span class="sig-arg">tidx</span>,
+        <span class="sig-arg">lvidx</span>,
+        <span class="sig-arg">lonidx</span>,
+        <span class="sig-arg">latidx</span>,
+        <span class="sig-arg">other</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_CAPE">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>INCOMPLETE!</p>
+  <p>CAPE method based on GEMPAK's pdsuml.f function</p>
+  <p>Inputs:</p>
+  <p>tidx,lvidx,lonidx,latidx  :   dictionary of level/time/lat/lon</p>
+  <p>Outputs: CAPE    :   convective available potential energy CIN     :
+  convective inhibition</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_dpt"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_dpt</span>(<span class="sig-arg">parent</span>,
+        <span class="sig-arg">tidx</span>,
+        <span class="sig-arg">lvidx</span>,
+        <span class="sig-arg">lonidx</span>,
+        <span class="sig-arg">latidx</span>,
+        <span class="sig-arg">other</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_dpt">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Potential: if surface level is requested, choose sigma level just 
+  about the surface. I don't think this affects any other dictionaries 
+  around...</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_shear"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_shear</span>(<span class="sig-arg">parent</span>,
+        <span class="sig-arg">tidx</span>,
+        <span class="sig-arg">lvidx</span>,
+        <span class="sig-arg">lonidx</span>,
+        <span class="sig-arg">latidx</span>,
+        <span class="sig-arg">other</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_shear">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Args:
+    other   :      dictionary of 'top' and 'bottom' levels, km
+
+Todos:
+    * Could make this faster with numpy.digitize()?
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_updraught_helicity"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_updraught_helicity</span>(<span class="sig-arg">parent</span>,
+        <span class="sig-arg">u</span>,
+        <span class="sig-arg">v</span>,
+        <span class="sig-arg">w</span>,
+        <span class="sig-arg">dz</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">z</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">z0</span>=<span class="sig-default">2000</span>,
+        <span class="sig-arg">z1</span>=<span class="sig-default">5000</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.derived.derived-pysrc.html#compute_updraught_helicity">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+Eq. 11 &amp; 12 from Kain et al 2008, WAF.
+
+Requires either z or dz to be specified.
+
+Args:
+    u,v,w (N.ndarray)           :   3-D fields of wind, all same size.
+    dz (N.ndarray)              :   1-D vector of difference in z
+    z (N.ndarray)               :   1-D vector height above ground level (m)
+    z0 (int,float,optional)     :   bottom level in m
+    z1 (int,float,optional)     :   top level in m
+
+Todo:
+    * Not sure if this works.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

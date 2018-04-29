@@ -12,11 +12,12 @@ import matplotlib as M
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 
-from evac.utils.defaults import Defaults
+# from evac.utils.defaults import Defaults
 import evac.utils as utils
 # import evac.utils.reproject as reproject
 # import evac.utils.unix_tools as unix_tools
 # import evac.utils.gis_tools as gis_tools
+from evac.plot.scales import Scales
 
 class Figure:
     """ Parent class for creating a figure in matplotlib.
@@ -37,10 +38,20 @@ class Figure:
     """
 
     def __init__(self,ax=None,fig=None,layout='normal',
-                    mplargs=[],mplkwargs={},use_defaults=False):
+                    mplargs=None,mplkwargs=None,use_defaults=False,
+                    figsize=None,ncols=None,nrows=None):
         # self.D = Defaults()
+        if mplargs == None:
+            mplargs = ()
+        if mplkwargs == None:
+            mplkwargs = {}
         self.save_figure = True
         self.use_defaults = use_defaults
+
+        if ncols:
+            assert nrows is not None
+            mplkwargs['ncols'] = ncols
+            mplkwargs['nrows'] = nrows
 
         # Create main figure
         if ax is not None and fig is not None:
@@ -58,6 +69,8 @@ class Figure:
             self.ax0 = plt.subplot(self.gs[0])
             self.ax1 = plt.subplot(self.gs[1])
         else:
+            if figsize:
+                mplkwargs['figsize'] = figsize
             self.fig, self.ax = plt.subplots(*mplargs,**mplkwargs)
 
         if self.use_defaults:
@@ -72,7 +85,7 @@ class Figure:
         """
         if len(naming) == 0:
             if use_time:
-                return = utils.generate_timestamp_fname(filetype)
+                utc = utils.generate_timestamp_fname(filetype)
             else:
                 raise Exception("What are we creating the filename from?")
         fname = joiner.join([str(a) for a in naming])
@@ -100,16 +113,20 @@ class Figure:
         self.mx,self.my = N.meshgrid(self.xx,self.yy)
         return
 
-    def save(self,outpath=None,fname=None,tight=True):
-        if (outpath is None) and (fname is None):
-            try:
-                outpath = self.outpath
-                fname = self.fname
-            except:
-                raise Exception("Provide both output directory and filename.")
-        fname = self.enforce_png_ext(fname)
-        utils.trycreate(outpath)
-        fpath = os.path.join(outpath,fname)
+    def save(self,outpath=None,outdir=None,fname=None,tight=True):
+        """ 
+        Args:
+            outpath: absolute path to output .png (required, or next two are)
+            outdir: absolute path to directory only
+            fname: filename only
+        """
+        if (outpath is None) and (fname is None) and (outdir is None):
+            fpath = os.path.join(self.outdir,self.fname)
+        elif isinstance(fname,str):
+            fpath = os.path.join(outdir,fname)
+        else:
+            fpath = outpath
+        utils.trycreate(fpath)
         if tight:
             self.fig.tight_layout()
             self.fig.savefig(fpath,bbox_inches='tight')
@@ -253,6 +270,8 @@ class Figure:
         if hasattr(self,'W'):
             if self.W is not None:
                 x,y = m(self.W.lons,self.W.lats)
+            elif lons.ndim == 2:
+                x,y = m(lons,lats)
             else:
                 x,y = m(*N.meshgrid(lons,lats))
                 # x,y = m(N.meshgrid(lons,lats))
@@ -260,7 +279,9 @@ class Figure:
         return m, x, y
 
 
-    def __get_plot_options2(self,*args,**kwargs):
+    def _get_plot_options2(self,mplargs=None,mplkwargs=None,
+                            plotargs=None,plotkwargs=None,
+                            *args,**kwargs):
         """ Plot options common to all plotting methods.
 
         Note:
@@ -272,59 +293,71 @@ class Figure:
                 call, and further plots can be made. If False,
                 it is saved immediately and `save()` is not needed.
         """
+        if mplkwargs == None:
+            mplkwargs = {}
+        if plotkwargs == None:
+            plotkwargs = {}
         clskwargs = {}
-        mplkwargs = {}
-        plotkwargs = {}
 
         clskwargs['hold'] = kwargs.get('hold',False)
-        clskwargs['save'] = kwargs.get('save',True)
-        assert clskwargs['hold'] != clskwargs['save']
-
+        # clskwargs['save'] = kwargs.get('save',True)
+        try:
+            # kwargs['save']
+            clskwargs['save'] = kwargs['save']
+        except:
+            if clskwargs['hold']:
+                clskwargs['save'] = False
+            else:
+                clskwargs['save'] = True
+            print("Setting default save setting to {}".format(clskwargs['save']))
+        # else:
         return clskwargs, mplkwargs, plotkwargs
 
-      def __get_plot_options1(self,vrbl,*args,**kwargs):
-          """ Filter arguments and key-word arguments for plotting methods.
+    def _get_plot_options1(self,vrbl=None,*args,**kwargs):
+        """ Filter arguments and key-word arguments for plotting methods.
 
-          Whatever is in dictionary will overwrite defaults in the plotting
-          method.
+        Whatever is in dictionary will overwrite defaults in the plotting
+        method.
 
-          These may be
-              * fhrs (forecast hour plotting times - or all)
-              * ensmems (ensemble members, or all)
+        These may be
+          * fhrs (forecast hour plotting times - or all)
+          * ensmems (ensemble members, or all)
 
 
-          """
-          # Get plotting levels if not already given
-          # TODO: rewrite this using hasattr() or something.
-          S = Scales(vrbl)
-          if not 'levels' in kwargs:
-              kwargs['levels'] = S.clvs
-          if not 'cmap' in kwargs:
-              kwargs['cmap'] = S.cm
+        """
+        # Get plotting levels if not already given
+        # TODO: rewrite this using hasattr() or something.
+        if vrbl:
+            S = Scales(vrbl)
+            if not 'levels' in kwargs:
+                kwargs['levels'] = S.clvs
+            if not 'cmap' in kwargs:
+                kwargs['cmap'] = S.cm
 
-          # Specific things for certain variables
-          if vrbl in ('REFL_10CM',"REFL_comp"):
-              pass
+        # Specific things for certain variables
+        if vrbl in ('REFL_10CM',"REFL_comp"):
+            pass
 
-          # Save all figures to a subdirectory
-          if subdir in kwargs:
-              utils.trycreate(subdir,is_folder=True)
+        # Save all figures to a subdirectory
+        if 'subdir' in kwargs:
+            utils.trycreate(subdir,is_folder=True)
 
-          # What times are being plotted?
-          # If all, return list of all times
-          if 'utc' in kwargs:
-              pass
-          elif ('fchr' not in kwargs) or (kwargs['fchr'] == 'all'):
-              kwargs['utc'] = E.list_of_times
-          # Does this pick up on numpy arange?
-          elif isinstance(kwargs['fchr'], (list,tuple)):
-              kwargs['utc'] = []
-              for f in kwargs['fchr']:
-                  utc = self.inittime + datetime.timedelta(seconds=3600*f)
-                  kwargs['fchr'].append(utc)
+        # What times are being plotted?
+        # If all, return list of all times
+        if 'utc' in kwargs:
+            pass
+        elif ('fchr' not in kwargs) or (kwargs['fchr'] == 'all'):
+            kwargs['utc'] = E.list_of_times
+        # Does this pick up on numpy arange?
+        elif isinstance(kwargs['fchr'], (list,tuple)):
+            kwargs['utc'] = []
+            for f in kwargs['fchr']:
+                utc = self.inittime + datetime.timedelta(seconds=3600*f)
+                kwargs['fchr'].append(utc)
 
-          # Make domain smaller if requested
+        # Make domain smaller if requested
 
-          # Save data before plotting
-          clskwargs['save_data'] = kwargs.get('save_data',False)
-          return clskwargs,plotkwargs,mplkwargs
+        # Save data before plotting
+        clskwargs['save_data'] = kwargs.get('save_data',False)
+        return clskwargs,plotkwargs,mplkwargs
+

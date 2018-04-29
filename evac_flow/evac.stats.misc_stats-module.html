@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>evac.stats.misc_stats</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="evac-module.html">Package&nbsp;evac</a> ::
+        <a href="evac.stats-module.html">Package&nbsp;stats</a> ::
+        Module&nbsp;misc_stats
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="evac.stats.misc_stats-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module misc_stats</h1><p class="nomargin-top"><span class="codelink"><a href="evac.stats.misc_stats-pysrc.html">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+Functions that are not specifically deterministic/probabilistic.
+
+Todo:
+    * Move all DKE/DTE functions into :any:`~evac.stats.diffenergy`.
+
+</pre>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.misc_stats-module.html#compute_bool_thresh" class="summary-sig-name">compute_bool_thresh</a>(<span class="summary-sig-arg">arr</span>,
+        <span class="summary-sig-arg">overunder</span>,
+        <span class="summary-sig-arg">threshold</span>)</span><br />
+      Args:...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#compute_bool_thresh">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.misc_stats-module.html#compute_contingency" class="summary-sig-name">compute_contingency</a>(<span class="summary-sig-arg">fcst_arr</span>,
+        <span class="summary-sig-arg">obs_arr</span>,
+        <span class="summary-sig-arg">thresh</span>,
+        <span class="summary-sig-arg">overunder</span>,
+        <span class="summary-sig-arg">fmt</span>=<span class="summary-sig-default">'tuple'</span>)</span><br />
+      a = observed and forecast
+b = forecast but not observed
+c = observed but not forecast
+d = neither observed nor forecast</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#compute_contingency">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.misc_stats-module.html#std" class="summary-sig-name">std</a>(<span class="summary-sig-arg">ncfiles</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">utc</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">other</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">axis</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Find standard deviation in along axis of ensemble members.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#std">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.misc_stats-module.html#std_ttest" class="summary-sig-name">std_ttest</a>(<span class="summary-sig-arg">ncfiles1</span>,
+        <span class="summary-sig-arg">ncfiles2</span>,
+        <span class="summary-sig-arg">vrbl</span>,
+        <span class="summary-sig-arg">utc</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">level</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">other</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">th</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Find standard deviation in along axis of ensemble members.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#std_ttest">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.misc_stats-module.html#gauss_kern" class="summary-sig-name">gauss_kern</a>(<span class="summary-sig-arg">size</span>,
+        <span class="summary-sig-arg">sizey</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Taken from scipy cookbook online.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#gauss_kern">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.misc_stats-module.html#gauss_smooth" class="summary-sig-name">gauss_smooth</a>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">ny</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">pad</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">pad_values</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Taken from scipy cookbook online.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#gauss_smooth">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="max_filter"></a><span class="summary-sig-name">max_filter</span>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">11</span>,
+        <span class="summary-sig-arg">shape</span>=<span class="summary-sig-default">'circle'</span>)</span><br />
+      blah</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#max_filter">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.misc_stats-module.html#compute_diff_energy" class="summary-sig-name">compute_diff_energy</a>(<span class="summary-sig-arg">ptype</span>,
+        <span class="summary-sig-arg">energy</span>,
+        <span class="summary-sig-arg">files</span>,
+        <span class="summary-sig-arg">times</span>,
+        <span class="summary-sig-arg">upper</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">lower</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">d_save</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">d_return</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">d_fname</span>=<span class="summary-sig-default">'diff_energy_data'</span>)</span><br />
+      This method computes difference kinetic energy (DKE)
+or different total energy (DTE, including temp)
+between WRFout files for a given depth of the
+atmosphere, at given time intervals</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#compute_diff_energy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.misc_stats-module.html#DE_xyz" class="summary-sig-name">DE_xyz</a>(<span class="summary-sig-arg">nc0</span>,
+        <span class="summary-sig-arg">nc1</span>,
+        <span class="summary-sig-arg">t_idx</span>,
+        <span class="summary-sig-arg">energy</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Computation for difference kinetic energy (DKE).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#DE_xyz">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.misc_stats-module.html#DE_z" class="summary-sig-name">DE_z</a>(<span class="summary-sig-arg">nc0</span>,
+        <span class="summary-sig-arg">nc1</span>,
+        <span class="summary-sig-arg">t</span>,
+        <span class="summary-sig-arg">energy</span>,
+        <span class="summary-sig-arg">lower</span>,
+        <span class="summary-sig-arg">upper</span>)</span><br />
+      Computation for difference kinetic energy (DKE).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#DE_z">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="DKE_power_spectrum"></a><span class="summary-sig-name">DKE_power_spectrum</span>(<span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">dx</span>)</span><br />
+      Return power spectrum of DKE/DTE at time(s) for wavelengths.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#DKE_power_spectrum">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="evac.stats.misc_stats-module.html#rank_hist" class="summary-sig-name">rank_hist</a>(<span class="summary-sig-arg">obdata</span>,
+        <span class="summary-sig-arg">ensdata</span>)</span><br />
+      obdata  :   (N.ndarray) - T x surface observations (T = no.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#rank_hist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="compute_bool_thresh"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_bool_thresh</span>(<span class="sig-arg">arr</span>,
+        <span class="sig-arg">overunder</span>,
+        <span class="sig-arg">threshold</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#compute_bool_thresh">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Args:
+    arr (N.ndarray) :   field of data
+    overunder (str) :   One of the following:
+                            'over','under','overeq','undereq','equal'
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_contingency"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_contingency</span>(<span class="sig-arg">fcst_arr</span>,
+        <span class="sig-arg">obs_arr</span>,
+        <span class="sig-arg">thresh</span>,
+        <span class="sig-arg">overunder</span>,
+        <span class="sig-arg">fmt</span>=<span class="sig-default">'tuple'</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#compute_contingency">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+a = observed and forecast
+b = forecast but not observed
+c = observed but not forecast
+d = neither observed nor forecast
+
+Args:
+    fcst_arr (N.ndarray)    :   forecast array
+    obs_arr (N.ndarray)     :   verification array, same 2D dimensions as fcst_arr
+    thresh (float)          :   threshold
+    overunder (str)         :   One of the following:
+                                    'over','under','overeq','undereq','equal'
+    fmt (str,optional)      :   If tuple, the output is a,b,c,d.
+                                    If 'array', the output is a numpy
+                                    array - not implemented yet.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="std"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">std</span>(<span class="sig-arg">ncfiles</span>,
+        <span class="sig-arg">vrbl</span>,
+        <span class="sig-arg">utc</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">level</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">other</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">axis</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#std">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Find standard deviation in along axis of ensemble members. Returns 
+  matrix x-y for plotting</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="std_ttest"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">std_ttest</span>(<span class="sig-arg">ncfiles1</span>,
+        <span class="sig-arg">ncfiles2</span>,
+        <span class="sig-arg">vrbl</span>,
+        <span class="sig-arg">utc</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">level</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">other</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">th</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#std_ttest">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Find standard deviation in along axis of ensemble members. Returns 
+  matrix x-y for plotting. Returns sig test</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="gauss_kern"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">gauss_kern</span>(<span class="sig-arg">size</span>,
+        <span class="sig-arg">sizey</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#gauss_kern">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Taken from scipy cookbook online. Returns a normalized 2D gauss kernel
+  array for convolutions</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="gauss_smooth"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">gauss_smooth</span>(<span class="sig-arg">data</span>,
+        <span class="sig-arg">n</span>,
+        <span class="sig-arg">ny</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">pad</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">pad_values</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#gauss_smooth">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Taken from scipy cookbook online.
+Blur the data by convolving with a gaussian kernel of typical
+size n. The optional keyword argument ny allows for a different
+size in the y direction.
+
+:param data:    data (2D only?)
+:type data:     N.ndarray
+:param pad:     put zeros on edge of length n so that output
+                array equals input array size.
+:type pad:      bool
+:param pad_values:  if pad, then use this value to fill edges.
+:type pad_values:   int,float
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="compute_diff_energy"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">compute_diff_energy</span>(<span class="sig-arg">ptype</span>,
+        <span class="sig-arg">energy</span>,
+        <span class="sig-arg">files</span>,
+        <span class="sig-arg">times</span>,
+        <span class="sig-arg">upper</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">lower</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">d_save</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">d_return</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">d_fname</span>=<span class="sig-default">'diff_energy_data'</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#compute_diff_energy">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+This method computes difference kinetic energy (DKE)
+or different total energy (DTE, including temp)
+between WRFout files for a given depth of the
+atmosphere, at given time intervals
+
+:param ptype:   '2D' or '3D'.
+                '2D' integrates vertically between lower and
+                upper hPa and creates a time series.
+                '3D' integrates over the 3D space (again between
+                the upper and lower bounds) and creates 2D arrays.
+:param energy:   'DKE' or 'DTE'
+:param upper:   upper limit of vertical integration
+:param lower:   lower limit of vertical integration
+:param files:   abs paths to all wrfout files
+:param times:   times for computations - tuple format
+:param d_save:   save dictionary to folder (path to folder)
+:param d_return:   return dictionary (True or False)
+:param d_fname:   custom filename
+
+:returns: N.ndarray -- time series or list of 2D arrays
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="DE_xyz"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">DE_xyz</span>(<span class="sig-arg">nc0</span>,
+        <span class="sig-arg">nc1</span>,
+        <span class="sig-arg">t_idx</span>,
+        <span class="sig-arg">energy</span>,
+        <span class="sig-arg">*args</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#DE_xyz">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Computation for difference kinetic energy (DKE). Sums DKE over the 3D 
+  space, returns a time series.</p>
+  <p>Destaggering is not enabled as it introduces computational cost that 
+  is of miniscule value considering the magnitudes of output values.</p>
+  <p>Inputs:</p>
+  <p>nc0     :   netCDF file nc1     :   netCDF file t_idx   :   times 
+  indices to difference energy  :   kinetic or total *args   :   to catch 
+  lower/upper boundary which isn't relevant here</p>
+  <p>Outputs:</p>
+  <p>data    :   time series.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="DE_z"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">DE_z</span>(<span class="sig-arg">nc0</span>,
+        <span class="sig-arg">nc1</span>,
+        <span class="sig-arg">t</span>,
+        <span class="sig-arg">energy</span>,
+        <span class="sig-arg">lower</span>,
+        <span class="sig-arg">upper</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#DE_z">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Computation for difference kinetic energy (DKE). Sums DKE over all 
+  levels between lower and upper, for each grid point, and returns a 2D 
+  array.</p>
+  <p>Destaggering is not enabled as it introduces computational cost that 
+  is of miniscule value considering the magnitudes of output values.</p>
+  <p>Method finds levels nearest lower/upper hPa and sums between them 
+  inclusively.</p>
+  <p>Inputs:</p>
+  <p>nc0     :   netCDF file nc1     :   netCDF file t       :   times 
+  index to difference energy  :   kinetic or total lower   :   lowest 
+  level, hPa upper   :   highest level, hPa</p>
+  <p>Outputs:</p>
+  <p>data    :   2D array.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="rank_hist"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">rank_hist</span>(<span class="sig-arg">obdata</span>,
+        <span class="sig-arg">ensdata</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="evac.stats.misc_stats-pysrc.html#rank_hist">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>obdata  :   (N.ndarray) - T x surface observations (T = no. of times) 
+  ensdata :   (N.ndarray) - T x N x float, ensemble analyses for N 
+  members</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="evac-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Tue Apr 10 16:59:35 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
