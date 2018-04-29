@@ -395,7 +395,7 @@ class LazyEnsemble:
                 doms = self.ndoms
             utils.edit_namelist(nlpath,key,newline,doms=doms)
 
-    def run_all_members(self,prereqs,first=None,**kwargs):
+    def run_all_members(self,prereqs,check_domains=False,first=None,**kwargs):
         """ Automatically submit all jobs to the scheduler.
         See run_wrf_member() and check_complete() for keyword arguments.
 
@@ -412,6 +412,11 @@ class LazyEnsemble:
                     Don't include initial, boundary conditions (these are
                     different for every member and are copied automatically)
                     or namelist files (ditto).
+        check_domains   :   (bool) - if True, once the job is runningV,
+                                kill it after a wrfout file for each domain
+                                is created. Then plot domains. Inform
+                                user that the run was done. Used to make
+                                sure domain configuration is optimal.
         first       :   (int) - only run the first x members
         kwargs      :   keyword arguments passed to run_wrf_member.
         """
@@ -444,7 +449,7 @@ class LazyEnsemble:
         for nmem,member in enumerate(sorted(self.members)):
             nmem += 1
             kwargs['memno'] = nmem
-            self.run_wrf_member(member,prereqs,**kwargs)
+            self.run_wrf_member(member,prereqs,check_domains=check_domains,**kwargs)
             if first == nmem:
                 print("Exiting due to test.")
                 break
@@ -455,7 +460,7 @@ class LazyEnsemble:
                         sleep=30,firstwait=3600,
                         maxtime=(24*3600),check=False,
                         rename_dict=None,merge_lbcs=False,
-                        memno=None):
+                        memno=None,check_domains=False):
         """ Submit a wrf run to batch scheduler.
 
         member  :   (str) - name of member to run
@@ -524,13 +529,23 @@ class LazyEnsemble:
         os.system(cmd)
 
         # Monitor processes
+        # check_domain kills it after wrfout is created
         if check:
             self.check_complete(member,sleep=sleep,firstwait=firstwait,
-                            maxtime=maxtime)
+                            maxtime=maxtime,kill_when_ok=check_domains)
+        if check_domains:
+            pass
+            # plot the domains.
         # Create README?
 
         # Clean up files
 
+    def check_wrfout_exists(self,):
+        pass
+
+    @staticmethod
+    def kill_batchjob(jobid):
+        pass
         
 
     def cleanup(self,folder,files):
@@ -558,7 +573,7 @@ class LazyEnsemble:
         return
 
     def check_complete(self,member,raise_error=False,sleep=30,firstwait=3600,
-                        maxtime=(24*3600)):
+                        maxtime=(24*3600),kill_when_ok=False):
         """ Check ensemble member to see if wrf run has finished.
 
         Returns:
@@ -580,6 +595,9 @@ class LazyEnsemble:
         time.sleep(firstwait)
         elapsed = firstwait
         while True:
+            if kill_when_ok:
+                if self.check_wrfout_exists(all_doms=True):
+                    self.kill_batchjob(jobid=kill_when_ok)
             rsl = self.members[member]['rundir'] / 'rsl.error.0000'
             #tailrsl = subprocess.Popen(f'tail {rsl}',shell=True,
             tailrsl = subprocess.Popen('tail {}'.format(rsl),shell=True,
