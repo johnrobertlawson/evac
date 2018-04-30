@@ -110,7 +110,7 @@ class Verif:
 
     Args:
         ensemble: Class instance of `evac.datatypes.ensemble.Ensemble`.
-        obs: instance, or list/tuple of instances, of Obs subclasses
+        obs: instance of ObsGroup, or an Obs subclass, or a list of either
         outdir (optional): path to output files
         datadir (optional): Path to which .npy data files will be saved
         reproject_dict (dict): if None, no reprojection. Otherwise,
@@ -627,7 +627,7 @@ class Verif:
     def plot_thumbnails(self,vrbl,radardir=None,ensmembers='all',fchrs='all',
                         doms='all',limdict='auto',outdir=None,fname='auto',
                         mplargs=None,mplkwargs=None,verif_first=True,
-                        lv=None,
+                        lv=None,overwrite=True,
                         *args,**kwargs):
         """ Plot postage stamps or thumbnails of ensemble members listed
         (by default, this is all).
@@ -672,12 +672,16 @@ class Verif:
                 if fname == 'auto':
                     outfname = self.make_plot_fname('thumbnails',vrbl=vrbl,dom=dom,fchr=fchr,
                                                     lv=lv)
+                if (overwrite is False) and (os.path.exists(outfname)):
+                    print("Already created. Skipping.")
+                    return
                 TN = ThumbNails(outdir=outdir,fname=outfname)
                 if verif_first:
                     OB = self.get_ob_instance(vrbl)
                     # R = Radar(plotutc,radardir)
                     # R.get_subdomain(**ld,overwrite=True)
-                    OB.get_subdomain(**ld,overwrite=True)
+                    # OB.get_subdomain(**ld,overwrite=True)
+                    OB.set_subdomain(**ld)
                     TN.plot_verif(data=OB,utc=plotutc)
 
                 arbW = self.get_arb(dom=dom,fpath_only=False)
@@ -1235,6 +1239,9 @@ class Verif:
         obdict = {}
         for o in self.obs:
             n = self.get_object_name(o)
+            # In the event that the instance is ObsGroup
+            if n == 'obsgroup':
+                n = o.obs_type
             obdict[n] = o
         return obdict
 

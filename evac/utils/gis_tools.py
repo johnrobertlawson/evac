@@ -1242,7 +1242,7 @@ def return_subdomain(data,lats,lons,Nlim,Elim,Slim,Wlim,
         raise Exception
     # Radar data: latlon, N<S, W<E
     # data = data[Nidx:Sidx+1,Widx:Eidx+1]
-    pdb.set_trace()
+    # pdb.set_trace()
 
     data = data[xmin:xmax+1,ymin:ymax+1]
 

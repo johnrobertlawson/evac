@@ -2,6 +2,7 @@ import os
 import pdb
 import calendar
 import glob
+import datetime
 
 import scipy
 import numpy as N
@@ -64,6 +65,7 @@ class Radar(PNGFile,Obs):
         # Check for file
         # Download if not available
         fpath = os.path.join(datapath,fname_root)
+        self.fpath = fpath
         for ex in ('.png','.wld'):
             scan = glob.glob(fpath+ex)
             print("Looking in",datapath)
@@ -202,6 +204,16 @@ class Radar(PNGFile,Obs):
         """
         ret = self.plot_radar(*args,**kwargs)
         return ret
+    
+    @staticmethod
+    def date_from_fname(f,fullpath=False):
+        if fullpath or f.startswith('/'):
+            f = os.path.basename(f)
+        fn, _ext = f.split('.')
+        n0q,d = fn.split('_')
+        fmt = '%Y%m%d%H%M'
+        utc = datetime.datetime.strptime(d,fmt)
+        return utc
 
     def plot_radar(self,outdir=False,fig=False,ax=False,fname=False,Nlim=False,
                     Elim=False, Slim=False,Wlim=False,cb=True,

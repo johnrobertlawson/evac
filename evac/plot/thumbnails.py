@@ -44,7 +44,7 @@ class ThumbNails(Figure):
                 drawcounties=True,cb=False,utc=utc)
         ax.set_title("Verif")
         if save:
-            self.fig.save()
+            self.save()
         return
 
     def plot_fcst(self,data,titles=None,scales=None,

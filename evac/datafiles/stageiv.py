@@ -75,7 +75,9 @@ class StageIV(GribFile,Obs):
         return data4D.data
 
     @staticmethod
-    def date_from_fname(f):
+    def date_from_fname(f,fullpath=False):
+        if fullpath or f.startswith('/'):
+            f = os.path.basename(f)
         _1, d, _2 = f.split('.')
         fmt = '%Y%m%d%H'
         utc = datetime.datetime.strptime(d,fmt)
@@ -185,7 +187,7 @@ class StageIV(GribFile,Obs):
         return data
 
         
-    def __plot(self,data=None,outdir=False,fig=False,ax=False,fname=False,
+    def plot(self,data=None,outdir=False,fig=False,ax=False,fname=False,
                     # Nlim=False, Elim=False, Slim=False,Wlim=False,
                     cb=True,drawcounties=False,save='auto',
                     lats=None,lons=None,proj='merc',

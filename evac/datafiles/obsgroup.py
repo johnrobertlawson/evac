@@ -13,6 +13,7 @@ import glob
 # import evac.utils as utils
 from evac.datafiles.stageiv import StageIV
 from evac.datafiles.radar import Radar
+from evac.datafiles.obs import Obs
 
 class ObsGroup:
     """ A group of observation data files.
@@ -42,18 +43,24 @@ class ObsGroup:
     """
     def __init__(self,fpath,obs_type='auto',load_objects=False,
                     st4_1h=True,st4_6h=False,st4_24h=False):
+
+        # By default, the full domain is returned
+        self.return_subdomain = False
+
         self.load_objects = load_objects
 
         # Gather all options specific to certain datatypes.
         self.st4_opts = {k:v for k,v in locals().items() if k.startswith("st4")}
+
+        # Check user options to see which accumulation times are wanted.
+        self.hlist = self.return_st4_accumlist()
+        assert self.hlist 
         
         self.INSTANCES = self.return_instances()
         self.PATTERNS = self.return_globpatterns()
 
         # A list of all valid times within. Unique values only
         self.utcs = set()
-        # A dictionary catalogue of all obs files/instances
-        self.catalogue = {}
 
         # Determine if fpath is a directory or file
         if os.path.isdir(fpath):
@@ -61,13 +68,14 @@ class ObsGroup:
         else:
             self.fdir = os.path.dirname(fpath)
 
-        self.fill_catalogue(obs_type)
+        # A dictionary catalogue of all obs files/instances
+        self.catalogue = self.fill_catalogue(obs_type)
 
     @staticmethod
     def return_instances():
         INSTANCES = dict(stageiv = StageIV,
                         radar = Radar,
-                        }
+                        )
         return INSTANCES
 
     def lookup_instance(self,key=None):
@@ -78,7 +86,7 @@ class ObsGroup:
     @staticmethod
     def return_globpatterns():
         PATTERNS = dict(stageiv = 'ST4*',
-                        radar = "noq_*.png",
+                        radar = "n0q_*.png",
                         )
         return PATTERNS
 
@@ -94,7 +102,7 @@ class ObsGroup:
             PATTERNS = {v: k for k, v in self.PATTERNS.items()}
         else:
             PATTERNS = self.PATTERNS
-        return PATTERNS[obs_type]
+        return PATTERNS[key]
 
     def fill_catalogue(self,obs_type):
         """ Gather observation files into dictionary.
@@ -104,40 +112,85 @@ class ObsGroup:
         Args:
             obs_type: see Class docstring.
         """
+        self.catalogue = {}
         if obs_type == 'auto':
             fs = glob.glob(os.path.join(self.fdir,'*'))
             for ot,pattern in self.PATTERNS.items():
-                fs_check = [os.path.basename(f).startswith(pattern) for f in fs]
+                startstr = pattern.split("*")[0]
+                print("Looking for the pattern {}".format(startstr))
+                fs_check = [os.path.basename(f).startswith(startstr) for f in fs]
                 if all(fs_check):
                     self.obs_type = ot
                     break
-            print("No single obs_type found. Please specify.")
-            raise Exception
-            
+            else:
+                print("No single obs_type found. Please specify.")
+                raise Exception
+        
+        else:
+            self.obs_type = obs_type
         globpattern = self.lookup_globpattern()
         fs = glob.glob(os.path.join(self.fdir,globpattern))
 
         self.instance = self.lookup_instance()
         if obs_type == 'stageiv':
             
-            # Check user options to see which accumulation times are wanted.
-            hlist = self.return_st4_accumlist()
-            for h in hlist:
+            for h in self.hlist:
                 fs_h = [f for f in fs if f.endswith(h)]
 
                 for f in fs_h:
                     utc = self.instance.date_from_fname(f)
                     self.utcs.add(utc)
+                    try:
+                        self.catalogue[utc]
+                    except KeyError:
+                        self.catalogue[utc] = {h:{} for h in self.hlist}
 
+                    # pdb.set_trace()
+                    # if self.catalogue[utc]
                     self.catalogue[utc][h] = {'fpath':f}
 
                     if self.load_objects:
                         self.catalogue[utc][h]['loadobj'] = self.instance(f)
-        
-        return
 
-    @staticmethod
-    def return_st4_accumlist():
+        elif obs_type == 'radar':
+            # pdb.set_trace()
+            for f in fs:
+                utc = self.instance.date_from_fname(f)
+                self.catalogue[utc] = {'fpath':f}
+                if self.load_objects:
+                    self.catalogue[utc]['loadobj'] = self.instance(f)
+
+        return self.catalogue
+
+    def catalogue_get(self,utc,auto_download=True,accum_hr=None):
+                    #,loadobj=False):
+        """ Load instance from catalogue.
+
+        If it doesn't exist, download it.
+        """
+        if (accum_hr == None) and (self.obs_type == 'stageiv'):
+            if len(self.hlist) == 1:
+                accum_hr = hlist[0]
+            else:
+                raise Exception("Specify a single accum_hr that is needed.")
+
+        try:
+            self.catalogue[utc]
+        except KeyError:
+            if auto_download:
+                self.catalogue[utc] = {'loadobj':self.instance(utc,self.fdir)}
+                self.catalogue[utc]['fpath'] = self.catalogue[utc]['loadobj'].fpath
+            else:
+                assert 1==0
+        finally:
+            ob = self.catalogue[utc]
+
+        if self.obs_type == 'stageiv':
+            return ob[accum_hr]
+        return self.instance(utc,ob['fpath'])
+        
+
+    def return_st4_accumlist(self,):
         hlist = []
         if self.st4_opts['st4_1h']:
             hlist.append("01h")
@@ -148,18 +201,11 @@ class ObsGroup:
         return hlist
 
     def get(self,utc,*args,**kwargs):
-        if not isinstance(utc,(list,tuple)):
-            utc = [utc,]
+        ob = self.catalogue_get(utc)
+        data = ob.get(*args,**kwargs)
+        if self.return_subdomain:
+            data = ob.get_subdomain(data=data,**self.limdict)
 
-        returns = []
-        for t in utc:
-            ob = self.catalogue[utc]
-            returns.append(ob.get(*args,**kwargs))
-
-        if len(returns) == 1:
-            return returns[0]
-        else:
-            return returns
         
     def arbitrary_pick(self,load_object=False):
         """ 
@@ -167,7 +213,38 @@ class ObsGroup:
             * How to make this arbitrary lookup general to any data type?
         """
         raise Exception("Not implemented.")
-        arb_f = self.catalogue[self.utcs[0],p
-        if load_object:
-            self.instance(arb_f)
+        # arb_f = self.catalogue[self.utcs[0])
+        # if load_object:
+            # self.instance(arb_f)
             
+    def set_subdomain(self,Nlim,Elim,Slim,Wlim,enable=True):
+        """ Set limited domain. Whenever get is called, cut down domain.
+
+        Call signature changed from Obs method, to
+        enable a time to be chosen, and data to be
+        returned (not overridden). These settings are
+        kept for future get() commands.
+        """
+        self.Nlim = Nlim
+        self.Elim = Elim
+        self.Slim = Slim
+        self.Wlim = Wlim
+
+        self.limdict = dict(Nlim = Nlim,
+                            Elim = Elim,
+                            Slim = Slim,
+                            Wlim = Wlim)
+
+        if enable:
+            self.return_subdomain = True
+        return 
+
+    def plot(self,utc,accum_hr=None,*args,**kwargs):
+        """ Wrapper for members' plot methods.
+        """
+        ob = self.catalogue_get(utc,accum_hr=accum_hr)
+        if self.return_subdomain:
+            for k,v in self.limdict.items():
+                kwargs[k] = v
+        ob.plot(*args,**kwargs)
+        return

@@ -530,7 +530,7 @@ class WRFOut(NC):
         tbl['T2_gradient'] = derived.compute_T2_gradient
         tbl['Q_pert'] = derived.compute_Q_pert
         tbl['vorticity'] = derived.return_vorticity
-        tbl['LPT'] = derived.lifted_parcel_temperature
+        tbl['LPT'] = derived.compute_lifted_parcel_temp
 
 
         return tbl

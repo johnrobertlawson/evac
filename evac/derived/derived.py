@@ -429,7 +429,7 @@ def compute_density(parent,tidx,lvidx,lonidx,latidx,other):
 def compute_CAPE(parent,tidx,lvidx,lonidx,latidx,other):
     """CAPE, taken from Pat Skinner's cookbook.
     """
-    kwargs = dict(tidx=tidx,lvidx=lvidx,lonidx=lonidx,latidx=latidx,other=other)
+    kwargs = dict(utc=tidx,level=lvidx,lons=lonidx,lats=latidx,other=other)
     # Environmental temperature
     t_env = parent.get('drybulb',**kwargs)
     # Lifted parcel temperature
@@ -454,7 +454,7 @@ def compute_lifted_parcel_temp(parent,tidx,lvidx,lonidx,latidx,other):
     assert True is False
     # TODO....
 
-    kwargs = dict(tidx=tidx,lvidx=lvidx,lonidx=lonidx,latidx=latidx,other=other)
+    kwargs = dict(utc=tidx,level=lvidx,lons=lonidx,lats=latidx,other=other)
     # t = parent.get('drybulb',**kwargs)
     # th = parent.get('theta',**kwargs)
     p = parent.get('pressure',**kwargs)

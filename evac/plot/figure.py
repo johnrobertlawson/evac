@@ -1,5 +1,17 @@
 """ Figure superclass.
 
+Figure and its subclasses (birdseye, etc) can be held open, for
+plotting multiple things, through the use of a with block. Not 
+fully implemented yet; in testing.
+
+Example:
+    To plot multiple 2D plots::
+
+        with BirdsEye(*args,**kwargs) as BE:
+            BE.plot('this')
+            BE.plot('that')
+        print("Saved!")
+
 Todo:
 	* Merge __get_plot_options.
 """
@@ -361,3 +373,15 @@ class Figure:
         clskwargs['save_data'] = kwargs.get('save_data',False)
         return clskwargs,plotkwargs,mplkwargs
 
+    def __enter__(self):
+        """ Set up the `with` block compatibility.
+        """
+        self.hold = True
+        print("Hold is on. Start plotting.")
+        return self
+
+    def __exit__(self):
+        self.hold = False
+        print("Figure is saved.")
+        self.save()
+        pass
