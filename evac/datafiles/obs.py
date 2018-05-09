@@ -38,3 +38,4 @@ class Obs:
             return
         else:
             return data,lats,lons
+

@@ -51,8 +51,16 @@ class Figure:
 
     def __init__(self,ax=None,fig=None,layout='normal',
                     mplargs=None,mplkwargs=None,use_defaults=False,
-                    figsize=None,ncols=None,nrows=None):
+                    figsize=None,ncols=None,nrows=None,
+                    fpath=None,fname=None,outdir=None):
         # self.D = Defaults()
+        if fpath:
+            self.fpath = fpath
+        if fname:
+            self.fname = fname
+        if outdir:
+            self.outdir = outdir
+
         if mplargs == None:
             mplargs = ()
         if mplkwargs == None:
@@ -132,11 +140,16 @@ class Figure:
             outdir: absolute path to directory only
             fname: filename only
         """
-        if (outpath is None) and (fname is None) and (outdir is None):
-            fpath = os.path.join(self.outdir,self.fname)
+        # if (outpath is None) and (fname is None) and (outdir is None):
+        if hasattr(self,'fpath'):
+            fpath = getattr(self,'fpath',None)
+            # os.path.join(self.outdir,self.fname))
         elif isinstance(fname,str):
             fpath = os.path.join(outdir,fname)
+        elif hasattr(self,'fname') and hasattr(self,'outdir'):
+            fpath = os.path.join(self.outdir,self.fname)
         else:
+            assert outpath is not None
             fpath = outpath
         utils.trycreate(fpath)
         if tight:
@@ -174,7 +187,7 @@ class Figure:
         CB.set_label(label)
         self.save(fpath,fname,tight=False)
 
-    def basemap_from_newgrid(self,Nlim=None,Elim=None,Slim=None,Wlim=None,proj=None,
+    def basemap_from_newgrid(self,Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
                     lat_ts=None,resolution='i',nx=None,ny=None,
                     tlat1=30.0,tlat2=60.0,cen_lat=None,cen_lon=None,
                     lllon=None,lllat=None,urlat=None,urlon=None,
@@ -221,7 +234,7 @@ class Figure:
             self.m.readshapefile(drawcounties,'counties')
         return
 
-    def basemap_setup(self,smooth=1,lats=False,lons=False,proj=None,
+    def basemap_setup(self,smooth=1,lats=False,lons=False,proj='merc',
                         Nlim=False,Elim=False,Slim=False,Wlim=False,
                         drawcounties=False,res='i'):
         """
@@ -244,7 +257,7 @@ class Figure:
                 ax=self.ax)
 
         elif self.proj=='merc':
-            if hasattr(self,'W') and not Nlim and not isinstance(lats,N.ndarray):
+            if hasattr(self,'W') and self.W and not Nlim: #and not isinstance(lats,N.ndarray):
                 Nlim,Elim,Slim,Wlim = self.W.get_limits()
             elif Nlim==False:
                 Nlim = lats.max()
@@ -376,12 +389,17 @@ class Figure:
     def __enter__(self):
         """ Set up the `with` block compatibility.
         """
-        self.hold = True
+        self.hold_opt = True
+        self.save_opt = False
         print("Hold is on. Start plotting.")
         return self
 
-    def __exit__(self):
-        self.hold = False
+    def __exit__(self,*args):
+        """ 
+        Todo:
+            * Don't save if error?
+        """
+        self.hold_opt = False
         print("Figure is saved.")
         self.save()
         pass

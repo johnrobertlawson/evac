@@ -22,6 +22,7 @@ class BirdsEye(Figure):
         * multiple plots on same figure - like a 'hold' - maybe by
             using set and get decorators. Or stopping save/close.
         * Massive rewrite with cartopy, now basemap is depreciated.
+        * Move most options to mplkwargs (e.g. cmap, levels).
 
     Args:
         ax,fig (optional): If None (default), then a new figure/axis object
@@ -38,8 +39,8 @@ class BirdsEye(Figure):
             existing figure).
     """
 
-    def __init__(self,ax=None,fig=None,ideal=False,proj=None,
-                 mplargs=[],mplkwargs={}):
+    def __init__(self,ax=None,fig=None,ideal=False,proj='merc',
+                 mplargs=[],mplkwargs={},):#W=None):
         """ Setting ideal to True removes the geography (e.g. for idealised
         plots)
         """
@@ -51,13 +52,13 @@ class BirdsEye(Figure):
 
     def plot2D(self,data,fname=False,outdir=False,plottype='contourf',
                     save=True,smooth=1,lats=False,lons=False,
-                    clvs=False,cmap=False,title=False,cb=True,
+                    clvs=None,cmap=None,title=False,cb=True,
                     locations=False,m=False,x=None,y=None,
                     Nlim=False,Elim=False,Slim=False,Wlim=False,
                     color='k',inline=False,cblabel=False,ideal=False,
                     drawcounties=False,mplargs=[],mplkwargs={},
                     extend=False,nx=None,ny=None,cen_lat=None,cen_lon=None,
-                    lat_ts=None,W=None):
+                    lat_ts=None,W=None,hold=False):
 
         """
         Generic method that plots any matrix of data on a map
@@ -78,7 +79,12 @@ class BirdsEye(Figure):
                                 Format: locations = {'label':(lat,lon),etc}
         :type locations:        dict
         """
-        mplkwargs['levels'] = clvs
+        if isinstance(cmap,str):
+            cmap = M.cm.get_cmap(cmap)
+        save = getattr(self,'save_opt',save)
+        hold = getattr(self,'hold_opt',hold)
+        if plottype not in ("pcolor","pcolormesh"):
+            mplkwargs['levels'] = clvs
         mplkwargs['cmap'] = cmap
         # WRFOut instance for help plotting.
         self.W = W

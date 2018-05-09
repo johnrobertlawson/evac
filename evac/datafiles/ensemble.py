@@ -117,7 +117,11 @@ class Ensemble:
 
         # Difference in output times across whole dataset
         # Might be split between history files
-
+        if self.fdt is None:
+            self.validtimes = [self.initutc + (x*datetime.timedelta(seconds=self.hdt)) 
+                                for x in range(self.nt_per_file)]
+        else:
+            raise Exception("Need to implement validtimes over numerous file times.")
 
     def compute_fdt(self):
         """Compute the difference in time between each data file's first entry.
@@ -362,7 +366,8 @@ class Ensemble:
         return self.members_names[ensidx]
 
 
-    def return_DF_for_t(self,utc,member,dom=1):
+    # def return_df_for_t(self,utc,member,dom=1):
+    def return_datafile(self,utc,member,dom=1):
         t, tidx = self.find_file_for_t(utc,member,dom=dom)
         if self.debug:
             print("Loading data for time {0}".format(utc))

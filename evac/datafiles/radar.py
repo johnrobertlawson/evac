@@ -1,3 +1,5 @@
+""" Composite radar archive data from mesonet.agron.iastate.edu.
+"""
 import os
 import pdb
 import calendar
@@ -17,7 +19,10 @@ class Radar(PNGFile,Obs):
     """ Radar data download, manipulation, and plotting via :any:`evac.plot.birdseye`.
 
     This uses composite reflectivity data stored on Iowa State Univ.
-    servers.
+    servers. Radar refers to one .wld and one .png file. For a group, use ObsGroup.
+    User should specify either fpath to the .png file (when the data has 
+    already been downloaded), or fdir and utc (Radar will look up the files, and if
+    not present, the data is downloaded).
 
     Example:
         Acquire and plot radar data on a limited domain::
@@ -30,64 +35,66 @@ class Radar(PNGFile,Obs):
             radardir = '/path/to/radar/data'
 
             fig,ax = plt.subplots(1)
-            R = Radar(utc,radardir)
+            R = Radar(radardir,utc=utc)
             R.get_subdomain(**limdict,overwrite=True)
             R.plot_radar(fig=fig,ax=ax,drawcounties=True)
             fig.savefig('/path/to/save.png')
 
-    Note that, if the radar data does not exist in radardir, it will be 
-    downloaded automatically.
-
     Todos:
-        * Allow different inheritance depending on the data format.
-            Probably using the __next__ built-in.
         * Remove redundant basemap generation method and integrate with
             any new cartopy plotting scripts in :any:`evac.plot.birdseye`.
 
     Args:
+        fpath: Absolute path to (a) folder with radar data or
+            (b) .png file containing data (in same directory
+            as .wld file, with same naming scheme)
         utc (datetime.datetime): Time of radar data in UTC.
-        datapath: Absolute path to folder with radar data.
         proj: Projection for plotting.
     """
-    def __init__(self,utc,datapath,proj='merc'):
-        """
-        Composite radar archive data from mesonet.agron.iastate.edu.
-
-        Args:
-            datapath (str)      :   Absolute path to folder or .png file
-            wldpath (str)       :   Absolute path to .wld file
-            fmt (str)           :   format of data - N0Q or N0R
-        """
+    def __init__(self,fpath,utc=None,proj='merc'):
         self.proj = proj
-        self.utc = utc
-        fname_root = self.get_radar_fname()
 
-        # Check for file
-        # Download if not available
-        fpath = os.path.join(datapath,fname_root)
-        self.fpath = fpath
-        for ex in ('.png','.wld'):
-            scan = glob.glob(fpath+ex)
-            print("Looking in",datapath)
-            print("Contents:",scan)
+        # The _root attributes do not have an extension (.png, .wld)
+        if fpath.endswith('.png'):
+            self.fpath_png = fpath
+            self.fpath_root = fpath[:-4]
+            self.fname_root = os.path.basename(fpath)[:-4]
+            self.fdir = os.path.dirname(self.fpath_png)
+            self.utc = self.date_from_fname(self.fpath_png)
+            self.fmt = self.get_fmt()
+        else:
+            self.fdir = fpath
+            assert utc is not None
+            self.utc = utc
+            self.fmt = self.get_fmt()
+            self.fname_root = self.get_radar_fname()
+            self.fname_png = self.fname_root + '.png'
+            self.fpath_root = os.path.join(self.fdir,self.fname_root)
+            self.fpath_png = self.fpath_root + '.png'
 
-            if len(scan) == 0:
-                url = self.get_radar_url()
-                urlf = os.path.join(url,fname_root+ex)
-                cmd1 = 'wget {0} -P {1}'.format(urlf,datapath)
-                os.system(cmd1)
+            # Check for file
+            # Download if not available
+            for ex in ('.png','.wld'):
+                scan = glob.glob(self.fpath_root+ex)
+                # scan1 = glob.glob(self.fpath_root+ex)
+                # scan2 = glob.glob(self.fpath_root+ex)
+                print("Looking in",fpath)
+                print("Contents:",scan)
 
-        png = fpath+'.png'
-        wld = fpath+'.wld'
+                if len(scan) == 0:
+                    self.download_data(ext=ex)
+        # pdb.set_trace()
+        # This is to maintain API with ObsGroup etc
+        self.fpath = self.fpath_png
 
-        self.data = scipy.ndimage.imread(png,mode='P')
-        # if len(self.data.shape) == 3:
-            # self.data = self.data[:,:,0]
+        self.fpath_wld = self.fpath_root + '.wld'
+
+        self.data = scipy.ndimage.imread(self.fpath_png,mode='P')
 
         self.xlen, self.ylen, = self.data.shape
 
         # Metadata
-        f = open(wld,'r').readlines()
+        f = open(self.fpath_wld,'r').readlines()
 
         # pixel size in the x-direction in map units/pixel
         self.xpixel = float(f[0])
@@ -120,8 +127,24 @@ class Radar(PNGFile,Obs):
         self.lats = N.linspace(self.lry,self.uly,self.xlen)[::-1]
         self.lons = N.linspace(self.ulx,self.lrx,self.ylen)
 
-    def get_radar_fname(self):
+    def download_data(self,ext='both'):
+        if ext == 'both':
+            exts = ('.png','.wld')
+        else:
+            exts = (ext,)
+        for ex in exts:
+            url = self.get_radar_url(utc=self.utc)
+            fname_root = self.get_radar_fname(utc=self.utc)
+            urlf = os.path.join(url,fname_root+ex)
+            dest_fpath = os.path.join(self.fdir,self.fname_root+ex)
+            cmd1 = 'wget {0} -O {1}'.format(urlf,dest_fpath)
+            os.system(cmd1)
+            # pdb.set_trace()
+        return
+
+    def get_fmt(self):
         tt = utils.ensure_timetuple(self.utc)
+        self.tt = tt
 
         # Date for format change
         change = (2010,10,25,0,0,0)
@@ -130,16 +153,22 @@ class Radar(PNGFile,Obs):
             print("Too early in database.")
             raise Exception
         elif calendar.timegm(tt) < calendar.timegm(change):
-            self.fmt = 'n0r'
+            return 'n0r'
         else:
-            self.fmt = 'n0q'
+            return 'n0q'
 
+    def get_radar_fname(self,utc=None):
+        if utc is None:
+            utc = self.utc
+
+        # Assume get_fmt has been run, and self.fmt exists
         fname = '{0}_{1:04d}{2:02d}{3:02d}{4:02d}{5:02d}'.format(
-                    self.fmt,*tt)
+                    self.fmt,*self.tt)
         return fname
 
-    def get_radar_url(self):
-        dt = utils.ensure_timetuple(self.utc)
+    @staticmethod
+    def get_radar_url(utc):
+        dt = utils.ensure_timetuple(utc)
         return ('mesonet.agron.iastate.edu/archive/data/'
                 '{0:04d}/{1:02d}/{2:02d}/GIS/uscomp/'.format(*dt))
 
@@ -277,3 +306,5 @@ class Radar(PNGFile,Obs):
         # outpath = os.path.join(outdir,fname)
         # self.fig.colorbar(im,ax=self.ax)
         # self.fig.savefig(outpath)
+
+

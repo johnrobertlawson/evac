@@ -28,12 +28,73 @@ class ProbScores:
         else:
             raise Exception
 
-    def compute_briar(self,):
+    def compute_briar(self,decompose=False):
+        """ Briar Score.
+
+        Todo:
+            * Consider moving nested functions to methods or classfunctions.
+        """
+
+        def compute_briar_reliability(yi,pyi,zi):
+            """ Reliability is the correspondence of observed to forecast frequencies. 
+
+            Args:
+                yi: set of possible values
+                pyi: frequency with which each forecast value from yi is forecasted
+                zi: probability of occurrence given forecast yi
+            """
+            return N.sum(pyi*((yi-zi)**2))
+
+        def compute_briar_resolution(pyi,zi,z):
+            """ Resolution is ability of a forecast to distinguish between events.
+
+            Args:
+                pyi:  ...
+                zi: ...
+                z: climatological probability of observed event in same sample
+            """
+            return N.sum(pyi*((zi-z)**2))
+
+        def compute_briar_uncertainty(z):
+            """ Uncertainty is the variance of observations.
+
+            This is the score achieved if the climatological probability is
+            forecasted each time (persistence?)
+
+            Args:
+                z: ...
+            """
+            return z(1-z)
+
         Ng = self.og.size
         self.og = self.og.flatten()
         self.pfg = self.pfg.flatten()
-        BS = (1/Ng) * N.sum((self.pfg-self.og.astype(float))**2)
+        if decompose:
+            z = 0
+            pyi = 0
+            yi = 0
+            zi = 0
+
+            UNC = compute_briar_uncertainty(z)
+            REL = compute_briar_reliability(yi,pyi,zi)
+            RES = compute_briar_resolution(pyi,zi,z)
+            
+            BS = REL - RES + UNC
+        else:
+            BS = (1/Ng) * N.sum((self.pfg-self.og.astype(float))**2)
         return BS
+
+    def compute_ignorance(self,):
+        """ Compute the Ignorance score.
+
+        Using Toeter and Ahrens 2012 paper, MWR
+
+        Todo:
+            * Decompose
+
+        Args:
+        """
+        pass 
 
     def compute_bss(self):
         """TODO
@@ -296,3 +357,4 @@ class ProbScores:
 
     def cdf_(self,):
         pass
+
