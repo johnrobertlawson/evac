@@ -23,13 +23,15 @@ class StageIV(GribFile,Obs):
         fpath: Absolute path to Stage IV file. 
         loadobj (bool): if True, load the data as instances of 
             :class:`~evac.datafiles.gribfile.GribFile()`.
+        args, kwargs: These catch any arguments from classes like
+            ObsGroup.
 
     Todos:
         * Check for 9999s (missing) or negative. Other codes
         * Consistency: are we loading one or a group of files?
 
     """
-    def __init__(self,fpath):
+    def __init__(self,fpath,*args,**kwargs):
 
         try:
             import pygrib
@@ -44,11 +46,12 @@ class StageIV(GribFile,Obs):
         self.fname = os.path.basename(self.fpath)
         self.utc = self.date_from_fname(self.fname)
 
-        self.projection()
         self.lats, self.lons = self.return_latlon()
+        self.projection()
         self.return_subdomain = False
 
-    def get(self,utc=None,lv=None,return_masked=False,check=True):
+    def get(self,return_masked=False,check=True,*args,**kwargs):
+                
         """
         Get a given time, in similar manner to WRFOut.
 
@@ -61,7 +64,7 @@ class StageIV(GribFile,Obs):
                 a legitimate array (e.g., shape = (0,0)
 
         """
-        data2D = self.return_array(utc,accum_hr=accum_hr,check=check)
+        data2D = self.return_array()
         # pdb.set_trace()
 
         if self.return_subdomain is not False:
@@ -72,7 +75,13 @@ class StageIV(GribFile,Obs):
 
         if return_masked:
             return data4D
-        return data4D.data
+
+        notmasked = data4D.data
+        if check:
+            OK = self.check_quality(notmasked)
+            if not OK:
+                raise Exception("These data are rubbish.")
+        return notmasked
 
     @staticmethod
     def date_from_fname(f,fullpath=False):
@@ -86,7 +95,7 @@ class StageIV(GribFile,Obs):
     def load_gribpart(self):
         # self.G = self.load_data(self.G,loadobj=True)
         self.G.seek(0)
-        gg = G.select(name='Total Precipitation')[0]
+        gg = self.G.select(name='Total Precipitation')[0]
         return gg
 
     def load_accum(self):
@@ -102,11 +111,12 @@ class StageIV(GribFile,Obs):
     def check_quality(self,arr):
         """ Probably needs better logic than this. TODO.
         """
-        if arr == arr[0,0]:
-            return False
-        return True
+        if arr.ndim == 4:
+            arr = arr[0,0,:,:]
 
-    def return_array(self,check=True):
+        return not arr.all() == arr[0,0]
+
+    def return_array(self,):
         """ 
         Return the (masked) array.
 
@@ -116,10 +126,6 @@ class StageIV(GribFile,Obs):
         gg = self.load_gribpart()
         arr = gg.values
 
-        if check:
-            OK = self.check_quality(arr)
-            if not OK:
-                raise Exception("These data are rubbish.")
         return arr
 
     def return_point(self,lat,lon):
@@ -190,8 +196,7 @@ class StageIV(GribFile,Obs):
     def plot(self,data=None,outdir=False,fig=False,ax=False,fname=False,
                     # Nlim=False, Elim=False, Slim=False,Wlim=False,
                     cb=True,drawcounties=False,save='auto',
-                    lats=None,lons=None,proj='merc',
-                    utc=None):
+                    lats=None,lons=None,proj='merc',):
         """ Plot data.
 
         Todo:
@@ -209,8 +214,7 @@ class StageIV(GribFile,Obs):
             # if not given, try to use self's
 
         if data == None:
-            assert utc is not None
-            data = self.get(utc=utc)
+            data = self.get()
         # data = getattr(self,'data',data)
         if lats == None:
             lats = self.lats 
@@ -224,7 +228,7 @@ class StageIV(GribFile,Obs):
         clvs = None
 
         if not fname:
-            tstr = utils.string_from_time('output',utc)
+            tstr = utils.string_from_time('output',self.utc)
             fname = 'verif_ST4_{0}.png'.format(tstr)
         F = BirdsEye(fig=fig,ax=ax,proj=proj)
         if cb:

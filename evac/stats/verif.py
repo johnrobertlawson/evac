@@ -30,7 +30,11 @@ Note:
         * Plot may also compare multiple times/domains, with averages
         * Hence having lots of little .npy data files is good
 
+    User can run Verif in a mode that takes no ensemble forecast argument,
+        but instead loads data saved to disc.
+
 Todo:
+    * Is this even essential? A lot of rewriting signatures to pass into functions
     * Order methods so interface comes top.
     * Create Fields() class like create_newgrid(), and attach to all obs,
         ensemble, wrfout classes as an attribute.
@@ -57,10 +61,12 @@ import time
 
 import numpy as N
 
+from evac.stats.objectbased import ObjectBased
 from evac.plot.thumbnails import ThumbNails
 from evac.plot.linegraph import LineGraph
 from evac.plot.boxplot import BoxPlot
 from evac.plot.violinplot import ViolinPlot
+from evac.plot.histogram import Histogram
 from evac.stats.detscores import DetScores
 from evac.stats.probscores import ProbScores
 from evac.plot.scorecard import ScoreCard
@@ -119,9 +125,11 @@ class Verif:
     """
 
 
-    def __init__(self,ensemble,obs,outdir=False,datadir=False,
+    def __init__(self,ensemble=None,obs=None,outdir=False,datadir=False,
                     reproject_dict=None):
         self.E = ensemble
+        if self.E:
+            self.validtimes = self.E.validtimes
 
         # A tuple of obs objects, or just one.
         # So a bunch of Radar objects for different times is no problem,
@@ -141,7 +149,9 @@ class Verif:
 
         # Might attach self.E attributes such as times and member 
         # names to the class instance?
-        self.initutc = self.E.initutc
+        if self.E is not None:
+            self.initutc = self.E.initutc
+            self.nmems = self.E.nmems
 
         # NOT IMPLEMENTED
         # self.fcst_times = {d:E.times(dom=d) for d in self.doms}
@@ -157,15 +167,16 @@ class Verif:
         self.arbdict = self.make_arbdict()
 
         # lats and lons for each domain
-        self.lats = {}
-        self.lons = {}
-        for dom in self.doms:
-            self.lats[dom],self.lons[dom] = self.E.get_latlons(dom=dom)
+        if self.E is not None:
+            self.lats = {}
+            self.lons = {}
+            for dom in self.doms:
+                self.lats[dom],self.lons[dom] = self.E.get_latlons(dom=dom)
 
-        # Reprojection - define a new domain to reproject to
-        # Check all settings are in reproject_dict?
-        self.RD = reproject_dict
-        self.newgrid = self.create_newgrid()
+            # Reprojection - define a new domain to reproject to
+            # Check all settings are in reproject_dict?
+            self.RD = reproject_dict
+            self.newgrid = self.create_newgrid()
 
         # Look up stats methods here
         self._STATS = self.generate_lookup_table()
@@ -243,13 +254,13 @@ class Verif:
 
                     # get_ob_data
                     utc = self.lookup_validtime(fchr)
-                    obobj,obname = self.get_ob_instance(vrbl,return_name=True)
+                    obobj, obname = self.get_ob_instance(vrbl,return_name=True)
                     obdata = self.reduce_data_dims(obobj.get(utc,lv=lv))
 
                     # One parallel loop (async it)
                     # try to load reproject
                     exists,rpj_fpath_f = self.check_for_reproj(vrbl=vrbl,model='fcst',lv=lv,fchr=fchr,
-                                            dom=dom,ens='all',return_fpath=True)
+                                            dom=dom,ens='all',return_fpath=True,)
                     if not exists:
                         # reproject if not, PARALLEL, and save
                         flats, flons = self.E.get_latlons(dom=dom)
@@ -263,7 +274,7 @@ class Verif:
                         xfs = N.load(rpj_fpath_f)
 
                     exists, rpj_fpath_o = self.check_for_reproj(vrbl=vrbl,model=obname,lv=lv,utc=utc,
-                                            dom=None,ens=None,return_fpath=True)
+                                            dom=None,ens=None,return_fpath=True,)
                     if not exists:
                         oblats = obobj.lats
                         oblons = obobj.lons
@@ -274,7 +285,7 @@ class Verif:
                     # Next parallel loop
                     # Run statfunc and exit
 
-                    kw = dict(xfs=xfs,xa=xa,vrbl=vrbl,lv=lv,fchr=fchr,dom=dom)
+                    kw = dict(xfs=xfs,xa=xa,vrbl=vrbl,lv=lv,fchr=fchr,dom=dom,)
                     # self.pool.apply_async(statfunc,args=chunk,kwargs=kw)
                     statfunc(**kw)
             elif method == 2:
@@ -369,6 +380,148 @@ class Verif:
         self.save_npy(crps,vrbl,'CRPS',lv=lv,fchr=fchr,dom=dom,ens='mean',fpath=fpath)
         return
 
+    def compute_objectbased(self,vrbl1,vrbl2,fchrs='all',doms='all',lvs=None,
+                                thresh='auto',footprint=500,suite=None,
+                                obs_only=False,fcst_only=False,quickplot=False,
+                                dx=None):
+        """ Compute stats related to object-based scores.
+
+        The procedure is:
+            * Load arrays for all domains
+            * Create ObjectBased instances
+            * Pass these into SAL etc
+            * Run other stats
+
+        Args:
+            suite (str): "SAL", etc
+            vrbl (str): variable to identify objects 
+            vrbl2 (str): variable for diagnostics
+            fchrs: forecast hours to compute.
+            footprint: in pixels if dx is None. If dx is used, 
+                this is in km instead.
+        """
+        if doms == 'all':
+            doms = self.doms
+        ndoms = len(doms)
+
+        if dx is None:
+            fp = [footprint for d in doms]
+        else:
+            assert isinstance(dx,(tuple,list,N.ndarray))
+            # dx = N.array(dx)
+            fp_multi = [dx[0] * (dx[0]/dx[n])**2 for n in range(ndoms)]
+            # fp = [footprint*((dx[0]/dx[n])**2)*dx[n] for n in range(ndoms)]
+            fp = footprint * N.array(fp_multi)
+
+        # if fchrs == 'all':
+            # verif_times = 'all'
+        # else:
+            # verif_times = 
+            # This needs computing - convert fchrs to datetimes.
+
+        # pdb.set_trace()
+        limdict = self.E.get_limits(dom=2)
+        lats, lons = self.E.get_latlons(dom=1)
+
+        def get_objects(all_objects,limdict,lats,lons):
+            vrbl1_all = self.E.get(vrbl2,fcsthr=fchr,dom=dom,level=lv,members=member)[0,0,0,:,:]
+            vrbl2_all = self.E.get(vrbl2,fcsthr=fchr,dom=dom,level=lv,members=member)[0,0,:,:,:]
+
+            if dom == 1:
+                vrbl1_arr, la_,lo_ = utils.return_subdomain(data=vrbl1_all,
+                                        lats=lats,lons=lons,**limdict)
+                vrbl2_arr, la_,lo_ = utils.return_subdomain(data=vrbl2_all,
+                                        lats=lats,lons=lons,**limdict,)#axes=(1,2))
+            else:
+                vrbl1_arr = vrbl1_all
+                vrbl2_arr = vrbl2_all
+                la_ = None
+                lo_ = None
+
+            Obj = ObjectBased(vrbl1_arr,thresh=thresh,footprint=fp[ndom])
+            uarr,_udict = Obj.get_updraughts(arr=vrbl2_arr)
+            # pdb.set_trace()
+            all_objects = N.hstack((all_objects,uarr))
+            print("We found {} objects.".format(len(uarr)))
+            return all_objects, Obj, la_, lo_
+
+        verif_times = fchrs
+        for ndom,dom in enumerate(self.doms):
+            itr = self.create_stats_iterable(vrbl1,verif_times,doms=(dom,),lvs=lvs,first_time=False)
+            all_objects = N.empty([0])
+            for fchr,dom,lv,vrbl1 in itr:
+                for member in self.E.member_names:
+                    all_objects, Obj, la_, lo_ = get_objects(all_objects,limdict,lats,lons)
+
+                    if quickplot and (member == self.E.member_names[0]):
+                        fcmin = int(60*fchr)
+                        W = self.E.return_datafile(member=member,dom=dom,utc=self.initutc)
+                        fname = 'test_objs_d{:02d}_{:03d}min_{}.png'.format(dom,fcmin,member)
+                        fpath = os.path.join(self.outdir,fname)
+                        if dom == 1:
+                            ld = limdict
+                            W = None
+                        else:
+                            ld = dict()
+                        lats = la_
+                        lons = lo_
+                        try:
+                            Obj.plot(W=W,fpath=fpath,ld=ld,lats=lats,lons=lons)
+                        except ValueError:
+                            print("Skipping this time.")
+                            continue
+                        except IndexError:
+                            print("No objects for this time.")
+                            continue
+                        # pdb.set_trace()
+            fpath = self.generate_npy_fname(vrbl1,'object_{}_array'.format(vrbl2),
+                                lv=None,fchr='all',
+                                dom=dom,ens='all',fullpath=True,)
+            print("Saving array to {}".format(fpath))
+            utils.trycreate(fpath)
+            N.save(arr=all_objects,file=fpath)
+
+        return
+
+    def plot_object_pdfs(self,vrbl1,vrbl2,fname=False,doms=(1,2)):
+        """ Plot histograms of object diagnostics.
+        """
+        if not fname:
+            fname = 'test_hist.png'
+
+        # Load data
+        arrs = []
+        labels = list()
+        for dom in doms:
+            fpath = self.generate_npy_fname(vrbl1,'object_{}_array'.format(vrbl2),
+                            lv=None,fchr='all',
+                            dom=dom,ens='all',fullpath=True,)
+            arr = self.load_data(fpath)
+            arrs.append(arr)
+            labels.append("Domain {}".format(dom))
+
+
+        # pdb.set_trace()
+        # Plot two domains cdf
+        H = Histogram(fpath=os.path.join(self.outdir,fname),
+                        data=arrs)
+        H.plot(labels=labels)
+
+        return
+
+    def compute_pdf_stats(self,vrbl1,vrbl2,dom=1):
+        """ Compute stats on pdf distributions of objects.
+        """
+
+        # Load data
+        fpath = self.generate_npy_fname(vrbl1,'object_{}_array'.format(vrbl2),
+                        lv=None,fchr='all',
+                        dom=dom,ens='all',fullpath=True,)
+        arr = self.load_data(fpath)
+
+        # Run CRPS over pdf/cdfs.
+
+        pass
 
     def compute_crps(self,itr):
         fchr,dom,lv,vrbl = itr
@@ -452,7 +605,7 @@ class Verif:
                         print("initutc {}, dom {}, thresh {} = {}".format(self.initutc,
                                                     dom,thresh,scores['BIAS']))
                         # time.sleep(1)
-                        pdb.set_trace()
+                        # pdb.set_trace()
                     print("Skipping; scores exist for",fpath)
         return
 
@@ -463,8 +616,7 @@ class Verif:
         """
         pass
     
-    @classmethod
-    def plot_trails(cls,init_dict,score,vrbl,doms,interval=1,
+    def plot_trails(self,init_dict,score,vrbl,doms,interval=1,
                     use_hours=True,lv='sfc',ens='all',loop_prefix=None,
                     loop_suffix=None,mplargs=None,mplkwargs=None,
                     plotargs=None,plotkwargs=None,
@@ -506,11 +658,11 @@ class Verif:
                 for nt,t in enumerate(validtimes):
                     # Loops here for suffix, prefix
                     # TODO: npz extension and score extraction...
-                    fname = cls.generate_npy_fname(cls,vrbl=vrbl,score=score,lv=lv,fchr=t,
+                    fname = self.generate_npy_fname(self,vrbl=vrbl,score=score,lv=lv,fchr=t,
                                 dom=dom,ens=ens,fullpath=False,npy_extension=True)
                                 # dom=dom,ens=ens,fullpath=False,suffix=thstr,npy_extension=False)
                     fpath = os.path.join(rootdir,fname)
-                    data[nt] = cls.load_data(fpath)
+                    data[nt] = self.load_data(fpath)
                 plotkwargs['color'] = COLORS[ninit][ndom]
                 # LG.plot_score(xdata=actualtimes,ydata=data,hold=True,mplkwargs=mplkwargs)
                 LG.plot_score(use_plot_date=True,xdata=actualtimes,
@@ -522,8 +674,7 @@ class Verif:
         LG.save()
         pdb.set_trace()
 
-    @classmethod
-    def plot_stats(cls,plot,
+    def plot_stats(self,plot,
                     # init_dict,score,vrbl,
                     ndoms=1,outdir='./',
                     # interval=1,
@@ -544,23 +695,27 @@ class Verif:
         if not plotkwargs:
             plotkwargs = {}
         doms = N.arange(1,ndoms+1)
-        plotfunc = cls.lookup_plotfunc(plot)
+        plotfunc = self.lookup_plotfunc(plot)
         plotfunc(doms=doms,outdir=outdir,
                     mplargs=mplargs,mplkwargs=mplkwargs,
                     plotargs=plotargs,plotkwargs=plotkwargs,
                     *args,**kwargs)
 
-    @classmethod
-    def lookup_plotfunc(cls,plot):
+    def lookup_plotfunc(self,plot):
         STATFUNCS = {}
-        STATFUNCS['trails'] = cls.plot_trails
-        STATFUNCS['violin'] = cls.plot_violin
+        STATFUNCS['trails'] = self.plot_trails
+        STATFUNCS['violin'] = self.plot_violin
+        STATFUNCS['boxplot'] = self.plot_boxplot
 
         plot = plot.lower()
         return STATFUNCS[plot]
 
-    @classmethod
-    def plot_violin(cls,outdir,
+    def plot_boxplot(self,outdir):
+        """ TODO: implement this.
+        """
+        raise Exception
+
+    def plot_violin(self,outdir,
                     init_dict,score,vrbl,doms,
                     interval=1, use_hours=True,lv='sfc',ens='all',
                     loop_prefix=None,loop_suffix=None,
@@ -589,12 +744,12 @@ class Verif:
                 for nd,dom in enumerate(doms):
                     data[initutc][t][dom] = []
                     for ne,ens in enumerate(N.arange(1,nens+1)):
-                        fname = cls.generate_npy_fname(cls,vrbl=vrbl,score='contingency',
+                        fname = self.generate_npy_fname(vrbl=vrbl,score='contingency',
                                             lv=lv,fchr=t,dom=dom,ens='m{:02d}'.format(ens),
                                             fullpath=False,npy_extension='npz',
                                             suffix='{:02d}mmh'.format(thresh))
                         fpath = os.path.join(rootdir,fname)
-                        data[initutc][t][dom].append(cls.load_data(fpath)[score])
+                        data[initutc][t][dom].append(self.load_data(fpath)[score])
                     data[initutc][t][dom] = N.array(data[initutc][t][dom])
 
         # Group ensemble members together?
@@ -621,8 +776,6 @@ class Verif:
 
         # if score == 'CSI':
             # pdb.set_trace()
-
-        
 
     def plot_thumbnails(self,vrbl,radardir=None,ensmembers='all',fchrs='all',
                         doms='all',limdict='auto',outdir=None,fname='auto',
@@ -801,7 +954,8 @@ class Verif:
         return clskwargs,plotkwargs,mplkwargs
             
 
-    def _set_default(self,x,if_none,action=1):
+    @staticmethod
+    def _set_default(x,if_none,action=1):
         """ Default naming for fname generation methods.
         """
         if x == None:
@@ -833,12 +987,14 @@ class Verif:
         """ Wrapper for generate fname.
         """
         kwargs['npy_extension'] = kwargs.get('npy_extension',True)
+        kwargs['datadir'] = self.datadir
         f = self.generate_fname(*args,**kwargs)
         return f
 
-    def generate_fname(self,vrbl=None,score=None,lv=None,fchr=None,utc=None,
+    @classmethod
+    def generate_fname(cls,vrbl=None,score=None,lv=None,fchr=None,utc=None,
                             dom=None,ens=None,fullpath=False,prefix=None,
-                            suffix=None,npy_extension=False):
+                            suffix=None,npy_extension=False,datadir=None):
         """ Save to disc with a naming scheme.
 
         A separate directory per init time (Ensemble instance) is
@@ -862,17 +1018,17 @@ class Verif:
 
         vrblstr = vrbl
         scorestr = score
-        lvstr = self._set_default(lv,'sfc',)
+        lvstr = cls._set_default(lv,'sfc',)
         # lvstr = lv_str(lv)
         if utc:
             timestr = utils.string_from_time('output',utc)
         else:
             timestr = '{}h'.format(fchr)
-        domstr = self._set_default(dom,if_none='',action='dom')
-        ensstr = self._set_default(ens,if_none='',)
+        domstr = cls._set_default(dom,if_none='',action='dom')
+        ensstr = cls._set_default(ens,if_none='',)
         
-        prefixstr = self._set_default(prefix,if_none='',)
-        suffixstr = self._set_default(suffix,if_none='',)
+        prefixstr = cls._set_default(prefix,if_none='',)
+        suffixstr = cls._set_default(suffix,if_none='',)
 
         joinlist = [vrblstr,scorestr,domstr,lvstr,timestr,ensstr] 
         if suffix:
@@ -893,7 +1049,7 @@ class Verif:
             fname = fname + ext
 
         if fullpath:
-            return os.path.join(self.datadir,fname)
+            return os.path.join(datadir,fname)
         else:
             return fname
 
@@ -956,6 +1112,8 @@ class Verif:
         Todo:
             * Make WRF_native_grid take objects or fpaths alike.
         """
+        if self.E is None:
+            return None
         arbdict = {}
         for dom in self.doms:
             arbdict[dom] = self.E.arbitrary_pick(dom=dom,
@@ -963,6 +1121,8 @@ class Verif:
         return arbdict
 
     def check_ensemble_domains(self):
+        if self.E is None:
+            return None, None
         # This should be a list of doms, not number.
         assert isinstance(self.E.doms,list)
         # doms should not be Python numbering~
@@ -988,7 +1148,8 @@ class Verif:
             return (a,)
 
 
-    def create_stats_iterable(self,vrbl,verif_times,doms,lvs):
+    def create_stats_iterable(self,vrbl,verif_times,doms,lvs='sfc',
+                                first_time=True):
         """ Generator for computing stats in parallel.
 
         Note:
@@ -996,6 +1157,14 @@ class Verif:
             * vrbl is always the same. Limiting complexity...
 
         """
+        if doms == 'all':
+            doms = self.doms
+        if verif_times == 'all':
+            verif_times = self.validtimes
+            if not first_time:
+                del verif_times[0]
+        if not isinstance(lvs,(N.ndarray,list,tuple)):
+            lvs = (lvs,)
         for t,d,l in itertools.product(verif_times,
                                     doms,lvs):
             yield t,d,l,vrbl
@@ -1101,9 +1270,8 @@ class Verif:
         print("Saved data to {}".format(fpath))
         return
 
-
     def naming_for_reproj(self,vrbl,model,lv,utc=None,fchr=None,dom=None,
-                            ens=None,fullpath=True):
+                            ens=None,fullpath=True,):
         # utcstr = utils.string_from_time('output',utc,strlen='minute')
         fpath = self.generate_npy_fname(vrbl=vrbl,score=model,lv=lv,utc=utc,
                                         dom=dom,ens=ens,fullpath=fullpath,fchr=fchr,
@@ -1111,7 +1279,8 @@ class Verif:
         return fpath
     
     def check_for_reproj(self,vrbl,model,lv,utc=None,fchr=None,
-                        dom=None,ens=None,return_fpath=False):
+                        dom=None,ens=None,return_fpath=False,
+                        datadir=None):
         """ Check saved data exists.
         """
         fpath = self.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,fchr=fchr,
@@ -1127,10 +1296,11 @@ class Verif:
         else:
             return ans
 
-    def save_reproj(self,data,vrbl=None,model=None,lv=None,utc=None,
+    @classmethod
+    def save_reproj(cls,data,vrbl=None,model=None,lv=None,utc=None,
                         dom=None,ens=None,fpath=None):
         if not fpath:
-            fpath = self.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,
+            fpath = cls.naming_for_reproj(vrbl=vrbl,model=model,lv=lv,utc=utc,
                                         dom=dom,ens=ens,fullpath=True,)
         utils.trycreate(fpath)
         N.save(fpath,data)

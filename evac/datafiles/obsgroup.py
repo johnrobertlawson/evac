@@ -7,6 +7,7 @@ get() methods work.
 import pdb
 import os
 import glob
+import random
 
 # import numpy as N
 
@@ -14,6 +15,7 @@ import glob
 from evac.datafiles.stageiv import StageIV
 from evac.datafiles.radar import Radar
 from evac.datafiles.obs import Obs
+import evac.utils as utils
 
 class ObsGroup:
     """ A group of observation data files.
@@ -70,6 +72,9 @@ class ObsGroup:
 
         # A dictionary catalogue of all obs files/instances
         self.catalogue = self.fill_catalogue(obs_type)
+
+        # Assume lats/lons are constant for all files within catalogue
+        self.lats, self.lons = self.get_latlons()
 
     @staticmethod
     def return_instances():
@@ -132,6 +137,9 @@ class ObsGroup:
         fs = glob.glob(os.path.join(self.fdir,globpattern))
 
         self.instance = self.lookup_instance()
+
+
+        # TODO: merge this logic!!!
         if obs_type == 'stageiv':
             
             for h in self.hlist:
@@ -155,14 +163,15 @@ class ObsGroup:
         elif obs_type == 'radar':
             # pdb.set_trace()
             for f in fs:
-                utc = self.instance.date_from_fname(f)
+                utc = self.instance.date_from_fname(f=f)
+                self.utcs.add(utc)
                 self.catalogue[utc] = {'fpath':f}
                 if self.load_objects:
                     self.catalogue[utc]['loadobj'] = self.instance(f)
 
         return self.catalogue
 
-    def catalogue_get(self,utc,auto_download=True,accum_hr=None):
+    def catalogue_get(self,utc,auto_download=True,accum_hr=None,load_object=True):
                     #,loadobj=False):
         """ Load instance from catalogue.
 
@@ -170,7 +179,7 @@ class ObsGroup:
         """
         if (accum_hr == None) and (self.obs_type == 'stageiv'):
             if len(self.hlist) == 1:
-                accum_hr = hlist[0]
+                accum_hr = self.hlist[0]
             else:
                 raise Exception("Specify a single accum_hr that is needed.")
 
@@ -178,7 +187,7 @@ class ObsGroup:
             self.catalogue[utc]
         except KeyError:
             if auto_download:
-                self.catalogue[utc] = {'loadobj':self.instance(utc,self.fdir)}
+                self.catalogue[utc] = {'loadobj':self.instance(utc=utc,fpath=self.fdir)}
                 self.catalogue[utc]['fpath'] = self.catalogue[utc]['loadobj'].fpath
             else:
                 assert 1==0
@@ -186,9 +195,13 @@ class ObsGroup:
             ob = self.catalogue[utc]
 
         if self.obs_type == 'stageiv':
-            return ob[accum_hr]
-        return self.instance(utc,ob['fpath'])
-        
+            fpath = ob[accum_hr]['fpath']
+        else:
+            fpath = ob['fpath']
+
+        if load_object:
+            return self.instance(utc=utc,fpath=fpath)
+        return fpath
 
     def return_st4_accumlist(self,):
         hlist = []
@@ -205,17 +218,19 @@ class ObsGroup:
         data = ob.get(*args,**kwargs)
         if self.return_subdomain:
             data = ob.get_subdomain(data=data,**self.limdict)
+        return data
 
+    def get_latlons(self):
+        arb = self.arbitrary_pick(load_object=True)
+        return arb.lats, arb.lons
         
     def arbitrary_pick(self,load_object=False):
         """ 
         Todo:
             * How to make this arbitrary lookup general to any data type?
         """
-        raise Exception("Not implemented.")
-        # arb_f = self.catalogue[self.utcs[0])
-        # if load_object:
-            # self.instance(arb_f)
+        utc_arb = utils.get_random(self.utcs)
+        return self.catalogue_get(utc_arb,load_object=load_object)
             
     def set_subdomain(self,Nlim,Elim,Slim,Wlim,enable=True):
         """ Set limited domain. Whenever get is called, cut down domain.

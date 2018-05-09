@@ -17,6 +17,7 @@ import glob
 import pickle
 import datetime
 import heapq
+import random
 
 import xarray
 import matplotlib as M
@@ -1200,16 +1201,16 @@ def load_data(folder,fname,format='pickle'):
 
 
 def return_subdomain(data,lats,lons,Nlim,Elim,Slim,Wlim,
-                        fmt='latlon'):
+                        fmt='latlon',axes=False):
     """
     Returns smaller domain of data and lats/lons based
     on specified limits.
     """
     # TODO - might need changing
-    # if lats.ndim == 2:
-        # lats = lats[:,0]
-    # if lons.ndim == 2:
-        # lons = lons[0,:]
+    if lats.ndim == 2:
+        lats = lats[:,0]
+    if lons.ndim == 2:
+        lons = lons[0,:]
 
     Nidx = closest(lats,Nlim)
     Eidx = closest(lons,Elim)
@@ -1244,7 +1245,7 @@ def return_subdomain(data,lats,lons,Nlim,Elim,Slim,Wlim,
     # data = data[Nidx:Sidx+1,Widx:Eidx+1]
     # pdb.set_trace()
 
-    data = data[xmin:xmax+1,ymin:ymax+1]
+    data = data[...,xmin:xmax+1,ymin:ymax+1]
 
     if Nidx<Sidx:
         lats = lats[Nidx:Sidx+1]
@@ -1439,3 +1440,28 @@ def hr_to_sec(hr,fmt=int):
     """
     sec = hr * 3600
     return fmt(sec)
+
+def get_random(seq,unique=False):
+    """ Pick random member from a collection or sequence.
+
+    Note:
+        As a set is unique, there is an equal chance of picking each.
+            The rest are not, so the chance of picking a given value
+            is proportional to its frequency, unless unique is set.
+        Also note this method is a lot slower than just converting to
+            a list and choosing the first element, if an arbirary
+            pick is needed rather than random each time.
+
+    Args:
+        seq (list, tuple, set, N.ndarray): pick from this.
+        unique (bool): if True, pick random from unique values only.
+    """
+    og_seq_type = type(seq)
+    if isinstance(seq,N.ndarray):
+        seq = list(seq.flatten())
+    if unique:
+        seq = set(seq)
+    if len(seq) == 0:
+        raise Exception("The {} specified for seq is empty.".format(og_seq_type))
+    return random.sample(seq,1)[0]
+
