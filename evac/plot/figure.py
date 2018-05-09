@@ -382,6 +382,7 @@ class Figure:
 
     def __exit__(self):
         self.hold = False
-        print("Figure is saved.")
+        print("Figure is saved. Closing.")
         self.save()
+        self.plt.close(fig)
         pass
