@@ -8,11 +8,12 @@ from mpl_toolkits.basemap import Basemap
 
 import evac.utils as utils
 from evac.plot.scales import Scales
+from evac.plot.colorbar import ColorBar
 
 class Figure:
     """ Parent class for creating a matplotlib figure.
 
-    This will use basemap or cartopy for images.
+    Allows geographical plotting with cartopy.
 
     Args:
         ax: optional matplotlib.axes instance
@@ -25,12 +26,15 @@ class Figure:
             initiation of figure canvas, e.g., DPI.
     """
     def __init__(self,fpath,ax=None,fig=None,nrow=1,ncol=1,
-                    figsize=(8,6),initkwargs=None):
+                    figsize=(8,6),initkwargs=None,proj=None):
         self.fpath = fpath
 
         if initkwargs is None:
             initkwargs = dict()
         
+        if proj:
+            initkwargs['subplot_kw'] = dict(projection=proj)
+
         if not ax and not fig:
             self.fig, self.ax = plt.subplots(nrow=nrow,ncol=ncol,
                                     figsize=figsize,**initkwargs)
@@ -38,6 +42,7 @@ class Figure:
             assert fig
             self.ax = ax
             self.fig = fig
+
 
     @classmethod
     def create_fname(cls,*naming,joiner='_',append_ext=True,
@@ -81,13 +86,11 @@ class Figure:
             plt.close(self.fig)
         return
 
-    def just_one_colorbar(self,cb_fpath,cf,label=False,ticks=False):
+    @staticmethod
+    def just_one_colorbar(cb_fpath,cf,label=False,ticks=False):
         """ Create one colorbar separately.
 
         Useful for when manually creating subplots for papers etc.
-        
-        Todo:
-            * Move to separate class, ColorBar(Figure).
 
         Args:
             cb_fpath: absolute path to look for, or create,
@@ -97,25 +100,7 @@ class Figure:
             ticks: if True, set custom ticks.
         """
         if not os,path.exists(cb_fpath):
-            self.create_colorbar(cb_fpath,cf,labels=labels,ticks=ticks)
+            CB = ColorBar(cb_fpath)
+            CB.plot(cf=cf,labels=labels,ticks=ticks)
         return
 
-    def create_colorbar(self,cb_fpath,cf,label=None,ticks=False):
-        """ Create colorbar.
-
-        Todo:
-            * Move to ColorBar(Figure)
-
-        Inputs:
-        fpath   :   path to file
-        fname   :   filename
-        cf      :   contour filling for legend
-        label   :   colorbar label
-
-        """
-        fig = plt.figure()
-        CBax = fig.add_axes([0.15,0.05,0.7,0.02])
-        CB = plt.colorbar(cf,cax=CBax,orientation='horizontal',ticks=tix)
-        CB.set_label(label)
-        fig.savefig(cb_fpath,tight=False)
-        return

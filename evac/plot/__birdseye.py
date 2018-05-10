@@ -7,7 +7,6 @@ import matplotlib as M
 M.use('Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
-import cartopy.crs as ccrs
 import numpy as N
 
 from evac.datafiles.wrfout import WRFOut
@@ -20,6 +19,8 @@ class BirdsEye(Figure):
     """ Top-down 2D plots.
 
     Todo:
+        * multiple plots on same figure - like a 'hold' - maybe by
+            using set and get decorators. Or stopping save/close.
         * Massive rewrite with cartopy, now basemap is depreciated.
         * Move most options to mplkwargs (e.g. cmap, levels).
 
@@ -28,8 +29,9 @@ class BirdsEye(Figure):
             will be created in the instance (via parent class 
             :class:`~evac.plot.figure.Figure`.
         ideal (bool): If True, options for an idealised plot will be used.
-            For example, no lat/lon, geography data.
-        grid: instance of Grid to assist cartopy setup.
+            For example, no lat/lon.
+        proj (str,bool): If `str`, such as `'merc'`, this will set the 
+            instance's plotting projection.
         mplargs, mplkwargs: Arguments to pass to matplotlib.
 
     Returns:
@@ -37,76 +39,95 @@ class BirdsEye(Figure):
             existing figure).
     """
 
-    def __init__(self,fpath,ax=None,fig=None,ideal=False,grid=None,proj=None):
-        ccrs_proj = grid.get_cartopy_proj(proj)
-        super().__init__(fpath=fpath,ax=ax,fig=fig,proj=ccrs_proj)
+    def __init__(self,ax=None,fig=None,ideal=False,proj='merc',
+                 mplargs=[],mplkwargs={},):#W=None):
+        """ Setting ideal to True removes the geography (e.g. for idealised
+        plots)
+        """
+        self.proj = proj
         self.ideal = ideal
 
-    def plot2D(self,data,plottype='contourf',locations=False,
-                    save=True,smooth=1,title=False,cb=True,
-                    # lats=False,lons=False,m=False,x=None,y=None,
-                    # Nlim=False,Elim=False,Slim=False,Wlim=False,
-                    # nx=None,ny=None,cen_lat=None,cen_lon=None,
-                    # lat_ts=None,W=None,
-                    inline=False,cblabel=False,ideal=False,
-                    drawcounties=False,mplkwargs=None,
-                    extend=False,hold=False,cmap=None,
-                    # color='k',
-                    ):
+        super(BirdsEye,self).__init__(ax=ax,fig=fig,mplargs=mplargs,
+                                      mplkwargs=mplkwargs)
+
+    def plot2D(self,data,fname=False,outdir=False,plottype='contourf',
+                    save=True,smooth=1,lats=False,lons=False,
+                    clvs=None,cmap=None,title=False,cb=True,
+                    locations=False,m=False,x=None,y=None,
+                    Nlim=False,Elim=False,Slim=False,Wlim=False,
+                    color='k',inline=False,cblabel=False,ideal=False,
+                    drawcounties=False,mplargs=[],mplkwargs={},
+                    extend=False,nx=None,ny=None,cen_lat=None,cen_lon=None,
+                    lat_ts=None,W=None,hold=False):
 
         """
         Generic method that plots any matrix of data on a map
 
-        Notes:
-            mplkwargs settings include:
-                * levels sets contour levels
-                * cmap sets colormap
-                * color sets plot line colours
+        Inputs:
+        data        :   2D matrix of data
+        outdir      :   path to plots
+        outf        :   filename for output (with or without .png)
 
-        Todo:
-            * just_one_colorbar integration
+        Optional:
+        plottype    :   matplotlib function for plotting
+        smooth      :   Gaussian smooth by this many grid spaces
+        clvs        :   scale for contours
+        title       :   title on plot
+        save        :   whether to save to file
 
-        Args:
-            data: 2D matrix of data
-            plottype (str): matplotlib function for plotting
-            smooth (int): Gaussian smooth by this many grid spaces
-            title (str): title on plot
-            save (bool): whether to save to file
-            locations: plot locations on map. Format is {'label':(lat,lon)}.
-            cb (bool,str): if True, plot colorbar. If string, this
-                should be an absolute path to plot one cb separately
-            cblabel (str): label for colorbar
-            ideal (bool): if True, plot without looking for geographical data
-            drawcounties (bool): if True, plot US counties on map
-            mplkwargs (dict): dictionary of keyword arguments to pass
-                to plotting method
-
+        :param locations:       Locations to plot on the basemap.
+                                Format: locations = {'label':(lat,lon),etc}
+        :type locations:        dict
         """
         if isinstance(cmap,str):
-            if hasattr(mplkwargs,'cmap'):
-                raise Exception("Two different cmap arguments given.")
             cmap = M.cm.get_cmap(cmap)
         save = getattr(self,'save_opt',save)
         hold = getattr(self,'hold_opt',hold)
-
+        if plottype not in ("pcolor","pcolormesh"):
+            mplkwargs['levels'] = clvs
+        mplkwargs['cmap'] = cmap
+        # WRFOut instance for help plotting.
+        self.W = W
+        if save:
+            assert (fname is not False) and (outdir is not False)
+        # INITIALISE
         self.data = data
-
-        # if idealised, don't use geographical map
+        if self.ideal:
+            ideal = True
         if ideal:
             self.bmap = self.ax
             # pdb.set_trace()
             self.y = N.arange(len(data[:,0]))
             self.x = N.arange(len(data[0,:]))
 
+        # Can all this be moved into Figure() or whatever?
+    # def basemap_from_newgrid(self,Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
+                    # lat_ts=None,resolution='i',nx=None,ny=None,
+                    # tlat1=30.0,tlat2=60.0,cen_lat=None,cen_lon=None,
+                    # lllon=None,lllat=None,urlat=None,urlon=None,
+                    # drawcounties=False):
+        # self.basemap_from_newgrid(Nlim=Nlim,Elim=Elim,Slim=Slim,Wlim=Wlim,xx=x,yy=y,
+                                # drawcounties=drawcounties,nx=nx,ny=ny,lons=lons,lats=lats,
+                                # lat_ts=lat_ts)
+
+        elif (not x) and (not y):
+            if (not m):
+                if not Nlim:
+                    self.bmap,self.x,self.y = self.basemap_setup(smooth=smooth,lats=lats,
+                                                        lons=lons,drawcounties=drawcounties)#ax=self.ax)
+                else:
+                    self.bmap,self.x,self.y = self.basemap_setup(smooth=smooth,lats=lats,
+                                                        lons=lons,Nlim=Nlim,Elim=Elim,
+                                                        Slim=Slim,Wlim=Wlim,drawcounties=drawcounties)
+
+            else:
+                self.bmap = m
+                self.x, self.y = self.bmap(lons,lats)
+
         else:
-            
-
-        mplkwargs['X'] = self.x
-        mplkwargs['Y'] = self.y
-        mplkwargs['Z'] = self.data
-
-
-
+            self.bmap = m
+            self.x = x
+            self.y = y
 
         mplargs = [self.x,self.y,self.data,] + mplargs
 
