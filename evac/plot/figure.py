@@ -104,3 +104,22 @@ class Figure:
             CB.plot(cf=cf,labels=labels,ticks=ticks)
         return
 
+    
+    def __enter__(self):
+        """ Set up the `with` block compatibility.
+        """
+        self.hold_opt = True
+        self.save_opt = False
+        print("Hold is on. Start plotting.")
+        return self
+
+    def __exit__(self,*args):
+        """ 
+        Todo:
+            * Don't save if error?
+        """
+        self.hold_opt = False
+        print("Figure is saved.")
+        self.save()
+        self.plt.close(fig)
+        pass
