@@ -72,7 +72,10 @@ class Ensemble:
 
         self.ndoms = ndoms
         self.doms = list(range(1,ndoms+1))
-        if f_prefix is 'default':
+
+        if ncf:
+            f_prefix = [ncf for d in self.doms]
+        elif f_prefix is 'default':
             f_prefix = ['wrfout_d{0:02d}'.format(d) for d in self.doms]
 
         self.debug = debug
@@ -85,9 +88,9 @@ class Ensemble:
         self.loadobj = loadobj
         self.aux = aux
         self.ncf = ncf
-
+# 
         self.isaux = True if isinstance(self.aux,dict) else False
-        if f_prefix is not None and len(f_prefix) is not self.ndoms:
+        if (f_prefix is not None) and (len(f_prefix) != self.ndoms):
             raise Exception("Length of main datafile prefixes must "
                                 "match number of domains.")
         self.isctrl = True if ctrl else False
@@ -158,7 +161,7 @@ class Ensemble:
         return members, fdt
 
 
-    def get_members(self,f_prefix=None):
+    def get_members(self,f_prefix=None,):
         """Create a dictionary with all data.
 
         Format is:
@@ -194,12 +197,9 @@ class Ensemble:
             # Each ensemble member has a domain
             for dirname,subdirs,files in os.walk(self.rootdir):
                 # If ensemble size = 1, there will be no subdirs.
+                matched_files = [f for f in files if f.startswith(f_prefix[domn])]
                 # pdb.set_trace()
-                if isinstance(f_prefix,str):
-                    files = [f for f in files if f.startswith(f_prefix)]
-                elif isinstance(f_prefix,(list,tuple)):
-                    files = [f for f in files if f.startswith(f_prefix[domn])]
-                if main_fname in files:
+                if main_fname in matched_files:
                     print("Found",main_fname,"in",dirname)
                     dsp =  dirname.split('/')
                     rsp = self.rootdir.split('/')
@@ -252,11 +252,11 @@ class Ensemble:
                         # Move to next time
                         if not self.ncf:
                             if fdt is None:
-                                if len(files) == 1:
+                                if len(matched_files) == 1:
                                     break
                                 else:
                                     # Loop through files and estimate dt based on fname
-                                    f1, f2 = sorted(files)[:2]
+                                    f1, f2 = sorted(matched_files)[:2]
                                     fdt = utils.dt_from_fnames(f1,f2,'wrf')
                             else:
                                 t = t + datetime.timedelta(seconds=fdt)

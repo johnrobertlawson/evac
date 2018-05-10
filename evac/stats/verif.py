@@ -619,8 +619,8 @@ class Verif:
     def plot_trails(self,init_dict,score,vrbl,doms,interval=1,
                     use_hours=True,lv='sfc',ens='all',loop_prefix=None,
                     loop_suffix=None,mplargs=None,mplkwargs=None,
-                    plotargs=None,plotkwargs=None,
-                    outdir='~/',fname='test.png'):
+                    plotargs=None,plotkwargs=None,outdir='~/',fname='test.png',
+                    by_leadtime=False):
         """ Plot stats for every x min for all domains.
 
         Args:
@@ -635,7 +635,9 @@ class Verif:
             ens: By default, this is 'all'
             loop_suffix, loop_prefix (bool): when set (list of strings),
                 script can loop over e.g. thresholds, etc
-        """ 
+            by_leadtime (bool): if True, plot all trails by leadtime
+                on the same axis.
+            """ 
         # TODO: make this just class variable doms
         COLORS = (('red','tomato'),
                     ('blue','slateblue'),

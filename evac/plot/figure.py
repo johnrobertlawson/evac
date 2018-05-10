@@ -394,11 +394,6 @@ class Figure:
         print("Hold is on. Start plotting.")
         return self
 
-<<<<<<< HEAD
-    def __exit__(self):
-        self.hold = False
-        print("Figure is saved. Closing.")
-=======
     def __exit__(self,*args):
         """ 
         Todo:
@@ -406,7 +401,6 @@ class Figure:
         """
         self.hold_opt = False
         print("Figure is saved.")
->>>>>>> 0038e63281b5522971d64e8775761a1477239daa
         self.save()
         self.plt.close(fig)
         pass
