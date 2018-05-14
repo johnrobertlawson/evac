@@ -126,7 +126,7 @@ class Verif:
 
 
     def __init__(self,ensemble=None,obs=None,outdir=False,datadir=False,
-                    reproject_dict=None):
+                    newgrid=None):
         self.E = ensemble
         if self.E:
             self.validtimes = self.E.validtimes
@@ -173,10 +173,7 @@ class Verif:
             for dom in self.doms:
                 self.lats[dom],self.lons[dom] = self.E.get_latlons(dom=dom)
 
-            # Reprojection - define a new domain to reproject to
-            # Check all settings are in reproject_dict?
-            self.RD = reproject_dict
-            self.newgrid = self.create_newgrid()
+        self.newgrid = newgrid
 
         # Look up stats methods here
         self._STATS = self.generate_lookup_table()
@@ -1065,33 +1062,6 @@ class Verif:
         """
         return self.E.initutc + datetime.timedelta(seconds=3600*fchr)
 
-
-    def create_newgrid(self):
-        """ Create neutral domain to reproject to.
-
-        Done by creating generic Fields.
-
-        Todo:
-            * Refactor so that user selects domain to interp. to?
-        """
-        # DATA is the WRFOut or obs object.
-
-        # Shouldn't all the obs/ensemble classes have a 
-        # Field class attribute with the info of
-        # x,y,lats,lons,bmapi,cen_lat,cen_lon,truelat1,
-        # truelat2, Nlim/urlat, Elim etc
-
-        # newgrid = Field(proj='lcc',...)
-
-        # For now we'll use something else.
-        # Make grid the smallest domain present.
-
-        self.ng_nx = self.RD['nx']
-        self.ng_ny = self.RD['ny']
-
-        W = WRF_native_grid(self.arbdict[max(self.doms)])
-        newgrid = VerifGrid(W,nx=self.RD['nx'],ny=self.RD['ny'])
-        return newgrid
 
     def get_arb(self,dom,fpath_only=False):
         """ 

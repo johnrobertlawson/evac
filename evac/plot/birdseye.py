@@ -39,7 +39,7 @@ class BirdsEye(Figure):
 
     def __init__(self,fpath,ax=None,fig=None,ideal=False,grid=None,proj=None):
         ccrs_proj = grid.get_cartopy_proj(proj)
-        super().__init__(fpath=fpath,ax=ax,fig=fig,proj=ccrs_proj)
+        super().__init__(fpath=fpath,ax=ax,fig=fig,proj=ccrs_proj,grid=grid)
         self.ideal = ideal
 
     def plot2D(self,data,plottype='contourf',locations=False,
@@ -51,6 +51,7 @@ class BirdsEye(Figure):
                     inline=False,cblabel=False,ideal=False,
                     drawcounties=False,mplkwargs=None,
                     extend=False,hold=False,cmap=None,
+                    lats=None,lons=None,
                     # color='k',
                     ):
 
@@ -99,51 +100,41 @@ class BirdsEye(Figure):
             self.x = N.arange(len(data[0,:]))
 
         else:
+            if lats is None:
+                assert self.grid is not None
+                self.lats2d, self.lons2d = N.meshgrid(self.grid.lats,self.grid.lons)
+            elif lats.ndim == 1:
+                self.lats2d, self.lons2d = N.meshgrid(lats,lons)
+            elif lats.ndim == 2:
+                self.lats2d = lats
+                self.lons2d = lons
+            else:
+                raise Exception("lats and lons not valid.")
             
 
         mplkwargs['X'] = self.x
         mplkwargs['Y'] = self.y
         mplkwargs['Z'] = self.data
 
-
-
-
-        mplargs = [self.x,self.y,self.data,] + mplargs
-
         # TODO: move this logic to other methods
         if plottype == 'contour':
-            mplkwargs['colors'] = color
-            mplkwargs['inline'] = inline
-            # This won't work in Python 3
-            # f1 = self.bmap.contour(*mplargs,**mplkwargs)
-            # Fixed:
-            f1 = self.bmap.contour(*mplargs,**mplkwargs)
-            # This is repeated below
-            
+            f1 = self.ax.contour(**mplkwargs)
             if inline:
                 plt.clabel(f1,inline=True,fmt='%d',color='black',fontsize=9)
         elif plottype == 'contourf':
-            if isinstance(extend,str):
-                mplkwargs['extend'] = extend
-            # f1 = self.bmap.contourf(*mplargs,**mplkwargs)
-            f1 = self.ax.contourf(*mplargs,**mplkwargs)
+            f1 = self.ax.contourf(**mplkwargs)
         elif plottype == 'pcolor':
-            # f1 = self.bmap.pcolor(*mplargs,**mplkwargs)
-            f1 = self.ax.pcolor(*mplargs,**mplkwargs)
+            f1 = self.ax.pcolor(**mplkwargs)
         elif plottype == 'pcolormesh':
-            # f1 = self.bmap.pcolormesh(*mplargs,**mplkwargs)
-            f1 = self.ax.pcolormesh(*mplargs,**mplkwargs)
+            f1 = self.ax.pcolormesh(**mplkwargs)
         elif plottype == 'scatter':
-            # f1 = self.bmap.scatter(*mplargs,**mplkwargs)
-            f1 = self.ax.scatter(*mplargs,**mplkwargs)
-        # elif plottype == 'quiver':
-            # f1 = self.bmap.quiver(*mplargs,**mplkwargs)
+            f1 = self.ax.scatter(**mplkwargs)
+        elif plottype == 'quiver':
+            f1 = self.bmap.quiver(**mplkwargs)
         else:
             print("Specify correct plot type.")
             raise Exception
 
-        if ideal:
-            self.ax.set_aspect('equal')
         if isinstance(locations,dict):
             self.plot_locations(locations)
         if isinstance(title,str):
@@ -165,8 +156,9 @@ class BirdsEye(Figure):
         if cb and isinstance(cblabel,str):
             cb1.set_label(cblabel)
         if save:
-            self.save(outdir,fname)
+            self.save()
             plt.close(self.fig)
+        return
 
     def plot_locations(self,locations):
         for k,v in locations.items():
@@ -180,15 +172,6 @@ class BirdsEye(Figure):
                 print("Not a valid location argument.")
                 raise Exception
         return
-
-    def do_contour_plot(self):
-        pass
-
-    def do_contourf_plot(self):
-        pass
-
-    def do_pcolormesh_plot(self):
-        pass
 
     def plot_streamlines(self,U,V,outdir,fname,lats=False,lons=False,smooth=1,
                             title=False,lw_speed=False,density=1.8,ideal=False):

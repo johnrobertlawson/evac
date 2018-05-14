@@ -8,7 +8,6 @@ from mpl_toolkits.basemap import Basemap
 
 import evac.utils as utils
 from evac.plot.scales import Scales
-from evac.plot.colorbar import ColorBar
 
 class Figure:
     """ Parent class for creating a matplotlib figure.
@@ -26,8 +25,10 @@ class Figure:
             initiation of figure canvas, e.g., DPI.
     """
     def __init__(self,fpath,ax=None,fig=None,nrow=1,ncol=1,
-                    figsize=(8,6),initkwargs=None,proj=None):
+                    figsize=(8,6),initkwargs=None,proj=None,
+                    grid=None):
         self.fpath = fpath
+        self.grid = grid
 
         if initkwargs is None:
             initkwargs = dict()
@@ -99,7 +100,8 @@ class Figure:
             label: if True, apply label to colorbar axis
             ticks: if True, set custom ticks.
         """
-        if not os,path.exists(cb_fpath):
+        from evac.plot.colorbar import ColorBar
+        if not os.path.exists(cb_fpath):
             CB = ColorBar(cb_fpath)
             CB.plot(cf=cf,labels=labels,ticks=ticks)
         return

@@ -23,12 +23,68 @@ class Grid:
     Args:
         inst: instance of WRFOut, StageIV, etc. If not provided,
             other keyword arguments must be provided
+        reproject_opts: dictionary of options for creating a new grid
     """
-    def __init__(self,inst=None):
+    def __init__(self,inst=None,reproject_opts=None):
         self.I = inst
 
-        if isinstance(self.inst,WRFOut):
+        if isinstance(self.I,WRFOut):
             self.load_wrfout_info()
+        elif (self.I is None) and (isinstance(reproject_opts,dict)):
+            self.create_grid(reproject_opts)
+
+    def create_grid(self,opts):
+        """ Generate a new grid.
+
+        Note:
+            The dictionary `opts` may have these key/values:
+                * urcrnrlat, urcrnrlon, llcrnrlon, llcrnrlat (lat/lon extremes)
+                * dx_km (grid point spacing)
+        """
+        # lat/lon projection
+        proj_ll = pyproj.Proj(init='epsg:4326')
+
+        # This one is used for Google Maps, AKA EPSG:900913
+        proj = pyproj.Proj(init='epsg:3857')
+
+        # Corners of new grid (approximately)
+        urcrnr = shapely.geometry.Point((opts['urcrnrlon'],opts['urcrnrlat']))
+        llcrnr = shapely.geometry.Point((opts['llcrnrlon'],opts['llcrnrlat']))
+
+        # lats = N.ones([],dtype='f8')
+        # lons = lats.copy()
+
+        # Starting on upper row
+        # This is the NE point, in northern hemisphere context
+        # x = pyproj.transform(proj_ll, proj, urcrnr.x, urcrnr.y)
+        # xx = N.linspace(
+
+        # This method seems inefficient...
+        # Project corners to target projection
+        s = pyproj.transform(proj_ll, proj, urcrnr.x, urcrnr.y) # Transform NW point to 3857
+        e = pyproj.transform(proj_ll, proj, llcrnr.x, llcrnr.y) # .. same for SE
+
+        # Assume dx = dy
+        dx = opts['dx_km'] * 1000
+        dy = dx
+
+        # Iterate over 2D area
+        gridpoints = []
+        x = s[0]
+        # while x < e[0]:
+        while x > e[0]:
+            y = s[1]
+            # while y < e[1]:
+            while y > e[1]:
+                p = shapely.geometry.Point(pyproj.transform(proj, proj_ll, x, y))
+                gridpoints.append(p)
+                y += dy
+            x += dx
+        pdb.set_trace()
+
+        # return newgrid
+        
+
 
     def get_cartopy_proj(self,proj):
         """ Set cartopy projection instance.

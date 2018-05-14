@@ -3,6 +3,8 @@ import pdb
 
 import matplotlib.pyplot as plt
 
+from evac.plot.figure import Figure
+
 class ColorBar(Figure):
     def __init__(self,fpath):
         fig = plt.figure()
