@@ -9,6 +9,7 @@ import shapely
 from evac.datafiles.wrfout import WRFOut
 from evac.datafiles.obs import Obs
 from evac.datafiles.stageiv import StageIV
+import evac.utils.reproject_tools as reproject_tools
 
 class Grid:
     """ Geographical grid information for plotting etc.
@@ -70,14 +71,6 @@ class Grid:
         urcrnr = shapely.geometry.Point((opts['urcrnrlon'],opts['urcrnrlat']))
         llcrnr = shapely.geometry.Point((opts['llcrnrlon'],opts['llcrnrlat']))
 
-        # lats = N.ones([],dtype='f8')
-        # lons = lats.copy()
-
-        # Starting on upper row
-        # This is the NE point, in northern hemisphere context
-        # x = pyproj.transform(proj_ll, proj, urcrnr.x, urcrnr.y)
-        # xx = N.linspace(
-
         # Project corners to target projection
         urx,ury = pyproj.transform(proj_ll, proj, urcrnr.x, urcrnr.y) 
         llx,lly = pyproj.transform(proj_ll, proj, llcrnr.x, llcrnr.y) 
@@ -98,10 +91,6 @@ class Grid:
             y = ury
             while y >= lly:
                 p = shapely.geometry.Point(pyproj.transform(proj, proj_ll, x, y))
-                # lons.append(p.x)
-                # lats.append(p.y)
-                # xx.append(x)
-                # yy.append(y)
                 lons.insert(0,p.x)
                 lats.insert(0,p.y)
                 xx.insert(0,x)
@@ -154,6 +143,35 @@ class Grid:
         # self.bmap = Basemap(projection=proj,**bmkwargs)
         # 
         # pass
+
+    def convert_latlon_xy(self,lats,lons):
+        """ Convert lats/lons to x and y.
+        """
+        xx = N.ones_like(lats)
+        yy = N.ones_like(lons)
+
+        # lat/lon projection
+        proj_ll = pyproj.Proj(init='epsg:4326')
+
+        # cylindrical projection
+        proj_xy = pyproj.Proj(init='epsg:3857')
+
+        for i,j in N.ndindex(*xx.shape):
+            # p.x is x, p.y is y
+            p = shapely.geometry.Point(pyproj.transform(proj_ll, proj_xy, 
+                                lats[i,j], lons[i,j]))
+            xx[i,j] = p.x
+            yy[i,j] = p.y
+        return xx,yy
+
+    def interpolate_from(self,data,lats,lons):
+        """ Interpolate data and lat/lon grid to current instance.
+        """
+        xx,yy = self.convert_latlon_xy(lats,lons)
+        data_reproj = reproject_tools.reproject(data=data,newgrid_xx=xx,
+                        newgrid_yy=yy,self.xx,self.yy)
+        return data_reproj
+        
 
     def interpolate_to(self,Grid2):
         """ Interpolate this grid to a different instance.
