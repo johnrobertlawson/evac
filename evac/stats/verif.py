@@ -1,4 +1,7 @@
-""" Helper scripts to run stats over ensembles for a given
+""" 
+DEPRECIATED - TOO BLOATED
+
+Helper scripts to run stats over ensembles for a given
 initialisation time (looping over levels, ensemble members, valid times, and 
 lat/lon if required)
 
@@ -127,59 +130,56 @@ class Verif:
 
     def __init__(self,ensemble=None,obs=None,outdir=False,datadir=False,
                     newgrid=None):
+
+        # FORECAST DATA
         self.E = ensemble
         if self.E:
             self.validtimes = self.E.validtimes
-
-        # A tuple of obs objects, or just one.
-        # So a bunch of Radar objects for different times is no problem,
-        # as we can search for the right one.
-
+            self.initutc = self.E.initutc
+            self.doms, self.ndoms = self.check_ensemble_domains()
+            self.nmems = self.E.nmems
+            self.arbdict = self.make_arbdict()
+            self.lats, self.lons = self.get_latlons()
+            
+        # OBSERVATION DATA
         if isinstance(obs,(list,tuple)):
             self.obs = obs
         else:
             self.obs = (obs,)
-            # if isinstance(obs,Obs):
-                # self.obs = (obs,)
         self.obdict = self.generate_obdict()
 
-        # These are optional, for later use
+        # OPTIONAL SETTINGS FOR FIGURES AND SAVED DATA
         self.outdir = outdir
         self.datadir = datadir
 
-        # Might attach self.E attributes such as times and member 
-        # names to the class instance?
-        if self.E is not None:
-            self.initutc = self.E.initutc
-            self.nmems = self.E.nmems
-
-        # NOT IMPLEMENTED
-        # self.fcst_times = {d:E.times(dom=d) for d in self.doms}
-
-        # Mutual forecast times for each domain
-        # NOT IMPLEMENTED
-        # self.fcst_times['intersection'] = intersection(self.fcst_times)
-
-        # Compute dom information
-        self.doms, self.ndoms = self.check_ensemble_domains()
-
-        # Dictionary of aribtrary WRFOut objects 
-        self.arbdict = self.make_arbdict()
-
-        # lats and lons for each domain
-        if self.E is not None:
-            self.lats = {}
-            self.lons = {}
-            for dom in self.doms:
-                self.lats[dom],self.lons[dom] = self.E.get_latlons(dom=dom)
-
+        # OPTIONAL REPROJECTION DOMAIN
         self.newgrid = newgrid
-
-        # Look up stats methods here
-        self._STATS = self.generate_lookup_table()
-
     
     ##### INTERFACE METHODS - COMPUTE #####
+
+    def compute_crps(self,xfs,xa,vrbl,utc=None,fchr=None,lv=None,dom=1):
+        """ Compute CRPS.
+
+        All arguments should be for a single time, variable, etc.
+        Args:
+            xfs: forecast data
+            xa: observation data
+            vrbl: variable to compute
+            lv: level from forecast data. If None, use surface/lowest.
+            utc (datetime.datetime): Datetime for plotting. If None,
+                fchr must be specified.
+            fchr: forecast hour. If None, utc must be specified.
+            dom: domain. If None, use first.
+        """
+        fpath = self.generate_npy_fname(vrbl,'CRPS',lv=lv,fchr=fchr,
+                            dom=dom,ens='mean',fullpath=True,)
+        if not os.path.exists(fpath):
+            P = ProbScores(xfs=xfs,xa=xa)
+            crps = P.compute_crps(self.crps_thresholds)
+            self.save_npy(crps,vrbl,'CRPS',lv=lv,fchr=fchr,dom=dom,ens='mean',fpath=fpath)
+        else:
+            print("Skipping - file already created.")
+        return
    
     def compute_rmse(self,):
         pass
@@ -364,18 +364,6 @@ class Verif:
         s = '_'.join(itr)
         return s
 
-    def compute_crps_mp(self,xfs,xa,vrbl,lv,fchr,dom,):
-        fpath = self.generate_npy_fname(vrbl,'CRPS',lv=lv,fchr=fchr,
-                            dom=dom,ens='mean',fullpath=True,)
-        if os.path.exists(fpath):
-            print("Skipping - file already created.")
-            return
-
-        P = ProbScores(xfs=xfs,xa=xa)
-        crps = P.compute_crps(self.crps_thresholds)
-
-        self.save_npy(crps,vrbl,'CRPS',lv=lv,fchr=fchr,dom=dom,ens='mean',fpath=fpath)
-        return
 
     def compute_objectbased(self,vrbl1,vrbl2,fchrs='all',doms='all',lvs=None,
                                 thresh='auto',footprint=500,suite=None,
@@ -1314,12 +1302,10 @@ class Verif:
             Data from new domain.
         """
 
-        # New array for interpolated data.
-        # x/y coordinates of reprojected data.
-        data_ng_xx, data_ng_yy = self.newgrid.m(lons,lats)
         print("Reprojecting data.")
+
         if data.ndim == 3:
-            data_ng = N.zeros((data.shape[0],self.ng_ny,self.ng_nx))
+            data_ng = N.zeros((data.shape[0],self.newgrid.ny,self.newgrid.nx))
             for ens in range(data.shape[0]):
                 data_ng[ens,:,:] = self._reproj_func(data[ens,:,:],
                                         data_ng_xx,data_ng_yy,
@@ -1395,3 +1381,8 @@ class Verif:
         """
         a = str(obj.__class__).lower().split('.')[-1].split("'")[0]
         return a
+
+    def get_latlons():
+        for dom in self.doms:
+            lats[dom], lons[dom] = self.E.get_latlons(dom=dom)
+        return lats, lons

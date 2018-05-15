@@ -380,7 +380,7 @@ class Ensemble:
                         fcsttime=False,Nlim=None,Elim=None,
                         Slim=None,Wlim=None,inclusive=False,
                         lats=None,lons=None,dom=1,members=None,
-                        accum_hr=1,fcsthr=None):
+                        accum_hr=1,fcsthr=None,fcstmin=None):
         """
         Returns 5D array of data for ranges.
 
@@ -403,7 +403,9 @@ class Ensemble:
             because get() APIs in different areas of evac/WEM
         """
         if fcsthr and (not fcsttime) and (not itime) and (not ftime) and (not utc):
-            fcsttime = self.initutc + datetime.timedelta(seconds=3600*fcsthr)
+            fcsttime = self.initutc + datetime.timedelta(seconds=3600*float(fcsthr))
+        elif fcstmin is not None:
+            fcsttime = self.initutc + datetime.timedelta(seconds=60*float(fcstmin))
         elif utc is not None:
             fcsttime = utc
         ens_no = 0
@@ -629,6 +631,12 @@ class Ensemble:
         # pdb.set_trace()
 
         return t, tidx
+
+    def get_corners(self,dom=1):
+        """ Return the corners of a given domain.
+        """
+        W = self.arbitrary_pick(dataobj=True,dom=dom)
+        return W.get_corners()
 
     def get_limits(self,dom=1,fmt='dict'):
         """ Return the limits of the domain.

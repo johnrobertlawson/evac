@@ -814,3 +814,11 @@ class WRFOut(NC):
         Slim = float(self.lats1D[0])
         Wlim = float(self.lons1D[0])
         return Nlim, Elim, Slim, Wlim
+
+    def get_corners(self):
+        returndict = dict(
+            urcrnrlat = self.lats[-1,-1],
+            urcrnrlon = self.lons[-1,-1],
+            llcrnrlat = self.lats[0,0],
+            llcrnrlon = self.lons[0,0])
+        return returndict
