@@ -102,7 +102,9 @@ class BirdsEye(Figure):
         else:
             if lats is None:
                 assert self.grid is not None
-                self.lats2d, self.lons2d = N.meshgrid(self.grid.lats,self.grid.lons)
+                # self.lats2d, self.lons2d = N.meshgrid(self.grid.lats,self.grid.lons)
+                self.lats2d = self.grid.lats
+                self.lons2d = self.grid.lons
             elif lats.ndim == 1:
                 self.lats2d, self.lons2d = N.meshgrid(lats,lons)
             elif lats.ndim == 2:
@@ -110,6 +112,9 @@ class BirdsEye(Figure):
                 self.lons2d = lons
             else:
                 raise Exception("lats and lons not valid.")
+
+            self.x = self.lats2d
+            self.y = self.lons2d
             
 
         mplkwargs['X'] = self.x

@@ -44,6 +44,8 @@ class Grid:
         else:
             raise NotImplementedError
 
+        assert self.lats.ndim == 2
+
 
     def create_grid(self,opts):
         """ Generate a new grid without basemap.
