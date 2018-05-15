@@ -1,7 +1,10 @@
 import os
 import pdb
 
+import numpy as N 
 import cartopy.crs as ccrs
+import pyproj
+import shapely
 
 from evac.datafiles.wrfout import WRFOut
 from evac.datafiles.obs import Obs
@@ -25,16 +28,30 @@ class Grid:
             other keyword arguments must be provided
         reproject_opts: dictionary of options for creating a new grid
     """
-    def __init__(self,inst=None,reproject_opts=None):
-        self.I = inst
-
-        if isinstance(self.I,WRFOut):
+    def __init__(self,base=None):
+        if isinstance(base,dict):
+            print("Creating new grid from reprojection options.")
+            # self.xx, self.yy, self.lats, self.lons = self.create_grid(base)
+            self.create_grid(base)
+        elif isinstance(base,WRFOut):
+            print("Creating grid from WRFOut provided.")
+            self.I = base
             self.load_wrfout_info()
-        elif (self.I is None) and (isinstance(reproject_opts,dict)):
-            self.create_grid(reproject_opts)
+        elif isinstance(base,StageIV):
+            print("Creating grid from StageIV provided.")
+            self.I = base
+            self.load_stageiv_info()
+        else:
+            raise NotImplementedError
+
 
     def create_grid(self,opts):
-        """ Generate a new grid.
+        """ Generate a new grid without basemap.
+
+        For consistency with WRF and basemap, the upper right and
+        lower left corners are specified. This reverses the logic
+        in array creation, but the output arrays of lat, lon, x, y
+        are all in the same format as WRF output.
 
         Note:
             The dictionary `opts` may have these key/values:
@@ -59,33 +76,51 @@ class Grid:
         # x = pyproj.transform(proj_ll, proj, urcrnr.x, urcrnr.y)
         # xx = N.linspace(
 
-        # This method seems inefficient...
         # Project corners to target projection
-        s = pyproj.transform(proj_ll, proj, urcrnr.x, urcrnr.y) # Transform NW point to 3857
-        e = pyproj.transform(proj_ll, proj, llcrnr.x, llcrnr.y) # .. same for SE
+        urx,ury = pyproj.transform(proj_ll, proj, urcrnr.x, urcrnr.y) 
+        llx,lly = pyproj.transform(proj_ll, proj, llcrnr.x, llcrnr.y) 
 
         # Assume dx = dy
         dx = opts['dx_km'] * 1000
         dy = dx
 
         # Iterate over 2D area
-        gridpoints = []
-        x = s[0]
-        # while x < e[0]:
-        while x > e[0]:
-            y = s[1]
-            # while y < e[1]:
-            while y > e[1]:
+        xx = []
+        yy = []
+        lats = []
+        lons = []
+        xlen = 0
+
+        x = urx
+        while x >= llx:
+            y = ury
+            while y >= lly:
                 p = shapely.geometry.Point(pyproj.transform(proj, proj_ll, x, y))
-                gridpoints.append(p)
-                y += dy
-            x += dx
-        pdb.set_trace()
+                # lons.append(p.x)
+                # lats.append(p.y)
+                # xx.append(x)
+                # yy.append(y)
+                lons.insert(0,p.x)
+                lats.insert(0,p.y)
+                xx.insert(0,x)
+                yy.insert(0,y)
+                y -= dy
+            xlen += 1
+            x -= dx
+        ylen = int(len(yy)/xlen)
+        xarr = N.array(xx).reshape(xlen,ylen)
+        yarr = N.array(yy).reshape(xlen,ylen)
+        latarr = N.array(lats).reshape(xlen,ylen)
+        lonarr = N.array(lons).reshape(xlen,ylen)
+        print("Completed grid point computations.")
 
-        # return newgrid
+        # return xarr, yarr, latarr, lonarr 
+        self.xx = N.swapaxes(xarr,0,1)
+        self.yy = N.swapaxes(yarr,0,1)
+        self.lats = N.swapaxes(latarr,0,1)
+        self.lons = N.swapaxes(lonarr,0,1)
+        return
         
-
-
     def get_cartopy_proj(self,proj):
         """ Set cartopy projection instance.
         """
