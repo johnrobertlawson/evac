@@ -46,6 +46,8 @@ class Grid:
             raise NotImplementedError
 
         assert self.lats.ndim == 2
+        # self.nlats, self.nlons = self.lats.shape
+        self.ny, self.nx = self.lats.shape
 
 
     def create_grid(self,opts):
@@ -151,15 +153,21 @@ class Grid:
         yy = N.ones_like(lons)
 
         # lat/lon projection
-        proj_ll = pyproj.Proj(init='epsg:4326')
+        # proj_ll = pyproj.Proj(init='epsg:4326')
+        proj_ll = pyproj.Proj(proj='latlong',datum='WGS84')
 
         # cylindrical projection
         proj_xy = pyproj.Proj(init='epsg:3857')
 
         for i,j in N.ndindex(*xx.shape):
             # p.x is x, p.y is y
-            p = shapely.geometry.Point(pyproj.transform(proj_ll, proj_xy, 
-                                lats[i,j], lons[i,j]))
+
+            # Pyproj suggests this is needed but it's not?
+            # la = proj_ll(lats[i,j])
+            # lo = proj_ll(lons[i,j])
+
+            p = shapely.geometry.Point(pyproj.transform(proj_ll,proj_xy,lons[i,j],
+                                        lats[i,j],))
             xx[i,j] = p.x
             yy[i,j] = p.y
         return xx,yy
@@ -168,8 +176,10 @@ class Grid:
         """ Interpolate data and lat/lon grid to current instance.
         """
         xx,yy = self.convert_latlon_xy(lats,lons)
-        data_reproj = reproject_tools.reproject(data=data,newgrid_xx=xx,
-                        newgrid_yy=yy,self.xx,self.yy)
+        # yy,xx = self.convert_latlon_xy(lats,lons)
+        data_reproj = reproject_tools.reproject(data_orig=data,xx_orig=xx,
+                        yy_orig=yy,xx_new=self.xx,yy_new=self.yy)
+        # pdb.set_trace()
         return data_reproj
         
 

@@ -152,16 +152,17 @@ def wowprint(message,color='red',bold=True,underline=False,formatargs=False):
         codes.append(colors[color])
     
     colorcode = ''.join(codes)
-    # CASE 1: asterisks round colorasised part
+    # CASE 1: asterisks round coloured part
     if not formatargs:
         idx0 = findindex('**')
-        message.replace('**',colorcode,1)
+        message = message.replace('**',colorcode,1)
         idx1 = findindex('**')
-        message.replace('**',endcode,1)
+        message = message.replace('**',endcode,1)
         print(message)
     else:
         # This needs to be implemented
-        pass
+        raise Exception
+    # pdb.set_trace()
     
     return
     

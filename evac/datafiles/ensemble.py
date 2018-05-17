@@ -632,13 +632,13 @@ class Ensemble:
 
         return t, tidx
 
-    def get_corners(self,dom=1):
+    def get_corners(self,dom):
         """ Return the corners of a given domain.
         """
         W = self.arbitrary_pick(dataobj=True,dom=dom)
         return W.get_corners()
 
-    def get_limits(self,dom=1,fmt='dict'):
+    def get_limits(self,dom,fmt='dict'):
         """ Return the limits of the domain.
 
         Args:
@@ -656,7 +656,7 @@ class Ensemble:
         else:
             raise Exception
 
-    def get_latlons(self,dom=1):
+    def get_latlons(self,dom):
         W = self.arbitrary_pick(dataobj=True,dom=dom)
         return W.lats, W.lons
 
