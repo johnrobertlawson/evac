@@ -54,11 +54,13 @@ class Ensemble:
             The string 'default' will look for the wrfout_d0* string.
             Set None for a method to determine
             the file name using default outputs from e.g. WRF.
+        allow_empty (bool): if False, raise exception if the ensemble
+            instance has no members.
     """
     def __init__(self,rootdir,initutc,ndoms=1,ctrl='ctrl',aux=False,
                 model='wrf',fmt='em_real',f_prefix='default',loadobj=True,
                 ncf=False,debug=False,onefolder=False,fileformat='netcdf',
-                gefsformat=False):
+                gefsformat=False,allow_empty=True):
         self.model = model.lower()
         if self.model == 'wrf':
             print("File type is wrfout.")
@@ -100,7 +102,7 @@ class Ensemble:
         self.nperts = self.nmems - self.isctrl
 
         # Check to see if the ensemble isn't just an empty list!
-        if self.nmems == 0:
+        if self.nmems == 0 and (not allow_empty):
             print("Files not found.")
             raise Exception
 
@@ -408,25 +410,25 @@ class Ensemble:
             fcsttime = self.initutc + datetime.timedelta(seconds=60*float(fcstmin))
         elif utc is not None:
             fcsttime = utc
-        ens_no = 0
         # pdb.set_trace()
+        if (members is None) or (members == 'all'):
+            members = self.member_names
+        elif isinstance(members,str):
+            members = (members,)
+            assert len(members) == 1
+        elif isinstance(members,(list,tuple)):
+            pass
+
         if vrbl is 'accum_precip':
             qpf = self.accumulated(vrbl='RAINNC',itime=itime,ftime=ftime,
                             level=level,Nlim=Nlim,Elim=Elim,
                             Slim=Slim,Wlim=Wlim,inclusive=inclusive,
                             lons=lons,lats=lats,dom=dom,fcsttime=fcsttime,
-                            accum_hr=accum_hr)
+                            accum_hr=accum_hr,members=members)
             return qpf
-        if members is None:
-            members = self.member_names
-        elif isinstance(members,str):
-            members = (members,)
-        else:
-            pass
 
+        ens_no = 0
         for nm,mem in enumerate(members):
-            if self.debug:
-                print("Working on member {0}".format(mem))
             if mem is self.ctrl:
                 print("Skipping control member.")
                 continue
@@ -453,7 +455,8 @@ class Ensemble:
                 if ens_no == 1:
                     nz,nlats,nlons = m_t_data.shape
                     nt = len(fts)
-                    all_ens_data = N.zeros((self.nperts,nt,nz,nlats,nlons))
+                    nens = len(members)
+                    all_ens_data = N.zeros((nens,nt,nz,nlats,nlons))
 
                 all_ens_data[ens_no-1,tn,:,:,:] = m_t_data
 
@@ -462,7 +465,8 @@ class Ensemble:
 
     def accumulated(self,vrbl='RAINNC',itime=0,ftime=-1,level=False,Nlim=False,
                     Elim=False,Slim=False,Wlim=False,inclusive=False,
-                    lons=None,lats=None,dom=1,fcsttime=None,accum_hr=1):
+                    lons=None,lats=None,dom=1,fcsttime=None,accum_hr=1,
+                    members=None):
         """Accumulate, for every ensemble member, at each grid point,
         the variable specified. Usually precipitation.
 
@@ -482,14 +486,14 @@ class Ensemble:
 
         if vrbl is 'RAINNC':
             itime_rainnc = self.get('RAINNC',fcsttime=itime,
-                    lons=lons,lats=lats,dom=dom)
+                    lons=lons,lats=lats,dom=dom,members=members)
             ftime_rainnc = self.get('RAINNC',fcsttime=ftime,
-                    lons=lons,lats=lats,dom=dom)
+                    lons=lons,lats=lats,dom=dom,members=members)
             accum = ftime_rainnc - itime_rainnc
         else:
             all_ens_data = self.get(vrbl,itime=itime,ftime=ftime,
                                         inclusive=inclusive,lats=lats,lons=lons,
-                                        dom=dom)
+                                        dom=dom,members=members)
             # time axis is 1
             accum = N.sum(all_ens_data,axis=1)
 

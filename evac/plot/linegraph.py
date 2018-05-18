@@ -35,21 +35,19 @@ class LineGraph(Figure):
             G.plot_fv(FV,hold=False)
             
     """
-    def __init__(self,outdir,vrbl,fname=None,figsize=None):
+    def __init__(self,fpath=None,outdir=None,vrbl=None,fname=None,figsize=None,
+                    mplkwargs=None,**kwargs):
         # From superclass
         #self.name = self.create_fname(fname=fname)
         # outfpath = os.path.join(self.outdir)
-        self.outdir = outdir
-        self.fname = fname
+        if not fpath:
+            fpath = os.path.join(outdir,fname)
+
+        super().__init__(fpath=fpath,figsize=figsize,mplkwargs=mplkwargs,**kwargs)#ncol=1,nrow=1)
         self.vrbl = vrbl
-
-        super().__init__(self,figsize=figsize)#ncol=1,nrow=1)
-
         
-    def plot_score(self,xdata,ydata,
-                    use_plot_date=False,labels=None, 
-                    mplargs=None,mplkwargs=None,
-                    plotargs=None,plotkwargs=None,
+    def plot(self,xdata,ydata,use_plot_date=False, 
+                    mplkwargs=None,plotkwargs=None,
                     *args,**kwargs):
         """ Plot e.g. deterministic scores.
         
@@ -60,10 +58,12 @@ class LineGraph(Figure):
         Todo:
             * Can the labels argument be put into mplkwargs?
         """
-        clskwargs, mplkwargs, plotkwargs = self._get_plot_options2(plotargs=plotargs,
-                            plotkwargs=plotkwargs,mplargs=mplargs,mplkwargs=mplkwargs,
-                                                # vrbl=self.vrbl,
-                                                *args,**kwargs)
+        # self.mplkwargs.update(mplkwargs)
+        # self.clskwargs.update(**kwargs)
+        self.update_kwargs(mplkwargs,mpl=True)
+        self.update_kwargs(kwargs,cls=True)
+        if plotkwargs is None:
+            plotkwargs = dict()
 
         if use_plot_date:
             plotfunc = self.ax.plot_date
@@ -75,8 +75,10 @@ class LineGraph(Figure):
         plotfunc(xdata,ydata,**plotkwargs)
 
         # For legend, xlabel, title, xticks, etc
-        self.ax.set(**mplkwargs)
+        self.ax.set(**self.mplkwargs)
 
-        if clskwargs['save']:
+        if self.clskwargs['save']:
             self.save()
+
+        return
 

@@ -103,16 +103,19 @@ class ObjectBased:
         else:
             return active_px, tot_px
 
-    def get_updraughts(self,arr,):
+    def get_updraughts(self,W_data,):
         """ Returns stats on object updraughts.
 
         Max updraught is computed at all levels at all grid points
         in the object.
 
         Args:
-            arr: 3-D array, where the lats/lons correspond directly
+            W_data: 3-D array of W, where the lats/lons correspond directly
                 to the raw_data passed into self originally.
         """
+        if W_data.ndim == 3:
+            W_data = N.max(W_data,axis=0)
+        assert W_data.ndim == 2
         nobjs = len(self.objects)
         updraught_dict = dict()
         updraught_arr = N.zeros([nobjs])
@@ -121,7 +124,7 @@ class ObjectBased:
             # The grid points of each object is labelled
             # in self.obj_array.
             grid_2d_idx = N.where(self.obj_array == n)
-            arr_obj = arr[:,grid_2d_idx[0],grid_2d_idx[1]]
+            arr_obj = W_data[grid_2d_idx[0],grid_2d_idx[1]]
             max_w = N.max(arr_obj)
 
             # Data in a dictionary and array
