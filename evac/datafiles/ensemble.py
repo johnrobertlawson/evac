@@ -104,6 +104,7 @@ class Ensemble:
         # Check to see if the ensemble isn't just an empty list!
         if self.nmems == 0 and (not allow_empty):
             print("Files not found.")
+            print("rootdir is {}".format(self.rootdir))
             raise Exception
 
         # Get start and end of whole dataset (inclusive)

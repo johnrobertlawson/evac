@@ -13,48 +13,40 @@ from evac.plot.scales import Scales
 class ThumbNails(Figure):
     """ Plot multiple subplots.
     """
-    def __init__(self,outdir,fname='test_thumbs.png',verif=True):
-        self.outdir = outdir
-        self.fname = fname
-
-        super().__init__(self,**self.setup_figure())
+    def __init__(self,rowscols,fpath=None,outdir=None,fname='test_thumbs.png',verif=True):
+        if not fpath:
+            fpath = os.path.join(outdir,fname)
+        super().__init__(fpath,**self.setup_figure(rowscols))
         self.naxes = self.ax.size
 
-    def setup_figure(self,):
-        self.nmems = 18
+    def setup_figure(self,rowscols):
 
         init_dict = dict(
-            nrows = 4,
-            ncols = 5,
+            nrows = rowscols[0],
+            ncols = rowscols[1],
             figsize = (10,8),
             )
         return init_dict
 
     def plot_verif(self,data,lats=None,lons=None,subplotn=0,
-                    save=False,utc=None):
+                    save=False,utc=None,vrbl=None,scales=None):
         """ Plot verification postage stamp.
         """
+        cmap,clvs = self.get_scales(vrbl=vrbl)
         ax = self.ax.flatten()[subplotn]
-        # if isinstance(data,Radar):
-            # data.plot_radar(fig=self.fig,ax=ax,
-                    # drawcounties=True,cb=False)
-        # else:
-            # raise Exception("Not implemented")
-        data.plot(fig=self.fig,ax=ax,
-                drawcounties=True,cb=False,utc=utc)
+        BE = BirdsEye(ax=ax,fig=self.fig,proj='merc')
+        BE.plot2D(data,save=False,drawcounties=True,
+                    cb=False,cmap=cmap
+                    cen_lat=cen_lat,cen_lon=cen_lon,W=W,
+                    **ld,)
         ax.set_title("Verif")
         if save:
             self.save()
+        print("Plotted verification panel.")
         return
 
-    def plot_fcst(self,data,titles=None,scales=None,
-                    W=None,cen_lon=None,cen_lat=None,
-                    vrbl=None,
-                    ld=None,save=True):
-        """
-        Args:
-            data: 3D numpy array, (members,lat,lon).
-        """ 
+    @staticmethod
+    def get_scales(scales=None,vrbl=None):
         if scales:
             S = scales
             cmap = S.cm
@@ -67,6 +59,18 @@ class ThumbNails(Figure):
             else:
                 cmap = None
                 clvs = None
+        return cmap,clvs
+
+    def plot_fcst(self,data,titles=None,scales=None,
+                    W=None,cen_lon=None,cen_lat=None,
+                    vrbl=None,
+                    ld=None,save=True):
+        """
+        Args:
+            data: 3D numpy array, (members,lat,lon).
+        """ 
+
+        cmap, clvs = self.get_scales(scales=scales,vrbl=vrbl)
 
         if ld == None:
             ld = {}

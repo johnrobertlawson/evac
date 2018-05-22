@@ -216,7 +216,7 @@ class Radar(PNGFile,Obs):
         else:
             return data,lats,lons
 
-    def get_dBZ(self,data):
+    def get_dBZ(self,data='self'):
         if data == 'self':
             data = self.data
 
@@ -227,6 +227,11 @@ class Radar(PNGFile,Obs):
         elif self.fmt == 'n0r':
             dBZ = (data*5.0)-30
         return dBZ
+
+    def get(self,*args,**kwargs):
+        """Wrapper for get_dBZ.
+        """
+        return self.get_dBZ(*args,**kwargs)
 
     def plot(self,*args,**kwargs):
         """ Wrapper for plot_radar.
