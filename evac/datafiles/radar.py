@@ -14,6 +14,7 @@ import evac.utils as utils
 import evac.plot.colourtables as ct
 from evac.plot.birdseye import BirdsEye
 from evac.datafiles.obs import Obs
+from evac.utils.grid import Grid
 
 class Radar(PNGFile,Obs):
     """ Radar data download, manipulation, and plotting via :any:`evac.plot.birdseye`.
@@ -124,8 +125,13 @@ class Radar(PNGFile,Obs):
             self.clvs = N.arange(0,90.0,0.5)
         # import pdb; pdb.set_trace()
 
-        self.lats = N.linspace(self.lry,self.uly,self.xlen)[::-1]
-        self.lons = N.linspace(self.ulx,self.lrx,self.ylen)
+        self.lats1D = N.linspace(self.lry,self.uly,self.xlen)[::-1]
+        self.lons1D = N.linspace(self.ulx,self.lrx,self.ylen)
+        self.lons, self.lats = N.meshgrid(self.lons1D,self.lats1D)
+        # self.lats, self.lons = N.meshgrid(self.lats1D,self.lons1D)
+        assert self.data.shape == self.lats.shape
+
+        self.grid = Grid(self)
 
     def download_data(self,ext='both'):
         if ext == 'both':

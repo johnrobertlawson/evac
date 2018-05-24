@@ -5,6 +5,9 @@ import numpy as N
 import matplotlib as M
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
+from cartopy.feature import NaturalEarthFeature
+from cartopy.io import shapereader
+import cartopy
 
 import evac.utils as utils
 from evac.plot.scales import Scales
@@ -29,6 +32,7 @@ class Figure:
                     grid=None,mplkwargs=None,**kwargs):
         self.fpath = fpath
         self.grid = grid
+        self.proj = proj
 
         # Option dictionaries
         self.update_kwargs(kwargs,cls=True,init=True)
@@ -36,7 +40,9 @@ class Figure:
         if initkwargs is None:
             initkwargs = dict()
         if proj:
-            initkwargs['subplot_kw'] = dict(projection=proj)
+            ccrsproj = utils.get_ccrs_proj(proj)
+            initkwargs['subplot_kw'] = dict(projection=ccrsproj)
+            print("Setting figure to {} projection.".format(proj))
 
         self.update_kwargs(mplkwargs,mpl=True,init=True)
 
@@ -179,3 +185,42 @@ class Figure:
         # else:
         return clskwargs, mplkwargs, plotkwargs
 
+    def draw_counties(self,method=3):
+        print("About to draw geographical info.")
+        scale = '50m'
+        # resolution = '10m'
+        category = 'cultural'
+        # name1 = 'admin_1_countries'
+        name2 = 'admin_1_states_provinces_shp'
+        # names = (name1, name2)
+        names = (name2,)
+
+        if method == 1:
+
+            shp_fname = shapereader.natural_earth(resolution,category,name)
+            df = geopandas.read_file(shp_fname)
+            border = df.loc[df['ADMIN'] == 'USA']['geometry'].values[0]
+            self.ax.add_geometries(border)
+        elif method == 2:
+            for name in names:
+                states = NaturalEarthFeature(category=category,
+                            scale=scale,facecolor=None,name=name)
+                self.ax.add_feature(states,edgecolor='gray')
+        elif method == 3:
+            self.ax.add_feature(cartopy.feature.LAND)
+            self.ax.add_feature(cartopy.feature.OCEAN)
+            self.ax.add_feature(cartopy.feature.COASTLINE)
+            self.ax.add_feature(cartopy.feature.BORDERS)
+            self.ax.add_feature(cartopy.feature.LAKES, alpha=0.5)
+            self.ax.add_feature(cartopy.feature.RIVERS)
+
+            states_provinces = cartopy.feature.NaturalEarthFeature(
+                                    category='cultural',
+                                    name='admin_1_states_provinces_lakes_shp',
+                                    scale='50m',)
+            self.ax.add_feature(states_provinces, edgecolor='gray')
+            self.ax.background_patch.set_visible(False)
+            ax.outline_patch.set_visible(False)
+            # self.ax.coastlines()
+
+        return

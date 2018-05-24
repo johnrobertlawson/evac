@@ -38,8 +38,9 @@ class BirdsEye(Figure):
     """
 
     def __init__(self,fpath,ax=None,fig=None,ideal=False,grid=None,proj=None):
-        ccrs_proj = grid.get_cartopy_proj(proj)
-        super().__init__(fpath=fpath,ax=ax,fig=fig,proj=ccrs_proj,grid=grid)
+        # ccrs_proj = grid.get_cartopy_proj(proj)
+        super().__init__(fpath=fpath,ax=ax,fig=fig,grid=grid)
+                            # proj=ccrs_proj,
         self.ideal = ideal
 
     def plot2D(self,data,plottype='contourf',locations=False,
@@ -50,10 +51,10 @@ class BirdsEye(Figure):
                     # lat_ts=None,W=None,
                     inline=False,cblabel=False,ideal=False,
                     drawcounties=False,mplkwargs=None,
-                    extend=False,hold=False,cmap=None,
+                    extend=False,hold=False,
                     lats=None,lons=None,
                     # color='k',
-                    ):
+                    *args,**kwargs):
 
         """
         Generic method that plots any matrix of data on a map
@@ -81,12 +82,13 @@ class BirdsEye(Figure):
             drawcounties (bool): if True, plot US counties on map
             mplkwargs (dict): dictionary of keyword arguments to pass
                 to plotting method
+            kwargs: Alias for mplkwargs.
 
         """
-        if isinstance(cmap,str):
-            if hasattr(mplkwargs,'cmap'):
-                raise Exception("Two different cmap arguments given.")
-            cmap = M.cm.get_cmap(cmap)
+        if mplkwargs is None:
+            mplkwargs = {}
+        mplkwargs.update(**kwargs)
+
         save = getattr(self,'save_opt',save)
         hold = getattr(self,'hold_opt',hold)
 
@@ -117,28 +119,34 @@ class BirdsEye(Figure):
             self.y = self.lons2d
             
 
-        mplkwargs['X'] = self.x
-        mplkwargs['Y'] = self.y
-        mplkwargs['Z'] = self.data
+        # mplkwargs['X'] = self.x
+        # mplkwargs['Y'] = self.y
+        # mplkwargs['Z'] = self.data
+        mplargs = [self.x, self.y, self.data]
+
+        if drawcounties:
+           self.draw_counties()
 
         # TODO: move this logic to other methods
         if plottype == 'contour':
-            f1 = self.ax.contour(**mplkwargs)
+            f1 = self.ax.contour(*mplargs,**mplkwargs)
             if inline:
                 plt.clabel(f1,inline=True,fmt='%d',color='black',fontsize=9)
         elif plottype == 'contourf':
-            f1 = self.ax.contourf(**mplkwargs)
+            f1 = self.ax.contourf(*mplargs,**mplkwargs)
         elif plottype == 'pcolor':
-            f1 = self.ax.pcolor(**mplkwargs)
+            f1 = self.ax.pcolor(*mplargs,**mplkwargs)
         elif plottype == 'pcolormesh':
-            f1 = self.ax.pcolormesh(**mplkwargs)
+            f1 = self.ax.pcolormesh(*mplargs,**mplkwargs)
         elif plottype == 'scatter':
-            f1 = self.ax.scatter(**mplkwargs)
+            f1 = self.ax.scatter(*mplargs,**mplkwargs)
         elif plottype == 'quiver':
-            f1 = self.bmap.quiver(**mplkwargs)
+            f1 = self.bmap.quiver(*mplargs,**mplkwargs)
         else:
             print("Specify correct plot type.")
             raise Exception
+
+
 
         if isinstance(locations,dict):
             self.plot_locations(locations)

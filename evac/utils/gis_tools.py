@@ -19,6 +19,7 @@ import datetime
 import heapq
 import random
 
+import cartopy.crs as ccrs
 import xarray
 import matplotlib as M
 import numpy as N
@@ -1465,3 +1466,22 @@ def get_random(seq,unique=False):
         raise Exception("The {} specified for seq is empty.".format(og_seq_type))
     return random.sample(seq,1)[0]
 
+def get_ccrs_proj(proj,ckws=None):
+    """ Convert basemap style strings to cartopy
+    projections. 
+
+    Args:
+        proj (str): name of projection
+        ckws (dict): dictionary of keyword arguments to pass
+            to the crs instantiation.
+    """
+    if ckws is None:
+        ckws = dict()
+
+    PROJS = dict(
+                lcc=ccrs.LambertConformal,
+                merc=ccrs.Mercator,
+                plate=ccrs.PlateCarree,
+                )
+
+    return PROJS[proj](**ckws)

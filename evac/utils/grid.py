@@ -6,10 +6,8 @@ import cartopy.crs as ccrs
 import pyproj
 import shapely
 
-from evac.datafiles.wrfout import WRFOut
-from evac.datafiles.obs import Obs
-from evac.datafiles.stageiv import StageIV
 import evac.utils.reproject_tools as reproject_tools
+import evac.utils as utils
 
 class Grid:
     """ Geographical grid information for plotting etc.
@@ -24,31 +22,66 @@ class Grid:
         * cen_lat, cen_lon: central lat/lon of domain
         * lats, lons: 2D latitudes and longitudes
 
+    Todo:
+        * Redo with getter/setter methods or property decorators
+            for attributes like cen_lat (and methods like get_cen_lat)
+
     Args:
         inst: instance of WRFOut, StageIV, etc. If not provided,
             other keyword arguments must be provided
         reproject_opts: dictionary of options for creating a new grid
     """
-    def __init__(self,base=None):
-        if isinstance(base,dict):
+    def __init__(self,base=None,lats=None,lons=None):
+        # This is here to avoid circular imports
+        from evac.datafiles.wrfout import WRFOut
+        from evac.datafiles.obs import Obs
+        from evac.datafiles.stageiv import StageIV
+        from evac.datafiles.obsgroup import ObsGroup
+        from evac.datafiles.radar import Radar
+
+        # If a group of obs are passed in, pick one randomly
+        # so we can tell what class it is.
+        if isinstance(base,ObsGroup):
+            base_check = base.arbitrary_pick(return_instance=True)
+        else:
+            base_check = base
+
+        # This is for debugging
+        self.base_check = base_check
+
+        if isinstance(base_check,dict):
             print("Creating new grid from reprojection options.")
             # self.xx, self.yy, self.lats, self.lons = self.create_grid(base)
             self.create_grid(base)
-        elif isinstance(base,WRFOut):
+        elif isinstance(base_check,WRFOut):
             print("Creating grid from WRFOut provided.")
             self.I = base
             self.load_wrfout_info()
-        elif isinstance(base,StageIV):
+        elif isinstance(base_check,StageIV):
             print("Creating grid from StageIV provided.")
             self.I = base
             self.load_stageiv_info()
+        elif isinstance(base_check,Radar):
+            self.I = base
+            self.load_radar_info()
+        elif (lats is not None) and (lons is not None):
+            self.I = None
+            self.load_user_info(lats,lons)
         else:
             raise NotImplementedError
 
         assert self.lats.ndim == 2
         # self.nlats, self.nlons = self.lats.shape
-        self.ny, self.nx = self.lats.shape
+        self.nlats, self.nlons = self.lats.shape
 
+    def load_user_info(self,lats,lons):
+        if lats.ndim == 1:
+            self.lons, self.lats = N.meshgrid(lons,lats)
+        else:
+            self.lats = lats
+            self.lons = lons
+        self.cen_lat, self.cen_lon = self.get_cen_latlon()
+        return
 
     def create_grid(self,opts):
         """ Generate a new grid without basemap.
@@ -108,10 +141,10 @@ class Grid:
         print("Completed grid point computations.")
 
         # return xarr, yarr, latarr, lonarr 
-        self.xx = N.swapaxes(xarr,0,1)
-        self.yy = N.swapaxes(yarr,0,1)
-        self.lats = N.swapaxes(latarr,0,1)
-        self.lons = N.swapaxes(lonarr,0,1)
+        self.xx = xarr.T
+        self.yy = yarr.T
+        self.lats = latarr.T
+        self.lons = lonarr.T
         return
         
     def get_cartopy_proj(self,proj):
@@ -121,8 +154,31 @@ class Grid:
         if proj == 'lcc':
             kwargs['central_longitude'] = self.cen_lon
             kwargs['central_latitude'] = self.cen_lat
-            P = ccrs.LambertConformal(**kwargs)
-        return P
+        elif proj == 'merc':
+            kwargs['central_longitude'] = self.cen_lon
+            kwargs['min_latitude'] = self.lats.min()
+            kwargs['max_latitude'] = self.lats.max()
+        else:
+            raise Exception
+        return utils.get_ccrs_proj(proj,ckws=kwargs)
+
+    def load_stageiv_info(self):
+        self.lats = self.I.lats
+        self.lons = self.I.lons
+        self.cen_lat, self.cen_lon = self.get_cen_latlon()
+        return
+
+    def load_radar_info(self):
+        self.lats = self.I.lats
+        self.lons = self.I.lons
+        self.cen_lat, self.cen_lon = self.get_cen_latlon()
+        return
+
+    def get_cen_latlon(self):
+        nlat, nlon = self.lats.shape
+        cen_lat = self.lats[int(nlat/2),int(nlon/2)]
+        cen_lon = self.lons[int(nlat/2),int(nlon/2)]
+        return cen_lat, cen_lon
 
     def load_wrfout_info(self):
         self.lat_0 = self.I.nc.CEN_LAT
@@ -133,8 +189,10 @@ class Grid:
         self.llcrnrlat = self.I.lats[0,0]
         self.urcrnrlon = self.I.lons[-1,-1]
         self.urcrnrlat = self.I.lats[-1,-1]
-        self.xx = self.I.xx
-        self.yy = self.I.yy
+        self.cen_lat = self.I.cen_lat
+        self.cen_lon = self.I.cen_lon
+        # self.xx = self.I.xx
+        # self.yy = self.I.yy
         self.lons = self.I.lons
         self.lats = self.I.lats
         return

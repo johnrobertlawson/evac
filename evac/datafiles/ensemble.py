@@ -5,6 +5,7 @@ import datetime
 
 import numpy as N
 
+from evac.utils.grid import Grid
 import evac.utils as utils
 from evac.datafiles.wrfout import WRFOut
 from evac.datafiles.gefs import GEFS
@@ -128,6 +129,9 @@ class Ensemble:
                                 for x in range(self.nt_per_file)]
         else:
             raise Exception("Need to implement validtimes over numerous file times.")
+
+    def get_grid(self,dom=1):
+        return Grid(self.arbitrary_pick(dataobj=True,dom=dom))
 
     def compute_fdt(self):
         """Compute the difference in time between each data file's first entry.

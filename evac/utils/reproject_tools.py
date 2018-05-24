@@ -187,8 +187,10 @@ def reproject(data_orig,xx_orig=False,yy_orig=False,lats_orig=False,lons_orig=Fa
         yy_new_dim = len(yy_new)
         mx,my = N.meshgrid(xx_new,yy_new)
     elif len(xx_new.shape)== 2:
-        xx_new_dim = len(xx_new[0,:])
-        yy_new_dim = len(yy_new[:,0])
+        xx_new_dim = len(xx_new[:,0])
+        # xx_new_dim = len(xx_new[0,:])
+        yy_new_dim = len(yy_new[0,:])
+        # yy_new_dim = len(yy_new[:,0])
         mx,my = xx_new, yy_new
     else:
         raise Exception("Dimensions of xx_new and yy_new are too large.")

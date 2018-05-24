@@ -13,10 +13,12 @@ from evac.plot.scales import Scales
 class ThumbNails(Figure):
     """ Plot multiple subplots.
     """
-    def __init__(self,rowscols,fpath=None,outdir=None,fname='test_thumbs.png',verif=True):
+    def __init__(self,rowscols,fpath=None,outdir=None,fname='test_thumbs.png',
+                    verif=True,proj='merc'):
+        self.proj = proj
         if not fpath:
             fpath = os.path.join(outdir,fname)
-        super().__init__(fpath,**self.setup_figure(rowscols))
+        super().__init__(fpath,proj=proj,**self.setup_figure(rowscols))
         self.naxes = self.ax.size
 
     def setup_figure(self,rowscols):
@@ -28,17 +30,23 @@ class ThumbNails(Figure):
             )
         return init_dict
 
-    def plot_verif(self,data,lats=None,lons=None,subplotn=0,
-                    save=False,utc=None,vrbl=None,scales=None):
+    def plot_verif(self,data,grid,lats=None,lons=None,subplotn=0,
+                    save=False,utc=None,vrbl=None,scales=None,):
         """ Plot verification postage stamp.
         """
-        cmap,clvs = self.get_scales(vrbl=vrbl)
         ax = self.ax.flatten()[subplotn]
-        BE = BirdsEye(ax=ax,fig=self.fig,proj='merc')
+        cmap,clvs = self.get_scales(vrbl=vrbl)
+
+        # Set up panel
+        BE = BirdsEye(fpath=None,ax=ax,fig=self.fig,grid=grid,proj=self.proj)
+
+        # mplkwargs = dict('cmap':cmap, 'levels':clvs)
         BE.plot2D(data,save=False,drawcounties=True,
-                    cb=False,cmap=cmap
-                    cen_lat=cen_lat,cen_lon=cen_lon,W=W,
-                    **ld,)
+                    cb=False,
+                    # mplkwargs=mplkwargs,
+                    # cmap=cmap,cen_lat=cen_lat,cen_lon=cen_lon,W=W,**ld,
+                    cmap=cmap,levels=clvs,
+                    )
         ax.set_title("Verif")
         if save:
             self.save()
@@ -61,31 +69,30 @@ class ThumbNails(Figure):
                 clvs = None
         return cmap,clvs
 
-    def plot_fcst(self,data,titles=None,scales=None,
-                    W=None,cen_lon=None,cen_lat=None,
-                    vrbl=None,
-                    ld=None,save=True):
+    def plot_fcst(self,data,grid,titles=None,scales=None,
+                    # W=None,cen_lon=None,cen_lat=None,
+                    vrbl=None,ld=None,save=True):
         """
         Args:
             data: 3D numpy array, (members,lat,lon).
         """ 
+        self.nmems = data.shape[0]
 
         cmap, clvs = self.get_scales(scales=scales,vrbl=vrbl)
 
         if ld == None:
             ld = {}
 
-        if W == None:
-            raise Exception("WRFOut object needed until refactoring complete.")
+        # if W == None:
+            # raise Exception("WRFOut object needed until refactoring complete.")
 
-        if cen_lat == None:
-            raise Exception("Need cen_lat and cen_lon until refactoring complete.")
+        # if cen_lat == None:
+            # raise Exception("Need cen_lat and cen_lon until refactoring complete.")
 
         if titles is not None:
             title_itr = iter(titles)
 
         assert data.ndim == 3
-        assert data.shape[0] == self.nmems
         
         memlist = N.arange(self.naxes) - (self.naxes-self.nmems)
 
@@ -101,13 +108,14 @@ class ThumbNails(Figure):
                 # continue
             else:
                 assert nmem > -1
-                BE = BirdsEye(ax=ax,fig=self.fig,proj='merc')
+                BE = BirdsEye(fpath=None,ax=ax,fig=self.fig,grid=grid,proj=self.proj)
                 if titles is not None:
                     title = ax.set_title(next(title_itr))
                 print("Plotting forecast member #{} on subplot #{}".format(nmem,naxis))
-                BE.plot2D(data[nmem,:,:],save=False,drawcounties=True,
-                            clvs=clvs,cmap=cmap,cb=False,
-                            cen_lat=cen_lat,cen_lon=cen_lon,W=W,
-                            **ld,)
+                BE.plot2D(data[nmem,:,:],save=False,drawcounties=True,cb=True,
+                            # clvs=clvs,cmap=cmap,cb=False,
+                            # cen_lat=cen_lat,cen_lon=cen_lon,W=W,
+                            # **ld,
+                            levels=clvs,cmap=cmap)
         if save:
             self.save()

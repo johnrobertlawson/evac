@@ -15,6 +15,7 @@ import random
 from evac.datafiles.stageiv import StageIV
 from evac.datafiles.radar import Radar
 from evac.datafiles.obs import Obs
+from evac.utils.grid import Grid
 import evac.utils as utils
 
 class ObsGroup:
@@ -34,7 +35,7 @@ class ObsGroup:
             If there is ambiguity, obs_type needs to be a string
             that denotes which type is to be loaded. An exception
             is raised if this is left at "auto".
-        load_objects (bool): If False, the catalogue
+        return_instances (bool): If False, the catalogue
             dictionary is strings of filepaths and metadata only.
             Otherwise, objects are loaded into memory (how does
             the logic know what object to apply the class to?)
@@ -43,13 +44,13 @@ class ObsGroup:
             periods will be loaded into the catalogue.
         
     """
-    def __init__(self,fpath,obs_type='auto',load_objects=False,
+    def __init__(self,fpath,obs_type='auto',return_instances=False,
                     st4_1h=True,st4_6h=False,st4_24h=False):
 
         # By default, the full domain is returned
         self.return_subdomain = False
 
-        self.load_objects = load_objects
+        self.return_instances = return_instances
 
         # Gather all options specific to certain datatypes.
         self.st4_opts = {k:v for k,v in locals().items() if k.startswith("st4")}
@@ -58,8 +59,8 @@ class ObsGroup:
         self.hlist = self.return_st4_accumlist()
         assert self.hlist 
         
-        self.INSTANCES = self.return_instances()
-        self.PATTERNS = self.return_globpatterns()
+        self.INSTANCES = self.get_instances()
+        self.PATTERNS = self.get_globpatterns()
 
         # A list of all valid times within. Unique values only
         self.utcs = set()
@@ -76,8 +77,11 @@ class ObsGroup:
         # Assume lats/lons are constant for all files within catalogue
         self.lats, self.lons = self.get_latlons()
 
+        self.grid = Grid(self)
+
+
     @staticmethod
-    def return_instances():
+    def get_instances():
         INSTANCES = dict(stageiv = StageIV,
                         radar = Radar,
                         )
@@ -89,7 +93,7 @@ class ObsGroup:
         return self.INSTANCES[key]
 
     @staticmethod
-    def return_globpatterns():
+    def get_globpatterns():
         PATTERNS = dict(stageiv = 'ST4*',
                         radar = "n0q_*.png",
                         )
@@ -112,7 +116,7 @@ class ObsGroup:
     def fill_catalogue(self,obs_type):
         """ Gather observation files into dictionary.
 
-        If self.load_objects is True, instances will be created.
+        If self.return_instances is True, instances will be created.
 
         Args:
             obs_type: see Class docstring.
@@ -157,7 +161,7 @@ class ObsGroup:
                     # if self.catalogue[utc]
                     self.catalogue[utc][h] = {'fpath':f}
 
-                    if self.load_objects:
+                    if self.return_instances:
                         self.catalogue[utc][h]['loadobj'] = self.instance(f)
 
         elif obs_type == 'radar':
@@ -166,12 +170,12 @@ class ObsGroup:
                 utc = self.instance.date_from_fname(f=f)
                 self.utcs.add(utc)
                 self.catalogue[utc] = {'fpath':f}
-                if self.load_objects:
+                if self.return_instances:
                     self.catalogue[utc]['loadobj'] = self.instance(f)
 
         return self.catalogue
 
-    def catalogue_get(self,utc,auto_download=True,accum_hr=None,load_object=True):
+    def catalogue_get(self,utc,auto_download=True,accum_hr=None,return_instance=True):
                     #,loadobj=False):
         """ Load instance from catalogue.
 
@@ -199,7 +203,7 @@ class ObsGroup:
         else:
             fpath = ob['fpath']
 
-        if load_object:
+        if return_instance:
             return self.instance(utc=utc,fpath=fpath)
         return fpath
 
@@ -221,16 +225,16 @@ class ObsGroup:
         return data
 
     def get_latlons(self):
-        arb = self.arbitrary_pick(load_object=True)
+        arb = self.arbitrary_pick(return_instance=True)
         return arb.lats, arb.lons
         
-    def arbitrary_pick(self,load_object=False):
+    def arbitrary_pick(self,return_instance=False):
         """ 
         Todo:
             * How to make this arbitrary lookup general to any data type?
         """
         utc_arb = utils.get_random(self.utcs)
-        return self.catalogue_get(utc_arb,load_object=load_object)
+        return self.catalogue_get(utc_arb,return_instance=return_instance)
             
     def set_subdomain(self,Nlim,Elim,Slim,Wlim,enable=True):
         """ Set limited domain. Whenever get is called, cut down domain.
