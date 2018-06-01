@@ -5,6 +5,7 @@ import os
 import numpy as N
 
 from evac.stats.misc_stats import compute_contingency
+import evac.utils as utils
 
 class DetScores:
     """ Miscellaneous (and more simple) deterministic scores.
@@ -29,7 +30,7 @@ class DetScores:
         a,b,c,d (int)   :   Number of elements in 2x2 matrix.
     """
     def __init__(self,arr2x2=None,a=None,b=None,c=None,d=None,
-                    fcst_arr=None,obs_arr=None,thresh=None,overunder=None):
+                    fcst_arr=None,obs_arr=None,thresh=None,overunder=None,):
         if arr2x2 is not None:
             a,b,c,d = arr.flatten()
         elif fcst_arr is not None:
@@ -216,7 +217,7 @@ class DetScores:
         else:
             raise Exception("Specify from the following: \n{}".format(self.scores.keys()))
 
-    def compute_all(self,datadir=None,fname=None,):
+    def compute_all(self,save_output=False):
         """ If datadir/fname are not None, computed stats are saved.
         Else, they are just returned in the dictionary.
         """
@@ -224,8 +225,9 @@ class DetScores:
         for score in self.scores.keys():
             SCORES[score] = self.get(score)
             
-        if datadir:
-            datapath = os.path.join(datadir,fname)
+        if save_output:
+            datapath = save_output
+            utils.trycreate(datapath)
             print("Saving all data arrays to {}".format(datapath))
             N.savez(file=datapath,**SCORES)
             print("Saved.")

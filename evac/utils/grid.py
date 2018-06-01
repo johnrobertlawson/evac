@@ -5,6 +5,12 @@ import numpy as N
 import cartopy.crs as ccrs
 import pyproj
 import shapely
+from mpl_toolkits.basemap import Basemap
+import cartopy.crs as ccrs
+import numpy as N
+
+from evac.datafiles.wrfout import WRFOut
+from evac.utils.defaults import Defaults
 
 import evac.utils.reproject_tools as reproject_tools
 import evac.utils as utils
@@ -31,7 +37,7 @@ class Grid:
             other keyword arguments must be provided
         reproject_opts: dictionary of options for creating a new grid
     """
-    def __init__(self,base=None,lats=None,lons=None):
+    def __init__(self,base=None,lats=None,lons=None,use_basemap=True):
         # This is here to avoid circular imports
         from evac.datafiles.wrfout import WRFOut
         from evac.datafiles.obs import Obs
@@ -52,7 +58,10 @@ class Grid:
         if isinstance(base_check,dict):
             print("Creating new grid from reprojection options.")
             # self.xx, self.yy, self.lats, self.lons = self.create_grid(base)
-            self.create_grid(base)
+            if use_basemap:
+                self.create_grid_basemap(base)
+            else:
+                self.create_grid_cartopy(base)
         elif isinstance(base_check,WRFOut):
             print("Creating grid from WRFOut provided.")
             self.I = base
@@ -71,8 +80,31 @@ class Grid:
             raise NotImplementedError
 
         assert self.lats.ndim == 2
+        assert self.lons.ndim == 2
         # self.nlats, self.nlons = self.lats.shape
-        self.nlats, self.nlons = self.lats.shape
+        self.fill_attributes()
+
+    def get_corners(self):
+        self.llcrnrlon = self.lons[0,0]
+        self.llcrnrlat = self.lats[0,0]
+        self.urcrnrlon = self.lons[-1,-1]
+        self.urcrnrlat = self.lats[-1,-1]
+        # self.llcrnrlat = self.lats.min()
+        # self.llcrnrlon = self.lons.min()
+        # self.urcrnrlat = self.lats.max()
+        # self.urcrnrlon = self.lats.min()
+        return
+
+    def fill_attributes(self):
+        if not hasattr(self,'llcrnrlat'):
+            self.get_corners()
+        if not hasattr(self,'lat_ts'):
+            self.lat_ts = self.compute_lat_ts()
+        if not hasattr(self,'xx'):
+            self.xx, self.yy = self.m(self.lons,self.lats)
+        if not hasattr(self,'nlons'):
+            self.nlats, self.nlons = self.lats.shape
+        return
 
     def load_user_info(self,lats,lons):
         if lats.ndim == 1:
@@ -81,9 +113,49 @@ class Grid:
             self.lats = lats
             self.lons = lons
         self.cen_lat, self.cen_lon = self.get_cen_latlon()
+        self.get_corners()
+        self.compute_lat_ts()
+        self.nlats, self.nlons = self.lats.shape
+        self.m, *_ = self.basemap_grid()
         return
 
-    def create_grid(self,opts):
+    def compute_lat_ts(self):
+        self.lat_ts = (self.urcrnrlat-self.llcrnrlat)/2
+        return
+
+    def basemap_grid(self):
+            m, lats, lons, xx, yy = reproject_tools.create_new_grid(
+                Nlim=self.urcrnrlat,
+                Elim=self.urcrnrlon,Slim=self.llcrnrlat,
+                Wlim=self.llcrnrlon,lat_ts=self.lat_ts,
+                nx=self.nlons,ny=self.nlats)
+            return m, lats, lons, xx, yy
+
+    def create_grid_basemap(self,opts):
+        """ Basemap grid.
+        """
+        self.urcrnrlat = opts['urcrnrlat']
+        self.urcrnrlon = opts['urcrnrlon']
+        self.llcrnrlat = opts['llcrnrlat']
+        self.llcrnrlon = opts['llcrnrlon']
+        self.nx = opts['nx']
+        self.ny = opts['ny']
+
+        self.nlats = self.ny
+        self.nlons = self.nx
+
+        self.compute_lat_ts()
+
+        self.m, self.lats,self.lons, self.xx, self.yy = self.basemap_grid()#**opts,
+                                            #lat_ts=self.lat_ts,nlons=self.ny,nlats=self.nx)
+
+        self.dx = N.diff(self.xx).mean()
+        self.dy = N.diff(self.yy).mean()
+        print("Average dx = {:.1f}km and dy = {:.1f}km.".format(self.dx/1000,self.dy/1000))
+        # pdb.set_trace()
+        return
+
+    def create_grid_cartopy(self,opts):
         """ Generate a new grid without basemap.
 
         For consistency with WRF and basemap, the upper right and
@@ -166,12 +238,14 @@ class Grid:
         self.lats = self.I.lats
         self.lons = self.I.lons
         self.cen_lat, self.cen_lon = self.get_cen_latlon()
+        self.m = self.I.generate_basemap()
         return
 
     def load_radar_info(self):
         self.lats = self.I.lats
         self.lons = self.I.lons
         self.cen_lat, self.cen_lon = self.get_cen_latlon()
+        self.m = self.I.generate_basemap()
         return
 
     def get_cen_latlon(self):
@@ -195,6 +269,7 @@ class Grid:
         # self.yy = self.I.yy
         self.lons = self.I.lons
         self.lats = self.I.lats
+        *_, self.m = reproject_tools.create_WRFgrid(self.I.fpath)
         return
 
     # def create_basemap(self,bmkwargs=None,proj='merc'):
@@ -205,6 +280,9 @@ class Grid:
         # pass
 
     def convert_latlon_xy(self,lats,lons):
+        return self.m(lons,lats)
+
+    def convert_latlon_xy_cartopy(self,lats,lons):
         """ Convert lats/lons to x and y.
         """
         xx = N.ones_like(lats)
@@ -257,4 +335,8 @@ class Grid:
         """
         newgrid = False
         return newgrid
+
+    def __str__(self):
+        infostr = "Grid, based on {} instance type.".format(self.base_check.__class__)
+        return infostr
 

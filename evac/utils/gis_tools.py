@@ -11,6 +11,7 @@ import fnmatch
 import math
 import os
 import pdb
+import itertools
 import sys
 import time
 import glob
@@ -1485,3 +1486,27 @@ def get_ccrs_proj(proj,ckws=None):
                 )
 
     return PROJS[proj](**ckws)
+
+def colorblind_friendly(keys,fmt='RGB'):
+    colors = collections.OrderedDict(
+                blue=(0,114,178),
+                vermillion=(213,94,0),
+                reddishpurple=(204,121,167),
+                black=(0,0,0),
+                orange=(230,159,0),
+                skyblue=(86,180,233),
+                bluishgreen=(0,158,115),
+                yellow=(240,228,66),
+                )
+
+    NEWDICT = collections.OrderedDict()
+    colorloop = itertools.cycle(list(colors.keys()))
+    for key,color in zip(keys,colorloop):
+        if fmt == 'RGB':
+            NEWDICT[key] = [n/255 for n in colors[color]]
+        else:
+            raise Exception
+    return NEWDICT
+
+
+

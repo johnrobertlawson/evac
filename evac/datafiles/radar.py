@@ -8,6 +8,12 @@ import datetime
 
 import scipy
 import numpy as N
+from mpl_toolkits.basemap import Basemap
+import cartopy.crs as ccrs
+import numpy as N
+
+from evac.datafiles.wrfout import WRFOut
+from evac.utils.defaults import Defaults
 
 from evac.datafiles.pngfile import PNGFile
 import evac.utils as utils
@@ -125,7 +131,8 @@ class Radar(PNGFile,Obs):
             self.clvs = N.arange(0,90.0,0.5)
         # import pdb; pdb.set_trace()
 
-        self.lats1D = N.linspace(self.lry,self.uly,self.xlen)[::-1]
+        # self.lats1D = N.linspace(self.lry,self.uly,self.xlen)[::-1]
+        self.lats1D = N.linspace(self.lry,self.uly,self.xlen)
         self.lons1D = N.linspace(self.ulx,self.lrx,self.ylen)
         self.lons, self.lats = N.meshgrid(self.lons1D,self.lats1D)
         # self.lats, self.lons = N.meshgrid(self.lats1D,self.lons1D)
@@ -178,14 +185,15 @@ class Radar(PNGFile,Obs):
         return ('mesonet.agron.iastate.edu/archive/data/'
                 '{0:04d}/{1:02d}/{2:02d}/GIS/uscomp/'.format(*dt))
 
-    def generate_basemap(self,fig,ax,Nlim=False,Elim=False,Slim=False,
+    def generate_basemap(self,fig=None,ax=None,Nlim=False,Elim=False,Slim=False,
                             Wlim=False):
         """
         Generate basemap.
 
         """
-        self.fig = fig
-        self.ax = ax
+        if fig or ax:
+            self.fig = fig
+            self.ax = ax
         if not isinstance(Nlim,float):
             Nlim = self.uly
             Elim = self.lrx
@@ -198,11 +206,11 @@ class Radar(PNGFile,Obs):
                     urcrnrlat=Nlim,
                     urcrnrlon=Elim,
                     lat_ts=(Nlim-Slim)/2.0,
-                    resolution='l',
-                    ax=self.ax)
-        self.m.drawcoastlines()
-        self.m.drawstates()
-        self.m.drawcountries()
+                    resolution='l')
+        # self.m.drawcoastlines()
+        # self.m.drawstates()
+        # self.m.drawcountries()
+        return self.m
 
     def __get_subdomain(self,Nlim,Elim,Slim,Wlim,overwrite=False):
         """

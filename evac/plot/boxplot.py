@@ -22,25 +22,25 @@ class BoxPlot(Figure):
         *args: A number of dictionaries containing
             score data
     """
-    def __init__(self,outdir,fname='test_violin',*args,**kwargs):
-        self.fname = fname
-        self.outdir = outdir
-        super().__init__(self,*args,**kwargs)
+    def __init__(self,fpath=None,outdir=None,fname='test_violin',*args,**kwargs):
+        if fpath is None:
+            fpath = os.path.join(outdir,fname)
+        super().__init__(fpath=fpath,*args,**kwargs)
 
     def plot(self,data,mplargs=None,mplkwargs=None,
                     plotargs=None,plotkwargs=None,
             *args,**kwargs):
         """ Plot the things.
         """
-        clskwargs, mplkwargs, plotkwargs = self._get_plot_options2(plotargs=plotargs,
-                            plotkwargs=plotkwargs,mplargs=mplargs,mplkwargs=mplkwargs,
+        # clskwargs, mplkwargs, plotkwargs = self._get_plot_options2(plotargs=plotargs,
+                            # plotkwargs=plotkwargs,mplargs=mplargs,mplkwargs=mplkwargs,
                             # vrbl=self.vrbl,
-                            *args,**kwargs)
+                            # *args,**kwargs)
         # self.get_options?
         self.ax.boxplot(data,*args,**kwargs)
         # TODO: implement a setter method.
         # self.pass_mpl_settings()
 
-        if clskwargs['save']:
-            self.save()
+        # if clskwargs['save']:
+            # self.save()
 

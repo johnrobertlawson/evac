@@ -146,7 +146,7 @@ def create_new_grid(Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
             print("Check non-optional arguments.")
             raise Exception
         m = Basemap(projection=proj,llcrnrlat=Slim,llcrnrlon=Wlim,
-                    urcrnrlat=Nlim,urcrnrlon=Elim,lat_ts=lat_ts,resolution='h')
+                    urcrnrlat=Nlim,urcrnrlon=Elim,lat_ts=lat_ts,resolution=resolution)
     elif proj == 'lcc':
         # if None in (tlat1,tlat2,cen_lat,cen_lon,lllon,lllat,urlon,urlat,nx,ny):
         if None in (tlat1,tlat2,cen_lat,cen_lon,Nlim,Elim,Slim,Wlim,nx,ny):
@@ -181,6 +181,7 @@ def reproject(data_orig,xx_orig=False,yy_orig=False,lats_orig=False,lons_orig=Fa
     newgrid                 -   basemap class classobject
     """
     # xx_new,yy_new = newgrid(lons_orig,lats_orig)
+    # pdb.set_trace()
     assert len(xx_orig.shape) == 2
     if len(xx_new.shape) == 1:
         xx_new_dim = len(xx_new)

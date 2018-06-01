@@ -37,11 +37,14 @@ class BirdsEye(Figure):
             existing figure).
     """
 
-    def __init__(self,fpath,ax=None,fig=None,ideal=False,grid=None,proj=None):
+    def __init__(self,fpath,ax=None,fig=None,ideal=False,grid=None,proj='merc',
+        use_basemap=False):
         # ccrs_proj = grid.get_cartopy_proj(proj)
-        super().__init__(fpath=fpath,ax=ax,fig=fig,grid=grid)
+        super().__init__(fpath=fpath,ax=ax,fig=fig,grid=grid,use_basemap=use_basemap)
                             # proj=ccrs_proj,
         self.ideal = ideal
+        self.use_basemap = use_basemap
+        self.proj = proj
 
     def plot2D(self,data,plottype='contourf',locations=False,
                     save=True,smooth=1,title=False,cb=True,
@@ -50,9 +53,9 @@ class BirdsEye(Figure):
                     # nx=None,ny=None,cen_lat=None,cen_lon=None,
                     # lat_ts=None,W=None,
                     inline=False,cblabel=False,ideal=False,
-                    drawcounties=False,mplkwargs=None,
+                    draw_geography=True,mplkwargs=None,
                     extend=False,hold=False,
-                    lats=None,lons=None,
+                    lats=None,lons=None,proj=None,
                     # color='k',
                     *args,**kwargs):
 
@@ -85,6 +88,8 @@ class BirdsEye(Figure):
             kwargs: Alias for mplkwargs.
 
         """
+        if (proj is None) and (not ideal):
+            proj = getattr(self,'proj','merc')
         if mplkwargs is None:
             mplkwargs = {}
         mplkwargs.update(**kwargs)
@@ -114,32 +119,38 @@ class BirdsEye(Figure):
                 self.lons2d = lons
             else:
                 raise Exception("lats and lons not valid.")
+            assert self.lats2d.ndim == 2
 
-            self.x = self.lats2d
-            self.y = self.lons2d
-            
+            if self.use_basemap:
+                self.basemap_setup(proj=proj,draw_geography=draw_geography)
+                self.bmap = self.m
+                self.x, self.y = self.m(self.lons2d,self.lats2d)
+                # self.y = self.grid.yy
+            else:
+                raise Exception("Need to make Cartopy work")
+                self.x = self.lats2d
+                self.y = self.lons2d
 
         # mplkwargs['X'] = self.x
         # mplkwargs['Y'] = self.y
         # mplkwargs['Z'] = self.data
         mplargs = [self.x, self.y, self.data]
-
-        if drawcounties:
-           self.draw_counties()
+        
+        # pdb.set_trace()
 
         # TODO: move this logic to other methods
         if plottype == 'contour':
-            f1 = self.ax.contour(*mplargs,**mplkwargs)
+            f1 = self.bmap.contour(*mplargs,**mplkwargs)
             if inline:
                 plt.clabel(f1,inline=True,fmt='%d',color='black',fontsize=9)
         elif plottype == 'contourf':
-            f1 = self.ax.contourf(*mplargs,**mplkwargs)
+            f1 = self.bmap.contourf(*mplargs,**mplkwargs)
         elif plottype == 'pcolor':
-            f1 = self.ax.pcolor(*mplargs,**mplkwargs)
+            f1 = self.bmap.pcolor(*mplargs,**mplkwargs)
         elif plottype == 'pcolormesh':
-            f1 = self.ax.pcolormesh(*mplargs,**mplkwargs)
+            f1 = self.bmap.pcolormesh(*mplargs,**mplkwargs)
         elif plottype == 'scatter':
-            f1 = self.ax.scatter(*mplargs,**mplkwargs)
+            f1 = self.bmap.scatter(*mplargs,**mplkwargs)
         elif plottype == 'quiver':
             f1 = self.bmap.quiver(*mplargs,**mplkwargs)
         else:

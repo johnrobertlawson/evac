@@ -133,7 +133,12 @@ class StageIV(GribFile,Obs):
         arr = self.return_array()
         return arr[latidx,lonidx]
 
-    def projection(self):
+    # def generate_basemap(self):
+        # return self.m
+
+    # def projection(self):
+    
+    def generate_basemap(self):
         self.m = Basemap(projection='npstere',lon_0=-105.0,#lat_1=60.0,
                 # llcrnrlon=lllon,llcrnrlat=lllat,urcrnrlon=urlon,urcrnrlat=urlat,
                             boundinglat=24.701632)
@@ -152,6 +157,7 @@ class StageIV(GribFile,Obs):
 
         self.shape = self.lats.shape
         assert self.lats.shape == self.lons.shape
+        return self.m
 
     def __get_subdomain(self,Nlim,Elim,Slim,Wlim,overwrite=False):
         """ Overriden method from parent.

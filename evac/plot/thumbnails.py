@@ -4,6 +4,7 @@ import os
 import pdb
 
 import numpy as N
+from mpl_toolkits.basemap import Basemap
 
 from evac.plot.birdseye import BirdsEye
 from evac.plot.figure import Figure
@@ -14,35 +15,39 @@ class ThumbNails(Figure):
     """ Plot multiple subplots.
     """
     def __init__(self,rowscols,fpath=None,outdir=None,fname='test_thumbs.png',
-                    verif=True,proj='merc'):
+                    verif=True,proj='merc',use_basemap=False,
+                    figsize=(10,8)):
         self.proj = proj
+        self.use_basemap = use_basemap
         if not fpath:
             fpath = os.path.join(outdir,fname)
-        super().__init__(fpath,proj=proj,**self.setup_figure(rowscols))
+        super().__init__(fpath,proj=proj,use_basemap=use_basemap,
+                        **self.setup_figure(rowscols,figsize))
         self.naxes = self.ax.size
 
-    def setup_figure(self,rowscols):
+    def setup_figure(self,rowscols,figsize):
 
         init_dict = dict(
             nrows = rowscols[0],
             ncols = rowscols[1],
-            figsize = (10,8),
+            figsize = figsize,
             )
         return init_dict
 
     def plot_verif(self,data,grid,lats=None,lons=None,subplotn=0,
-                    save=False,utc=None,vrbl=None,scales=None,):
+                    save=False,utc=None,vrbl=None,scales=None,
+                    cb=True):
         """ Plot verification postage stamp.
         """
         ax = self.ax.flatten()[subplotn]
         cmap,clvs = self.get_scales(vrbl=vrbl)
 
         # Set up panel
-        BE = BirdsEye(fpath=None,ax=ax,fig=self.fig,grid=grid,proj=self.proj)
+        BE = BirdsEye(fpath=None,ax=ax,fig=self.fig,grid=grid,proj=self.proj,
+                    use_basemap=self.use_basemap)
 
         # mplkwargs = dict('cmap':cmap, 'levels':clvs)
-        BE.plot2D(data,save=False,drawcounties=True,
-                    cb=False,
+        BE.plot2D(data,save=False,cb=cb,
                     # mplkwargs=mplkwargs,
                     # cmap=cmap,cen_lat=cen_lat,cen_lon=cen_lon,W=W,**ld,
                     cmap=cmap,levels=clvs,
@@ -71,7 +76,7 @@ class ThumbNails(Figure):
 
     def plot_fcst(self,data,grid,titles=None,scales=None,
                     # W=None,cen_lon=None,cen_lat=None,
-                    vrbl=None,ld=None,save=True):
+                    vrbl=None,ld=None,save=True,cb=False):
         """
         Args:
             data: 3D numpy array, (members,lat,lon).
@@ -108,11 +113,12 @@ class ThumbNails(Figure):
                 # continue
             else:
                 assert nmem > -1
-                BE = BirdsEye(fpath=None,ax=ax,fig=self.fig,grid=grid,proj=self.proj)
+                BE = BirdsEye(fpath=None,ax=ax,fig=self.fig,grid=grid,proj=self.proj,
+                            use_basemap=self.use_basemap)
                 if titles is not None:
                     title = ax.set_title(next(title_itr))
                 print("Plotting forecast member #{} on subplot #{}".format(nmem,naxis))
-                BE.plot2D(data[nmem,:,:],save=False,drawcounties=True,cb=True,
+                BE.plot2D(data[nmem,:,:],save=False,cb=cb,
                             # clvs=clvs,cmap=cmap,cb=False,
                             # cen_lat=cen_lat,cen_lon=cen_lon,W=W,
                             # **ld,

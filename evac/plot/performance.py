@@ -5,6 +5,7 @@ import numpy as N
 import matplotlib as M
 import matplotlib.pyplot as plt
 
+import evac.utils as utils
 from evac.utils.evac_numbers import is_number, has_integers, is_integer, is_array
 from evac.plot.figure import Figure
 
@@ -38,15 +39,17 @@ class Performance(Figure):
         Performance.contours['bias'] = [0.5,1,1.5]
 
     Args:
-        outpath     :   directory for saving figure
+        fpath     :   directory for saving figure
         fname       :   file name
         legendkwargs:   key-words for ax.legend().
     """
-    def __init__(self,outpath,fname,legendkwargs=None):
-        self.outpath = outpath
-        self.fname = fname
-        #self.ncol = ncol
+    def __init__(self,fpath=None,outdir=None,fname=None,legendkwargs=None,
+                    legend=False):
+        if fpath is None:
+            fpath = os.path.join(outdir,fname)
+        super().__init__(fpath=fpath)
         self.lk = legendkwargs
+        self.legend = legend
 
         # Plotting settings
         self.contours = {}
@@ -180,6 +183,8 @@ class Performance(Figure):
             a,b,c,d :   integers of contingency table
             plotkwargs  :   plotting system for matplotlib.
         """
+        if plotkwargs is None:
+            plotkwargs = dict()
         def get_scores(a,b,c,d):
             DS = DetScores(a=a,b=b,c=c,d=d)
             pod = DS.get('POD')
@@ -204,13 +209,15 @@ class Performance(Figure):
                     raise Exception
             pod,sr = get_scores(a,b,c,d)
 
-        self.ax.scatter(sr,pod,label=label,**plotkwargs)
+        self.ax.scatter(sr,pod,label=label,zorder=500,**plotkwargs)
         # print("Ready to save via save(), or plot more with plot_data().")
 
     def save(self,):
         """ Extends Figure.save() by completing tasks before saving.
         """
-        self.ax.legend(**self.lk)
+        if self.legend:
+            utils.wowprint("**Drawing legend.**")
+            self.ax.legend(**self.lk)
         # self.fig.tight_layout()
         # self.fig.subplots_adjust(top=0.95,right=0.95)
         # super(Performance,self).save(tight=False)

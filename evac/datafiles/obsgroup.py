@@ -10,6 +10,7 @@ import glob
 import random
 
 # import numpy as N
+from mpl_toolkits.basemap import Basemap
 
 # import evac.utils as utils
 from evac.datafiles.stageiv import StageIV
@@ -78,6 +79,7 @@ class ObsGroup:
         self.lats, self.lons = self.get_latlons()
 
         self.grid = Grid(self)
+        # self.m = Grid.m
 
 
     @staticmethod
@@ -267,3 +269,6 @@ class ObsGroup:
                 kwargs[k] = v
         ob.plot(*args,**kwargs)
         return
+
+    def generate_basemap(self):
+        return self.arbitrary_pick(return_instance=True).generate_basemap()

@@ -468,7 +468,7 @@ class Ensemble:
         # pdb.set_trace()
         return all_ens_data
 
-    def accumulated(self,vrbl='RAINNC',itime=0,ftime=-1,level=False,Nlim=False,
+    def accumulated(self,vrbl='RAINNC',itime=None,ftime=None,level=False,Nlim=False,
                     Elim=False,Slim=False,Wlim=False,inclusive=False,
                     lons=None,lats=None,dom=1,fcsttime=None,accum_hr=1,
                     members=None):
@@ -481,13 +481,14 @@ class Ensemble:
                 start of the data file...
 
         """
-        if (itime == False) and (ftime == False) and (fcsttime != None):
+        if (itime is False) and (ftime is False) and (fcsttime is not None):
             ftime = fcsttime
             itime = ftime - datetime.timedelta(seconds=3600*accum_hr)
         elif itime==0:
             itime = self.itime
         elif ftime==-1:
             ftime = self.ftime
+        print("Accumulation computed from {} to {}".format(itime,ftime))
 
         if vrbl is 'RAINNC':
             itime_rainnc = self.get('RAINNC',fcsttime=itime,
