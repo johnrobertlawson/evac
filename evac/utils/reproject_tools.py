@@ -16,8 +16,8 @@ from scipy.interpolate import griddata
 from mpl_toolkits.basemap import Basemap
 import numpy as N
 
-from WEM.postWRF.postWRF.wrfout import WRFOut
-from WEM.postWRF.postWRF.hrrr import HRRR
+from evac.datafiles.wrfout import WRFOut
+from evac.datafiles.hrrr import HRRR
 
 class VerifGrid:
     """

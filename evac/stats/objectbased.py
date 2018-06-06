@@ -136,7 +136,7 @@ class ObjectBased:
     def plot(self,fpath,fmt='default',W=None,vrbl='REFL_comp',
                 # Nlim=None,Elim=None,Slim=None,Wlim=None):
                 ld=None,lats=None,lons=None):
-        """ Plot images relating to objects.
+        """ Plot basic quicklook images.
 
         Setting fmt to 'default' will plot raw data,
         plus objects identified.

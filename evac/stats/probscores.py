@@ -16,7 +16,8 @@ class ProbScores:
         self.xa         :   observation field (2D)
         self.xfs        :   forecast fields (3D)
     """
-    def __init__(self,og=None,pfg=None,xa=None,xfs=None):
+    def __init__(self,og=None,pfg=None,xa=None,xfs=None,
+                    allow_1d=False):
         self.og = og
         self.pfg = pfg
         self.xa = xa
@@ -24,7 +25,10 @@ class ProbScores:
         if (og is not None) and (pfg is not None):
             assert self.og.size == self.pfg.size
         elif (xa is not None) and (xfs is not None):
-            assert self.xa.shape == self.xfs[0,:,:].shape
+            if allow_1d:
+                assert self.xfs.ndim == 1
+            else:
+                assert self.xa.shape == self.xfs[0,:,:].shape
         else:
             raise Exception
 
@@ -179,33 +183,6 @@ class ProbScores:
             xfs_sort[xfs_sort < 0] = 0
             # xfs_sort[xfs_sort == N.nan] = 0
 
-        """
-        # the probability levels for each ensemble member, tiled on grid
-        # pclist = N.arange(nens)/nens
-        # Probxx = N.swapaxes(N.tile(pclist,(ny,nx,1)),0,2)
-        # Probxx = N.ones_like(xfs_sort[0,:,:]) * (N.arange(nens)/nens)
-
-        # Px, the probability that xa is less than fcst:
-        # Px = N.sum(N.greater(xfs_sort,self.xa),axis=0)/nens
-        # Pax = (self.heaviside(xfs_sort-self.xa)).astype(int)
-
-        # The difference between each ensemble member
-        # dx = N.diff(xfs_sort,axis=0)
-        # Now the integration
-        # integrand = (Px-Pax)**2 * dx
-        # crps = N.sum(integrand)
-
-        def integrand(a):
-            Px,Pax = a
-            return (Px-Pax)**2
-
-        crps,err = S.integrate.quad(integrand,-N.inf,N.inf,args=([Px,Pax]))
-        """
-        # pdb.set_trace()
-        # probarr = N.sum(N.less_equal(xfs_sort,threshs),axis=0)
-        # obsarr = (self.heaviside(thresh-self.xa)).astype(int)
-        # crps = N.sum( (probarr-obsarr)**2)
-
         c = N.zeros_like(threshs)
         for thidx,th in enumerate(threshs):
             # Sum of 2D field of probs/heaviside
@@ -215,12 +192,10 @@ class ProbScores:
         # Average over all thresholds and grid points
         crps = (N.sum(c))/(nens*Px.size)
 
-        # pdb.set_trace()
         return crps
 
         # Decompose? What about uncertainty
 
-    # def compute_crps(self,xfs,xa):
     def compute_crps_old(self,mean=True,debug=False):
         """
         Some inspiration from:

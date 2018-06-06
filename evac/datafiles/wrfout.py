@@ -12,12 +12,12 @@ from netCDF4 import Dataset
 
 import evac.utils as utils
 import evac.utils.met_constants as mc
-from WEM.postWRF.postWRF.ncfile import NC
+from evac.datafiles.ncfile import NCFile
 import evac.derived.derived as derived
 
 debug_get = 0
 
-class WRFOut(NC):
+class WRFOut(NCFile):
     """Compute or load data from netCDF file.
 
     Dimensions of 4D variable X are X.dimensions:
@@ -103,6 +103,7 @@ class WRFOut(NC):
             self.ideal_init()
 
         self.Nlim, self.Elim, self.Slim, self.Wlim = self.get_limits()
+        self.initutc = utils.ensure_datetime(self.utcs[0])
 
     def get_dimensions(self,fmt='em_real'):
         self.t_dim = len(self.nc.dimensions['Time'])
@@ -148,13 +149,14 @@ class WRFOut(NC):
         pass
 
 
-    def wrftime_to_datenum(self,fmt='timegm'):
+    def wrftime_to_datenum(self,fmt='datetime'):
         """
         Convert wrf's weird Times variable to datenum or datetime.
 
         """
         times = self.wrf_times
-        wrf_times_epoch = N.zeros([times.shape[0]])
+        # wrf_times_epoch = N.zeros([times.shape[0]])
+        wrf_times_epoch = N.empty([times.shape[0]])
 
         for n,t in enumerate(times):
             tstr = ''.join(t.astype(str))
@@ -169,7 +171,9 @@ class WRFOut(NC):
             if fmt == 'timegm':
                 wrf_times_epoch[n] = calendar.timegm([yr,mth,day,hr,mins,sec])
             elif fmt == 'datetime':
-                wrf_time_epoch[n] = datetime.datetime(yr,mth,day,hr,mins,sec)
+                wrf_times_epoch[n] = datetime.datetime(yr,mth,day,hr,mins,sec)
+            else:
+                raise Exception
         return wrf_times_epoch
 
 
@@ -822,3 +826,7 @@ class WRFOut(NC):
             llcrnrlat = self.lats[0,0],
             llcrnrlon = self.lons[0,0])
         return returndict
+
+    def __str__(self):
+        return("This WRFOut object has f{self.nmems} members and"
+                " was initialised at f{self.initutc}.")

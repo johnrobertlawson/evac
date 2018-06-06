@@ -58,7 +58,7 @@ class Ensemble:
         allow_empty (bool): if False, raise exception if the ensemble
             instance has no members.
     """
-    def __init__(self,rootdir,initutc,ndoms=1,ctrl='ctrl',aux=False,
+    def __init__(self,rootdir,initutc=None,ndoms=1,ctrl='ctrl',aux=False,
                 model='wrf',fmt='em_real',f_prefix='default',loadobj=True,
                 ncf=False,debug=False,onefolder=False,fileformat='netcdf',
                 gefsformat=False,allow_empty=True):
@@ -77,15 +77,19 @@ class Ensemble:
         self.doms = list(range(1,ndoms+1))
 
         if ncf:
-            f_prefix = [ncf for d in self.doms]
+            self.f_prefix = [ncf for d in self.doms]
         elif f_prefix is 'default':
-            f_prefix = ['wrfout_d{0:02d}'.format(d) for d in self.doms]
+            self.f_prefix = ['wrfout_d{0:02d}'.format(d) for d in self.doms]
+        else:
+            raise Exception
 
         self.debug = debug
         self.fileformat = fileformat
         self.ctrl = ctrl
         # Remove any trailing slash!
         self.rootdir = rootdir.rstrip("/")
+        if initutc is None:
+            assert ncf
         self.initutc = initutc
         self.fmt = fmt
         self.loadobj = loadobj
@@ -93,13 +97,16 @@ class Ensemble:
         self.ncf = ncf
 # 
         self.isaux = True if isinstance(self.aux,dict) else False
-        if (f_prefix is not None) and (len(f_prefix) != self.ndoms):
+        if (self.f_prefix is not None) and (len(self.f_prefix) != self.ndoms):
             raise Exception("Length of main datafile prefixes must "
                                 "match number of domains.")
         self.isctrl = True if ctrl else False
-        self.members, self.fdt = self.get_members(f_prefix=f_prefix)
+        self.members, self.fdt = self.get_members()
         self.member_names = sorted(self.members.keys())
         self.nmems = len(self.member_names)
+        assert self.nmems > 0
+        if self.initutc is None:
+            self.initutc = self.arbitrary_pick(dataobj=True).initutc
         self.nperts = self.nmems - self.isctrl
 
         # Check to see if the ensemble isn't just an empty list!
@@ -168,7 +175,7 @@ class Ensemble:
         return members, fdt
 
 
-    def get_members(self,f_prefix=None,):
+    def get_members(self,):
         """Create a dictionary with all data.
 
         Format is:
@@ -180,14 +187,14 @@ class Ensemble:
         """
         members = {}
         if self.model == 'gefs':
-            members,fdt = self.get_gefs_members(f_prefix=f_prefix)
+            members,fdt = self.get_gefs_members()
         elif self.model == 'wrf':
-            members,fdt = self.get_wrf_members(f_prefix=f_prefix)
+            members,fdt = self.get_wrf_members()
         else:
             raise NotImplementedError
         return members, fdt
 
-    def get_wrf_members(self,f_prefix=None):
+    def get_wrf_members(self):
         members = {}
         fdt = None
         # TODO: refactor to use self.
@@ -202,9 +209,10 @@ class Ensemble:
             # if dom in self.aux:
                 # aux_fname = self.get_data_fname(dom=dom,prod='aux')
             # Each ensemble member has a domain
+            print(main_fname)
             for dirname,subdirs,files in os.walk(self.rootdir):
                 # If ensemble size = 1, there will be no subdirs.
-                matched_files = [f for f in files if f.startswith(f_prefix[domn])]
+                matched_files = [f for f in files if f.startswith(self.f_prefix[domn])]
                 # pdb.set_trace()
                 if main_fname in matched_files:
                     print("Found",main_fname,"in",dirname)
