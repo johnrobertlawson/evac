@@ -105,8 +105,6 @@ class Ensemble:
         self.member_names = sorted(self.members.keys())
         self.nmems = len(self.member_names)
         assert self.nmems > 0
-        if self.initutc is None:
-            self.initutc = self.arbitrary_pick(dataobj=True).initutc
         self.nperts = self.nmems - self.isctrl
 
         # Check to see if the ensemble isn't just an empty list!
@@ -124,7 +122,11 @@ class Ensemble:
         if self.fdt is None:
             # self.ftime = self.filetimes[-1] + datetime.timedelta(seconds=self.hdt)
             self.timespan_sec = self.hdt*(self.nt_per_file-1)*len(self.filetimes)
-            self.ftime = self.itime + datetime.timedelta(seconds=self.timespan_sec)
+            # Why is this happening?! TODO
+            if isinstance(self.timespan_sec,datetime.timedelta):
+                self.ftime = self.itime + self.timespan_sec
+            else:
+                self.ftime = self.itime + datetime.timedelta(seconds=self.timespan_sec)
         else:
             self.ftime = self.filetimes[-1] + (
                     (self.nt_per_file-1)*datetime.timedelta(seconds=self.fdt))
@@ -237,9 +239,9 @@ class Ensemble:
                         members[member] = {d:{} for d in doms}
                     # if dom==1:
                         # self.member_names.append(member)
-                    t = self.initutc
                     while True:
                         if not self.ncf:
+                            t = self.initutc
                             t_fname = utils.get_netcdf_naming(self.model,t,dom)
                         else:
                             t_fname = self.ncf
@@ -251,6 +253,9 @@ class Ensemble:
                             # All wrfout files have been found
                             break
                         else:
+                            if self.initutc is None:
+                                self.initutc = dataobj.initutc
+                                t = self.initutc
                             # print("Assigning file path and maybe object.")
                             members[member][dom][t] = {'dataobj':dataobj,
                                                 'fpath':fpath,
@@ -690,3 +695,20 @@ class Ensemble:
     def get_cenlatlons(self,dom=1):
         W = self.arbitrary_pick(dataobj=True,dom=dom)
         return W.cen_lat, W.cen_lon
+
+    def __str__(self):
+        return ("This ensemble contains {} members, was initialised"
+                " at {}, and has {} domains. Root directory is {}".format(
+                    self.nmems,self.initutc,self.ndoms,self.rootdir))
+
+    def __iter__(self):
+        self.pick_member_idx = -1
+        return self
+
+    def __next__(self):
+        self.pick_member_idx += 1
+        if self.pick_member_idx > self.nmems-1:
+            raise StopIteration
+        mem = self.member_names[self.pick_member_idx]
+        # return mem, self.members[mem]
+        return mem

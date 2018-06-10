@@ -149,14 +149,15 @@ class WRFOut(NCFile):
         pass
 
 
-    def wrftime_to_datenum(self,fmt='datetime'):
+    def wrftime_to_datenum(self,fmt='timegm'):
         """
         Convert wrf's weird Times variable to datenum or datetime.
 
         """
         times = self.wrf_times
         # wrf_times_epoch = N.zeros([times.shape[0]])
-        wrf_times_epoch = N.empty([times.shape[0]])
+        # wrf_times_epoch = N.empty([times.shape[0]],)
+        wrf_times_epoch = list()
 
         for n,t in enumerate(times):
             tstr = ''.join(t.astype(str))
@@ -169,9 +170,11 @@ class WRFOut(NCFile):
             sec = int(tstr[17:19])
 
             if fmt == 'timegm':
-                wrf_times_epoch[n] = calendar.timegm([yr,mth,day,hr,mins,sec])
+                # wrf_times_epoch[n] = calendar.timegm([yr,mth,day,hr,mins,sec])
+                wrf_times_epoch.append(calendar.timegm([yr,mth,day,hr,mins,sec]))
             elif fmt == 'datetime':
-                wrf_times_epoch[n] = datetime.datetime(yr,mth,day,hr,mins,sec)
+                wrf_times_epoch.append(datetime.datetime(yr,mth,day,hr,mins,sec))
+                # wrf_times_epoch[n] = datetime.datetime(yr,mth,day,hr,mins,sec)
             else:
                 raise Exception
         return wrf_times_epoch

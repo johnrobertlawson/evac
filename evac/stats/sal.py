@@ -65,7 +65,7 @@ class SAL:
 
     def compute_amplitude(self,):
         A = (N.mean(self.OBM.raw_data) - N.mean(self.OBC.raw_data))/(
-                0.5*(N.mean(self.OBM.raw_data) + N.mean(self.OBC.raw_data))
+                0.5*(N.mean(self.OBM.raw_data) + N.mean(self.OBC.raw_data)))
         return A
 
     def compute_location(self,):

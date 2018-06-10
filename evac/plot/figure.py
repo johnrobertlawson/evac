@@ -3,6 +3,7 @@ import os
 
 import numpy as N
 import matplotlib as M
+M.use("Agg")
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from cartopy.feature import NaturalEarthFeature
