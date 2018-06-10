@@ -333,3 +333,9 @@ class ProbScores:
     def cdf_(self,):
         pass
 
+    def ignorance(self):
+        pass
+
+    def information_gain(self):
+        pass
+
