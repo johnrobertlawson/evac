@@ -13,7 +13,7 @@ import numpy as N
 import scipy
 import scipy.signal
 
-import evac.utils.gis_tools as utils
+import evac.utils as utils
 from evac.datafiles.wrfout import WRFOut
 
 def compute_bool_thresh(arr,overunder,threshold):

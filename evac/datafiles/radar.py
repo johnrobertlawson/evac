@@ -131,8 +131,8 @@ class Radar(PNGFile,Obs):
             self.clvs = N.arange(0,90.0,0.5)
         # import pdb; pdb.set_trace()
 
-        # self.lats1D = N.linspace(self.lry,self.uly,self.xlen)[::-1]
-        self.lats1D = N.linspace(self.lry,self.uly,self.xlen)
+        self.lats1D = N.linspace(self.lry,self.uly,self.xlen)[::-1]
+        # self.lats1D = N.linspace(self.lry,self.uly,self.xlen)
         self.lons1D = N.linspace(self.ulx,self.lrx,self.ylen)
         self.lons, self.lats = N.meshgrid(self.lons1D,self.lats1D)
         # self.lats, self.lons = N.meshgrid(self.lats1D,self.lons1D)
