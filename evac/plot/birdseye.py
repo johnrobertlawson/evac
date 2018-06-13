@@ -113,7 +113,8 @@ class BirdsEye(Figure):
                 self.lats2d = self.grid.lats
                 self.lons2d = self.grid.lons
             elif lats.ndim == 1:
-                self.lats2d, self.lons2d = N.meshgrid(lats,lons)
+                # self.lats2d, self.lons2d = N.meshgrid(lats,lons)
+                self.lons2d, self.lats2d = N.meshgrid(lons,lats)
             elif lats.ndim == 2:
                 self.lats2d = lats
                 self.lons2d = lons

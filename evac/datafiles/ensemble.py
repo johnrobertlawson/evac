@@ -400,7 +400,8 @@ class Ensemble:
                         fcsttime=False,Nlim=None,Elim=None,
                         Slim=None,Wlim=None,inclusive=False,
                         lats=None,lons=None,dom=1,members=None,
-                        accum_hr=1,fcsthr=None,fcstmin=None):
+                        accum_hr=1,fcsthr=None,fcstmin=None,
+                        member=None):
         """
         Returns 5D array of data for ranges.
 
@@ -422,6 +423,9 @@ class Ensemble:
             * fcsttime and utc are the same to maintain compatibility
             because get() APIs in different areas of evac/WEM
         """
+        if members is None:
+            members = member
+
         if fcsthr and (not fcsttime) and (not itime) and (not ftime) and (not utc):
             fcsttime = self.initutc + datetime.timedelta(seconds=3600*float(fcsthr))
         elif fcstmin is not None:
@@ -431,11 +435,17 @@ class Ensemble:
         # pdb.set_trace()
         if (members is None) or (members == 'all'):
             members = self.member_names
-        elif isinstance(members,str):
-            members = (members,)
+        elif isinstance(members,(str,int)):
+            members = [members,]
             assert len(members) == 1
         elif isinstance(members,(list,tuple)):
             pass
+
+        if isinstance(members[0],int):
+            name_list = []
+            for i,member in enumerate(members):
+                name_list.append(self.member_names[i])
+            members = name_list
 
         if vrbl is 'accum_precip':
             qpf = self.accumulated(vrbl='RAINNC',itime=itime,ftime=ftime,

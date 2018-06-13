@@ -88,18 +88,6 @@ class ProbScores:
             BS = (1/Ng) * N.sum((self.pfg-self.og.astype(float))**2)
         return BS
 
-    def compute_ignorance(self,):
-        """ Compute the Ignorance score.
-
-        Using Toeter and Ahrens 2012 paper, MWR
-
-        Todo:
-            * Decompose
-
-        Args:
-        """
-        pass 
-
     def compute_bss(self):
         """TODO
         """
@@ -333,8 +321,18 @@ class ProbScores:
     def cdf_(self,):
         pass
 
-    def ignorance(self):
-        pass
+    def compute_ignorance(self,):
+        """ Compute the Ignorance score.
+
+        Using Toeter and Ahrens 2012 paper, MWR
+
+        Todo:
+            * Decompose
+
+        Args:
+        """
+        pass 
+
 
     def information_gain(self):
         pass

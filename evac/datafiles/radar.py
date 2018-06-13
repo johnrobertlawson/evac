@@ -50,6 +50,7 @@ class Radar(PNGFile,Obs):
     Todos:
         * Remove redundant basemap generation method and integrate with
             any new cartopy plotting scripts in :any:`evac.plot.birdseye`.
+        * Downloading appears to be broken
 
     Args:
         fpath: Absolute path to (a) folder with radar data or
@@ -63,6 +64,7 @@ class Radar(PNGFile,Obs):
 
         # The _root attributes do not have an extension (.png, .wld)
         if fpath.endswith('.png'):
+            utils.wowprint("Looking for radar **data file**.")
             self.fpath_png = fpath
             self.fpath_root = fpath[:-4]
             self.fname_root = os.path.basename(fpath)[:-4]
@@ -70,6 +72,7 @@ class Radar(PNGFile,Obs):
             self.utc = self.date_from_fname(self.fpath_png)
             self.fmt = self.get_fmt()
         else:
+            utils.wowprint("About to **download** radar data file.")
             self.fdir = fpath
             assert utc is not None
             self.utc = utc
@@ -79,24 +82,15 @@ class Radar(PNGFile,Obs):
             self.fpath_root = os.path.join(self.fdir,self.fname_root)
             self.fpath_png = self.fpath_root + '.png'
 
-            # Check for file
-            # Download if not available
-            for ex in ('.png','.wld'):
-                scan = glob.glob(self.fpath_root+ex)
-                # scan1 = glob.glob(self.fpath_root+ex)
-                # scan2 = glob.glob(self.fpath_root+ex)
-                print("Looking in",fpath)
-                print("Contents:",scan)
+            self.download_data()
 
-                if len(scan) == 0:
-                    self.download_data(ext=ex)
-        # pdb.set_trace()
         # This is to maintain API with ObsGroup etc
         self.fpath = self.fpath_png
 
         self.fpath_wld = self.fpath_root + '.wld'
 
-        self.data = scipy.ndimage.imread(self.fpath_png,mode='P')
+        data = scipy.ndimage.imread(self.fpath_png,mode='P')
+        self.data = N.flipud(data)
 
         self.xlen, self.ylen, = self.data.shape
 
@@ -131,8 +125,8 @@ class Radar(PNGFile,Obs):
             self.clvs = N.arange(0,90.0,0.5)
         # import pdb; pdb.set_trace()
 
-        self.lats1D = N.linspace(self.lry,self.uly,self.xlen)[::-1]
-        # self.lats1D = N.linspace(self.lry,self.uly,self.xlen)
+        # self.lats1D = N.linspace(self.lry,self.uly,self.xlen)[::-1]
+        self.lats1D = N.linspace(self.lry,self.uly,self.xlen)
         self.lons1D = N.linspace(self.ulx,self.lrx,self.ylen)
         self.lons, self.lats = N.meshgrid(self.lons1D,self.lats1D)
         # self.lats, self.lons = N.meshgrid(self.lats1D,self.lons1D)
@@ -152,7 +146,6 @@ class Radar(PNGFile,Obs):
             dest_fpath = os.path.join(self.fdir,self.fname_root+ex)
             cmd1 = 'wget {0} -O {1}'.format(urlf,dest_fpath)
             os.system(cmd1)
-            # pdb.set_trace()
         return
 
     def get_fmt(self):
