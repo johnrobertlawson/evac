@@ -124,7 +124,7 @@ class Grid:
         return
 
     def basemap_grid(self):
-            m, lats, lons, xx, yy = reproject_tools.create_new_grid(
+            m, lons, lats, xx, yy = reproject_tools.create_new_grid(
                 Nlim=self.urcrnrlat,
                 Elim=self.urcrnrlon,Slim=self.llcrnrlat,
                 Wlim=self.llcrnrlon,lat_ts=self.lat_ts,
