@@ -324,10 +324,23 @@ class Grid:
         """
         pass
 
-    def trim_to(self,Grid2):
+    def cut_to(self,data,dest_grid):
         """ Trim this grid to the lat/lon box of another instance.
         """
-        pass
+        ld = dest_grid.get_limits()
+        lats = dest_grid.lats
+        lons = dest_grid.lons
+        cut_data, cut_lats, cut_lons = utils.return_subdomain(
+                            data=data,lats=lats,lons=lons,**ld)
+        return cut_data, cut_lats, cut_lons
+
+    def get_limits(self,):
+        limits = dict(
+                    Nlim = self.Nlim,
+                    Elim = self.Elim,
+                    Slim = self.Slim,
+                    Wlim = self.Wlim)
+        return limits
 
     @staticmethod
     def interp_common_grid(Grid1,Grid2):
