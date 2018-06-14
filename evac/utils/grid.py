@@ -104,6 +104,11 @@ class Grid:
             self.xx, self.yy = self.m(self.lons,self.lats)
         if not hasattr(self,'nlons'):
             self.nlats, self.nlons = self.lats.shape
+        if not hasattr(self,'Nlim'):
+            self.Nlim = self.urcrnrlat
+            self.Elim = self.urcrnrlon
+            self.Slim = self.llcrnrlat
+            self.Wlim = self.llcrnrlon
         return
 
     def load_user_info(self,lats,lons):
