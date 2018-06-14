@@ -671,7 +671,7 @@ class Ensemble:
         W = self.arbitrary_pick(dataobj=True,dom=dom)
         return W.get_corners()
 
-    def get_limits(self,dom,fmt='dict'):
+    def get_limits(self,dom=1,fmt='dict'):
         """ Return the limits of the domain.
 
         Args:
@@ -689,9 +689,15 @@ class Ensemble:
         else:
             raise Exception
 
-    def get_latlons(self,dom):
+    def get_latlons(self,dom=1):
         W = self.arbitrary_pick(dataobj=True,dom=dom)
         return W.lats, W.lons
+
+    def get_lats(self,dom=1):
+        return self.get_latlons(dom=dom)[0]
+
+    def get_lons(self,dom=1):
+        return self.get_latlons(dom=dom)[1]
 
     # def get_xx_yy(self,dom=1):
         # W = self.arbitrary_pick(dataobj=True,dom=dom)
