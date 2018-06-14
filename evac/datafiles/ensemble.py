@@ -344,6 +344,9 @@ class Ensemble:
                                             and ftime are None.)
             Nlim, Elim, Slim, Wlim (float,optional) : bounding box of lats/lons
         """
+        OU = {'over':__gt__,'under':__lt__,'overeq':__ge__,'undereq':__le__,
+                'equal':__eq__}
+
         if not overunder in OU.keys():
             raise Exception("Pick over or under for threshold comparison.")
 
@@ -355,8 +358,6 @@ class Ensemble:
                             fcsttime=fcsttime,Nlim=Nlim,Elim=Elim,
                             Slim=Slim,Wlim=Wlim,dom=dom,fcsthr=fcsthr)
 
-        OU = {'over':__gt__,'under':__lt__,'overeq':__ge__,'undereq':__le__,
-                'equal':__eq__}
 
         # True/False if member meets condition (5D)
         bool_arr = N.where(all_ens_data.OU[overunder](threshold),1,0)
