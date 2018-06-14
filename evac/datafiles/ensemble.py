@@ -140,8 +140,8 @@ class Ensemble:
             raise Exception("Need to implement validtimes over numerous file times.")
 
     def get_grid(self,dom=1):
-        # return Grid(self.arbitrary_pick(dataobj=True,dom=dom))
-        return self.arbitrary_pick(dataobj=True,dom=dom).grid
+        return Grid(self.arbitrary_pick(dataobj=True,dom=dom))
+        # return self.arbitrary_pick(dataobj=True,dom=dom).grid
 
     def compute_fdt(self):
         """Compute the difference in time between each data file's first entry.

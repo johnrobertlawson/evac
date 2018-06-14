@@ -272,8 +272,10 @@ class Grid:
         self.cen_lon = self.I.cen_lon
         # self.xx = self.I.xx
         # self.yy = self.I.yy
-        self.lons = self.I.lons
-        self.lats = self.I.lats
+
+        # The lats/lons are masked array and these are awkward
+        self.lons = self.I.lons.data
+        self.lats = self.I.lats.data
         *_, self.m = reproject_tools.create_WRFgrid(self.I.fpath)
         return
 
