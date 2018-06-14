@@ -326,7 +326,7 @@ class Ensemble:
                             level=None,itime=None,
                             ftime=None,fcsttime=None,Nlim=None,
                             Elim=None,Slim=None,Wlim=None,
-                            dom=1):
+                            dom=1,fcsthr=None):
         """
         Return probability of exceeding or reaching a threshold.
 
@@ -353,7 +353,7 @@ class Ensemble:
         else:
             all_ens_data = self.get(vrbl,level=level,itime=itime,ftime=ftime,
                             fcsttime=fcsttime,Nlim=Nlim,Elim=Elim,
-                            Slim=Slim,Wlim=Wlim,dom=dom)
+                            Slim=Slim,Wlim=Wlim,dom=dom,fcsthr=fcsthr)
 
         OU = {'over':__gt__,'under':__lt__,'overeq':__ge__,'undereq':__le__,
                 'equal':__eq__}
