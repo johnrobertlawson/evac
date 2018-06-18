@@ -4,7 +4,6 @@ import os
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib as M
-M.use('Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 import cartopy.crs as ccrs
@@ -123,9 +122,10 @@ class BirdsEye(Figure):
             assert self.lats2d.ndim == 2
 
             if self.use_basemap:
-                self.basemap_setup(proj=proj,draw_geography=draw_geography)
-                self.bmap = self.m
-                self.x, self.y = self.m(self.lons2d,self.lats2d)
+                if not self.basemap_done:
+                    self.basemap_setup(proj=proj,draw_geography=draw_geography)
+                    self.bmap = self.m
+                    self.x, self.y = self.m(self.lons2d,self.lats2d)
                 # self.y = self.grid.yy
             else:
                 raise Exception("Need to make Cartopy work")
@@ -135,12 +135,16 @@ class BirdsEye(Figure):
         # mplkwargs['X'] = self.x
         # mplkwargs['Y'] = self.y
         # mplkwargs['Z'] = self.data
-        mplargs = [self.x, self.y, self.data]
+        if plottype == 'scatter':
+            mplargs = [*self.data]
+        else:
+            mplargs = [self.x, self.y, self.data]
         
         # pdb.set_trace()
 
         # TODO: move this logic to other methods
         if plottype == 'contour':
+            cb = False
             f1 = self.bmap.contour(*mplargs,**mplkwargs)
             if inline:
                 plt.clabel(f1,inline=True,fmt='%d',color='black',fontsize=9)
@@ -151,9 +155,13 @@ class BirdsEye(Figure):
         elif plottype == 'pcolormesh':
             f1 = self.bmap.pcolormesh(*mplargs,**mplkwargs)
         elif plottype == 'scatter':
+            cb = False
             f1 = self.bmap.scatter(*mplargs,**mplkwargs)
         elif plottype == 'quiver':
             f1 = self.bmap.quiver(*mplargs,**mplkwargs)
+        elif plottype == 'plot':
+            cb = False
+            f1 = self.bmap.plot(*mplargs,**mplkwargs)
         else:
             print("Specify correct plot type.")
             raise Exception

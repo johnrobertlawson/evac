@@ -2,7 +2,8 @@ import collections
 import pdb
 
 import matplotlib as M
-M.use('gtkagg')
+# TODO This needs to be sorted:
+# M.use('gtkagg')
 import matplotlib.pyplot as plt
 import numpy as N
 

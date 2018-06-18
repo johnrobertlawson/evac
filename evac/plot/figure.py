@@ -3,7 +3,8 @@ import os
 
 import numpy as N
 import matplotlib as M
-M.use("Agg")
+# TODO backend should be set in matplotlibrc
+# M.use("Agg")
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from cartopy.feature import NaturalEarthFeature
@@ -36,6 +37,7 @@ class Figure:
         self.grid = grid
         self.proj = proj
         self.use_basemap = use_basemap
+        self.basemap_done = False
         # Option dictionaries
         self.update_kwargs(kwargs,cls=True,init=True)
         
@@ -153,8 +155,11 @@ class Figure:
         if self.clskwargs.get('legend',False):
             self.ax.legend()
         self.hold_opt = False
-        print("Figure is saved.")
-        self.save()
+        if self.fpath is not None:
+            self.save()
+            print("Figure is saved.")
+        else:
+            print("Figure not saved, as fpath is not set.")
         plt.close(self.fig)
         pass
 
@@ -199,6 +204,7 @@ class Figure:
             raise Exception
         if draw_geography:
             self.draw_counties()
+        self.basemap_done = True
         return
 
     def draw_counties(self,method=3,use_basemap=True):

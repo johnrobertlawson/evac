@@ -35,6 +35,17 @@ class ObjectBased:
         self.footprint = int(footprint)
         self.f = f
         self.identify_objects()
+        self.nobjects = len(self.objects)
+        self.maxobjn = self.find_max_objidx()
+
+    def find_max_objidx(self):
+        """ Get the largest object number.
+        """
+        maxidx = 0
+        for k,v in self.objects.items():
+            if int(k) > maxidx:
+                maxidx = int(k)
+        return maxidx
 
 
     def identify_objects(self,):
@@ -47,7 +58,14 @@ class ObjectBased:
         else:
             self.Rstar = float(self.thresh)
 
+        # if self.use_scikit:
+            # self.hessian_operators()
+        # else:
         self.object_operators()
+
+    def hessian_operators(self):
+        from skimage.feature import blob_doh
+        blob_doh(image=self.raw_data)
 
     def object_operators(self):
         """ This needs some explaining.
@@ -55,6 +73,7 @@ class ObjectBased:
         mask = N.copy(self.raw_data)
         mask[self.raw_data < self.Rstar] = False
         mask[self.raw_data >= self.Rstar] = True
+        self.masked_data = mask
         labeled, num_objects = ndimage.label(mask)
 
         sizes = ndimage.sum(mask, labeled, list(range(num_objects+1)))
@@ -79,7 +98,7 @@ class ObjectBased:
                 self.x_CoM = (cx,cy)
             else:
                 self.objects[l] = {}
-                self.objects[l]['CoM'] = (cx,cy)
+                self.objects[l]['CoM'] = (cy,cx)
                 self.objects[l]['Rn'] = ndimage.sum(self.raw_data,labeled,l)
                 self.objects[l]['RnMax'] = ndimage.maximum(self.raw_data,labeled,l)
                 self.objects[l]['Vn'] = self.objects[l]['Rn']/self.objects[l]['RnMax']
@@ -135,7 +154,7 @@ class ObjectBased:
 
     def plot(self,fpath,fmt='default',W=None,vrbl='REFL_comp',
                 # Nlim=None,Elim=None,Slim=None,Wlim=None):
-                ld=None,lats=None,lons=None):
+                ld=None,lats=None,lons=None,fig=None,ax=None):
         """ Plot basic quicklook images.
 
         Setting fmt to 'default' will plot raw data,
@@ -146,6 +165,7 @@ class ObjectBased:
         nobjs = len(self.objects)
 
         if fmt == 'default':
+            # if fig is None:
             F = Figure(ncols=2,nrows=1,figsize=(8,4),
                         fpath=fpath)
             # F.W = W
@@ -179,3 +199,16 @@ class ObjectBased:
                             cb='horizontal',lats=lats,lons=lons,
                             cmap=S.cm,clvs=S.clvs,**ld)
         return
+
+    def __iter__(self):
+        self.object_idx = -1
+        self.object_list = list(self.objects.keys())
+        return self
+
+    def __next__(self):
+        self.object_idx += 1
+        if self.object_idx > self.nobjects-1:
+            raise StopIteration
+        key = self.object_list[self.object_idx]
+        obj = self.objects[key]
+        return key,obj

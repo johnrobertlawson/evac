@@ -360,3 +360,29 @@ class Grid:
         infostr = "Grid, based on {} instance type.".format(self.base_check.__class__)
         return infostr
 
+    def __call__(self,*args):
+        return (self.lat_RBS(*args)[0][0],self.lon_RBS(*args)[0][0])
+
+    def __enter__(self):
+        """ Set up the `with` block compatibility.
+        """
+        from scipy.interpolate import RectBivariateSpline as RBS
+        #yy,xx = [sorted(zz) for zz in N.indices(self.lats.shape)]
+        yidx,xidx = N.indices(self.lats.shape)
+        xx = xidx[0,:]
+        yy = yidx[:,0]
+        self.lat_RBS = RBS(x=xx,y=yy,z=self.lats)
+        self.lon_RBS = RBS(x=xx,y=yy,z=self.lons)
+        print("Ready to receive x/y points for interpolation")
+        return self
+
+    def __exit__(self,*args):
+        """ 
+        Todo:
+            * Don't save if error?
+        """
+        del self.lat_RBS
+        del self.lon_RBS
+        print("Interpolation RBS closed.")
+        pass
+
