@@ -24,9 +24,11 @@ class ESAL(SAL):
             ensemble forecasts. The key is the ensemble name; value is
             an ObjectBased instance.
     """
-    def __init__(self,OBC,OBMd,dx=1,dy=1):
+    def __init__(self,OBC,OBMd,dx=1,dy=1,footprint=None,thresh=None):
         self.OBC = OBC
         self.OBMd = OBMd
+        self.footprint = footprint
+        self.thresh = thresh
 
         self.member_names = sorted(self.OBMd.keys())
         self.nmems = len(self.member_names)
