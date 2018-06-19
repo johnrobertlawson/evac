@@ -84,6 +84,7 @@ class ProbScores:
             RES = compute_briar_resolution(pyi,zi,z)
             
             BS = REL - RES + UNC
+            return dict(rel=REL,res=RES,unc=UNC,bs=BS)
         else:
             BS = (1/Ng) * N.sum((self.pfg-self.og.astype(float))**2)
         return BS
