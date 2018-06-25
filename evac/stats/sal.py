@@ -76,7 +76,7 @@ class SAL:
 
     def compute_L1(self,):
         # vector subtraction
-        dist_km = self.vector_diff_km(self.OBM.objects['x_CoM'],self.OBC.objects['x_CoM'])
+        dist_km = self.vector_diff_km(self.OBM.x_CoM,self.OBC.x_CoM)
         L1 = dist_km/self.d
         print(("L1 = {0}".format(L1)))
         return L1
@@ -88,37 +88,40 @@ class SAL:
         return dist_km
 
     def compute_L2(self,):
-        rc = self.compute_r(self.OBC.objects)
-        rm = self.compute_r(self.OBM.objects)
+        rc = self.compute_r(self.OBC)
+        rm = self.compute_r(self.OBM)
         L2 = 2*(N.abs(rc-rm)/self.d)
         print(("L2 = {0}".format(L2)))
         return L2
     
-    def compute_r(self,dic):
+    def compute_r(self,OB):
         Rn_sum = 0
-        for k,v in list(dic['objects'].items()):
-            Rn_sum += v['Rn'] * self.vector_diff_km(dic['x_CoM'],v['CoM'])
+        for k,v in list(OB.objects.items()):
+            if N.isnan(v['Rn']) or N.isnan(v['CoM'][0]):
+                print("NaN detected in r computation. Ignoring.")
+            else:
+                Rn_sum += v['Rn'] * self.vector_diff_km(OB.x_CoM,v['CoM'])
         try:
-            r = Rn_sum / dic['R_tot']
+            r = Rn_sum / OB.R_tot
         except ZeroDivisionError:
             r = 0
         return r
 
     def compute_structure(self):
-        Vm = self.compute_V(self.OBM.objects)
-        Vc = self.compute_V(self.OBC.objects)
+        Vm = self.compute_V(self.OBM)
+        Vc = self.compute_V(self.OBC)
         try:
             S = (Vm - Vc)/(0.5*(Vm+Vc))
         except ZeroDivisionError:
             S = 0
         return S
 
-    def compute_V(self,dic):
+    def compute_V(self,OB):
         Vn_sum = 0
-        for k,v in list(dic['objects'].items()):
+        for k,v in list(OB.objects.items()):
             Vn_sum += v['Rn'] * v['Vn']
         try:
-            V = Vn_sum / dic['R_tot']
+            V = Vn_sum / OB.R_tot
         except ZeroDivisionError:
             V = 0
         return V

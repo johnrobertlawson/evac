@@ -75,8 +75,8 @@ class ProbScores:
         self.pfg = self.pfg.flatten()
         if decompose:
             z = N.count_nonzero(self.og)/self.og.size
-            pyi = 0
             yi = N.unique(self.pfg)
+            pyi = N.where(self.og == yi)
             zi = 0
 
             UNC = compute_briar_uncertainty(z)
@@ -142,7 +142,7 @@ class ProbScores:
         """
         pass
 
-    def compute_crps(self,threshs,mean=True,QC=False):
+    def compute_crps(self,threshs,mean=True,QC=False,decompose=False):
         """
         Notes:
             This method needs the followed during class instantiation:
@@ -164,13 +164,17 @@ class ProbScores:
         https://www.kaggle.com/c/how-much-did-it-rain#evaluation
         """
         # Number of ensemble members
-        nens, ny, nx = self.xfs.shape
+        # nens, ny, nx = self.xfs.shape
+        nens = self.xfs.shape[0]
         # Ensemble is ranked smallest to largest at each grid pt.
         xfs_sort = N.sort(self.xfs,axis=0)
 
         if QC:
             xfs_sort[xfs_sort < 0] = 0
             # xfs_sort[xfs_sort == N.nan] = 0
+
+        if decompose:
+            pass
 
         c = N.zeros_like(threshs)
         for thidx,th in enumerate(threshs):
