@@ -133,6 +133,7 @@ class Radar(PNGFile,Obs):
         assert self.data.shape == self.lats.shape
 
         self.grid = Grid(self)
+        self.dBZ = self.get_dBZ()
 
     def download_data(self,ext='both'):
         if ext == 'both':

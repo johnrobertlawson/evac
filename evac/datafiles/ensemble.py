@@ -139,6 +139,11 @@ class Ensemble:
         else:
             raise Exception("Need to implement validtimes over numerous file times.")
 
+    def get_dims(self,dom=1):
+        nt,nz,nlats,nlons = self.arbitrary_pick(dataobj=True,
+                                    dom=dom).get(vrbl="T").shape
+        return self.nmems,nt,nz,nlats,nlons
+
     def get_grid(self,dom=1):
         return Grid(self.arbitrary_pick(dataobj=True,dom=dom))
         # return self.arbitrary_pick(dataobj=True,dom=dom).grid

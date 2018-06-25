@@ -68,15 +68,15 @@ class ProbScores:
             Args:
                 z: ...
             """
-            return z(1-z)
+            return z*(1-z)
 
         Ng = self.og.size
         self.og = self.og.flatten()
         self.pfg = self.pfg.flatten()
         if decompose:
-            z = 0
+            z = N.count_nonzero(self.og)/self.og.size
             pyi = 0
-            yi = 0
+            yi = N.unique(self.pfg)
             zi = 0
 
             UNC = compute_briar_uncertainty(z)

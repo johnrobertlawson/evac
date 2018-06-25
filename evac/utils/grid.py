@@ -79,10 +79,15 @@ class Grid:
         else:
             raise NotImplementedError
 
+
         assert self.lats.ndim == 2
         assert self.lons.ndim == 2
         # self.nlats, self.nlons = self.lats.shape
         self.fill_attributes()
+
+        if isinstance(self.lats,N.ma.core.MaskedArray):
+            self.lats = self.lats.data
+            self.lons = self.lons.data
 
     def get_corners(self):
         self.llcrnrlon = self.lons[0,0]
@@ -315,9 +320,15 @@ class Grid:
             yy[i,j] = p.y
         return xx,yy
 
-    def interpolate_from(self,data,lats,lons):
-        """ Interpolate data and lat/lon grid to current instance.
+    def interpolate(self,data,lats=None,lons=None,grid=None):
+        """ Interpolate data and lat/lon grid to current grid.
+
+        Note:
+            User specifies grid or lat/lons.
         """
+        if lats is None:
+            lats = grid.lats
+            lons = grid.lons
         xx,yy = self.convert_latlon_xy(lats,lons)
         # yy,xx = self.convert_latlon_xy(lats,lons)
         data_reproj = reproject_tools.reproject(data_orig=data,xx_orig=xx,
@@ -325,20 +336,23 @@ class Grid:
         # pdb.set_trace()
         return data_reproj
         
-
-    def interpolate_to(self,Grid2):
-        """ Interpolate this grid to a different instance.
-        """
-        pass
-
-    def cut_to(self,old_data,old_grid):
+    def cut(self,data,grid=None,lats=None,lons=None,return_newgrid=False):
         """ Trim data provided to current grid.
+        Note:
+            User specifies grid or lat/lons.
         """
         ld = self.get_limits()
-        old_lats = old_grid.lats
-        old_lons = old_grid.lons
+        if lats is None:
+            old_lats = grid.lats
+            old_lons = grid.lons
+        else:
+            old_lats = lats
+            old_lons = lons
         cut_data, cut_lats, cut_lons = utils.return_subdomain(
-                            data=old_data,lats=old_lats,lons=old_lons,**ld)
+                            data=data,lats=old_lats,lons=old_lons,**ld)
+        if return_newgrid:
+            newgrid = Grid(lats=cut_lats,lons=cut_lons)
+            return cut_data, newgrid
         return cut_data, cut_lats, cut_lons
 
     def get_limits(self,):

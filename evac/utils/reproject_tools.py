@@ -201,6 +201,14 @@ def reproject(data_orig,xx_orig=False,yy_orig=False,lats_orig=False,lons_orig=Fa
     # pdb.set_trace()
     if debug:
         print("Starting reprojection...")
+
+    if type(xx_orig) == N.ma.core.MaskedArray:
+        xx_orig = xx_orig.data
+    if type(yy_orig) == N.ma.core.MaskedArray:
+        yy_orig = yy_orig.data
+    if type(data_orig) == N.ma.core.MaskedArray:
+        data_orig = data_orig.data
+
     data_new = griddata((xx_orig.flat,yy_orig.flat),
                             data_orig.flat,(mx.flat,my.flat),
                             method=method).reshape(xx_new_dim,yy_new_dim)
