@@ -329,9 +329,13 @@ class Grid:
         if lats is None:
             lats = grid.lats
             lons = grid.lons
-        xx,yy = self.convert_latlon_xy(lats,lons)
+
+        # First cut before interpolating
+        cut_data, cut_lats, cut_lons = self.cut(data=data,lats=lats,lons=lons)
+
+        xx,yy = self.convert_latlon_xy(cut_lats,cut_lons)
         # yy,xx = self.convert_latlon_xy(lats,lons)
-        data_reproj = reproject_tools.reproject(data_orig=data,xx_orig=xx,
+        data_reproj = reproject_tools.reproject(data_orig=cut_data,xx_orig=xx,
                         yy_orig=yy,xx_new=self.xx,yy_new=self.yy)
         # pdb.set_trace()
         return data_reproj
