@@ -102,7 +102,8 @@ class ObjectBased:
                 self.objects[l]['Rn'] = ndimage.sum(self.raw_data,labeled,l)
                 self.objects[l]['RnMax'] = ndimage.maximum(self.raw_data,labeled,l)
                 self.objects[l]['Vn'] = self.objects[l]['Rn']/self.objects[l]['RnMax']
-                R_objs_count += self.objects[l]['Rn']
+                if not N.isnan(self.objects[l]['Rn']):
+                    R_objs_count += self.objects[l]['Rn']
 
         self.R_tot = R_objs_count
         self.obj_array = labeled
