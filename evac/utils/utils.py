@@ -1863,3 +1863,15 @@ def generate_timestamp_fname(extension):
     nowutc = datetime.datetime.now(tz=pytz.utc)
     fname = gis_tools.string_from_time('output',nowutc,strlen='second')
     return '.'.join(fname,extension)
+
+def enforce_2d(data):
+    if data.ndim == 2:
+        return data
+    elif data.ndim == 3:
+        return data[0,:,:]
+    elif data.ndim == 4:
+        return data[0,0,:,:]
+    elif data.ndim == 5:
+        return data[0,0,0,:,:]
+    else:
+        raise Exception

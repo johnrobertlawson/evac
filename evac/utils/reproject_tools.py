@@ -132,7 +132,7 @@ class HRRR_native_grid(WRF_native_grid):
 def create_new_grid(Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
                     lat_ts=None,resolution='i',nx=None,ny=None,
                     tlat1=30.0,tlat2=60.0,cen_lat=None,cen_lon=None,
-                    lats=None,lons=None):
+                    lats=None,lons=None,dx=None):
                     # lllon=None,lllat=None,urlat=None,urlon=None):
     """Create new domain for interpolating to, for instance.
 
@@ -142,11 +142,29 @@ def create_new_grid(Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
     nx,ny = number of points in the x/y direction respectively
     """
     if proj == 'merc':
-        if None in (Nlim,Elim,Slim,Wlim,lat_ts,nx,ny):
+        if nx is None:
+            assert dx
+        if None in (Nlim,Elim,Slim,Wlim,lat_ts):
             print("Check non-optional arguments.")
             raise Exception
         m = Basemap(projection=proj,llcrnrlat=Slim,llcrnrlon=Wlim,
                     urcrnrlat=Nlim,urcrnrlon=Elim,lat_ts=lat_ts,resolution=resolution)
+        if dx:
+            # llcrnr
+            xW, yS = m(Wlim, Slim)
+            # urcrnr
+            xE, yN = m(Elim, Nlim)
+
+            # km difference in x (lon) direction
+            xdiff_km = abs(xE-xW)/1000
+            # and in y (lat) direction
+            ydiff_km = abs(yS-yN)/1000
+
+            # nx needed to give dx requested
+            nx = int(N.floor(xdiff_km/dx))
+            # assume dx=dy
+            ny = int(N.floor(ydiff_km/dx))
+
     elif proj == 'lcc':
         # if None in (tlat1,tlat2,cen_lat,cen_lon,lllon,lllat,urlon,urlat,nx,ny):
         if None in (tlat1,tlat2,cen_lat,cen_lon,Nlim,Elim,Slim,Wlim,nx,ny):
@@ -155,9 +173,10 @@ def create_new_grid(Nlim=None,Elim=None,Slim=None,Wlim=None,proj='merc',
         m = Basemap(projection='lcc',lat_1=tlat1,lat_2=tlat2,lat_0=cen_lat,
                             lon_0=cen_lon,llcrnrlon=Wlim,llcrnrlat=Slim,
                             urcrnrlon=Elim,urcrnrlat=Nlim,resolution='h')
-
+    
     lons, lats, xx, yy = m.makegrid(nx,ny,returnxy=True)
-    return m, lons, lats, xx[0,:], yy[:,0]
+    # pdb.set_trace()
+    return m, lons, lats, xx, yy
 
 def create_WRFgrid(f):
     """Constructs an instance of WRF_native_grid to return the vitals.
@@ -186,7 +205,8 @@ def reproject(data_orig,xx_orig=False,yy_orig=False,lats_orig=False,lons_orig=Fa
     if len(xx_new.shape) == 1:
         xx_new_dim = len(xx_new)
         yy_new_dim = len(yy_new)
-        mx,my = N.meshgrid(xx_new,yy_new)
+        # mx,my = N.meshgrid(xx_new,yy_new)
+        my, mx = N.meshgrid(yy_new,xx_new)
     elif len(xx_new.shape)== 2:
         xx_new_dim = len(xx_new[:,0])
         # xx_new_dim = len(xx_new[0,:])

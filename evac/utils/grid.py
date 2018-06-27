@@ -88,6 +88,7 @@ class Grid:
         if isinstance(self.lats,N.ma.core.MaskedArray):
             self.lats = self.lats.data
             self.lons = self.lons.data
+        self.shape = self.lats.shape
 
     def get_corners(self):
         self.llcrnrlon = self.lons[0,0]
@@ -134,12 +135,12 @@ class Grid:
         return
 
     def basemap_grid(self):
-            m, lons, lats, xx, yy = reproject_tools.create_new_grid(
+        m, lons, lats, xx, yy = reproject_tools.create_new_grid(
                 Nlim=self.urcrnrlat,
                 Elim=self.urcrnrlon,Slim=self.llcrnrlat,
                 Wlim=self.llcrnrlon,lat_ts=self.lat_ts,
-                nx=self.nlons,ny=self.nlats)
-            return m, lats, lons, xx, yy
+                nx=self.nlons,ny=self.nlats,)
+        return m, lons, lats, xx, yy
 
     def create_grid_basemap(self,opts):
         """ Basemap grid.
@@ -148,16 +149,33 @@ class Grid:
         self.urcrnrlon = opts['urcrnrlon']
         self.llcrnrlat = opts['llcrnrlat']
         self.llcrnrlon = opts['llcrnrlon']
-        self.nx = opts['nx']
-        self.ny = opts['ny']
 
-        self.nlats = self.ny
-        self.nlons = self.nx
+        if 'nx' in opts:
+            nx = opts['nx']
+            ny = opts['ny']
+            dx = None
+            print("nx = {} and ny = {} requested".format(nx,ny))
+        else:
+            dx = opts['dx_km']
+            nx = None
+            ny = None
+            print("dx = {} km requested.".format(dx))
+
 
         self.compute_lat_ts()
 
-        self.m, self.lats,self.lons, self.xx, self.yy = self.basemap_grid()#**opts,
-                                            #lat_ts=self.lat_ts,nlons=self.ny,nlats=self.nx)
+        self.m, self.lons, self.lats, self.xx, self.yy = reproject_tools.create_new_grid(
+                Nlim=self.urcrnrlat,
+                Elim=self.urcrnrlon,Slim=self.llcrnrlat,
+                Wlim=self.llcrnrlon,lat_ts=self.lat_ts,
+                nx=nx,ny=ny,dx=dx)
+
+        # self.nx = self.xx.shape[1]
+        # self.ny = self.yy.shape[0]
+        self.nx = len(self.xx)
+        self.ny = len(self.yy)
+        self.nlats = self.ny
+        self.nlons = self.nx
 
         self.dx = N.diff(self.xx).mean()
         self.dy = N.diff(self.yy).mean()
@@ -279,8 +297,10 @@ class Grid:
         # self.yy = self.I.yy
 
         # The lats/lons are masked array and these are awkward
-        self.lons = self.I.lons.data
-        self.lats = self.I.lats.data
+        # self.lons = self.I.lons.data
+        self.lons = self.I.lons
+        # self.lats = self.I.lats.data
+        self.lats = self.I.lats
         *_, self.m = reproject_tools.create_WRFgrid(self.I.fpath)
         return
 
@@ -292,7 +312,9 @@ class Grid:
         # pass
 
     def convert_latlon_xy(self,lats,lons):
-        return self.m(lons,lats)
+        if lats.ndim == 1:
+            mlons, mlats = N.meshgrid(lons,lats)
+        return self.m(mlons,mlats)
 
     def convert_latlon_xy_cartopy(self,lats,lons):
         """ Convert lats/lons to x and y.
@@ -330,6 +352,7 @@ class Grid:
             lats = grid.lats
             lons = grid.lons
 
+        data = utils.enforce_2d(data)
         # First cut before interpolating
         cut_data, cut_lats, cut_lons = self.cut(data=data,lats=lats,lons=lons)
 
@@ -340,11 +363,12 @@ class Grid:
         # pdb.set_trace()
         return data_reproj
         
-    def cut(self,data,grid=None,lats=None,lons=None,return_newgrid=False):
+    def cut(self,data,grid=None,lats=None,lons=None,return_grid=False):
         """ Trim data provided to current grid.
         Note:
             User specifies grid or lat/lons.
         """
+        data = utils.enforce_2d(data)
         ld = self.get_limits()
         if lats is None:
             old_lats = grid.lats
@@ -354,7 +378,7 @@ class Grid:
             old_lons = lons
         cut_data, cut_lats, cut_lons = utils.return_subdomain(
                             data=data,lats=old_lats,lons=old_lons,**ld)
-        if return_newgrid:
+        if return_grid:
             newgrid = Grid(lats=cut_lats,lons=cut_lons)
             return cut_data, newgrid
         return cut_data, cut_lats, cut_lons
@@ -376,6 +400,11 @@ class Grid:
 
     def __str__(self):
         infostr = "Grid, based on {} instance type.".format(self.base_check.__class__)
+        return infostr
+
+    def __repr__(self):
+        infostr = "{} by {} grid, based on {} instance.".format(self.nlons,self.nlats,
+                            self.base_check.__class__)
         return infostr
 
     def __call__(self,*args):
