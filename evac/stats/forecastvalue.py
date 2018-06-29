@@ -1,3 +1,6 @@
+import pdb
+import operator
+
 import numpy as N
 import pdb
 
@@ -26,13 +29,41 @@ class ForecastValue(DetScores):
         args,kwargs: Arguments sent to the superclass to compute 2x2 contigency.
             It's probably best to use keywords (`kwargs`).
     """
-    def __init__(self,CLs=None,*args,**kwargs):
-        super().__init__(*args,**kwargs)
-        # super(DetScores,self).__init__(*args,**kwargs)
-        self.pod = self.compute_pod()
-        self.pfd = self.compute_pfd()
-        self.pcli = self.compute_pcli()
-        self.kss = self.compute_kss()
+    def __init__(self,fcst_arr,obs_arr,thresh,overunder,CLs=None):
+        self.overunder = overunder
+        self.fcst_arr = fcst_arr
+        self.obs_arr = obs_arr
+
+        if fcst_arr.ndim == 3:
+            if fcst_arr.shape[0] == 1:
+                fcst_arr = fcst_arr[0,:,:]
+                self.FVens = False
+            else:
+                self.arr2x2, self.J = self.compute_FV_prob()
+                self.FVens = True
+        else:
+            self.FVens = False
+
+        if self.FVens:
+            self.pod = dict()
+            self.pfd = dict()
+            self.pcli = dict()
+            self.kss = dict()
+            for j in J:
+                DS = DetScores(self.arr2x2[j])
+                self.pod[j] = DS.compute_pod()
+                self.pfd[j] = DS.compute_pfd()
+                self.pcli[j] = DS.compute_pcli()
+                self.kss[j] = DS.compute_kss()
+
+        else:
+            super().__init__(fcst_arr=fcst_arr,obs_arr=obs_arr,thresh=thresh,
+                            overunder=overunder)
+            
+            self.pod = self.compute_pod()
+            self.pfd = self.compute_pfd()
+            self.pcli = self.compute_pcli()
+            self.kss = self.compute_kss()
 
         if CLs is None:
             CLs = N.arange(0.01,1.01,0.01)
@@ -45,7 +76,10 @@ class ForecastValue(DetScores):
 
         self.FVs = []
         for cl in self.CLs:
-            self.FVs.append(self.compute_FV(cl))
+            if self.FVens:
+                self.FVs.append(self.compute_FVens(cl))
+            else:
+                self.FVs.append(self.compute_FV(cl))
 
     def compute_FV(self,cl):
         """ Compute FV.
@@ -73,6 +107,16 @@ class ForecastValue(DetScores):
 
         return FV
 
+    def compute_FVens(self,cl):
+        fvs = []
+        for j in self.J:
+            x = min(cl, self.pcli[j]
+            FV = self.kss[j] - (
+                ( ((1-self.pod[j]) * (self.pcli[j]-x)) + (self.pfd[j]*(cl-x)) )/
+                (x - (self.pcli[j]*cl)))
+            fvs.append(FV)
+        return max(fvs)
+
     def get_FV(self,cl):
         """ Return the FV for a given cost/loss ratio, otherwise None.
         """
@@ -84,3 +128,41 @@ class ForecastValue(DetScores):
             return None
         else:
             raise NonsenseError("C/L ratio is ambiguous.")
+
+
+    def compute_FV_prob(self):
+        self.nmems = fcst_arr.shape[0]
+        # OU = dict(over = operator.gt,
+                    # under = operator.lt,)
+        OU = dict(over = N.greater,
+                    under = N.less)
+        prob_arr = N.sum(OU[overunder](fcst_arr,thresh),axis=0)/self.nmems
+        yesno_arr = OU[overunder](obs_arr,thresh)
+        X = dict()
+        Y = dict()
+        J = list()
+        for idx in range(self.nmems):
+            j = idx+1
+            J.append(j)
+            p0 = (j-1)/self.nmems
+            p1 = (j/self.nmems)
+            pr_idx = N.where(p1 > prob_arr >= p0)
+            yes = N.where(yesno_arr is True)
+            no = N.where(yesno_arr is False)
+            X[j] = N.intersect(pr_idx,yes)
+            Y[j] = N.intersect(pr_idx,no)
+        A = dict()
+        B = dict()
+        C = dict()
+        D = dict()
+        arr2x2s = dict()
+        for j in J:
+            jidx = J.index(j)
+            A[j] = sum([X[k] for k in J[jidx+1:]])
+            B[j] = sum([Y[k] for k in J[jidx+1:]])
+            C[j] = sum([X[k] for k in J[1:jidx+1]])
+            D[j] = sum([Y[k] for k in J[1:jidx+1]])
+            arr2x2s[j] = (A[j], B[j], C[j], D[j])
+        return arr2x2s, J
+
+
