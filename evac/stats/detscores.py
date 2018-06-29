@@ -32,7 +32,10 @@ class DetScores:
     def __init__(self,arr2x2=None,a=None,b=None,c=None,d=None,
                     fcst_arr=None,obs_arr=None,thresh=None,overunder=None,):
         if arr2x2 is not None:
-            a,b,c,d = arr.flatten()
+            if isinstance(arr2x2,tuple):
+                a,b,c,d = arr2x2
+            elif isinstance(arr2x2,N.ndarray):
+                a,b,c,d = arr2x2.flatten()
         elif fcst_arr is not None:
             a,b,c,d = compute_contingency(fcst_arr,obs_arr,thresh,overunder,
                                             fmt='tuple')
@@ -172,9 +175,9 @@ class DetScores:
         """ Eq. 13 in B01.
         """
         KSS1 = self.compute_pod() - self.compute_pfd()
-        KSS2 = ( (self.a*self.d) - (self.b*self.c))/(
-                 (self.a+self.c) * (self.b+self.d))
-        self.check_approx(KSS1,KSS2)
+        # KSS2 = ( (self.a*self.d) - (self.b*self.c))/(
+                 # (self.a+self.c) * (self.b+self.d))
+        # self.check_approx(KSS1,KSS2)
         return KSS1
 
     def compute_successrate(self):

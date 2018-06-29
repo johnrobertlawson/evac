@@ -32,6 +32,7 @@ class ForecastValue(DetScores):
     def __init__(self,fcst_arr,obs_arr,thresh,overunder,CLs=None):
         self.overunder = overunder
         self.fcst_arr = fcst_arr
+        self.thresh = thresh
         self.obs_arr = obs_arr
 
         if fcst_arr.ndim == 3:
@@ -39,7 +40,7 @@ class ForecastValue(DetScores):
                 fcst_arr = fcst_arr[0,:,:]
                 self.FVens = False
             else:
-                self.arr2x2, self.J = self.compute_FV_prob()
+                self.arr2x2s, self.J = self.compute_FV_prob()
                 self.FVens = True
         else:
             self.FVens = False
@@ -49,8 +50,8 @@ class ForecastValue(DetScores):
             self.pfd = dict()
             self.pcli = dict()
             self.kss = dict()
-            for j in J:
-                DS = DetScores(self.arr2x2[j])
+            for j in self.J:
+                DS = DetScores(arr2x2=self.arr2x2s[j])
                 self.pod[j] = DS.compute_pod()
                 self.pfd[j] = DS.compute_pfd()
                 self.pcli[j] = DS.compute_pcli()
@@ -110,7 +111,7 @@ class ForecastValue(DetScores):
     def compute_FVens(self,cl):
         fvs = []
         for j in self.J:
-            x = min(cl, self.pcli[j]
+            x = min(cl, self.pcli[j])
             FV = self.kss[j] - (
                 ( ((1-self.pod[j]) * (self.pcli[j]-x)) + (self.pfd[j]*(cl-x)) )/
                 (x - (self.pcli[j]*cl)))
@@ -131,13 +132,13 @@ class ForecastValue(DetScores):
 
 
     def compute_FV_prob(self):
-        self.nmems = fcst_arr.shape[0]
+        self.nmems = self.fcst_arr.shape[0]
         # OU = dict(over = operator.gt,
                     # under = operator.lt,)
         OU = dict(over = N.greater,
                     under = N.less)
-        prob_arr = N.sum(OU[overunder](fcst_arr,thresh),axis=0)/self.nmems
-        yesno_arr = OU[overunder](obs_arr,thresh)
+        prob_arr = N.sum(OU[self.overunder](self.fcst_arr,self.thresh),axis=0)/self.nmems
+        yesno_arr = OU[self.overunder](self.obs_arr,self.thresh)
         X = dict()
         Y = dict()
         J = list()
@@ -146,11 +147,13 @@ class ForecastValue(DetScores):
             J.append(j)
             p0 = (j-1)/self.nmems
             p1 = (j/self.nmems)
-            pr_idx = N.where(p1 > prob_arr >= p0)
-            yes = N.where(yesno_arr is True)
-            no = N.where(yesno_arr is False)
-            X[j] = N.intersect(pr_idx,yes)
-            Y[j] = N.intersect(pr_idx,no)
+            # yes = N.where(yesno_arr == True)
+            # no = N.where(yesno_arr == False)
+            # pr_idx = N.where((p1 > prob_arr) & (prob_arr >= p0))
+            X[j] = N.where((p1 > prob_arr) & (prob_arr >= p0) & (yesno_arr == True))
+            Y[j] = N.where((p1 > prob_arr) & (prob_arr >= p0) & (yesno_arr == False))
+            # X[j] = N.intersect1d(pr_idx,yes)
+            # Y[j] = N.intersect1d(pr_idx,no)
         A = dict()
         B = dict()
         C = dict()
@@ -158,11 +161,12 @@ class ForecastValue(DetScores):
         arr2x2s = dict()
         for j in J:
             jidx = J.index(j)
-            A[j] = sum([X[k] for k in J[jidx+1:]])
-            B[j] = sum([Y[k] for k in J[jidx+1:]])
-            C[j] = sum([X[k] for k in J[1:jidx+1]])
-            D[j] = sum([Y[k] for k in J[1:jidx+1]])
+            A[j] = sum([len(X[k][0]) for k in J[jidx+1:]])
+            B[j] = sum([len(Y[k][0]) for k in J[jidx+1:]])
+            C[j] = sum([len(X[k][0]) for k in J[1:jidx+1]])
+            D[j] = sum([len(Y[k][0]) for k in J[1:jidx+1]])
             arr2x2s[j] = (A[j], B[j], C[j], D[j])
+        # pdb.set_trace()
         return arr2x2s, J
 
 
