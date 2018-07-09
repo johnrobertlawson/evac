@@ -123,35 +123,38 @@ class ObjectBased:
         else:
             return active_px, tot_px
 
-    def get_updraughts(self,W_data,):
-        """ Returns stats on object updraughts.
+    def get_cell_attributes(self,cell_data,):
+        """ Returns stats on object/cell attributes.
+        
+        This could be things like max updraught or helicity.
 
         Max updraught is computed at all levels at all grid points
         in the object.
 
         Args:
-            W_data: 3-D array of W, where the lats/lons correspond directly
+            cell_data: 2D or 3D array of a field the same size as the
+                object-based field. The lats/lons correspond directly
                 to the raw_data passed into self originally.
         """
-        if W_data.ndim == 3:
-            W_data = N.max(W_data,axis=0)
-        assert W_data.ndim == 2
+        if cell_data.ndim == 3:
+            cell_data = N.max(cell_data,axis=0)
+        assert cell_data.ndim == 2
         nobjs = len(self.objects)
-        updraught_dict = dict()
-        updraught_arr = N.zeros([nobjs])
+        cellattr_dict = dict()
+        cellattr_arr = N.zeros([nobjs])
 
         for nidx,(n,o) in enumerate(self.objects.items()):
             # The grid points of each object is labelled
             # in self.obj_array.
             grid_2d_idx = N.where(self.obj_array == n)
-            arr_obj = W_data[grid_2d_idx[0],grid_2d_idx[1]]
+            arr_obj = cell_data[grid_2d_idx[0],grid_2d_idx[1]]
             max_w = N.max(arr_obj)
 
             # Data in a dictionary and array
-            updraught_dict[n] = max_w
-            updraught_arr[nidx] = max_w
+            cellattr_dict[n] = max_w
+            cellattr_arr[nidx] = max_w
         
-        return updraught_arr, updraught_dict
+        return cellattr_arr, cellattr_dict
 
     def plot(self,fpath,fmt='default',W=None,vrbl='REFL_comp',
                 # Nlim=None,Elim=None,Slim=None,Wlim=None):

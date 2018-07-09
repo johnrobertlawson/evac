@@ -14,6 +14,7 @@ import pdb
 
 import numpy as N
 import evac.utils.met_constants as mc
+import evac.utils.utils as utils
 
 def cold_pool_strength(parent,X,time,swath_width=100,env=0,dz=0):
     """
@@ -934,6 +935,15 @@ def compute_strongest_wind(parent,tidx,lvidx,lonidx,latidx,other):
 
     return wind_max
 
+def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other):
+    u = parent.get("U",tidx,lvidx,lonidx,latidx)
+    v = parent.get("V",tidx,lvidx,lonidx,latidx)
+    w = parent.get("W",tidx,lvidx,lonidx,latidx)
+
+    UH = compute_updraught_helicity(u=u,v=v,w=w)
+    return UH
+    
+
 def compute_updraught_helicity(parent,u,v,w,dz=None,z=None,z0=2000,z1=5000):
     """Eq. 11 & 12 from Kain et al 2008, WAF.
 
@@ -958,4 +968,4 @@ def compute_updraught_helicity(parent,u,v,w,dz=None,z=None,z0=2000,z1=5000):
     UH = (vort_z * w) * dz
 
     # Logic for smoothing?
-    pass
+    return UH

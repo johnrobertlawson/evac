@@ -1875,3 +1875,10 @@ def enforce_2d(data):
         return data[0,0,0,:,:]
     else:
         raise Exception
+
+
+def enforce_same_dimensions(*args):
+    theshape = args[0].shape
+    for arg in args:
+        assert arg.shape == theshape
+    return
