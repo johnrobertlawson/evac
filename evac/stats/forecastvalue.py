@@ -26,10 +26,11 @@ class ForecastValue(DetScores):
     Args:
         CLs (N.ndarray, tuple, list): Cost-loss ratios to compute
             FV as function of each ratio
-        args,kwargs: Arguments sent to the superclass to compute 2x2 contigency.
-            It's probably best to use keywords (`kwargs`).
+        enforce_limits (bool): if True, output below 0 and above 1 is
+            set to 0 and 1, with a warning message.
     """
-    def __init__(self,fcst_arr,obs_arr,thresh,overunder,CLs=None):
+    def __init__(self,fcst_arr,obs_arr,thresh,overunder='over',CLs=None,
+                        enforce_limits=True):
         self.overunder = overunder
         self.fcst_arr = fcst_arr
         self.thresh = thresh
@@ -81,6 +82,24 @@ class ForecastValue(DetScores):
                 self.FVs.append(self.compute_FVens(cl))
             else:
                 self.FVs.append(self.compute_FV(cl))
+
+        if enforce_limits:
+            clipped_FVs = []
+            overs = 0
+            unders = 0
+            for fv in self.FVs:
+                if fv > 1:
+                    fv = 1
+                    overs += 1
+                elif fv < 0:
+                    fv = 0
+                    unders += 1
+                clipped_FVs.append(fv)
+            print("{} FVs over 1 were set to 1.".format(overs))
+            print("{} FVs under 0 were set to 0.".format(unders))
+            self.raw_FVs = self.FVs
+            self.FVs = clipped_FVs
+                
 
     def compute_FV(self,cl):
         """ Compute FV.

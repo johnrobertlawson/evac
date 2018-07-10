@@ -30,7 +30,9 @@ class DetScores:
         a,b,c,d (int)   :   Number of elements in 2x2 matrix.
     """
     def __init__(self,arr2x2=None,a=None,b=None,c=None,d=None,
-                    fcst_arr=None,obs_arr=None,thresh=None,overunder=None,):
+                    fcst_arr=None,obs_arr=None,thresh=None,overunder=None,
+                    close_checks=False):
+        self.close_checks = close_checks
         if arr2x2 is not None:
             if isinstance(arr2x2,tuple):
                 a,b,c,d = arr2x2
@@ -64,7 +66,9 @@ class DetScores:
         self.scores = self.assign_scores_lookup()
 
     def check_approx(self,x,y):
-        if not math.isclose(x,y,rel_tol=0.0001):
+        if not self.close_checks:
+            return
+        elif not math.isclose(x,y,rel_tol=0.0001):
             raise Exception("Values are not close.")
 
     def compute_pcli(self):
@@ -175,9 +179,9 @@ class DetScores:
         """ Eq. 13 in B01.
         """
         KSS1 = self.compute_pod() - self.compute_pfd()
-        # KSS2 = ( (self.a*self.d) - (self.b*self.c))/(
-                 # (self.a+self.c) * (self.b+self.d))
-        # self.check_approx(KSS1,KSS2)
+        KSS2 = ( (self.a*self.d) - (self.b*self.c))/(
+                 (self.a+self.c) * (self.b+self.d))
+        self.check_approx(KSS1,KSS2)
         return KSS1
 
     def compute_successrate(self):

@@ -228,6 +228,10 @@ def reproject(data_orig,xx_orig=False,yy_orig=False,lats_orig=False,lons_orig=Fa
         yy_orig = yy_orig.data
     if type(data_orig) == N.ma.core.MaskedArray:
         data_orig = data_orig.data
+    if type(mx) == N.ma.core.MaskedArray:
+        mx = mx.data
+    if type(my) == N.ma.core.MaskedArray:
+        my = my.data
 
     data_new = griddata((xx_orig.flat,yy_orig.flat),
                             data_orig.flat,(mx.flat,my.flat),
