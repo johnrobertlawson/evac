@@ -154,9 +154,9 @@ class ForecastValue(DetScores):
         self.nmems = self.fcst_arr.shape[0]
         # OU = dict(over = operator.gt,
                     # under = operator.lt,)
-        OU = dict(over = N.greater,
-                    under = N.less)
-        prob_arr = N.sum(OU[self.overunder](self.fcst_arr,self.thresh),axis=0)/self.nmems
+        OU = dict(over = N.greater,under = N.less)
+        prob_arr = N.sum(OU[self.overunder](self.fcst_arr,self.thresh),
+                            axis=0)/self.nmems
         yesno_arr = OU[self.overunder](self.obs_arr,self.thresh)
         X = dict()
         Y = dict()
@@ -169,8 +169,10 @@ class ForecastValue(DetScores):
             # yes = N.where(yesno_arr == True)
             # no = N.where(yesno_arr == False)
             # pr_idx = N.where((p1 > prob_arr) & (prob_arr >= p0))
-            X[j] = N.where((p1 > prob_arr) & (prob_arr >= p0) & (yesno_arr == True))
-            Y[j] = N.where((p1 > prob_arr) & (prob_arr >= p0) & (yesno_arr == False))
+            X[j] = N.where((p1 > prob_arr) & (prob_arr >= p0) & 
+                            (yesno_arr == True))
+            Y[j] = N.where((p1 > prob_arr) & (prob_arr >= p0) & 
+                            (yesno_arr == False))
             # X[j] = N.intersect1d(pr_idx,yes)
             # Y[j] = N.intersect1d(pr_idx,no)
         A = dict()
@@ -182,8 +184,8 @@ class ForecastValue(DetScores):
             jidx = J.index(j)
             A[j] = sum([len(X[k][0]) for k in J[jidx+1:]])
             B[j] = sum([len(Y[k][0]) for k in J[jidx+1:]])
-            C[j] = sum([len(X[k][0]) for k in J[1:jidx+1]])
-            D[j] = sum([len(Y[k][0]) for k in J[1:jidx+1]])
+            C[j] = sum([len(X[k][0]) for k in J[:jidx+1]])
+            D[j] = sum([len(Y[k][0]) for k in J[:jidx+1]])
             arr2x2s[j] = (A[j], B[j], C[j], D[j])
         # pdb.set_trace()
         return arr2x2s, J
