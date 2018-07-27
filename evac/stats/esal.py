@@ -25,15 +25,19 @@ class ESAL(SAL):
             ensemble forecasts. The key is the ensemble name; value is
             an ObjectBased instance.
     """
-    def __init__(self,OBC,OBMd,dx=1,dy=1,footprint=None,thresh=None):
+    def __init__(self,OBC,OBMd,dx=1,dy=1,):#footprint=None,thresh=None):
         self.OBC = OBC
         self.OBMd = OBMd
-        self.footprint = footprint
-        self.thresh = thresh
+
+        # This is already implicit in the input ObjectBased objects
+        # self.footprint = footprint
+        # self.thresh = thresh
 
         self.member_names = sorted(self.OBMd.keys())
         self.nmems = len(self.member_names)
         self.nlats, self.nlons = self.OBMd[self.member_names[0]].raw_data.shape
+
+        # Needed?
         self.dx = dx
         self.dy = dy
 
@@ -83,9 +87,13 @@ class ESAL(SAL):
         robs = self.compute_r(self.OBC)
         robsd = robs/self.d
 
+
         PS = ProbScores(xa=robsd,xfs=rmodd,allow_1d=True)
-        print("Using CRPS thresholds for dBZ!")
-        crps = PS.compute_crps(threshs=N.arange(0,95,0.1))
+        # print("Using CRPS thresholds for dBZ!")
+        # crps = PS.compute_crps(threshs=N.arange(0,95,0.1))
+        # crps = PS.compute_crps(threshs=N.arange(0,2.01,0.01))
+        crps = PS.compute_crps_ps(threshs=N.arange(0,2.01,0.01))
+        pdb.set_trace()
         return 2*crps
 
     def compute_location(self):

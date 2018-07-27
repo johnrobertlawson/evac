@@ -144,6 +144,13 @@ class ProbScores:
         """
         pass
 
+    def compute_crps_ps(self,threshs,):
+        """ Using properscoring package.
+        """
+        import properscoring as ps
+        crps = ps.crps_ensemble(self.xa,self.xfs)
+        return crps
+
     def compute_crps(self,threshs,mean=True,QC=False,decompose=False):
         """
         Notes:
@@ -179,14 +186,17 @@ class ProbScores:
             pass
 
         c = N.zeros_like(threshs)
+        threshdx = N.abs(threshs[0] - threshs[1])
         for thidx,th in enumerate(threshs):
             # Sum of 2D field of probs/heaviside
             Px = N.sum(N.greater(xfs_sort,th),axis=0)/nens
             Hx = (self.heaviside(th-self.xa)).astype(int)
-            c[thidx] = N.sum((Px - Hx) **2)
+            # c[thidx] = N.sum((Px - Hx) **2)
+            c[thidx] = N.sum((Px - Hx) **2) * threshdx
         # Average over all thresholds and grid points
         crps = (N.sum(c))/(nens*Px.size)
 
+        pdb.set_trace()
         return crps
 
         # Decompose? What about uncertainty
