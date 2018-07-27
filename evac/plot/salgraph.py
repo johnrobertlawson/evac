@@ -22,12 +22,19 @@ class SALGraph(Figure):
 
         self.ax.set_axisbgcolor('lightgrey')
 
-    def plot(self,SAL,save=False,check_valid=True):
+    def plot(self,SAL=None,S=None,A=None,L=None,save=False,
+                    check_valid=True):
         """ Plot one scatter point for a given SAL object.
 
         Args:
             SAL : An instance of SAL or ESAL object.
         """
+        if SAL is None:
+            SAL = class()
+            SAL.S = S
+            SAL.A = A
+            SAL.L = L
+
         if check_valid:
             assert abs(SAL.S) <= 2.0)
             assert abs(SAL.A) <= 2.0)
