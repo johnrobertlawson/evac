@@ -36,7 +36,7 @@ class LineGraph(Figure):
             
     """
     def __init__(self,fpath=None,outdir=None,vrbl=None,fname=None,figsize=None,
-                    mplkwargs=None,**kwargs):
+                    mplkwargs=None,log=False,**kwargs):
         # From superclass
         #self.name = self.create_fname(fname=fname)
         # outfpath = os.path.join(self.outdir)
@@ -45,6 +45,7 @@ class LineGraph(Figure):
 
         super().__init__(fpath=fpath,figsize=figsize,mplkwargs=mplkwargs,**kwargs)#ncol=1,nrow=1)
         self.vrbl = vrbl
+        self.log = log
         
     def plot(self,xdata,ydata,use_plot_date=False, 
                     mplkwargs=None,plotkwargs=None,
@@ -70,6 +71,10 @@ class LineGraph(Figure):
             plotkwargs['xdate'] = True
             plotkwargs['marker'] = '.'
             plotkwargs['linestyle'] = 'solid'
+        elif self.log == 'x':
+            plotfunc = self.ax.semilogx
+        elif self.log == 'y':
+            plotfunc = self.ax.semilogy
         else:
             plotfunc = self.ax.plot
         plotfunc(xdata,ydata,**plotkwargs)

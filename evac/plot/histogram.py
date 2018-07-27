@@ -16,11 +16,14 @@ class Histogram(Figure):
         self.data = data
         self.fpath = fpath
 
-        super().__init__()
+        super().__init__(fpath=fpath)
 
     def plot(self,labels=False,legend=True):
         self.ax.hist(self.data,label=labels,bins=12)
         if legend:
-            self.ax.legend()
-        self.save()
+            # self.ax.legend()
+            self.clskwargs['legend'] = True
+
+        # if self.clskwargs['save']:
+            # self.save()
         return

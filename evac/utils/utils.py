@@ -1882,3 +1882,29 @@ def enforce_same_dimensions(*args):
     for arg in args:
         assert arg.shape == theshape
     return
+
+def exceed_probs_2d(arr3D,val,overunder='over',fmt='pc'):
+    """ Calculates the exceedence probability lat/lon field.
+    """
+    assert arr3D.ndim == 3
+
+    nmems = arr3D.shape[0]
+
+    comparefunc = dict(over = N.greater,under = N.less)
+
+    # True/False if member meets condition (5D)
+    bool_arr = N.where(comparefunc[overunder](arr3D,val),1,0)
+
+    # Count members that exceed the threshold (4D)
+    count_arr = N.sum(bool_arr,axis=0)
+
+    if fmt == 'pc':
+        # And convert to percentage (4D) for each time
+        percent_arr = 100*(count_arr/nmems)
+
+        return percent_arr # [times,levels,lats,lons]
+    elif fmt == 'decimal':
+        dec_arr = count_arr/nmems
+        return dec_arr
+    else:
+        raise Exception

@@ -41,6 +41,7 @@ class ESAL(SAL):
         self.A = self.compute_amplitude()
         self.L, self.L1, self.L2 = self.compute_location()
         self.S = self.compute_structure()
+        pdb.set_trace()
 
     def compute_amplitude(self,):
         """ Overridden from parent.

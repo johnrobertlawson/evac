@@ -152,8 +152,18 @@ class Figure:
         Todo:
             * Don't save if error?
         """
+        lk = {}
+        if not hasattr(self,'legendloc'):
+            lk['loc'] = 0
+        else:
+            lk['loc'] = self.legendloc
+
+        if hasattr(self,'legendfontsize'):
+            lk['fontsize'] = self.legendfontsize
+
         if self.clskwargs.get('legend',False):
-            self.ax.legend()
+            self.ax.legend(**lk)
+            # loc=self.legendloc)
         self.hold_opt = False
         if self.fpath is not None:
             self.save()

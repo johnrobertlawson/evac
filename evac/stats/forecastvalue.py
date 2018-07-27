@@ -31,6 +31,7 @@ class ForecastValue(DetScores):
     """
     def __init__(self,fcst_arr,obs_arr,thresh,overunder='over',CLs=None,
                         enforce_limits=True):
+        self.enforce_limits = enforce_limits
         self.overunder = overunder
         self.fcst_arr = fcst_arr
         self.thresh = thresh
@@ -83,7 +84,7 @@ class ForecastValue(DetScores):
             else:
                 self.FVs.append(self.compute_FV(cl))
 
-        if enforce_limits:
+        if self.enforce_limits:
             clipped_FVs = []
             overs = 0
             unders = 0
@@ -134,6 +135,9 @@ class ForecastValue(DetScores):
             FV = self.kss[j] - (
                 ( ((1-self.pod[j]) * (self.pcli[j]-x)) + (self.pfd[j]*(cl-x)) )/
                 (x - (self.pcli[j]*cl)))
+            if self.enforce_limits:
+                FV = min(1,FV)
+                FV = max(0,FV)
             fvs.append(FV)
         return max(fvs)
 

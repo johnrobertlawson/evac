@@ -24,6 +24,7 @@ class ProbScores:
         self.xfs = xfs
         if (og is not None) and (pfg is not None):
             assert self.og.size == self.pfg.size
+            assert N.max(self.pfg) < 1.01
         elif (xa is not None) and (xfs is not None):
             if allow_1d:
                 assert self.xfs.ndim == 1
@@ -32,14 +33,14 @@ class ProbScores:
         else:
             raise Exception
 
-    def compute_briar(self,decompose=False):
+    def compute_brier(self,decompose=False):
         """ Briar Score.
 
         Todo:
             * Consider moving nested functions to methods or classfunctions.
         """
 
-        def compute_briar_reliability(yi,pyi,zi):
+        def compute_brier_reliability(yi,pyi,zi):
             """ Reliability is the correspondence of observed to forecast frequencies. 
 
             Args:
@@ -49,7 +50,7 @@ class ProbScores:
             """
             return N.sum(pyi*((yi-zi)**2))
 
-        def compute_briar_resolution(pyi,zi,z):
+        def compute_brier_resolution(pyi,zi,z):
             """ Resolution is ability of a forecast to distinguish between events.
 
             Args:
@@ -59,7 +60,7 @@ class ProbScores:
             """
             return N.sum(pyi*((zi-z)**2))
 
-        def compute_briar_uncertainty(z):
+        def compute_brier_uncertainty(z):
             """ Uncertainty is the variance of observations.
 
             This is the score achieved if the climatological probability is
@@ -79,20 +80,21 @@ class ProbScores:
             pyi = N.where(self.og == yi)
             zi = 0
 
-            UNC = compute_briar_uncertainty(z)
-            REL = compute_briar_reliability(yi,pyi,zi)
-            RES = compute_briar_resolution(pyi,zi,z)
+            UNC = compute_brier_uncertainty(z)
+            REL = compute_brier_reliability(yi,pyi,zi)
+            RES = compute_brier_resolution(pyi,zi,z)
             
             BS = REL - RES + UNC
             return dict(rel=REL,res=RES,unc=UNC,bs=BS)
         else:
             BS = (1/Ng) * N.sum((self.pfg-self.og.astype(float))**2)
+        assert 0 <= BS <= 1
         return BS
 
     def compute_bss(self):
         """TODO
         """
-        BS = self.compute_briar()
+        BS = self.compute_brier()
         BSS = 0
         return
 

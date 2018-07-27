@@ -454,7 +454,7 @@ class Ensemble:
                 name_list.append(self.member_names[i])
             members = name_list
 
-        if vrbl is 'accum_precip':
+        if vrbl == 'accum_precip':
             qpf = self.accumulated(vrbl='RAINNC',itime=itime,ftime=ftime,
                             level=level,Nlim=Nlim,Elim=Elim,
                             Slim=Slim,Wlim=Wlim,inclusive=inclusive,
