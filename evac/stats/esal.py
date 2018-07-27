@@ -45,7 +45,7 @@ class ESAL(SAL):
         self.A = self.compute_amplitude()
         self.L, self.L1, self.L2 = self.compute_location()
         self.S = self.compute_structure()
-        pdb.set_trace()
+        # pdb.set_trace()
 
     def compute_amplitude(self,):
         """ Overridden from parent.
@@ -93,7 +93,7 @@ class ESAL(SAL):
         # crps = PS.compute_crps(threshs=N.arange(0,95,0.1))
         # crps = PS.compute_crps(threshs=N.arange(0,2.01,0.01))
         crps = PS.compute_crps_ps(threshs=N.arange(0,2.01,0.01))
-        pdb.set_trace()
+        # pdb.set_trace()
         return 2*crps
 
     def compute_location(self):
