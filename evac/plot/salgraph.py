@@ -1,3 +1,10 @@
+import os
+import pdb
+
+import numpy as N
+import matplotlib as M
+
+from evac.plot.figure import Figure
 
 class SALGraph(Figure):
     def __init__(self,fpath,medians=True,cb=True,
@@ -20,31 +27,32 @@ class SALGraph(Figure):
         self.ax.set_xlabel("Structural component")
         self.ax.set_ylabel("Amplitude component")
 
-        self.ax.set_axisbgcolor('lightgrey')
+        # self.ax.set_axisbgcolor('lightgrey')
+        self.ax.set_facecolor('lightgrey')
 
     def plot(self,SAL=None,S=None,A=None,L=None,save=False,
-                    check_valid=True):
+                check_valid=True,marker='o'):
         """ Plot one scatter point for a given SAL object.
 
         Args:
             SAL : An instance of SAL or ESAL object.
         """
         if SAL is None:
-            SAL = class()
+            class SAL: pass
             SAL.S = S
             SAL.A = A
             SAL.L = L
 
         if check_valid:
-            assert abs(SAL.S) <= 2.0)
-            assert abs(SAL.A) <= 2.0)
-            assert SAL.L <= 2.0
+            assert abs(SAL.S) <= 2.0
+            assert abs(SAL.A) <= 2.0
+            assert 0.0 <= SAL.L <= 2.0
 
         
         cmap = M.cm.nipy_spectral_r
         self.sc = self.ax.scatter(SAL.S, SAL.A, c=SAL.L, vmin=0, vmax=2,
                     s=25,cmap=cmap,alpha=0.9,edgecolor='k',
-                    linewidth=0.15,zorder=500)
+                    linewidth=0.15,zorder=500,marker=marker)
 
 
         # Append info for medians computation

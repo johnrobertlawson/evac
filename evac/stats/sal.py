@@ -125,3 +125,8 @@ class SAL:
         except ZeroDivisionError:
             V = 0
         return V
+
+    def __str__(self):
+        return ("This SAL object scores the follows: \n"
+                    "S = {:.3f} \n A = {:.3f} \n L = {:.3f}".format(
+                    self.S, self.A, self.L))
