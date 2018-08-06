@@ -1640,7 +1640,7 @@ def wowprint(message,color='red',bold=True,underline=False,formatargs=False):
     """
     # If nothing is set, pass through without changes
     if not any([color,bold,underline,formatargs]):
-        print(s)
+        print(message)
         return
 
     def findindex(s, lookup = '**'):
