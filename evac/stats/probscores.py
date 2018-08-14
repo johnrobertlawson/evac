@@ -196,7 +196,6 @@ class ProbScores:
         # Average over all thresholds and grid points
         crps = (N.sum(c))/(nens*Px.size)
 
-        pdb.set_trace()
         return crps
 
         # Decompose? What about uncertainty

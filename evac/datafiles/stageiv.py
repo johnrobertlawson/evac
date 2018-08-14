@@ -50,6 +50,8 @@ class StageIV(GribFile,Obs):
         self.projection()
         self.return_subdomain = False
 
+        # pdb.set_trace()
+
     def get(self,return_masked=False,check=True,*args,**kwargs):
                 
         """
@@ -81,6 +83,9 @@ class StageIV(GribFile,Obs):
             OK = self.check_quality(notmasked)
             if not OK:
                 raise Exception("These data are rubbish.")
+
+        # Catch missing values at 9999
+        notmasked[notmasked > 500] = N.nan
         return notmasked
 
     @staticmethod
@@ -106,6 +111,10 @@ class StageIV(GribFile,Obs):
         gg = self.load_gribpart()
         latlon = gg.latlons()
         lats, lons = latlon
+
+        # JRL test
+        # lats = N.flipud(lats)
+        # lons = N.flipud(lons)
         return lats,lons
 
     def check_quality(self,arr):
@@ -125,6 +134,9 @@ class StageIV(GribFile,Obs):
         """
         gg = self.load_gribpart()
         arr = gg.values
+
+        # Testing bad data JRL
+        # arr = N.fliplr(arr)
 
         return arr
 

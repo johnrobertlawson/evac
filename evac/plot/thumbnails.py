@@ -36,11 +36,11 @@ class ThumbNails(Figure):
 
     def plot_verif(self,data,grid,lats=None,lons=None,subplotn=0,
                     save=False,utc=None,vrbl=None,scales=None,
-                    cb=True):
+                    cb=True,levels=None):
         """ Plot verification postage stamp.
         """
         ax = self.ax.flatten()[subplotn]
-        cmap,clvs = self.get_scales(vrbl=vrbl)
+        cmap,clvs = self.get_scales(vrbl=vrbl,lvs=levels)
 
         # Set up panel
         BE = BirdsEye(fpath=None,ax=ax,fig=self.fig,grid=grid,proj=self.proj,
@@ -59,7 +59,7 @@ class ThumbNails(Figure):
         return
 
     @staticmethod
-    def get_scales(scales=None,vrbl=None):
+    def get_scales(scales=None,vrbl=None,lvs=None):
         if scales:
             S = scales
             cmap = S.cm
@@ -72,18 +72,21 @@ class ThumbNails(Figure):
             else:
                 cmap = None
                 clvs = None
+        if lvs is not None:
+            clvs = lvs
         return cmap,clvs
 
     def plot_fcst(self,data,grid,titles=None,scales=None,
                     # W=None,cen_lon=None,cen_lat=None,
-                    vrbl=None,ld=None,save=True,cb=False):
+                    vrbl=None,ld=None,save=True,cb=False,
+                    levels=None):
         """
         Args:
             data: 3D numpy array, (members,lat,lon).
         """ 
         self.nmems = data.shape[0]
 
-        cmap, clvs = self.get_scales(scales=scales,vrbl=vrbl)
+        cmap, clvs = self.get_scales(scales=scales,vrbl=vrbl,lvs=levels)
 
         if ld == None:
             ld = {}

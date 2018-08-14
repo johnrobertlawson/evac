@@ -53,15 +53,15 @@ class Scales:
                     self.clvs = self.A[vrbl][near_lv]
                 except:
                     # Some variables don't live on a vertical level
-                    self.clvs = False
+                    self.clvs = None
             # except:
                 # raise Exception
         try:
             self.cm = self.A[vrbl]['cmap']        # This is for matplotlib
         except KeyError:
-            self.cm = False
+            self.cm = None
 
-        if isinstance(self.cm,(bool,LinearSegmentedColormap,
+        if isinstance(self.cm,(type(None),LinearSegmentedColormap,
                                 M.colors.ListedColormap)):
             pass
         else:
@@ -100,11 +100,11 @@ class Scales:
         A = {}
 
         # Wind magnitude
-        A['wind10'] = {'cmap':False}
+        A['wind10'] = {'cmap':None}
         A['wind10'][2000] = (5,32.5,2.5)
 
         # Wind magnitude
-        A['wind'] = {'cmap':False}
+        A['wind'] = {'cmap':None}
         A['wind'][2000] = (5,32.5,2.5)
 
         # Theta-e (Equivalent potential temperature)
@@ -139,19 +139,19 @@ class Scales:
         A['snow'] = {'cmap':ct.snow2}
         A['snow'][2000] = [0.25,0.5,0.75,1,1.5,2,2.5,3,4,5,6,8,10,12,14,16,18]
 
-        A['shear'] = {'cmap':False}
+        A['shear'] = {'cmap':None}
         A['shear'][0] = (0,33,3)
 
-        A['buoyancy'] = {'cmap':False}
+        A['buoyancy'] = {'cmap':None}
         A['buoyancy'][2000] = (-0.65,0.075,0.025)
 
-        A['dptp'] = {'cmap':False}
+        A['dptp'] = {'cmap':None}
         A['dptp'][2000] = (-15,6,1)
 
-        A['strongestwind'] = {'cmap':False}
+        A['strongestwind'] = {'cmap':None}
         A['strongestwind'][2000] = (10,32.5,2.5)
 
-        A['PMSL'] = {'cmap':False,'multiplier':0.01}
+        A['PMSL'] = {'cmap':None,'multiplier':0.01}
         A['PMSL'][2000] = (97000,103100,100)
 
         # A['RH'] = {'cmap':ct.irsat}

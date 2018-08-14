@@ -37,9 +37,10 @@ class BirdsEye(Figure):
     """
 
     def __init__(self,fpath,ax=None,fig=None,ideal=False,grid=None,proj='merc',
-        use_basemap=True):
+        use_basemap=True,figsize=None):
         # ccrs_proj = grid.get_cartopy_proj(proj)
-        super().__init__(fpath=fpath,ax=ax,fig=fig,grid=grid,use_basemap=use_basemap)
+        super().__init__(fpath=fpath,ax=ax,fig=fig,grid=grid,use_basemap=use_basemap,
+                                figsize=figsize)
                             # proj=ccrs_proj,
         self.ideal = ideal
         self.use_basemap = use_basemap

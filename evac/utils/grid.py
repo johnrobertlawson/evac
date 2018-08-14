@@ -314,6 +314,9 @@ class Grid:
     def convert_latlon_xy(self,lats,lons):
         if lats.ndim == 1:
             mlons, mlats = N.meshgrid(lons,lats)
+        else:
+            mlons = lons
+            mlats = lats
         return self.m(mlons,mlats)
 
     def convert_latlon_xy_cartopy(self,lats,lons):
@@ -354,11 +357,11 @@ class Grid:
 
         data = utils.enforce_2d(data)
         # First cut before interpolating
-        cut_data, cut_lats, cut_lons = self.cut(data=data,lats=lats,lons=lons)
-
-        xx,yy = self.convert_latlon_xy(cut_lats,cut_lons)
-        # yy,xx = self.convert_latlon_xy(lats,lons)
-        data_reproj = reproject_tools.reproject(data_orig=cut_data,xx_orig=xx,
+        # cut_data, cut_lats, cut_lons = self.cut(data=data,lats=lats,lons=lons)
+        # xx,yy = self.convert_latlon_xy(cut_lats,cut_lons)
+        xx,yy = self.convert_latlon_xy(lats,lons)
+        # data_reproj = reproject_tools.reproject(data_orig=cut_data,xx_orig=xx,
+        data_reproj = reproject_tools.reproject(data_orig=data,xx_orig=xx,
                         yy_orig=yy,xx_new=self.xx,yy_new=self.yy)
         # pdb.set_trace()
         return data_reproj
@@ -378,6 +381,11 @@ class Grid:
             old_lons = lons
         cut_data, cut_lats, cut_lons = utils.return_subdomain(
                             data=data,lats=old_lats,lons=old_lons,**ld)
+        # import mpl_toolkits.basemap
+        # cut_data = mpl_toolkits.basemap.interp(datain=data,xin=old_lons,
+                            # yin=old_lats,xout=self.lons,yout=self.lats,
+                            # checkbounds=True,)
+        # pdb.set_trace()
         if return_grid:
             newgrid = Grid(lats=cut_lats,lons=cut_lons)
             return cut_data, newgrid
