@@ -1406,7 +1406,7 @@ def merge_netcdfs(outpath,filelist=None,globpath=None):
     xnc = [xarray.open_dataset(nc) for nc in fl]
     merged = xarray.concat(xnc, 'Time')
     # merged = xarray.concat(xnc, 'forecast_time')
-    merged.to_netcdf(str(outpath))
+    merged.to_netcdf(str(outpath),format='NETCDF4')
     print("Completed merge; saved to {}".format(outpath))
     return
 

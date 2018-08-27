@@ -485,7 +485,11 @@ class Ensemble:
                         print("Loading data for time {0}".format(ft))
                     fpath = self.members[mem][dom][t]['fpath']
                     DF = self.datafile_object(fpath,loadobj=True)
-                    m_t_data = DF.get(vrbl,utc=tidx,level=level,lons=lons,lats=lats)[0,...]
+                    try:
+                        m_t_data = DF.get(vrbl,utc=tidx,level=level,lons=lons,lats=lats)[0,...]
+                    except:
+                        print("Fail for ensemble member",nm,mem,"\nAlso,",self.initutc)
+                        raise
 
                 if ens_no == 1:
                     nz,nlats,nlons = m_t_data.shape
@@ -672,11 +676,11 @@ class Ensemble:
 
         return t, tidx
 
-    def get_corners(self,dom):
+    def get_corners(self,dom,chop_inside=False):
         """ Return the corners of a given domain.
         """
         W = self.arbitrary_pick(dataobj=True,dom=dom)
-        return W.get_corners()
+        return W.get_corners(chop_inside=chop_inside)
 
     def get_limits(self,dom=1,fmt='dict'):
         """ Return the limits of the domain.

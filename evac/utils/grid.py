@@ -10,6 +10,7 @@ import cartopy.crs as ccrs
 import numpy as N
 
 from evac.datafiles.wrfout import WRFOut
+import evac.utils.met_constants as mc
 from evac.utils.defaults import Defaults
 
 import evac.utils.reproject_tools as reproject_tools
@@ -177,8 +178,8 @@ class Grid:
         self.nlats = self.ny
         self.nlons = self.nx
 
-        self.dx = N.diff(self.xx).mean()
-        self.dy = N.diff(self.yy).mean()
+        self.dx = N.diff(self.xx[0,:]).mean()
+        self.dy = N.diff(self.yy[:,0]).mean()
         print("Average dx = {:.1f}km and dy = {:.1f}km.".format(self.dx/1000,self.dy/1000))
         # pdb.set_trace()
         return
@@ -345,25 +346,74 @@ class Grid:
             yy[i,j] = p.y
         return xx,yy
 
-    def interpolate(self,data,lats=None,lons=None,grid=None):
+    def interpolate(self,data,lats=None,lons=None,grid=None,method=2,
+                    Nlim=None,Elim=None,Slim=None,Wlim=None):
         """ Interpolate data and lat/lon grid to current grid.
 
         Note:
             User specifies grid or lat/lons.
+
+        Args:
+            Nlim, Elim, Slim, Wlim: Cut down data to this bounding box to
+                speed up intepolation.
         """
         if lats is None:
             lats = grid.lats
             lons = grid.lons
 
+            
+
         data = utils.enforce_2d(data)
-        # First cut before interpolating
-        # cut_data, cut_lats, cut_lons = self.cut(data=data,lats=lats,lons=lons)
-        # xx,yy = self.convert_latlon_xy(cut_lats,cut_lons)
-        xx,yy = self.convert_latlon_xy(lats,lons)
-        # data_reproj = reproject_tools.reproject(data_orig=cut_data,xx_orig=xx,
-        data_reproj = reproject_tools.reproject(data_orig=data,xx_orig=xx,
-                        yy_orig=yy,xx_new=self.xx,yy_new=self.yy)
-        # pdb.set_trace()
+
+        if Nlim or Elim or Wlim or Slim:
+            # og_data = data
+            # og_lats = lats
+            # og_lons = lons
+            
+            assert Nlim and Elim and Slim and Wlim
+            Nidx = utils.closest(lats[:,0],Nlim)
+            Eidx = utils.closest(lons[0,:],Elim)
+            Sidx = utils.closest(lats[:,0],Slim)
+            Widx = utils.closest(lons[0,:],Wlim)
+
+            data = data[Sidx:Nidx+1,Widx:Eidx+1]
+            lats = lats[Sidx:Nidx+1,Widx:Eidx+1]
+            lons = lons[Sidx:Nidx+1,Widx:Eidx+1]
+
+        if method == 1:
+            # First cut before interpolating
+            # cut_data, cut_lats, cut_lons = self.cut(data=data,lats=lats,lons=lons)
+            # xx,yy = self.convert_latlon_xy(cut_lats,cut_lons)
+            xx,yy = self.convert_latlon_xy(lats,lons)
+            # data_reproj = reproject_tools.reproject(data_orig=cut_data,xx_orig=xx,
+            data_reproj = reproject_tools.reproject(data_orig=data,xx_orig=xx,
+                            yy_orig=yy,xx_new=self.xx,yy_new=self.yy)
+        elif method == 2:
+            print("Geog limits done.")
+            from scipy.spatial import cKDTree
+            xog,yog,zog = self.lon_lat_to_cartesian(lons,lats) 
+            xnew,ynew,znew = self.lon_lat_to_cartesian(self.lons,self.lats)
+            print("lonlat converted to cartesian.")
+            # xnew = self.xx
+            # ynew = self.yy
+            # znew = N.ones_like(xnew)
+            # pdb.set_trace()
+
+            # tree = cKDTree(zip(xog,yog,zog))
+            # tree = cKDTree((xog,yog,zog))
+            tree = cKDTree(N.c_[xog.ravel(),yog.ravel()])
+            print("Tree created.")
+            # d, inds = tree.query(zip(xnew,ynew,znew), k=10)
+            # d, inds = tree.query((xnew,ynew,znew), k=10)
+            d, inds = tree.query(list(zip(xnew,ynew)),k=10)
+            print("Query done.")
+            w = 1/(d**2)
+            # Inverse Distance Weighting
+            data_reproj = N.sum(w*data.flatten()[inds],axis=1)/N.sum(w,axis=1)
+            data_reproj.shape = self.shape
+            # pdb.set_trace()
+        else:
+            raise Exception
         return data_reproj
         
     def cut(self,data,grid=None,lats=None,lons=None,return_grid=False):
@@ -398,6 +448,31 @@ class Grid:
                     Slim = self.Slim,
                     Wlim = self.Wlim)
         return limits
+
+    @staticmethod
+    # def lon_lat_to_cartesian(lon,lat,r=1):
+    def lon_lat_to_cartesian(lon,lat,r=mc.R_e):
+        """
+p        calculates lon, lat coordinates of a point on a sphere with
+        radius R
+        """
+        # reshape = False
+        # if lon.ndim == 2:
+            # reshape = lon.shape
+        lon = lon.flatten()
+        lat = lat.flatten()
+
+        lon_r = N.radians(lon)
+        lat_r = N.radians(lat)
+
+        x =  r * N.cos(lat_r) * N.cos(lon_r)
+        y = r * N.cos(lat_r) * N.sin(lon_r)
+        z = r * N.sin(lat_r)
+        # if reshape is not False:
+            # x = x.reshape(reshape)
+            # y = y.reshape(reshape)
+            # z = z.reshape(reshape)
+        return x,y,z 
 
     @staticmethod
     def interp_common_grid(Grid1,Grid2):
