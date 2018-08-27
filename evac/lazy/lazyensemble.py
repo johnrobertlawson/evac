@@ -262,10 +262,10 @@ class LazyEnsemble:
         members = {}
         for mem in self.membernames:
             mem_datadir = self.datadir / mem
-            utils.trycreate(mem_datadir,loc_is_dir=True)
+            utils.trycreate(mem_datadir,isdir=True)
 
             mem_rundir = self.wrfrundir / mem
-            utils.trycreate(mem_rundir,loc_is_dir=True)
+            utils.trycreate(mem_rundir,isdir=True)
 
             members[mem] = {'datadir':mem_datadir,
                                     'rundir':mem_rundir,}

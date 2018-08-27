@@ -23,7 +23,7 @@ import base64
 from pathlib import Path, PosixPath
 import pytz
 
-import cartopy.crs as ccrs
+# import cartopy.crs as ccrs
 import xarray
 import matplotlib as M
 import numpy as N
@@ -1709,7 +1709,7 @@ def _bridge(cmd,frompath,topath,mv=False,cp=False,ln=False):
     cmd = "{} {} {}".format(c,frompath,topath)
     return cmd
 
-def trycreate(loc, parents=True,exist_ok=True,loc_is_dir=False):
+def trycreate(loc, parents=True,exist_ok=True,isdir=False):
     """
     Args:
 
@@ -1738,7 +1738,7 @@ def trycreate(loc, parents=True,exist_ok=True,loc_is_dir=False):
     # the directory.
 
     # Assume that l is a path to a file, so we need l.parent for the directory
-    if not loc_is_dir:
+    if not isdir:
         l = l.parent
 
     l.mkdir(parents=parents,exist_ok=True)
