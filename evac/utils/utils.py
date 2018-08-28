@@ -1420,15 +1420,21 @@ def merge_netcdfs(outpath,filelist=None,globpath=None,method=2):
         # Test all are strings
         assert all(isinstance(a,str) for a in args)
 
-        # strptime
-        fmt = " "
+        # Strip time from string
+        # fmt = "wrfbdy_d01_x_y_n"
         files = dict()
         for a in args:
-            files[a] = datetime.strptime(a,fmt)
+            af = os.path.basename(a)
+            title, dom, day, sec, mem = af.split('_')
+            offset = 584389 # Not sure why...
+            date = datetime.datetime.fromordinal(int(day)+offset)
+            dt = date + datetime.timedelta(seconds=int(sec))
+            files[a] = dt
 
         # Reorder
         # sort dict by values, not keys.
-        sort_files = sorted(files.items(), key=operator.itemgetter(1))
+        sort_files_both = sorted(files.items(), key=operator.itemgetter(1))
+        sort_files = [s[0] for s in sort_files_both]
         return sort_files
 
     sort_files = order_wrfbdy(*fstr)
@@ -1439,12 +1445,12 @@ def merge_netcdfs(outpath,filelist=None,globpath=None,method=2):
         # merged = xarray.concat(xnc, 'forecast_time')
         merged.to_netcdf(str(outpath),format='NETCDF4')
     elif method == 2:
-        from pynco import Nco
+        from nco import Nco
         nco = Nco()
         dirname = os.path.dirname(sort_files[0])
         outfpath = os.path.join(dirname,"wrfbdy_d01")
-        pdb.set_trace()
-        Nco.ncrcat(input=sort_files,output=outfpath)
+        # pdb.set_trace()
+        nco.ncrcat(input=sort_files,output=outfpath)
     else:
         raise Exception
 
