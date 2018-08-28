@@ -144,6 +144,12 @@ class WRFOut(NCFile):
         self.truelat1 = float(self.nc.TRUELAT1)
         self.truelat2 = float(self.nc.TRUELAT2)
 
+        lims = self.get_corners()
+        self.urcrnrlat = lims['urcrnrlat']
+        self.urcrnrlon = lims['urcrnrlon']
+        self.llcrnrlat = lims['llcrnrlat']
+        self.llcrnrlon = lims['llcrnrlon']
+
 
     def ideal_init(self):
         pass
@@ -180,7 +186,7 @@ class WRFOut(NCFile):
         return wrf_times_epoch
 
 
-    def get_time_idx(self,utcs):
+    def get_time_idx(self,utc):
         """
         Get closest index to desired time
 
@@ -190,12 +196,20 @@ class WRFOut(NCFile):
             tidx (int): closest index to desired time
 
         """
+<<<<<<< HEAD
         dn = utils.ensure_datenum(utcs)
         dns = utils.get_sequence(dn)
         tidx = []
         for t in dns:
             tidx.append(utils.closest(self.utcs,t))
         # import pdb; pdb.set_trace()
+=======
+        dn = utils.ensure_datenum(utc)
+        dns = utils.get_sequence(dn)
+        tidx = []
+        for t in dns:
+            tidx.append(utils.closest(N.array(self.utcs),t))
+>>>>>>> 996b97f8a996124bea953099fe3aeada369ae50c
         return N.array(tidx)
 
 
@@ -823,12 +837,19 @@ class WRFOut(NCFile):
         Wlim = float(self.lons1D[0])
         return Nlim, Elim, Slim, Wlim
 
-    def get_corners(self):
+    def get_corners(self,chop_inside=0):
+        if chop_inside > 0:
+            start = chop_inside
+            end = -1 - chop_inside
+        else:
+            start = 0
+            end = -1
+
         returndict = dict(
-            urcrnrlat = self.lats[-1,-1],
-            urcrnrlon = self.lons[-1,-1],
-            llcrnrlat = self.lats[0,0],
-            llcrnrlon = self.lons[0,0])
+            urcrnrlat = self.lats[end,end],
+            urcrnrlon = self.lons[end,end],
+            llcrnrlat = self.lats[start,start],
+            llcrnrlon = self.lons[start,start])
         return returndict
 
     def __str__(self):

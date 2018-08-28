@@ -1415,8 +1415,13 @@ def merge_netcdfs(outpath,filelist=None,globpath=None):
     xnc = [xarray.open_dataset(nc) for nc in fl]
     merged = xarray.concat(xnc, 'Time')
     # merged = xarray.concat(xnc, 'forecast_time')
+<<<<<<< HEAD
     merged.to_netcdf(str(outpath),format="NETCDF4")
     print("Completed merge with NETCDF4 format; saved to {}".format(outpath))
+=======
+    merged.to_netcdf(str(outpath),format='NETCDF4')
+    print("Completed merge; saved to {}".format(outpath))
+>>>>>>> 996b97f8a996124bea953099fe3aeada369ae50c
     return
 
 def pretty_fhr(fhr,in_fmt='hours',out_fmt=1):

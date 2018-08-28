@@ -805,8 +805,8 @@ def compute_olr(parent,tidx,lvidx,lonidx,latidx,other):
 def compute_REFL_comp(parent,tidx,lvidx,lonidx,latidx,other=False):
     # lvidx = None
     # pdb.set_trace()
-    refl = parent.get('REFL_10CM',tidx,lvidx,lonidx,latidx,other)[0,:,:,:]
-    refl_comp = N.max(refl,axis=0)
+    refl = parent.get('REFL_10CM',tidx,lvidx,lonidx,latidx,other)[:,:,:,:]
+    refl_comp = N.max(refl,axis=1)
     return refl_comp
 
 def compute_comp_ref(parent,tidx,lvidx,lonidx,latidx,other):
