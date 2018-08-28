@@ -771,7 +771,16 @@ def closest(arr,val):
     idx     :   index of closest value
 
     """
-    idx = N.argmin(N.abs(arr - val))
+    # pdb.set_trace()
+    if isinstance(arr,N.ndarray):
+        idx = N.argmin(N.abs(arr - val))
+    elif isinstance(arr,(list,tuple)):
+        # diffs = [N.argmin(N.abs(a - val)) for a in arr]
+        # idx = diffs
+        arr2 = N.array(arr)
+        idx = N.argmin(N.abs(arr2 - val))
+    else:
+        raise Exception
     return idx
 
 def closest_datetime(times,t,round=False):
@@ -1406,8 +1415,8 @@ def merge_netcdfs(outpath,filelist=None,globpath=None):
     xnc = [xarray.open_dataset(nc) for nc in fl]
     merged = xarray.concat(xnc, 'Time')
     # merged = xarray.concat(xnc, 'forecast_time')
-    merged.to_netcdf(str(outpath))
-    print("Completed merge; saved to {}".format(outpath))
+    merged.to_netcdf(str(outpath),format="NETCDF4")
+    print("Completed merge with NETCDF4 format; saved to {}".format(outpath))
     return
 
 def pretty_fhr(fhr,in_fmt='hours',out_fmt=1):
