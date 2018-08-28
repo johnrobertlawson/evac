@@ -196,11 +196,20 @@ class WRFOut(NCFile):
             tidx (int): closest index to desired time
 
         """
+<<<<<<< HEAD
+        dn = utils.ensure_datenum(utcs)
+        dns = utils.get_sequence(dn)
+        tidx = []
+        for t in dns:
+            tidx.append(utils.closest(self.utcs,t))
+        # import pdb; pdb.set_trace()
+=======
         dn = utils.ensure_datenum(utc)
         dns = utils.get_sequence(dn)
         tidx = []
         for t in dns:
             tidx.append(utils.closest(N.array(self.utcs),t))
+>>>>>>> 996b97f8a996124bea953099fe3aeada369ae50c
         return N.array(tidx)
 
 

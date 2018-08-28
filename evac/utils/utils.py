@@ -772,7 +772,16 @@ def closest(arr,val):
     idx     :   index of closest value
 
     """
-    idx = N.argmin(N.abs(arr - val))
+    # pdb.set_trace()
+    if isinstance(arr,N.ndarray):
+        idx = N.argmin(N.abs(arr - val))
+    elif isinstance(arr,(list,tuple)):
+        # diffs = [N.argmin(N.abs(a - val)) for a in arr]
+        # idx = diffs
+        arr2 = N.array(arr)
+        idx = N.argmin(N.abs(arr2 - val))
+    else:
+        raise Exception
     return idx
 
 def closest_datetime(times,t,round=False):
@@ -1438,6 +1447,7 @@ def merge_netcdfs(outpath,filelist=None,globpath=None,method=2):
         Nco.ncrcat(input=sort_files,output=outfpath)
     else:
         raise Exception
+
     print("Completed merge; saved to {}".format(outpath))
     return
 
