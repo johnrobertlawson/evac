@@ -10,6 +10,7 @@ import collections
 import fnmatch
 import math
 import os
+import operator
 import pdb
 import itertools
 import sys
@@ -1384,7 +1385,7 @@ def check_same_dimensions(*args):
         shps.append(arr.shape)
     return all([a == arr[0] for a in arr])
 
-def merge_netcdfs(outpath,filelist=None,globpath=None):
+def merge_netcdfs(outpath,filelist=None,globpath=None,method=2):
     """ Merge numerous netcdf files.
 
     Args:
@@ -1401,12 +1402,42 @@ def merge_netcdfs(outpath,filelist=None,globpath=None):
         filelist = globdir.glob(gp.name)
 
     # Make sure paths are strings
-    fl = [str(f) for f in filelist]
+    fstr = [str(f) for f in filelist]
 
-    xnc = [xarray.open_dataset(nc) for nc in fl]
-    merged = xarray.concat(xnc, 'Time')
-    # merged = xarray.concat(xnc, 'forecast_time')
-    merged.to_netcdf(str(outpath),format='NETCDF4')
+    # Order the files by date
+    def order_wrfbdy(*args,**kwargs):
+        """ Order the gregorian file names.
+        """
+        # Test all are strings
+        assert all(isinstance(a,str) for a in args)
+
+        # strptime
+        fmt = " "
+        files = dict()
+        for a in args:
+            files[a] = datetime.strptime(a,fmt)
+
+        # Reorder
+        # sort dict by values, not keys.
+        sort_files = sorted(files.items(), key=operator.itemgetter(1))
+        return sort_files
+
+    sort_files = order_wrfbdy(*fstr)
+
+    if method == 1:
+        xnc = [xarray.open_dataset(nc) for nc in sort_files]
+        merged = xarray.concat(xnc, 'Time')
+        # merged = xarray.concat(xnc, 'forecast_time')
+        merged.to_netcdf(str(outpath),format='NETCDF4')
+    elif method == 2:
+        from pynco import Nco
+        nco = Nco()
+        dirname = os.path.dirname(sort_files[0])
+        outfpath = os.path.join(dirname,"wrfbdy_d01")
+        pdb.set_trace()
+        Nco.ncrcat(input=sort_files,output=outfpath)
+    else:
+        raise Exception
     print("Completed merge; saved to {}".format(outpath))
     return
 
