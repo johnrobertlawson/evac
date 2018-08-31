@@ -31,7 +31,8 @@ class SALGraph(Figure):
         self.ax.set_facecolor('lightgrey')
 
     def plot(self,SAL=None,S=None,A=None,L=None,save=False,
-                check_valid=True,marker='o',ignore_nans=True):
+                check_valid=False,marker='o',ignore_nans=True,
+                L_cmap=M.cm.nipy_spectral_r,L_range=(0,1)):
         """ Plot one scatter point for a given SAL object.
 
         Args:
@@ -53,8 +54,11 @@ class SALGraph(Figure):
                 print("Not plotting due to NaN(s).")
                 return False
         
-        cmap = M.cm.nipy_spectral_r
-        self.sc = self.ax.scatter(SAL.S, SAL.A, c=SAL.L, vmin=0, vmax=2,
+        # cmap = M.cm.nipy_spectral_r
+        vmin, vmax =  L_range
+        self.sc = self.ax.scatter(SAL.S, SAL.A, c=SAL.L, 
+                    # vmin=0, vmax=2,
+                    vmin=vmin, vmax=vmax,
                     s=25,cmap=cmap,alpha=0.9,edgecolor='k',
                     linewidth=0.15,zorder=500,marker=marker)
 
