@@ -31,7 +31,7 @@ class SALGraph(Figure):
         self.ax.set_facecolor('lightgrey')
 
     def plot(self,SAL=None,S=None,A=None,L=None,save=False,
-                check_valid=True,marker='o'):
+                check_valid=True,marker='o',ignore_nans=True):
         """ Plot one scatter point for a given SAL object.
 
         Args:
@@ -48,6 +48,10 @@ class SALGraph(Figure):
             assert abs(SAL.A) <= 2.0
             assert 0.0 <= SAL.L <= 2.0
 
+        if ignore_nans:
+            if N.isnan(SAL.S) or N.isnan(SAL.A) or N.isnan(SAL.L):
+                print("Not plotting due to NaN(s).")
+                return False
         
         cmap = M.cm.nipy_spectral_r
         self.sc = self.ax.scatter(SAL.S, SAL.A, c=SAL.L, vmin=0, vmax=2,
@@ -63,7 +67,7 @@ class SALGraph(Figure):
         if save:
             self.save()
 
-        return
+        return True
 
     def lists_to_arrays(self):
         self.SS = N.array(self.SS)

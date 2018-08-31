@@ -73,7 +73,7 @@ class ESAL(SAL):
         dist_km = self.vector_diff_km(xrr_mod,self.OBC.x_CoM)
         # dist_km = self.vector_diff_km(xrr_mod,self.OBC.objects['x_CoM'])
         L1 = dist_km/self.d
-        print(("L1 = {0}".format(L1)))
+        # print(("L1 = {0}".format(L1)))
         return L1
 
     def compute_L2(self):
@@ -112,3 +112,13 @@ class ESAL(SAL):
 
         S = (V_mean - V_obs)/(0.5 * (V_mean + V_obs))
         return S
+
+    def __repr__(self):
+        s = "S = {:.3f} || A = {:.3f} || L = {:.3f}".format(
+                self.S, self.A, self.L)
+        return s
+
+    def __str__(self):
+        s = "S = {:.3f} || A = {:.3f} || L = {:.3f}".format(
+                self.S, self.A, self.L)
+        return s

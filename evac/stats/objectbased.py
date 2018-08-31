@@ -25,11 +25,23 @@ class ObjectBased:
 
     Args:
         arr: 2D numpy array to identify objects in
+        helpful_dbz: display helpful prompt if raw_data min is -32,
+            as some radar data are bounded by 0 dBZ, rathern than -32
     """
-    def __init__(self,arr,thresh='auto',footprint=500,f=1/15):
+    def __init__(self,arr,thresh='auto',footprint=500,f=1/15,
+                    helpful_dbz=True,datamin=None):
         assert arr.ndim == 2
 
         self.raw_data = arr
+
+        if datamin is not None:
+            self.raw_data[self.raw_data < datamin] = datamin
+
+        if (-32.1 < arr.min() < -31.9) and helpful_dbz:
+            print("This looks like radar data. Please check other instances"
+                "of this data is not capped at 0 dBZ, otherwise this raw"
+                "data also needs capping at 0.")
+
         # self.metadata = {}
         self.thresh = thresh
         self.footprint = int(footprint)
