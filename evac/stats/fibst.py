@@ -134,6 +134,19 @@ class FIbST:
             
 
     def compute_rel(self,M,O,f):
+        """ 
+        Loop over all bins of probability
+        For each, if the M grid point
+
+        Generate probs of exceedence for the given f.
+        bar zi = yi ... bar zi is frequency of 
+        obs for a given bin yi.
+        """
+        Mf = probexceed(f)
+        for iidx,yi in self.probbins:
+            widx = N.where(Mf == yi)
+            pyi = N.count(Mf[widx] == yi)
+            zi = N.count(O[widx] > f)
         pass
 
     def compute_res(self,M,O,f):
