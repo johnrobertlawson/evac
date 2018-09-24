@@ -57,11 +57,13 @@ class Ensemble:
             the file name using default outputs from e.g. WRF.
         allow_empty (bool): if False, raise exception if the ensemble
             instance has no members.
+        ignore_str (str): if a folder contains this string, it is ignored
+            (e.g., for broken members, etc)
     """
     def __init__(self,rootdir,initutc=None,ndoms=1,ctrl='ctrl',aux=False,
                 model='wrf',fmt='em_real',f_prefix='default',loadobj=True,
                 ncf=False,debug=False,onefolder=False,fileformat='netcdf',
-                gefsformat=False,allow_empty=True):
+                gefsformat=False,allow_empty=True,ignore_str='broken'):
         self.model = model.lower()
         if self.model == 'wrf':
             print("File type is wrfout.")
@@ -73,6 +75,7 @@ class Ensemble:
         else:
             raise NotImplementedError()
 
+        self.ignore_str = ignore_str
         self.ndoms = ndoms
         self.doms = list(range(1,ndoms+1))
 
@@ -219,6 +222,9 @@ class Ensemble:
             # Each ensemble member has a domain
             print(main_fname)
             for dirname,subdirs,files in os.walk(self.rootdir):
+                if self.ignore_str in dirname:
+                    print("Skipping {} due to ignore_str setting.".format(dirname))
+                    continue
                 # If ensemble size = 1, there will be no subdirs.
                 matched_files = [f for f in files if f.startswith(self.f_prefix[domn])]
                 # pdb.set_trace()

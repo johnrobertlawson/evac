@@ -3,6 +3,7 @@
 import os
 import pdb
 import calendar
+import time
 import glob
 import datetime
 
@@ -95,6 +96,12 @@ class Radar(PNGFile,Obs):
         self.xlen, self.ylen, = self.data.shape
 
         # Metadata
+        if not os.path.exists(self.fpath_wld):
+            self.download_data(ext='.wld')
+        if not os.path.exists(self.fpath_png):
+            self.download_data(ext='.png')
+
+
         f = open(self.fpath_wld,'r').readlines()
 
         # pixel size in the x-direction in map units/pixel
@@ -147,6 +154,7 @@ class Radar(PNGFile,Obs):
             dest_fpath = os.path.join(self.fdir,self.fname_root+ex)
             cmd1 = 'wget {0} -O {1}'.format(urlf,dest_fpath)
             os.system(cmd1)
+            time.sleep(3)
         return
 
     def get_fmt(self):

@@ -43,6 +43,9 @@ class FIbST:
         self.xa = xa
         self.xfs = xfs
 
+        self.nens = self.xfs.shape[0]
+        self.probthreshs = N.linspace(0,1,nens+1)
+
         check = _assert_list(thresholds)
         self.thresholds = thresholds
         
@@ -94,7 +97,13 @@ class FIbST:
                                 # tempwindow=tempwindow,tidx=tidx,)
             return
 
+
     def compute_fibst(self,i):
+        """
+        Consider coding a continuous version (loop over all possible 
+        fractions possible in ensemble members) or simply ranked
+        (where thresholding is done earlier).
+        """
         thresh, neigh, tempwindow, tidx = i
     
         # First threshold the data into a binary array
@@ -142,12 +151,15 @@ class FIbST:
         bar zi = yi ... bar zi is frequency of 
         obs for a given bin yi.
         """
-        Mf = probexceed(f)
-        for iidx,yi in self.probbins:
+        Mf = utils.exceed_probs_2d(M,f,overunder='over',fmt='decimal'):
+        rels = []
+        for iidx,yi in enumerate(self.probthreshs):
             widx = N.where(Mf == yi)
             pyi = N.count(Mf[widx] == yi)
             zi = N.count(O[widx] > f)
-        pass
+            rel = 0 #EQUATION
+            rels.append(rel)
+        return N.sum(rels)
 
     def compute_res(self,M,O,f):
         pass

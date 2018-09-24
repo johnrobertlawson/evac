@@ -138,41 +138,6 @@ class Figure:
             CB.plot(cf=cf,labels=labels,ticks=ticks)
         return
 
-    
-    def __enter__(self):
-        """ Set up the `with` block compatibility.
-        """
-        self.hold_opt = True
-        self.save_opt = False
-        print("Hold is on. Start plotting.")
-        return self
-
-    def __exit__(self,*args):
-        """ 
-        Todo:
-            * Don't save if error?
-        """
-        lk = {}
-        if not hasattr(self,'legendloc'):
-            lk['loc'] = 0
-        else:
-            lk['loc'] = self.legendloc
-
-        if hasattr(self,'legendfontsize'):
-            lk['fontsize'] = self.legendfontsize
-
-        if self.clskwargs.get('legend',False):
-            self.ax.legend(**lk)
-            # loc=self.legendloc)
-        self.hold_opt = False
-        if self.fpath is not None:
-            self.save()
-            print("Figure is saved.")
-        else:
-            print("Figure not saved, as fpath is not set.")
-        plt.close(self.fig)
-        pass
-
     def _get_plot_options(self,mplkwargs=None,plotkwargs=None,**kwargs):
         """ Plot options common to all plotting methods.
 
@@ -263,3 +228,38 @@ class Figure:
                 # self.ax.coastlines()
 
         return
+    
+    def __enter__(self):
+        """ Set up the `with` block compatibility.
+        """
+        self.hold_opt = True
+        self.save_opt = False
+        print("Hold is on. Start plotting.")
+        return self
+
+    def __exit__(self,*args):
+        """ 
+        Todo:
+            * Don't save if error?
+        """
+        lk = {}
+        if not hasattr(self,'legendloc'):
+            lk['loc'] = 0
+        else:
+            lk['loc'] = self.legendloc
+
+        if hasattr(self,'legendfontsize'):
+            lk['fontsize'] = self.legendfontsize
+
+        if self.clskwargs.get('legend',False):
+            self.ax.legend(**lk)
+            # loc=self.legendloc)
+        self.hold_opt = False
+        if self.fpath is not None:
+            self.save()
+            print("Figure is saved.")
+        else:
+            print("Figure not saved, as fpath is not set.")
+        plt.close(self.fig)
+        pass
+

@@ -82,7 +82,8 @@ class LineGraph(Figure):
         # For legend, xlabel, title, xticks, etc
         self.ax.set(**self.mplkwargs)
 
-        if self.clskwargs['save']:
+        # if self.clskwargs['save']:
+        if self.save_opt:
             self.save()
 
         return

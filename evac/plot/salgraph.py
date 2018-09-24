@@ -54,12 +54,12 @@ class SALGraph(Figure):
                 print("Not plotting due to NaN(s).")
                 return False
         
-        # cmap = M.cm.nipy_spectral_r
+        # L_cmap = M.cm.nipy_spectral_r
         vmin, vmax =  L_range
         self.sc = self.ax.scatter(SAL.S, SAL.A, c=SAL.L, 
                     # vmin=0, vmax=2,
                     vmin=vmin, vmax=vmax,
-                    s=25,cmap=cmap,alpha=0.9,edgecolor='k',
+                    s=25,cmap=L_cmap,alpha=0.9,edgecolor='k',
                     linewidth=0.15,zorder=500,marker=marker)
 
 
@@ -103,11 +103,12 @@ class SALGraph(Figure):
                             zorder=100))
 
     def plot_colorbar(self):
-        cbax = self.fig.add_axes([0.17,0.17,0.22,0.05])
+        cbax = self.fig.add_axes([0.17,0.17,0.22,0.03])
         cblab = N.array([0.0,0.25,0.5,0.75,1.0,2.0])
         cb = self.fig.colorbar(self.sc,cax=cbax,
                             ticks=cblab,orientation="horizontal")
-        cb.set_label("Location component",labelpad=-38)
+        cb.set_label("Location component")
+        # cb.set_label("Location component",labelpad=-38)
         cbax.set_xticklabels(cblab)
         return
 
