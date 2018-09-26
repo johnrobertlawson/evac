@@ -1,11 +1,17 @@
 import os
 import pdb
 
-class FIbST:
+class FI:
     def __init__(self,xa,xfs,thresholds,decompose=True,
                     neighborhoods='auto',temporal_windows=[1,],
                     tidxs='all'):
-        """Fractional Ignorance by Scale/Time (FIbST).
+        """Fractional Ignorance.
+
+        The "continuous" part of this scheme is not over thresholds in the raw
+            data (e.g., mm for rainfall), but for fractional values. There's
+            a good reason for being able to choose thresholds: the user
+            may only be interested in running FI for flash-flood cases, for
+            example.
 
         Returns:
             dictionary of the form:
@@ -13,7 +19,7 @@ class FIbST:
             dict[threshold][neighborhood][temporal_window][timestep][score] = x
 
             There is N.NaN returned for the first and last (W-1)/2 timesteps
-            for temporal window W. The score keys are strings of FIBST, UNC, 
+            for temporal window W. The score keys are strings of FI, UNC, 
             REL, RES.
 
         Args:
@@ -30,13 +36,13 @@ class FIbST:
                 must be integers of odd numbers only.
             decompose (bool): if True, return a named tuple of 
                 uncertainty (UNC), reliability (REL), and resolution (RES)
-                dictionaries. The value of FIbST is the sum of all three.
+                dictionaries. The value of FI is the sum of all three.
             tidxs: if "all", then all timesteps are used. Otherwise, only
                 these indices are used.
 
 
         Returns:
-            Either FIbST or the decomposition as a dictionary.
+            Either FI or the decomposition as a dictionary.
         """
 
         assert xfs.shape[1:] == xa.shape 
@@ -79,26 +85,26 @@ class FIbST:
         if self.ncpus == 1:
             for i in loop:
                 thresh, neigh, tempwindow, tidx = i
-                result = self.compute_fibst(i)
+                result = self.compute_fi(i)
                 self.update_results(result)
         else:
             with multiprocessing.Pool(self.ncpus) as pool:
-                results = pool.map(self.compute_fibst,loop)
+                results = pool.map(self.compute_fi,loop)
             for result in results:
                 self.update_results(result)
                 # scores, thresh, neigh, tempwindow, tidx = tup
-                # self.result[thresh][neigh][tempwindow][tidx] = fibst
+                # self.result[thresh][neigh][tempwindow][tidx] = fi
 
     def update_results(self,result):
         scores, thresh, neigh, tempwindow, tidx = result
-            for score in ("REL","RES","UNC","FIBST"):
+            for score in ("REL","RES","UNC","FI"):
                 self.result[thresh][neigh][tempwindow][tidx][score] = result[score]
                                 # thresh=thresh,neigh=neigh,
                                 # tempwindow=tempwindow,tidx=tidx,)
             return
 
 
-    def compute_fibst(self,i):
+    def compute_fi(self,i):
         """
         Consider coding a continuous version (loop over all possible 
         fractions possible in ensemble members) or simply ranked
@@ -136,9 +142,9 @@ class FIbST:
         res = distance*N.sum(RES)
         unc = distance*N.sum(UNC)
 
-        fibst = rel - res + unc
+        fi = rel - res + unc
 
-        scores = dict(REL=rel,RES=res,UNC=unc,FIBST=fibst)
+        scores = dict(REL=rel,RES=res,UNC=unc,FI=fi)
         return scores, thresh, neigh, tempwindow, tidx
             
 
