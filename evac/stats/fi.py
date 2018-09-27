@@ -147,6 +147,67 @@ class FI:
         scores = dict(REL=rel,RES=res,UNC=unc,FI=fi)
         return scores, thresh, neigh, tempwindow, tidx
             
+    def eq_14_16(self,M,O,f,func):   
+        """ Eqs 14 and 16 are very similar in Toedter and Ahrens
+            (2012, MWR), so this combines the logic.
+        """
+        Mf = utils.exceed_probs_2d(M,f,overunder='over',fmt='decimal'):
+        results = N.zeros_like(self.probthreshs)
+        for iidx,yi in enumerate(self.probthreshs):
+            widx = N.where(Mf == yi)
+
+            # pyi = N.count(Mf[widx] == yi)
+            pyi = self.compute_pyi(Mf,yi)
+            zi = self.compute_zi(O[widx],f,yi)
+            z = self.compute_z(O,f)
+            results[iidx] = func(pyi=pyi,yi=yi,zi=zi,z=z)
+        return N.sum(results)
+
+    def compute_pyi(probs,yi):
+        """ Freq. of probs equal to yi.
+        """
+        pyi = (N.where(probs == yi).size)/probs.size
+        return pyi
+
+    def compute_z(self,O,f):
+        """
+
+        z is the prob of observed occurrence in the
+        sample (0-1 frequency).
+        """
+        # Not sure which z or zi is correct.
+        # zi = N.count(o[widx] > f)
+        # zi = N.count(O[widx] == f)
+
+        # z = N.count(O > f)
+        # z = N.count(O > f)/O.size
+        # z = N.count(O==f)/O.size
+        # z = N.count(O[widx])
+
+        z = (N.where(O == f).size)/O.size
+        return z
+
+    def compute_zi(self,o,f,yi):
+        """ 
+        Args:
+            o: subset of fractional array O that were
+                points with forecast prob yi.
+            f: fraction value of interest (later, integrated)
+            yi: forecast prob of interest (later, integrated)
+
+        A well calibrated ensemble has zi == yi.
+        It is the observed (0-1) frequency of a ob
+        that occurred for prob forecasts for the ith
+        probability (between 0 and 1).
+
+        For a given yi (e.g. 70% or 0.7), what percentage
+        of those points verified?
+
+        Conditional freq of occurrence on all occasions where
+        yi was forecasted.
+        """
+        zi = (N.where(o > f).size)/o.size
+        return zi
 
     def compute_rel(self,M,O,f):
         """ 
@@ -157,24 +218,31 @@ class FI:
         bar zi = yi ... bar zi is frequency of 
         obs for a given bin yi.
         """
-        Mf = utils.exceed_probs_2d(M,f,overunder='over',fmt='decimal'):
-        rels = []
-        for iidx,yi in enumerate(self.probthreshs):
-            widx = N.where(Mf == yi)
-            pyi = N.count(Mf[widx] == yi)
-            zi = N.count(O[widx] > f)
-            rel = 0 #EQUATION
-            rels.append(rel)
-        return N.sum(rels)
+        def rel_eq(pyi,yi,zi,**kwargs):
+            """ Eq. 14 in Toedter and Ahrens 2012 MWR,
+            without the summation.
+            """
+            rel = pyi * (zi*N.log(zi/yi) + 
+                    (1-zi)*N.log((1-zi)/(1-yi)))
+            return rel
+        return self.eq_14_16(M,O,f,rel_eq)
 
     def compute_res(self,M,O,f):
-        pass
+        def res_eq(pyi,zi,z,**kwargs):
+            """ Eq. 16 in Toedter and Ahrens 2012 MWR,
+            without the summation.
+            """
+            res = pyi * (zi*N.log(zi/z) + 
+                    (1-zi)*N.log((1-zi)/(1-z)))
+            return res
+        return self.eq_14_16(M,O,f,res_eq)
 
     def compute_unc(self,O,f):
         """ 
         z is the frequency of f in the sample O.
         """
-        z = N.count(O==f)/O.size
+        # z = N.count(O==f)/O.size
+        z = self.compute_z(O,f)
         UNC = -z*N.log(z) - (1-z)*N.log(1-z)
         return UNC
     
