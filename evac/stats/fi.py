@@ -1,10 +1,18 @@
 import os
 import pdb
+import itertools
+import multiprocessing
+import random
+
+import numpy as N
+from scipy import signal
+
+import evac.utils.utils as utils
 
 class FI:
     def __init__(self,xa,xfs,thresholds,decompose=True,
                     neighborhoods='auto',temporal_windows=[1,],
-                    tidxs='all'):
+                    tidxs='all',ncpus=1):
         """Fractional Ignorance.
 
         The "continuous" part of this scheme is not over thresholds in the raw
@@ -44,28 +52,36 @@ class FI:
         Returns:
             Either FI or the decomposition as a dictionary.
         """
+        if temporal_windows != [1,]:
+            # Need to fix efficient looping over possible fractions
+            raise NotImplementedError
 
         assert xfs.shape[1:] == xa.shape 
         self.xa = xa
         self.xfs = xfs
 
-        self.nens = self.xfs.shape[0]
-        self.probthreshs = N.linspace(0,1,nens+1)
+        self.nens, self.nt, self.nlats, self.nlons = self.xfs.shape
 
-        check = _assert_list(thresholds)
+        # 0 -> 0.01 and 1 -> 0.99 (to address underdispersion).
+        self.probthreshs = self.no_binary(N.linspace(0,1,self.nens+1))
+
+        check = self._assert_list(thresholds)
         self.thresholds = thresholds
         
         if neighborhoods == 'auto':
             # The biggest box we can fit in the domain
-            maxwindow = N.floor*(min(self.nlats,self.nlons)/2)
-            neighborhoods = N.arange(1,maxwindow,2)
-        check = _assert_list(neighborhoods)
+            maxwindow = N.floor(min(self.nlats,self.nlons)/2)
+            # neighborhoods = N.arange(1,maxwindow,2,dtype=int)
+            neighborhoods = N.linspace(1,maxwindow,num=10,dtype=int)
+        check = self._assert_list(neighborhoods)
         self.neighborhoods = neighborhoods
 
-        check = _assert_list(temporal_windows)
+        check = self._assert_list(temporal_windows)
         self.temporal_windows = temporal_windows
 
-        check = _assert_list(tidxs)
+        if tidxs == 'all':
+            tidxs = N.arange(self.nt)
+        check = self._assert_list(tidxs)
         self.tidxs = tidxs
         
         self.decompose = decompose
@@ -75,8 +91,9 @@ class FI:
                         self.temporal_windows} for n in self.neighborhoods}
                         for th in self.thresholds}
 
+        self.ncpus = ncpus
         namedtup = self.parallelise()
-        return self.results
+        # return self.results
 
     def parallelise(self):
         # Loop over all thresholds, neighbourhood sizes, and temporal windows
@@ -88,20 +105,22 @@ class FI:
                 result = self.compute_fi(i)
                 self.update_results(result)
         else:
+            # Shuffling will optimise, because larger
+            # neighbourhoods will take longer.
             with multiprocessing.Pool(self.ncpus) as pool:
                 results = pool.map(self.compute_fi,loop)
             for result in results:
                 self.update_results(result)
                 # scores, thresh, neigh, tempwindow, tidx = tup
-                # self.result[thresh][neigh][tempwindow][tidx] = fi
+                # self.results[thresh][neigh][tempwindow][tidx] = fi
 
     def update_results(self,result):
         scores, thresh, neigh, tempwindow, tidx = result
-            for score in ("REL","RES","UNC","FI"):
-                self.result[thresh][neigh][tempwindow][tidx][score] = result[score]
-                                # thresh=thresh,neigh=neigh,
-                                # tempwindow=tempwindow,tidx=tidx,)
-            return
+        for score in ("REL","RES","UNC","FI"):
+            self.results[thresh][neigh][tempwindow][tidx][score] = scores[score]
+                            # thresh=thresh,neigh=neigh,
+                            # tempwindow=tempwindow,tidx=tidx,)
+        return
 
 
     def compute_fi(self,i):
@@ -111,21 +130,41 @@ class FI:
         (where thresholding is done earlier).
         """
         thresh, neigh, tempwindow, tidx = i
+        print("Calculating FI for threshold = {}, neighborhood = {},"
+                " tempwindow = {}, tidx = {}.".format(thresh,neigh,
+                tempwindow, tidx))
     
         # First threshold the data into a binary array
         # Whether each gridpoint is over (1) or under (0) the threshold
-        Im = N.where(self.xfs[tidx,:,:,:] > thresh, 1, 0)
-        Io = N.where(self.xa[tidx,:,:] > thresh, 1, 0)
+        # Need to gather times either side of tidx for temporal window
+        tidxs = slice(tidx-int((tempwindow-1)/2),1+tidx+int((tempwindow-1)/2))
+        Im = N.where(self.xfs[:,tidxs,:,:] > thresh, 1, 0)
+        Io = N.where(self.xa[tidxs,:,:] > thresh, 1, 0)
 
         # Next, apply the 3D kernel
-        kernel = N.ones([neigh,neigh,tempwindow])
-        M = signal.fftconvolve(Im,kernel)
-        O = signal.fftconvolve(Io,kernel)
+        M_kernel = N.ones([tempwindow,1,neigh,neigh])
+        M = signal.fftconvolve(Im,M_kernel,mode='same')
 
+        O_kernel = N.ones([tempwindow,neigh,neigh])
+        O = signal.fftconvolve(Io,O_kernel,mode='same')
+        # Note that M and O range from 0 to neigh**2
+
+        # Round to integers then divide into fractional values
+        # Get rid of any weird negatives, etc
+        # TODO: is there a more elegant way to do this?
+        # TODO: Needs amending for temporal windowing
+        M = N.around(M)/(neigh**2)
+        O = N.around(O)/(neigh**2)
+
+        # M[M<0] = 0.0
+        # M[M>1] = 1.0
+        # O[O<0] = 0.0
+        # O[O>1] = 1.0
+        
         # Next, loop over all possible fractional values
         # Calculate REL, RES, UNC for each 
         num = (neigh**2)+1
-        REL = N.zeros([num-1])
+        REL = N.zeros([num])
         RES = N.copy(REL)
         UNC = N.copy(REL)
 
@@ -133,25 +172,39 @@ class FI:
         # see eq. 27/28 in Toedter and Ahrens 2010
         distance = 1/(neigh**2)
 
+        # TODO: Needs amending for temporal windowing
+        # distance would not be constant, for a start.
+        # would have to merge sets of temporal fractions
+        # (e.g., temp window = 3 means 0, 0.5, 1)
         for fidx, fracval in enumerate(N.linspace(0,1,num=num)):
-            REL[fidx] = self.compute_rel(M,O,f)
-            RES[fidx] = self.compute_res(M,O,f)
-            UNC[fidx] = self.compute_unc(O,f)
+            REL[fidx] = self.compute_rel(M,O,fracval)
+            RES[fidx] = self.compute_res(M,O,fracval)
+            UNC[fidx] = self.compute_unc(O,fracval)
 
-        rel = distance*N.sum(REL)
-        res = distance*N.sum(RES)
-        unc = distance*N.sum(UNC)
+        # rel = distance*N.sum(REL)
+        rel = distance*N.nansum(REL)
+        # res = distance*N.sum(RES)
+        res = distance*N.nansum(RES)
+        # unc = distance*N.sum(UNC)
+        unc = distance*N.nansum(UNC)
 
         fi = rel - res + unc
+        # pdb.set_trace()
 
         scores = dict(REL=rel,RES=res,UNC=unc,FI=fi)
+        print("Scores: REL = {:.3f}, RES = {:.3f}, UNC = {:.3f}; FI = {:.3f}".format(
+                scores['REL'],scores['RES'],scores['UNC'],scores['FI']))
         return scores, thresh, neigh, tempwindow, tidx
             
     def eq_14_16(self,M,O,f,func):   
         """ Eqs 14 and 16 are very similar in Toedter and Ahrens
             (2012, MWR), so this combines the logic.
         """
-        Mf = utils.exceed_probs_2d(M,f,overunder='over',fmt='decimal'):
+        # enforce 2D obs
+        O = O[0,:,:]
+        M = M[:,0,:,:]
+        Mf = utils.exceed_probs_2d(M,f,overunder='over',fmt='decimal')
+        Mf = self.no_binary(Mf)
         results = N.zeros_like(self.probthreshs)
         for iidx,yi in enumerate(self.probthreshs):
             widx = N.where(Mf == yi)
@@ -160,13 +213,25 @@ class FI:
             pyi = self.compute_pyi(Mf,yi)
             zi = self.compute_zi(O[widx],f,yi)
             z = self.compute_z(O,f)
+            # pdb.set_trace()
             results[iidx] = func(pyi=pyi,yi=yi,zi=zi,z=z)
-        return N.sum(results)
+        # return N.sum(results)
+        return N.nansum(results)
 
-    def compute_pyi(probs,yi):
+    def no_binary(self,arr):
+        """ Avoids prob forecasts of 0% or 100%.
+
+        This then avoids infinite values of Ignorance.
+        """
+        arr[arr<0.01] = 0.01
+        arr[arr>0.99] = 0.99
+        return arr
+
+    def compute_pyi(self,probs,yi):
         """ Freq. of probs equal to yi.
         """
-        pyi = (N.where(probs == yi).size)/probs.size
+        pyi = (N.where(probs == yi)[0].size)/probs.size
+        # pdb.set_trace()
         return pyi
 
     def compute_z(self,O,f):
@@ -175,16 +240,8 @@ class FI:
         z is the prob of observed occurrence in the
         sample (0-1 frequency).
         """
-        # Not sure which z or zi is correct.
-        # zi = N.count(o[widx] > f)
-        # zi = N.count(O[widx] == f)
-
-        # z = N.count(O > f)
-        # z = N.count(O > f)/O.size
-        # z = N.count(O==f)/O.size
-        # z = N.count(O[widx])
-
-        z = (N.where(O == f).size)/O.size
+        # z = (N.where(O == f)[0].size)/O.size
+        z = (N.where(O > f)[0].size)/O.size
         return z
 
     def compute_zi(self,o,f,yi):
@@ -206,7 +263,12 @@ class FI:
         Conditional freq of occurrence on all occasions where
         yi was forecasted.
         """
-        zi = (N.where(o > f).size)/o.size
+        try:
+            # zi = (N.where(o == f)[0].size)/o.size
+            zi = (N.where(o > f)[0].size)/o.size
+        except ZeroDivisionError:
+            zi = N.nan
+        # pdb.set_trace()
         return zi
 
     def compute_rel(self,M,O,f):
@@ -222,18 +284,26 @@ class FI:
             """ Eq. 14 in Toedter and Ahrens 2012 MWR,
             without the summation.
             """
-            rel = pyi * (zi*N.log(zi/yi) + 
+            try:
+                rel = pyi * (zi*N.log(zi/yi) + 
                     (1-zi)*N.log((1-zi)/(1-yi)))
+            except ZeroDivisionError:
+                rel = N.nan
             return rel
-        return self.eq_14_16(M,O,f,rel_eq)
+        REL = self.eq_14_16(M,O,f,rel_eq)
+        # pdb.set_trace()
+        return REL
 
     def compute_res(self,M,O,f):
         def res_eq(pyi,zi,z,**kwargs):
             """ Eq. 16 in Toedter and Ahrens 2012 MWR,
             without the summation.
             """
-            res = pyi * (zi*N.log(zi/z) + 
+            try:
+                res = pyi * (zi*N.log(zi/z) + 
                     (1-zi)*N.log((1-zi)/(1-z)))
+            except ZeroDivisionError:
+                res = N.nan
             return res
         return self.eq_14_16(M,O,f,res_eq)
 
@@ -247,15 +317,16 @@ class FI:
         return UNC
     
     def generate_loop(self):
-        for thresh, neigh, tempwindow, tidx in itertools.product(self.thresholds,
-            self.neighborhoods, self.temporal_windows,self.tidxs):
+        th_rand = random.sample(list(self.thresholds),len(self.thresholds))
+        n_rand = random.sample(list(self.neighborhoods),len(self.neighborhoods)) 
+        for thresh, neigh, tempwindow, tidx in itertools.product(th_rand,n_rand,
+            self.temporal_windows,self.tidxs):
             yield thresh, neigh, tempwindow, tidx
 
-    @staticmethod
-    def _assert_list(l):
-        if isinstance(l,(N.array,list,tuple,set)):
+    def _assert_list(self,l):
+        if isinstance(l,(N.ndarray,list,tuple,set)):
             return True
         else:
-            raise Exception("This is not a valid list, tuple etc.)
+            raise Exception("This is not a valid list, tuple etc.")
 
 
