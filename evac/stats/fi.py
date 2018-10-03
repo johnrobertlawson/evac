@@ -236,7 +236,6 @@ class FI:
 
     def compute_z(self,O,f):
         """
-
         z is the prob of observed occurrence in the
         sample (0-1 frequency).
         """
@@ -283,12 +282,16 @@ class FI:
         def rel_eq(pyi,yi,zi,**kwargs):
             """ Eq. 14 in Toedter and Ahrens 2012 MWR,
             without the summation.
+
+            Shouldn't have divide-by-zero problems
+            because yi is never 0 or 1 (we apply
+            no_binary() to all data).
             """
-            try:
-                rel = pyi * (zi*N.log(zi/yi) + 
+            # try:
+            rel = pyi * (zi*N.log(zi/yi) + 
                     (1-zi)*N.log((1-zi)/(1-yi)))
-            except ZeroDivisionError:
-                rel = N.nan
+            # except ZeroDivisionError:
+                # rel = N.nan
             return rel
         REL = self.eq_14_16(M,O,f,rel_eq)
         # pdb.set_trace()
@@ -298,6 +301,12 @@ class FI:
         def res_eq(pyi,zi,z,**kwargs):
             """ Eq. 16 in Toedter and Ahrens 2012 MWR,
             without the summation.
+
+            If z = 1, divide by zero error. This means all
+            points have passed a threshold in the raw data.
+            This is because there is no variability,
+            so forecasts can't be rated for their ability
+            to capture it.
             """
             try:
                 res = pyi * (zi*N.log(zi/z) + 
