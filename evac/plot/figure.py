@@ -261,5 +261,5 @@ class Figure:
         else:
             print("Figure not saved, as fpath is not set.")
         plt.close(self.fig)
-        pass
+        return
 

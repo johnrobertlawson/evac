@@ -57,6 +57,9 @@ class FI:
             raise NotImplementedError
 
         assert xfs.shape[1:] == xa.shape 
+        if (xfs.ndim == 3) and (xa.ndim == 2):
+            xfs = xfs[:,N.newaxis,:,:]
+            xa = xa[N.newaxis,:,:]
         self.xa = xa
         self.xfs = xfs
 

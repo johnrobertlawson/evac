@@ -49,6 +49,7 @@ class LineGraph(Figure):
         
     def plot(self,xdata,ydata,use_plot_date=False, 
                     mplkwargs=None,plotkwargs=None,
+                    # label=None,
                     *args,**kwargs):
         """ Plot e.g. deterministic scores.
         

@@ -12,7 +12,9 @@ class EFSS:
     Optimisation helped by Faggian et al (2015, Mausam).
 
     Todo:
-        Implement faster algorithms than FFT from Faggian paper.
+        * Implement faster algorithms than FFT from Faggian paper.
+        * Round the fraction fields off, convert to fractions, bound to 0-1.
+        * Address scores that aren't realistic - bug somewhere
 
     Notes:
         * The time, lat, and lon dimensions of fcst4d and obs3d must match.
@@ -25,7 +27,7 @@ class EFSS:
     Returns:
         A dictionary of FSS scores per threshold and neighbourhood
         eFSS[spatial_n][temporal_m][threshold] = float
-"""
+    """
     def __init__(self,fcst4d,obs3d,threshs,spatial_ns,temporal_ms,
                     ncpus=1):
         """
