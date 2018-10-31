@@ -33,7 +33,8 @@ class Casati:
     """
     def __init__(self,fcstdata,verifdata,thresholds=(0.5,1,4,16,64),
                     store_all_arrays=True,recalibration=False):
-        self.thresholds = thresholds
+        # self.thresholds = thresholds
+        self.raw_thresholds = thresholds
         self.raw_fcstdata = fcstdata
         self.raw_verifdata = verifdata
         self.recalibration = recalibration
@@ -57,6 +58,7 @@ class Casati:
         self.Ls = N.log2(self.ls).astype(int)
 
         # Verification
+        # pdb.set_trace()
         self.do_BED()
         self.do_MSE()
         self.do_SS()
@@ -162,6 +164,7 @@ class Casati:
         vf = N.vectorize(self.norm_func)
         self.norm_fcstdata = vf(self.raw_fcstdata)
         self.norm_verifdata = vf(self.raw_verifdata)
+        self.thresholds = vf(self.raw_thresholds)
         # normidx_fc = N.where(self.raw_fcstdata != -6.0)
         # self.norm_fcstdata = N.log2(self.raw_fcstdata[normidx_fc])
         # normidx_ve = N.where(self.raw_fcstdata != -6.0)
@@ -245,6 +248,7 @@ class Casati:
             self.Z3[th] = self.IYr[th] - self.Ix[th].astype(N.int64)
             self.Zl[th],self.Zf[th], self.Zm[th], self.Ztotal[th] = self.Haar(self.Z3[th])
         print("Binary error decomposition complete.")
+        # pdb.set_trace()
         return
 
     def BED(self,pixel,thresh):

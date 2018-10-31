@@ -48,8 +48,8 @@ class AreaFill(Figure):
         self.ax.set_xticklabels([str(x) for x in xxtl])
         self.ax.set_yticks(yytx)
         self.ax.set_yticklabels([str(L_multiplier*(2**y)) for y in yytl])
-        self.ax.set_xlabel("Thresholds (mm/hr)")
-        self.ax.set_ylabel("Spatial scale (km)")
+        # self.ax.set_xlabel("Thresholds (mm/hr)")
+        # self.ax.set_ylabel("Spatial scale (km)")
 
         self.fig.colorbar(cf)
         return

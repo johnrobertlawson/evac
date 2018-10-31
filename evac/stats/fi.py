@@ -1,7 +1,9 @@
 import os
+import operator
 import pdb
 import itertools
 import multiprocessing
+import functools
 import random
 
 import numpy as N
@@ -28,7 +30,7 @@ class FI:
 
             There is N.NaN returned for the first and last (W-1)/2 timesteps
             for temporal window W. The score keys are strings of FI, UNC, 
-            REL, RES.
+            REL, RES, FISS (the skill score).
 
         Args:
             xa: 3-D observation array of size (ntimes,nlat, nlon).
@@ -52,9 +54,9 @@ class FI:
         Returns:
             Either FI or the decomposition as a dictionary.
         """
-        if temporal_windows != [1,]:
+        # if temporal_windows != [1,]:
             # Need to fix efficient looping over possible fractions
-            raise NotImplementedError
+            # raise NotImplementedError
 
         assert xfs.shape[1:] == xa.shape 
         if (xfs.ndim == 3) and (xa.ndim == 2):
@@ -73,9 +75,10 @@ class FI:
         
         if neighborhoods == 'auto':
             # The biggest box we can fit in the domain
-            maxwindow = N.floor(min(self.nlats,self.nlons)/2)
+            # maxwindow = N.floor(min(self.nlats,self.nlons)/2)
+            maxwindow = N.floor(min(self.nlats,self.nlons))
             # neighborhoods = N.arange(1,maxwindow,2,dtype=int)
-            neighborhoods = N.linspace(1,maxwindow,num=10,dtype=int)
+            neighborhoods = N.linspace(1,maxwindow,num=15,dtype=int)
         check = self._assert_list(neighborhoods)
         self.neighborhoods = neighborhoods
 
@@ -119,7 +122,7 @@ class FI:
 
     def update_results(self,result):
         scores, thresh, neigh, tempwindow, tidx = result
-        for score in ("REL","RES","UNC","FI"):
+        for score in ("REL","RES","UNC","FI","FISS"):
             self.results[thresh][neigh][tempwindow][tidx][score] = scores[score]
                             # thresh=thresh,neigh=neigh,
                             # tempwindow=tempwindow,tidx=tidx,)
@@ -155,48 +158,80 @@ class FI:
         # Round to integers then divide into fractional values
         # Get rid of any weird negatives, etc
         # TODO: is there a more elegant way to do this?
-        # TODO: Needs amending for temporal windowing
-        M = N.around(M)/(neigh**2)
-        O = N.around(O)/(neigh**2)
+        total = (neigh**2) * tempwindow
+        # M = N.abs(N.around(M)/(neigh**2))
+        M = N.abs(N.around(M)/total)
+        # O = N.abs(N.around(O)/(neigh**2))
+        O = N.abs(N.around(O)/total)
 
-        # M[M<0] = 0.0
-        # M[M>1] = 1.0
-        # O[O<0] = 0.0
-        # O[O>1] = 1.0
-        
+        assert N.all(M >= 0.0)
+        assert N.all(M <= 1.0)
+        assert N.all(O >= 0.0)
+        assert N.all(O <= 1.0)
+
+        frac_get_method = 2
+
+        if frac_get_method == 1:
+            # As we're using fractional arrays, the distance is constant,
+            # see eq. 27/28 in Toedter and Ahrens 2010
+            # (e.g., spatial window = 3 means 0, 1/9, 2/9...1)
+            if neigh == 1:
+                distances_sw = set(N.array([0,1]))
+            else:
+                distance_sw = 1/(neigh**2)
+                distances_sw = set(N.arange(0,1+distance_sw,distance_sw))
+
+            # TODO: Needs amending for temporal windowing
+            # distance would not be constant, for a start.
+            # would have to merge sets of temporal fractions
+            # (e.g., temp window = 3 means 0, 0.5, 1)
+            
+            if tempwindow == 1:
+                distances_tw = set(N.array([0,1]))
+            else:
+                distance_tw = 1/(tempwindow-1)
+                distances_tw = set(N.arange(0,1+distance_tw,distance_tw))
+
+            fracset = sorted(functools.reduce(operator.or_, (distances_sw, distances_tw)))
+        elif frac_get_method == 2:
+            fracset = N.unique(N.hstack((N.unique(M),N.unique(O))))
+
         # Next, loop over all possible fractional values
         # Calculate REL, RES, UNC for each 
-        num = (neigh**2)+1
-        REL = N.zeros([num])
+        REL = N.zeros([len(fracset)])
         RES = N.copy(REL)
         UNC = N.copy(REL)
 
-        # As we're using fractional arrays, the distance is constant,
-        # see eq. 27/28 in Toedter and Ahrens 2010
-        distance = 1/(neigh**2)
-
-        # TODO: Needs amending for temporal windowing
-        # distance would not be constant, for a start.
-        # would have to merge sets of temporal fractions
-        # (e.g., temp window = 3 means 0, 0.5, 1)
-        for fidx, fracval in enumerate(N.linspace(0,1,num=num)):
+        # pdb.set_trace()
+        # for fidx, fracval in enumerate(N.linspace(0,1,num=num)):
+        for fidx, fracval in enumerate(fracset):
             REL[fidx] = self.compute_rel(M,O,fracval)
             RES[fidx] = self.compute_res(M,O,fracval)
             UNC[fidx] = self.compute_unc(O,fracval)
+        FISS = (RES-REL)/UNC
+        FI = REL - RES + UNC
 
-        # rel = distance*N.sum(REL)
-        rel = distance*N.nansum(REL)
-        # res = distance*N.sum(RES)
-        res = distance*N.nansum(RES)
-        # unc = distance*N.sum(UNC)
-        unc = distance*N.nansum(UNC)
 
-        fi = rel - res + unc
+        # TODO
+        # Outside the domain (e.g. using a large neigh)
+        # IS this nans or what? Bias in the score?
+        # Does it affect uncertainty? 
+
+        frac_distances = N.diff(fracset)
         # pdb.set_trace()
 
-        scores = dict(REL=rel,RES=res,UNC=unc,FI=fi)
-        print("Scores: REL = {:.3f}, RES = {:.3f}, UNC = {:.3f}; FI = {:.3f}".format(
-                scores['REL'],scores['RES'],scores['UNC'],scores['FI']))
+        rel = N.nansum(frac_distances * REL[:-1])
+        res = N.nansum(frac_distances * RES[:-1])
+        unc = N.nansum(frac_distances * UNC[:-1])
+        fiss = N.nansum(frac_distances * FISS[:-1])
+        fi = N.nansum(frac_distances * FI[:-1])
+
+        # fi = rel - res + unc
+        # fiss = (res - rel)/unc
+
+        scores = dict(REL=rel,RES=res,UNC=unc,FI=fi, FISS=fiss)
+        print("Scores: REL = {:.3f}, RES = {:.3f}, UNC = {:.3f}; FI = {:.3f}; FISS = {:.3f}".format(
+                scores['REL'],scores['RES'],scores['UNC'],scores['FI'],scores['FISS']))
         return scores, thresh, neigh, tempwindow, tidx
             
     def eq_14_16(self,M,O,f,func):   
@@ -291,8 +326,8 @@ class FI:
             no_binary() to all data).
             """
             # try:
-            rel = pyi * (zi*N.log(zi/yi) + 
-                    (1-zi)*N.log((1-zi)/(1-yi)))
+            rel = pyi * (zi*N.log2(zi/yi) + 
+                    (1-zi)*N.log2((1-zi)/(1-yi)))
             # except ZeroDivisionError:
                 # rel = N.nan
             return rel
@@ -312,8 +347,8 @@ class FI:
             to capture it.
             """
             try:
-                res = pyi * (zi*N.log(zi/z) + 
-                    (1-zi)*N.log((1-zi)/(1-z)))
+                res = pyi * (zi*N.log2(zi/z) + 
+                    (1-zi)*N.log2((1-zi)/(1-z)))
             except ZeroDivisionError:
                 res = N.nan
             return res
@@ -325,10 +360,12 @@ class FI:
         """
         # z = N.count(O==f)/O.size
         z = self.compute_z(O,f)
-        UNC = -z*N.log(z) - (1-z)*N.log(1-z)
+        UNC = -z*N.log2(z) - (1-z)*N.log2(1-z)
         return UNC
     
     def generate_loop(self):
+        """ The randomisation is to partly optimise the parallelisation.
+        """
         th_rand = random.sample(list(self.thresholds),len(self.thresholds))
         n_rand = random.sample(list(self.neighborhoods),len(self.neighborhoods)) 
         for thresh, neigh, tempwindow, tidx in itertools.product(th_rand,n_rand,
