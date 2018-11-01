@@ -148,7 +148,7 @@ class FI:
         Io = N.where(self.xa[tidxs,:,:] > thresh, 1, 0)
 
         # Next, apply the 3D kernel
-        M_kernel = N.ones([tempwindow,1,neigh,neigh])
+        M_kernel = N.ones([1,tempwindow,neigh,neigh])
         M = signal.fftconvolve(Im,M_kernel,mode='same')
 
         O_kernel = N.ones([tempwindow,neigh,neigh])
