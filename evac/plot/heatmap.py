@@ -15,9 +15,12 @@ class HeatMap(Figure):
         data (numpy.array): Array of data. Should be 2-D.
         fig,ax: If present, this plots to an existing axis/figure.
     """
-    def __init__(self,data,ax=False,fig=False,figsize=(6,6)):
+    def __init__(self,data,ax=False,fig=False,figsize=(6,6),
+                    fname=None,outdir=None,fpath=None):
         self.matrix = data
-        super(HeatMap,self).__init__(figsize=figsize)
+        if not fpath:
+            fpath = os.path.join(outdir,fname)
+        super(HeatMap,self).__init__(figsize=figsize,fpath=fpath)
 
     def interpolate_nans(self,arr1d):
         num = -N.isnan(arr1d)
@@ -27,9 +30,9 @@ class HeatMap(Figure):
         arr1d[N.isnan(arr1d)] = N.interp(x,xp,fp)
         return arr1d
 
-    def plot(self,outdir,flipsign=False,cmap=M.cm.Reds,alpha=0.99,
+    def plot(self,outdir=None,flipsign=False,cmap=M.cm.Reds,alpha=0.99,
                 xlabels=False,ylabels=False,x2labels=False,
-                fname='heatmap.png',blank_nan=False,
+                fname='heatmap.png',blank_nan=True,
                 tickx_top=False,invert_y=False,
                 local_std=False):
         """Plot heatmap.
@@ -124,7 +127,7 @@ class HeatMap(Figure):
             plt.clabel(ct,inline=1,fontsize=8)
 
 
-        self.save(outdir,fname)
+        self.save()#outdir,fname)
         # outfpath = os.path.join(outdir,fname)
 
 
