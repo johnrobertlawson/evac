@@ -14,7 +14,7 @@ import evac.utils.utils as utils
 class FI:
     def __init__(self,xa,xfs,thresholds,decompose=True,
                     neighborhoods='auto',temporal_windows=[1,],
-                    tidxs='all',ncpus=1):
+                    tidxs='all',ncpus=1,efss=False):
         """Fractional Ignorance.
 
         The "continuous" part of this scheme is not over thresholds in the raw
@@ -54,9 +54,7 @@ class FI:
         Returns:
             Either FI or the decomposition as a dictionary.
         """
-        # if temporal_windows != [1,]:
-            # Need to fix efficient looping over possible fractions
-            # raise NotImplementedError
+        self.efss = efss
 
         assert xfs.shape[1:] == xa.shape 
         if (xfs.ndim == 3) and (xa.ndim == 2):
@@ -122,8 +120,9 @@ class FI:
 
     def update_results(self,result):
         scores, thresh, neigh, tempwindow, tidx = result
-        for score in ("REL","RES","UNC","FI","FISS"):
-            self.results[thresh][neigh][tempwindow][tidx][score] = scores[score]
+        # for score in ("REL","RES","UNC","FI","FISS"):
+        for score,val in scores.items():
+            self.results[thresh][neigh][tempwindow][tidx][score] = val
                             # thresh=thresh,neigh=neigh,
                             # tempwindow=tempwindow,tidx=tidx,)
         return
@@ -146,6 +145,15 @@ class FI:
         tidxs = slice(tidx-int((tempwindow-1)/2),1+tidx+int((tempwindow-1)/2))
         Im = N.where(self.xfs[:,tidxs,:,:] > thresh, 1, 0)
         Io = N.where(self.xa[tidxs,:,:] > thresh, 1, 0)
+
+        if self.efss:
+            # "Bonus" score for efss
+            M_kernel_efss = N.ones([self.nens,tempwindow,neigh,neigh]) 
+            M_efss_raw = signal.fftconvolve(Im,M_kernel_efss,mode='same')
+            total = (neigh**2) * tempwindow * self.nens
+            M_efss = N.abs(N.around(M_efss_raw)/total)
+            assert N.all(M_efss >= 0.0)
+            assert N.all(M_efss <= 1.0)
 
         # Next, apply the 3D kernel
         M_kernel = N.ones([1,tempwindow,neigh,neigh])
@@ -232,6 +240,14 @@ class FI:
         scores = dict(REL=rel,RES=res,UNC=unc,FI=fi, FISS=fiss)
         print("Scores: REL = {:.3f}, RES = {:.3f}, UNC = {:.3f}; FI = {:.3f}; FISS = {:.3f}".format(
                 scores['REL'],scores['RES'],scores['UNC'],scores['FI'],scores['FISS']))
+
+        if self.efss:
+            MO_diff = (M_efss - O)**2
+            FBS_ref = M_efss**2 + O**2
+            efss = 1 - (N.nanmean(MO_diff) / N.nanmean(FBS_ref))
+            scores['eFSS'] = efss
+            print("Bonus eFSS = ",efss)
+
         return scores, thresh, neigh, tempwindow, tidx
             
     def eq_14_16(self,M,O,f,func):   
@@ -277,8 +293,8 @@ class FI:
         z is the prob of observed occurrence in the
         sample (0-1 frequency).
         """
-        # z = (N.where(O == f)[0].size)/O.size
         z = (N.where(O > f)[0].size)/O.size
+        # z = (N.where(O == f)[0].size)/O.size
         return z
 
     def compute_zi(self,o,f,yi):

@@ -1,8 +1,10 @@
-import numpy as N
 import os
+import itertools
+import pdb
+
+import numpy as N
 import matplotlib as M
 import matplotlib.pyplot as plt
-import pdb
 import scipy
 import astropy.convolution
 
@@ -33,8 +35,9 @@ class HeatMap(Figure):
     def plot(self,outdir=None,flipsign=False,cmap=M.cm.Reds,alpha=0.99,
                 xlabels=False,ylabels=False,x2labels=False,
                 fname='heatmap.png',blank_nan=True,
-                tickx_top=False,invert_y=False,
-                local_std=False):
+                tickx_top=False,invert_y=False,norm_data=False,
+                local_std=False,annotate_values=False,
+                xlabel=None,ylabel=None,diverging=False):
         """Plot heatmap.
 
         Args:
@@ -50,16 +53,22 @@ class HeatMap(Figure):
                 to compute local std.
         """
         
+        matrix = self.matrix
         if not blank_nan:
             matrix = self.interpolate_nans(self.matrix)
-            matrix_norm = ((matrix-N.mean(matrix))/(matrix.max()-matrix.min()))
+            if norm_data:
+                matrix_norm = ((matrix-N.mean(matrix))/(matrix.max()-matrix.min()))
             # +matrix.min()
+            else:
+                matrix_norm = matrix
         else:
-            matrix = self.matrix
-            matrix_norm = ((matrix-N.nanmean(matrix))/(N.nanmax(matrix)-N.nanmin(matrix)))
-            matrix_norm += -N.nanmin(matrix_norm)
+            if norm_data:
+                matrix_norm = ((matrix-N.nanmean(matrix))/(N.nanmax(matrix)-N.nanmin(matrix)))
+                matrix_norm += -N.nanmin(matrix_norm)
+            else:
+                matrix_norm = matrix
 
-        # Normalise to 0 to 1 across whole climatology
+        # Normalise to 0 to 1 across whole matrix
 
         if flipsign:
             matrix_norm = matrix_norm*-1
@@ -74,7 +83,15 @@ class HeatMap(Figure):
         marr = N.ma.masked_invalid(matrix_norm)
         cmap2 = plt.get_cmap(cmap)
         cmap2.set_bad('black')
-        heatmap = self.ax.pcolormesh(marr,cmap=cmap2,alpha=alpha)
+
+        absmax = max(abs(marr.min()),abs(marr.max()))
+        if diverging:
+            vmin = -absmax
+            vmax = absmax
+        else:
+            vmin = min(0,marr.min())
+            vmax = max(0,marr.max())
+        heatmap = self.ax.pcolormesh(marr,cmap=cmap2,alpha=alpha,vmin=vmin,vmax=vmax)
         
         # Put ticks into centre of each row/column
         self.ax.set_yticks(N.arange(matrix_norm.shape[0]) + 0.5, minor=False)
@@ -118,6 +135,8 @@ class HeatMap(Figure):
 
         # self.ax.set_xlim(0,19)
         # self.ax2.set_ylim(14,0)
+        xx = N.arange(0,matrix_norm.shape[1])#[7:]
+        yy = N.arange(0,matrix_norm.shape[0])#[:-2]
         if local_std:
             conv = self.std_convoluted(matrix_norm,local_std)
             xx = N.arange(0,matrix_norm.shape[1])#[7:]
@@ -126,6 +145,17 @@ class HeatMap(Figure):
             ct = self.ax.contour(xx,yy,conv,levels=N.arange(0,1.02,0.02),colors='k')
             plt.clabel(ct,inline=1,fontsize=8)
 
+        if annotate_values:
+            for y,x in itertools.product(yy,xx):
+                val = "{:.3f}".format(self.matrix[y,x])
+                self.ax.text(x+0.5,y+0.5, val,
+                        horizontalalignment = 'center',
+                        verticalalignment = 'center')
+
+        if xlabel:
+            self.ax.set_xlabel(xlabel)
+        if ylabel:
+            self.ax.set_ylabel(ylabel)
 
         self.save()#outdir,fname)
         # outfpath = os.path.join(outdir,fname)
