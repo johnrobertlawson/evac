@@ -1212,12 +1212,20 @@ def load_data(folder,fname,format='pickle'):
     return data
 
 
-def return_subdomain(data,lats,lons,Nlim,Elim,Slim,Wlim,
+def return_subdomain(data,lats,lons,
+                        Nlim=None,Elim=None,Slim=None,Wlim=None,
+                        cut_to_lats=None,cut_to_lons=None,
                         fmt='latlon',axes=False):
     """
     Returns smaller domain of data and lats/lons based
     on specified limits.
     """
+    if Nlim is None:
+        Nlim = cut_to_lats[-1,-1]
+        Elim = cut_to_lons[-1,-1]
+        Slim = cut_to_lats[0,0]
+        Wlim = cut_to_lons[0,0]
+
     # TODO - might need changing
     if lats.ndim == 2:
         lats = lats[:,0]
@@ -1228,6 +1236,20 @@ def return_subdomain(data,lats,lons,Nlim,Elim,Slim,Wlim,
     Eidx = closest(lons,Elim)
     Sidx = closest(lats,Slim)
     Widx = closest(lons,Wlim)
+
+    if Nidx<Sidx:
+        lats = lats[Nidx:Sidx+1]
+    else:
+        # flipud for RUC data - does this break WRF?
+        lats = lats[Sidx:Nidx+1]
+        # lats = N.flipud(lats[Sidx:Nidx+1])
+    if Widx<Eidx:
+        lons = lons[Widx:Eidx+1]
+    else:
+        lons = lons[Eidx:Widx+1]
+
+    if not data:
+        return lats, lons
 
     # Assuming [lats,lons]
     if fmt=='latlon':
@@ -1258,17 +1280,6 @@ def return_subdomain(data,lats,lons,Nlim,Elim,Slim,Wlim,
     # pdb.set_trace()
 
     data = data[...,xmin:xmax+1,ymin:ymax+1]
-
-    if Nidx<Sidx:
-        lats = lats[Nidx:Sidx+1]
-    else:
-        # flipud for RUC data - does this break WRF?
-        lats = lats[Sidx:Nidx+1]
-        # lats = N.flipud(lats[Sidx:Nidx+1])
-    if Widx<Eidx:
-        lons = lons[Widx:Eidx+1]
-    else:
-        lons = lons[Eidx:Widx+1]
 
     # pdb.set_trace()
     return data,lats,lons
