@@ -935,15 +935,32 @@ def compute_strongest_wind(parent,tidx,lvidx,lonidx,latidx,other):
 
     return wind_max
 
-def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other):
-    u = parent.get("U",tidx,lvidx,lonidx,latidx)
+def return_updraught_helicity_02(parent,tidx,lvidx,lonidx,latidx,other):
+    return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=0,z1=2000) 
+
+def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000):
+    # First, get height idx that area definitely between z0 and z1.
+    agl_m = parent.get("HGT",tidx,None,lonidx,latidx)
+
+    m0 = utils.closest(agl_m,z0)
+    m1 = utils.closest(agl_m,z1)
+
+    pdb.set_trace()
+
+    u0 = parent.get("U",tidx,z0,lonidx,latidx)
+    u1 = parent.get("U",tidx,z1,lonidx,latidx)
+
     v = parent.get("V",tidx,lvidx,lonidx,latidx)
     w = parent.get("W",tidx,lvidx,lonidx,latidx)
 
     UH = compute_updraught_helicity(u=u,v=v,w=w)
     return UH
     
-
+def return_maxcol_updraught(parent,tidx,lvidx,lonidx,latidx,other):
+    w = parent.get("W",tidx,lvidx,lonidx,latidx)
+    wmax = N.max(w,axis=1)
+    return wmax[:,N.newaxis,:,:]
+    
 def compute_updraught_helicity(parent,u,v,w,dz=None,z=None,z0=2000,z1=5000):
     """Eq. 11 & 12 from Kain et al 2008, WAF.
 

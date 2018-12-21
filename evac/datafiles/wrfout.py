@@ -543,7 +543,10 @@ class WRFOut(NCFile):
         tbl['Q_pert'] = derived.compute_Q_pert
         tbl['vorticity'] = derived.return_vorticity
         tbl['LPT'] = derived.compute_lifted_parcel_temp
-        tbl['UH'] = derived.return_updraught_helicity
+        # tbl['UH'] = derived.return_updraught_helicity
+        tbl['UH02'] = derived.return_updraught_helicity_02
+        tbl['UH25'] = derived.return_updraught_helicity_25
+        tbl['Wmax'] = derived.return_maxcol_updraught
 
 
         return tbl

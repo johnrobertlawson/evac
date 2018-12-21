@@ -618,9 +618,9 @@ def string_from_time(usage,t,dom=0,strlen=None,convention=0,**kwargs):
     Returns:
         Formatted string.
     """
-    t = ensure_timetuple(t)
+    tt = ensure_timetuple(t)
 
-    if isinstance(t,str):
+    if isinstance(tt,str):
         if usage == 'output':
             usage = 'skip' # Time is already a string
         elif usage == 'title':
@@ -632,9 +632,9 @@ def string_from_time(usage,t,dom=0,strlen=None,convention=0,**kwargs):
         #        pass
         else:
             raise Exception
-    elif isinstance(t,float) or isinstance(t,int):
+    elif isinstance(tt,float) or isinstance(tt,int):
         # In this case, time is in datenum. Get it into tuple format.
-        t = time.gmtime(t)
+        tt = time.gmtime(tt)
     else:
         pass
 
@@ -642,7 +642,7 @@ def string_from_time(usage,t,dom=0,strlen=None,convention=0,**kwargs):
         # Generates string for titles
         if not 'itime' in kwargs: # i.e. for specific times
         #if not hasattr(kwargs,'itime'): # i.e. for specific times
-            strg = '{3:02d}:{4:02d}Z on {2:02d}/{1:02d}/{0:04d}'.format(*t)
+            strg = '{3:02d}:{4:02d}Z on {2:02d}/{1:02d}/{0:04d}'.format(*tt)
         else: # i.e. for ranges (average over time)
             s1 = '{3:02d}:{4:02d}Z to '.format(*kwargs['itime'])
             s2 = '{3:02d}:{4:02d}Z'.format(*kwargs['ftime'])
@@ -654,35 +654,35 @@ def string_from_time(usage,t,dom=0,strlen=None,convention=0,**kwargs):
             print("No domain specified; using domain #1.")
             dom = 1
         strg = ('wrfout_d{:02d}_{:04d}-{:02d}-{:02d}_{:02d}:{:02d}:{:02d}'.format(
-                                            dom,*t))
+                                            dom,*tt))
     elif usage == 'ruc':
         # This depends on the RUC version? Will break?
         strg = ('ruc2_252_{0:04d}{1:02d}{2:02d}_' +
-                '{3:02d}{4:02d}_{5:02d}0.nc'.format(*t))
+                '{3:02d}{4:02d}_{5:02d}0.nc'.format(*tt))
     elif usage == 'output':
         if not convention:
             # No convention set, assume DD/MM (I'm biased)
             convention = 'full'
         # Generates string for output file creation
         if convention == 'DM':
-            strg = '{2:02d}{1:02d}_{3:02d}{4:02d}'.format(*t)
+            strg = '{2:02d}{1:02d}_{3:02d}{4:02d}'.format(*tt)
         elif convention == 'MD':
-            strg = '{1:02d}{2:02d}_{3:02d}{4:02d}'.format(*t)
+            strg = '{1:02d}{2:02d}_{3:02d}{4:02d}'.format(*tt)
         elif convention == 'full':
-            strg = '{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}'.format(*t)
+            strg = '{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}'.format(*tt)
         else:
             print("Set convention for date format: DM or MD.")
     elif usage == 'dir':
         # Generates string for directory names
         # Needs strlen which sets smallest scope of time for string
         if not strlen:
-             print("No timescope strlen set; using hour as minimum.")
-             strlen = 'hour'
+            print("No timescope strlen set; using hour as minimum.")
+            strlen = 'hour'
         n = lookup_time(strlen)
-        strg = "{0:04d}".format(t[0]) + ''.join(
-                ["{0:02d}".format(a) for a in t[1:n+1]])
+        strg = "{0:04d}".format(tt[0]) + ''.join(
+                ["{0:02d}".format(a) for a in tt[1:n+1]])
     elif usage == 'skip':
-        strg = t
+        strg = tt
     else:
         print("Usage for string not valid.")
         raise Exception
