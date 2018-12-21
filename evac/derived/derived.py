@@ -938,9 +938,13 @@ def compute_strongest_wind(parent,tidx,lvidx,lonidx,latidx,other):
 def return_updraught_helicity_02(parent,tidx,lvidx,lonidx,latidx,other):
     return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=0,z1=2000) 
 
+def return_updraught_helicity_25(parent,tidx,lvidx,lonidx,latidx,other):
+    return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000) 
+
 def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000):
     # First, get height idx that area definitely between z0 and z1.
-    agl_m = parent.get("HGT",tidx,None,lonidx,latidx)
+    # 3D field
+    agl_m = parent.get("HGT",tidx,None,lonidx,latidx)[0,:,:,:]
 
     m0 = utils.closest(agl_m,z0)
     m1 = utils.closest(agl_m,z1)

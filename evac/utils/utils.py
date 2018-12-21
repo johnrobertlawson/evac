@@ -1227,28 +1227,40 @@ def return_subdomain(data,lats,lons,
         Wlim = cut_to_lons[0,0]
 
     # TODO - might need changing
-    if lats.ndim == 2:
-        lats = lats[:,0]
-    if lons.ndim == 2:
-        lons = lons[0,:]
+    # if lats.ndim == 2:
+        # lats = lats[:,0]
+    # if lons.ndim == 2:
+        # lons = lons[0,:]
 
-    Nidx = closest(lats,Nlim)
-    Eidx = closest(lons,Elim)
-    Sidx = closest(lats,Slim)
-    Widx = closest(lons,Wlim)
+    # Nidx = closest(lats,Nlim)
+    Nidx = closest(lats[:,0],Nlim)
+    Eidx = closest(lons[0,:],Elim)
+    Sidx = closest(lats[:,0],Slim)
+    Widx = closest(lons[0,:],Wlim)
 
     if Nidx<Sidx:
-        lats = lats[Nidx:Sidx+1]
+        s1 = slice(Nidx,Sidx+1)
     else:
+        s1 = slice(Sidx,Nidx+1)
+
+        # lats = lats[Nidx:Sidx+1]
+        # lats = lats[Nidx:Sidx+1,:]
+    # else:
         # flipud for RUC data - does this break WRF?
-        lats = lats[Sidx:Nidx+1]
+        # lats = lats[Sidx:Nidx+1,:]
         # lats = N.flipud(lats[Sidx:Nidx+1])
     if Widx<Eidx:
-        lons = lons[Widx:Eidx+1]
+        # lons = lons[Widx:Eidx+1]
+        # lons = lons[:,Widx:Eidx+1]
+        s2 = slice(Widx,Eidx+1)
     else:
-        lons = lons[Eidx:Widx+1]
+        # lons = lons[:,Eidx:Widx+1]
+        s2 = slice(Eidx,Widx+1)
 
-    if not data:
+    lats = lats[s1,s2]
+    lons = lons[s1,s2]
+
+    if data is None:
         return lats, lons
 
     # Assuming [lats,lons]
