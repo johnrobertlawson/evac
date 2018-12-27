@@ -231,7 +231,7 @@ class DetScores:
         SCORES = dict(a=self.a, b=self.b, c=self.c, d=self.d)
         for score in self.scores.keys():
             SCORES[score] = self.get(score)
-            
+
         if save_output:
             datapath = save_output
             utils.trycreate(datapath)
@@ -239,4 +239,3 @@ class DetScores:
             N.savez(file=datapath,**SCORES)
             print("Saved.")
         return SCORES
-        
