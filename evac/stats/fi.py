@@ -13,8 +13,8 @@ import evac.utils.utils as utils
 
 class FI:
     def __init__(self,xa,xfs,thresholds,decompose=True,
-                    neighborhoods='auto',temporal_windows=[1,],
-                    tidxs='all',ncpus=1,efss=False):
+                    neighborhoods='auto',temporal_window=1,
+                    ncpus=1,efss=False):
         """Fractional Ignorance.
 
         The "continuous" part of this scheme is not over thresholds in the raw
@@ -25,38 +25,39 @@ class FI:
 
         Returns:
             dictionary of the form:
-            
+
             dict[threshold][neighborhood][temporal_window][timestep][score] = x
 
             There is N.NaN returned for the first and last (W-1)/2 timesteps
-            for temporal window W. The score keys are strings of FI, UNC, 
+            for temporal window W. The score keys are strings of FI, UNC,
             REL, RES, FISS (the skill score).
 
         Args:
             xa: 3-D observation array of size (ntimes,nlat, nlon).
-            xfs: 4-D forecast array of size (N,ntimes,nlat,nlon) where N is 
+            xfs: 4-D forecast array of size (N,ntimes,nlat,nlon) where N is
                 ensemble size and ntimes is the number of time steps.
             thresholds (tuple,list): thresholding to apply to input data.
             neighborhoods: if 'auto', use smallest to largest spatial
                 kernels. These can accessed after processing with the
-                self.neighborhoods attribute, or the keys of the 
+                self.neighborhoods attribute, or the keys of the
                 returned dictionary.
-            temporal_windows (tuple,list): by default, no temporal
-                windowing is performed. If a list is given, elements
+            temporal_window (int): by default, no temporal
+                windowing is performed. This value
                 must be integers of odd numbers only.
-            decompose (bool): if True, return a named tuple of 
+            decompose (bool): if True, return a named tuple of
                 uncertainty (UNC), reliability (REL), and resolution (RES)
                 dictionaries. The value of FI is the sum of all three.
-            tidxs: if "all", then all timesteps are used. Otherwise, only
-                these indices are used.
 
+        TODO:
+            * The temporal window should be constant, such that it matches the
+                number of times in the xfs/xa data.
 
         Returns:
             Either FI or the decomposition as a dictionary.
         """
         self.efss = efss
 
-        assert xfs.shape[1:] == xa.shape 
+        assert xfs.shape[1:] == xa.shape
         if (xfs.ndim == 3) and (xa.ndim == 2):
             xfs = xfs[:,N.newaxis,:,:]
             xa = xa[N.newaxis,:,:]
@@ -70,7 +71,7 @@ class FI:
 
         check = self._assert_list(thresholds)
         self.thresholds = thresholds
-        
+
         if neighborhoods == 'auto':
             # The biggest box we can fit in the domain
             # maxwindow = N.floor(min(self.nlats,self.nlons)/2)
@@ -80,20 +81,17 @@ class FI:
         check = self._assert_list(neighborhoods)
         self.neighborhoods = neighborhoods
 
-        check = self._assert_list(temporal_windows)
-        self.temporal_windows = temporal_windows
+        assert (temporal_window % 2 == 1)
+        self.temporal_window = temporal_window
 
-        if tidxs == 'all':
-            tidxs = N.arange(self.nt)
-        check = self._assert_list(tidxs)
-        self.tidxs = tidxs
-        
+        # The "centre" of observations given the time window
+        self.tidx = int((self.temporal_window-1)/2)
+
         self.decompose = decompose
 
         # Create results dictionary
-        self.results = {th: {n: { tw: {t: {} for t in self.tidxs} for tw in 
-                        self.temporal_windows} for n in self.neighborhoods}
-                        for th in self.thresholds}
+        self.results = {th: {n: { tw: {} for tw in (self.temporal_window,)}
+                        for n in self.neighborhoods} for th in self.thresholds}
 
         self.ncpus = ncpus
         namedtup = self.parallelise()
@@ -105,7 +103,7 @@ class FI:
 
         if self.ncpus == 1:
             for i in loop:
-                thresh, neigh, tempwindow, tidx = i
+                thresh, neigh, tempwindow = i
                 result = self.compute_fi(i)
                 self.update_results(result)
         else:
@@ -119,10 +117,10 @@ class FI:
                 # self.results[thresh][neigh][tempwindow][tidx] = fi
 
     def update_results(self,result):
-        scores, thresh, neigh, tempwindow, tidx = result
+        scores, thresh, neigh, tempwindow = result
         # for score in ("REL","RES","UNC","FI","FISS"):
         for score,val in scores.items():
-            self.results[thresh][neigh][tempwindow][tidx][score] = val
+            self.results[thresh][neigh][tempwindow][score] = val
                             # thresh=thresh,neigh=neigh,
                             # tempwindow=tempwindow,tidx=tidx,)
         return
@@ -130,25 +128,26 @@ class FI:
 
     def compute_fi(self,i):
         """
-        Consider coding a continuous version (loop over all possible 
+        Consider coding a continuous version (loop over all possible
         fractions possible in ensemble members) or simply ranked
         (where thresholding is done earlier).
         """
-        thresh, neigh, tempwindow, tidx = i
+        thresh, neigh, tempwindow = i
         print("Calculating FI for threshold = {}, neighborhood = {},"
                 " tempwindow = {}, tidx = {}.".format(thresh,neigh,
-                tempwindow, tidx))
-    
+                tempwindow, self.tidx))
+
         # First threshold the data into a binary array
         # Whether each gridpoint is over (1) or under (0) the threshold
         # Need to gather times either side of tidx for temporal window
-        tidxs = slice(tidx-int((tempwindow-1)/2),1+tidx+int((tempwindow-1)/2))
+        tidxs = slice(self.tidx-int((tempwindow-1)/2),
+                        1+self.tidx+int((tempwindow-1)/2))
         Im = N.where(self.xfs[:,tidxs,:,:] > thresh, 1, 0)
         Io = N.where(self.xa[tidxs,:,:] > thresh, 1, 0)
 
         if self.efss:
             # "Bonus" score for efss
-            M_kernel_efss = N.ones([self.nens,tempwindow,neigh,neigh]) 
+            M_kernel_efss = N.ones([self.nens,tempwindow,neigh,neigh])
             M_efss_raw = signal.fftconvolve(Im,M_kernel_efss,mode='same')
             total = (neigh**2) * tempwindow * self.nens
             M_efss = N.abs(N.around(M_efss_raw)/total)
@@ -193,7 +192,7 @@ class FI:
             # distance would not be constant, for a start.
             # would have to merge sets of temporal fractions
             # (e.g., temp window = 3 means 0, 0.5, 1)
-            
+
             if tempwindow == 1:
                 distances_tw = set(N.array([0,1]))
             else:
@@ -205,7 +204,7 @@ class FI:
             fracset = N.unique(N.hstack((N.unique(M),N.unique(O))))
 
         # Next, loop over all possible fractional values
-        # Calculate REL, RES, UNC for each 
+        # Calculate REL, RES, UNC for each
         REL = N.zeros([len(fracset)])
         RES = N.copy(REL)
         UNC = N.copy(REL)
@@ -223,7 +222,7 @@ class FI:
         # TODO
         # Outside the domain (e.g. using a large neigh)
         # IS this nans or what? Bias in the score?
-        # Does it affect uncertainty? 
+        # Does it affect uncertainty?
 
         frac_distances = N.diff(fracset)
         # pdb.set_trace()
@@ -248,9 +247,9 @@ class FI:
             scores['eFSS'] = efss
             print("Bonus eFSS = ",efss)
 
-        return scores, thresh, neigh, tempwindow, tidx
-            
-    def eq_14_16(self,M,O,f,func):   
+        return scores, thresh, neigh, tempwindow
+
+    def eq_14_16(self,M,O,f,func):
         """ Eqs 14 and 16 are very similar in Toedter and Ahrens
             (2012, MWR), so this combines the logic.
         """
@@ -298,7 +297,7 @@ class FI:
         return z
 
     def compute_zi(self,o,f,yi):
-        """ 
+        """
         Args:
             o: subset of fractional array O that were
                 points with forecast prob yi.
@@ -325,12 +324,12 @@ class FI:
         return zi
 
     def compute_rel(self,M,O,f):
-        """ 
+        """
         Loop over all bins of probability
         For each, if the M grid point
 
         Generate probs of exceedence for the given f.
-        bar zi = yi ... bar zi is frequency of 
+        bar zi = yi ... bar zi is frequency of
         obs for a given bin yi.
         """
         def rel_eq(pyi,yi,zi,**kwargs):
@@ -342,7 +341,7 @@ class FI:
             no_binary() to all data).
             """
             # try:
-            rel = pyi * (zi*N.log2(zi/yi) + 
+            rel = pyi * (zi*N.log2(zi/yi) +
                     (1-zi)*N.log2((1-zi)/(1-yi)))
             # except ZeroDivisionError:
                 # rel = N.nan
@@ -363,7 +362,7 @@ class FI:
             to capture it.
             """
             try:
-                res = pyi * (zi*N.log2(zi/z) + 
+                res = pyi * (zi*N.log2(zi/z) +
                     (1-zi)*N.log2((1-zi)/(1-z)))
             except ZeroDivisionError:
                 res = N.nan
@@ -371,27 +370,24 @@ class FI:
         return self.eq_14_16(M,O,f,res_eq)
 
     def compute_unc(self,O,f):
-        """ 
+        """
         z is the frequency of f in the sample O.
         """
         # z = N.count(O==f)/O.size
         z = self.compute_z(O,f)
         UNC = -z*N.log2(z) - (1-z)*N.log2(1-z)
         return UNC
-    
+
     def generate_loop(self):
         """ The randomisation is to partly optimise the parallelisation.
         """
         th_rand = random.sample(list(self.thresholds),len(self.thresholds))
-        n_rand = random.sample(list(self.neighborhoods),len(self.neighborhoods)) 
-        for thresh, neigh, tempwindow, tidx in itertools.product(th_rand,n_rand,
-            self.temporal_windows,self.tidxs):
-            yield thresh, neigh, tempwindow, tidx
+        n_rand = random.sample(list(self.neighborhoods),len(self.neighborhoods))
+        for thresh, neigh in itertools.product(th_rand,n_rand):
+            yield thresh, neigh, self.temporal_window
 
     def _assert_list(self,l):
         if isinstance(l,(N.ndarray,list,tuple,set)):
             return True
         else:
             raise Exception("This is not a valid list, tuple etc.")
-
-

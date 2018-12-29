@@ -19,13 +19,13 @@ class Performance(Figure):
     .. math::
         \\textrm{POD}     &=   A/A+C
 
-        \\textrm{FAR}     &=   B/A+B 
+        \\textrm{FAR}     &=   B/A+B
 
         \\textrm{BIAS}    &=   (A+B)/(A+C)
 
-        \\textrm{CSI}     &=   A/(A+B+C) 
+        \\textrm{CSI}     &=   A/(A+B+C)
 
-        \\textrm{SR}      &=   1-\\textrm{FAR} 
+        \\textrm{SR}      &=   1-\\textrm{FAR}
 
     Example:
         To maintain flexibility, the user should do the following
@@ -33,7 +33,7 @@ class Performance(Figure):
 
             Performance.plot_data(...) # As many times as needed
             Performance.save() # When finished
-           
+
     Some plotting settings, like bias contours, can be accessed::
 
         Performance.contours['bias'] = [0.5,1,1.5]
@@ -48,15 +48,19 @@ class Performance(Figure):
         if fpath is None:
             fpath = os.path.join(outdir,fname)
         super().__init__(fpath=fpath)
+        if legendkwargs is None:
+            legendkwargs = dict(facecolor = 'white',
+                                framealpha = 1.0)
         self.lk = legendkwargs
         self.legend = legend
+        self.alpha = 0.2
 
         # Plotting settings
         self.contours = {}
         self.contours['bias'] = N.array([0.25,0.5,0.75,1.0,1.25,1.5,2.5,5,10])
         self.contours['csi'] = N.arange(0.1,1.1,0.1)
         # self.xticks = 201
-        self.xticks = 401
+        self.xticks = 601
         self.yticks = self.xticks
         self.sr_x = N.linspace(0,1,self.xticks)
         self.pod_y = N.linspace(0,1,self.yticks)
@@ -89,8 +93,14 @@ class Performance(Figure):
         bias_arr = self.compute_bias_lines()
         for bn, b in enumerate(self.contours['bias']):
             # self.ax.plot(bias_arr[:,0,bn],bias_arr[:,1,bn],
+            # Add a non-transparent line for clarity
+            if 0.9 < b < 1.1:
+                alpha = 1.0
+            else:
+                alpha = self.alpha
             self.ax.plot(bias_arr[:,1,bn],self.pod_y,
-                            color='red',lw=1,linestyle='--')
+                            color='red',lw=1,linestyle='--',
+                            alpha=alpha)
             bstr = '{:1.1f}'.format(b)
             # pdb.set_trace()
             if b < 1:
@@ -113,8 +123,11 @@ class Performance(Figure):
         nc = len(self.contours['csi'])
         for cn, c in enumerate(self.contours['csi']):
             # csi_c = self.ax.plot(csi_arr[:,0,cn],csi_arr[:,1,cn],
+
             self.ax.plot(self.sr_x,csi_arr[:,1,cn],
-                                color='blue',lw=1,)
+                                color='blue',lw=1,alpha=self.alpha)
+
+
             cstr = '{:1.1f}'.format(c)
             # self.ax.clabel(csi_c[1],fontsize=8,inline=True,fmt='%1.1f')
             # pdb.set_trace()
@@ -127,7 +140,7 @@ class Performance(Figure):
                                 # cstr,color='blue',)#facecolor='white')
                 self.ax.annotate(cstr,xy=(xpos-0.01,ypos),
                 # self.ax.annotate(cstr,xy=(1-negx_factor,csi_arr[mid,1,cn]),
-                                    xycoords='data', fontsize=7, 
+                                    xycoords='data', fontsize=7,
                                     #color='white', bbox=dict(fc='blue'),
                                     bbox=dict(fc='white',color='white',pad=0),
                                     xytext=(3,3),textcoords='offset points',
@@ -221,4 +234,4 @@ class Performance(Figure):
         # self.fig.tight_layout()
         # self.fig.subplots_adjust(top=0.95,right=0.95)
         # super(Performance,self).save(tight=False)
-        super(Performance,self).save()
+        super().save()
