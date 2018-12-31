@@ -24,7 +24,7 @@ class BirdsEye(Figure):
 
     Args:
         ax,fig (optional): If None (default), then a new figure/axis object
-            will be created in the instance (via parent class 
+            will be created in the instance (via parent class
             :class:`~evac.plot.figure.Figure`.
         ideal (bool): If True, options for an idealised plot will be used.
             For example, no lat/lon, geography data.
@@ -52,10 +52,11 @@ class BirdsEye(Figure):
                     # Nlim=False,Elim=False,Slim=False,Wlim=False,
                     # nx=None,ny=None,cen_lat=None,cen_lon=None,
                     # lat_ts=None,W=None,
+                    my_basemap=None,
                     inline=False,cblabel=False,ideal=False,
                     draw_geography=True,mplkwargs=None,
                     extend=False,hold=False,
-                    lats=None,lons=None,proj=None,
+                    lats=None,lons=None,proj='merc',
                     # color='k',
                     *args,**kwargs):
 
@@ -122,7 +123,10 @@ class BirdsEye(Figure):
                 raise Exception("lats and lons not valid.")
             assert self.lats2d.ndim == 2
 
-            if self.use_basemap:
+            if my_basemap is not None:
+                self.bmap = my_basemap
+                self.x, self.y = self.bmap(self.lons2d,self.lats2d)
+            elif self.use_basemap:
                 if not self.basemap_done:
                     self.basemap_setup(proj=proj,draw_geography=draw_geography)
                     self.bmap = self.m
@@ -140,7 +144,7 @@ class BirdsEye(Figure):
             mplargs = [*self.data]
         else:
             mplargs = [self.x, self.y, self.data]
-        
+
         # pdb.set_trace()
 
         # TODO: move this logic to other methods
