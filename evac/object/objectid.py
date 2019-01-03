@@ -23,9 +23,10 @@ from evac.plot.birdseye import BirdsEye
 from evac.plot.scales import Scales
 
 class ObjectID:
-    def __init__(self,data,lats,lons,dx=1,threshold=35.0,footprint=108):
+    def __init__(self,data,lats,lons,dx=1,threshold=45.0,footprint=144):
         """
-        Default footprint is 108, so that 108/(3km^2) = 12 to compare domains.
+        Default footprint is multiple of 9 here, so that 108/(3km^2) = dx
+            to compare domains.
 
         Args:
             dx: grid spacing, in km
@@ -119,7 +120,8 @@ class ObjectID:
         # JRL: consider cache=False to lower memory but slow operation
         obj_props = skimage.measure.regionprops(obj_labels,obj_init)
         obj_OK = []
-        for i,prop in enumerate(obj_props):
+        for prop in obj_props:
+            id = int(prop.label)
             size_OK = False
             not_edge_OK = False
 
@@ -132,36 +134,49 @@ class ObjectID:
             # This is 'fair', as that's the nature of the 1 km grid!
             # Also, a comparison might want to check if a storm was present
             # but removed - to avoid a false 'missed hit'. Instead, use a NaN.
-            not_edge_OK = not self.check_for_edge(prop.coords)
 
-            if all((size_OK,not_edge_OK)):
-                obj_OK.append(i)
+            # print("Checking for an edge for object",id)
+            # debug = True if id == 81 else False
+            not_edge_OK = not self.check_for_edge(prop.coords,debug=False)
+
+            # if all((size_OK,not_edge_OK)):
+            if size_OK and not_edge_OK:
+                obj_OK.append(id)
 
         # This replaces gridpoints within objects with original data
         for i,ol in enumerate(obj_OK):
-            obj_field = N.where(obj_labels == (ol+1), obj_init, obj_field)
-        obj_props_OK = [obj_props[o] for o in obj_OK]
+            obj_field = N.where(obj_labels==ol, obj_init, obj_field)
+        obj_props_OK = [obj_props[o-1] for o in obj_OK]
         # pdb.set_trace()
         return obj_field, obj_props_OK, obj_OK, obj_labels
 
-    def list_of_edgecoords(self):
+    def list_of_edgecoords(self,pad=3):
+        # TODO: consider doing outside 2 cells for 3km, and 6 cells for 1km
+        pad = int(N.ceil(pad/self.dx))
         # These are all the values on the edge of the raw_data domain
         latidxs = N.indices(self.lats.shape)[0][:,0]
         lonidxs = N.indices(self.lats.shape)[1][0,:]
 
-        _a = [(0,n) for n in lonidxs]
-        _b = [(self.nlats,n) for n in lonidxs]
-        _c = [(n,0) for n in latidxs]
-        _d = [(n,self.nlons) for n in latidxs]
+        ee0 = list(range(pad))
+        elat0 = list(range(self.nlats-3,self.nlats))
+        elon0 = list(range(self.nlons-3,self.nlons))
+        elat = ee0 + elat0
+        elon = ee0 + elon0
 
-        edgecoords = _a + _b + _c + _d
-        print("Edge coordinates have been calculated.")
+        _a = [(z,n) for n in lonidxs for z in elat]
+        # _b = [(self.nlats,n) for n in lonidxs]
+        _b = [(n,z) for n in latidxs for z in elon]
+        # _d = [(n,self.nlons) for n in latidxs]
+
+        edgecoords = _a + _b # + _c + _d
+        # print("Edge coordinates have been calculated.")
         return edgecoords
 
-    def check_for_edge(self,coords):
+    def check_for_edge(self,coords,debug=False):
         """ Returns True if any point is on the edge.
         """
         check_all = [(c[0],c[1]) in self.edgecoords for c in coords]
+        if debug: pdb.set_trace()
         return any(check_all)
 
     def create_structured_array(self,obj_props,OKidx):
@@ -329,7 +344,7 @@ class ObjectID:
         clon = self.rbs['lons'](yrow,xcol)
         return clat, clon
 
-    def plot_quicklook(self,outdir,what='all',fname=None):
+    def plot_quicklook(self,outdir,what='all',fname=None,ecc=0.2):
         """ Plot quick images of objects identified.
 
         Args:
@@ -337,7 +352,10 @@ class ObjectID:
             outdir (str): where to put the quickplot
 
             fname (str,optional): if None, automatically name.
+            ecc (float): eccentricity of object, for discriminating (later)
         """
+        assert what in ("all","qlcs")
+        
         def label_objs(bmap,ax,locs):
             for k,v in locs.items():
                 xpt, ypt = bmap(v[1],v[0])
@@ -346,6 +364,66 @@ class ObjectID:
                 # ax.text(xpt,ypt,k,ha='left',fontsize=15)
                 ax.annotate(k,xy=(xpt,ypt),xycoords="data",zorder=1000)
                 # pdb.set_trace()
+            return
+
+        def do_label_array(bmap,ax):
+            locs = dict()
+            for o in self.objects.itertuples():
+                locs[str(int(o.label))] = (o.centroid_lat,o.centroid_lon)
+            idxarray = N.ma.masked_where(self.idxarray < 1, self.idxarray)
+            bmap.pcolormesh(data=idxarray,x=x,y=y,)
+                    #vmin=1,vmax=self.idxarray.max()+1)
+            #        levels=N.arange(1,self.objects.shape[0]))
+            label_objs(bmap,ax,locs)
+            ax.set_title("Object ID/label array")
+            return
+
+        def do_raw_array(bmap,ax):
+            bmap.contourf(data=self.raw_data,x=x,y=y,
+                    levels=S.clvs,cmap=S.cm)
+            ax.set_title("Raw data array")
+            return
+
+        def do_intensity_array(bmap,ax):
+            locs = dict()
+            for o in self.objects.itertuples():
+                locs[str(int(o.label))] = (o.weighted_centroid_lat,o.weighted_centroid_lon)
+            bmap.contourf(data=self.object_field,x=x,y=y,
+                            levels=S.clvs,cmap=S.cm)
+            label_objs(bmap,ax,locs)
+            ax.set_title("Intensity array")
+            return
+
+        def do_table(bmap,ax):
+            cell_text = []
+            table = self.objects
+            for row in range(len(table)):
+                cell_text.append(table.iloc[row])
+
+            tab = plt.table(cellText=cell_text, colLabels=table.columns, loc='center')
+            ax.add_table(tab)
+            plt.axis('off')
+        return
+
+        def do_highlow_ecc(bmap,ax,ecc,overunder):
+            assert overunder in ("over","under")
+            func = N.greater_equal if overunder == "over" else N.less
+            locs = dict()
+            qlcs_obj = []
+            obj_field = N.zeros_like(data_masked)
+            for o in self.objects.itertuples():
+                if func(o.eccentricity,ecc):
+                    locs[str(int(o.label))] = (o.centroid_lat,o.centroid_lon)
+                    qlcs_obj.append(o.label)
+            for olab in qlcs_obj:
+                obj_field = N.where(self.idxarray==olab, self.object_field, obj_field)
+            bmap.contourf(data=obj_field,x=x,y=y,
+                            levels=S.clvs,cmap=S.cm)
+            label_objs(bmap,ax,locs)
+            if overunder == "over":
+                ax.set_title("QLCS objects (ecc > {:0.2f})".format(ecc))
+            else:
+                ax.set_title("Cellular objects (ecc < {:0.2f})".format(ecc))
             return
 
         # The above needs saving to pickle and loading/copying each time
@@ -369,41 +447,25 @@ class ObjectID:
             S = Scales(vrbl='REFL_comp')
 
             if n == 0:
-                bmap.contourf(data=self.raw_data,x=x,y=y,
-                        levels=S.clvs,cmap=S.cm)
-                ax.set_title("Raw data array")
+                do_raw_array(bmap,ax)
 
             elif n == 1:
-                locs = dict()
-                for o in self.objects.itertuples():
-                    locs[str(int(o.label))] = (o.centroid_lat,o.centroid_lon)
-                idxarray = N.ma.masked_where(self.idxarray < 1, self.idxarray)
-                bmap.pcolormesh(data=idxarray,x=x,y=y,)
-                        #vmin=1,vmax=self.idxarray.max()+1)
-                #        levels=N.arange(1,self.objects.shape[0]))
-                label_objs(bmap,ax,locs)
-                ax.set_title("Object ID/label array")
+                if what == "qlcs":
+                    do_highlow_ecc(bmap,ax,ecc,"over")
+                else:
+                    do_intensity_array(bmap,ax)
 
             elif n==2:
-                locs = dict()
-                for o in self.objects.itertuples():
-                    locs[str(int(o.label))] = (o.weighted_centroid_lat,o.weighted_centroid_lon)
-                bmap.contourf(data=self.object_field,x=x,y=y,
-                                levels=S.clvs,cmap=S.cm)
-                label_objs(bmap,ax,locs)
-                ax.set_title("Intensity array")
+                if what == "qlcs":
+                    do_highlow_ecc(bmap,ax,ecc,"under")
+                else:
+                    do_label_array(bmap,ax)
 
             elif n==3:
-                cell_text = []
-                table = self.objects
-                for row in range(len(table)):
-                    cell_text.append(table.iloc[row])
-
-                tab = plt.table(cellText=cell_text, colLabels=table.columns, loc='center')
-                ax.add_table(tab)
-                plt.axis('off')
+                do_table(bmap,ax)
 
         fpath = os.path.join(outdir,fname)
+        utils.trycreate(fpath)
         fig.tight_layout()
         fig.savefig(fpath)
         print("Saved figure to",fpath)
