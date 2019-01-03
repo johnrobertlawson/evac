@@ -11,6 +11,8 @@ import os
 import numpy as N
 from mpl_toolkits.basemap import Basemap
 import skimage.measure
+import skimage.feature
+#import skimage.preprocessing
 import pandas
 import scipy
 from scipy.interpolate import RectBivariateSpline as RBS
@@ -56,8 +58,9 @@ class ObjectID:
                             N.min(self.lats),N.min(self.lons))
         self.xx, self.yy = self.bmap(self.lons,self.lats)
 
-        self.object_field, objects, OKidxs, self.idxarray = self.identify_objects()
-        self.objects = self.create_structured_array(objects,OKidxs)
+        self.object_field, self.object_props, self.OKidxs, self.idxarray, \
+            self.OKidxarray = self.identify_objects()
+        self.objects = self.create_structured_array(self.object_props,self.OKidxs)
 
     def create_bmap(self,urcrnrlat=None,urcrnrlon=None,llcrnrlat=None,
                         llcrnrlon=None,ax=None,pad=0.07,lats=None,lons=None):
@@ -110,12 +113,13 @@ class ObjectID:
 
     def identify_objects(self):
         data_masked = N.where(self.radmask,0.0,self.raw_data)
-        obj_field = N.zeros_like(data_masked)
+        obj_field_OK = N.zeros_like(data_masked)
         obj_init = N.where(data_masked >= self.threshold, data_masked, 0.0)
         obj_bool = obj_init > 0.0
 
         # 1, 2, 3...
         obj_labels = skimage.measure.label(obj_bool).astype(int)
+        obj_labels_OK = N.zeros_like(obj_labels)
 
         # JRL: consider cache=False to lower memory but slow operation
         obj_props = skimage.measure.regionprops(obj_labels,obj_init)
@@ -145,10 +149,11 @@ class ObjectID:
 
         # This replaces gridpoints within objects with original data
         for i,ol in enumerate(obj_OK):
-            obj_field = N.where(obj_labels==ol, obj_init, obj_field)
+            obj_field_OK = N.where(obj_labels==ol, obj_init, obj_field_OK)
+            obj_labels_OK =  N.where(obj_labels==ol, obj_labels, obj_labels_OK)
         obj_props_OK = [obj_props[o-1] for o in obj_OK]
         # pdb.set_trace()
-        return obj_field, obj_props_OK, obj_OK, obj_labels
+        return obj_field_OK, obj_props_OK, obj_OK, obj_labels, obj_labels_OK
 
     def list_of_edgecoords(self,pad=3):
         # TODO: consider doing outside 2 cells for 3km, and 6 cells for 1km
@@ -205,6 +210,7 @@ class ObjectID:
                     "convex_area":"i4",
                     "eccentricity":"f4",
                     "equivalent_diameter":"f4",
+                    'extent':'f4',
                     "label":"i4",
                     "max_intensity":"f4",
                     "mean_intensity":"f4",
@@ -214,6 +220,9 @@ class ObjectID:
                     "weighted_centroid_col":"f4",
                     "weighted_centroid_lat":"f4",
                     "weighted_centroid_lon":"f4",
+
+                    "ratio":"f4",
+                    "longaxis_km":"f4",
                     }
 
         dtypes = {'names':[], 'formats':[]}
@@ -287,6 +296,7 @@ class ObjectID:
             # skipping euler_number (number of holes?)
 
             # skipping extent (area/ (rows x cols))
+            objects['extent'][oidx] = o.extent
 
             # skipped filled_area and filled_image (holes filled in)
 
@@ -322,6 +332,22 @@ class ObjectID:
             wclat, wclon = self.interp_latlon(yrow=wcr,xcol=wcc)
             objects['weighted_centroid_lat'][oidx] = wclat
             objects['weighted_centroid_lon'][oidx] = wclon
+
+            # JRL: custom ratio of longest to shortest sides
+            #drow = abs(min_row-max_row)
+            #dcol = abs(min_col-max_col)
+            #if drow == dcol:
+            #    ratio = 1
+            #else:
+            #    maxside = max((drow,dcol))
+            #    minside = min((drow,dcol))
+            #    ratio = maxside/minside
+            ratio = o.minor_axis_length/o.major_axis_length
+            objects['ratio'][oidx] = ratio
+
+            objects['longaxis_km'][oidx] = o.major_axis_length * self.dx
+
+
         return objects
 
     def interp_latlon(self,xcol,yrow):
@@ -344,6 +370,16 @@ class ObjectID:
         clon = self.rbs['lons'](yrow,xcol)
         return clat, clon
 
+    def determine_mode(self):
+        """ Determine if a reflectivity object is likely cellular or linear.
+
+        For each object, QLCS objects will have:
+            1. High eccentricity (>0.75?)
+            2. Major axis length
+            3.
+        """
+        pass
+
     def plot_quicklook(self,outdir,what='all',fname=None,ecc=0.2):
         """ Plot quick images of objects identified.
 
@@ -354,15 +390,15 @@ class ObjectID:
             fname (str,optional): if None, automatically name.
             ecc (float): eccentricity of object, for discriminating (later)
         """
-        assert what in ("all","qlcs")
-        
+        assert what in ("all","qlcs","ecc","shapeindex","ratio","extent","4-panel")
+
         def label_objs(bmap,ax,locs):
             for k,v in locs.items():
                 xpt, ypt = bmap(v[1],v[0])
                 # bbox_style = {'boxstyle':'square','fc':'white','alpha':0.5}
                 # bmap.plot(xpt,ypt,'ko',)#markersize=3,zorder=100)
                 # ax.text(xpt,ypt,k,ha='left',fontsize=15)
-                ax.annotate(k,xy=(xpt,ypt),xycoords="data",zorder=1000)
+                ax.annotate(k,xy=(xpt,ypt),xycoords="data",zorder=1000,fontsize=8)
                 # pdb.set_trace()
             return
 
@@ -375,13 +411,83 @@ class ObjectID:
                     #vmin=1,vmax=self.idxarray.max()+1)
             #        levels=N.arange(1,self.objects.shape[0]))
             label_objs(bmap,ax,locs)
-            ax.set_title("Object ID/label array")
+            ax.set_title("Object labels")
+            return
+
+        def __do_label(bmap,ax):
+            locs = dict()
+            for o, okidx in zip(self.objects.itertuples(),self.OKidxs):
+                #data = skimage.preprocessing.normalize(
+                raw_data = self.object_props[okidx].intensity_image
+                pdb.set_trace()
+                data = N.linalg.norm(axis=(0,1),x=raw_data)
+                shidx = skimage.feature.shape_index(data)
+                sistr = "{:0.3f}".format(shidx)
+                locs[sistr] = (o.centroid_lat,o.centroid_lon)
+            idxarray = N.ma.masked_where(self.idxarray < 1, self.idxarray)
+            bmap.pcolormesh(data=idxarray,x=x,y=y,)
+                    #vmin=1,vmax=self.idxarray.max()+1)
+            #        levels=N.arange(1,self.objects.shape[0]))
+            label_objs(bmap,ax,locs)
+            ax.set_title("Object shape index")
+            return
+
+        def do_label_ecc(bmap,ax):
+            locs = dict()
+            for o in self.objects.itertuples():
+                eccstr = "{:0.2f}".format(o.eccentricity)
+                locs[eccstr] = (o.centroid_lat,o.centroid_lon)
+            idxarray = N.ma.masked_where(self.OKidxarray < 1, self.OKidxarray)
+            bmap.pcolormesh(data=idxarray,x=x,y=y,alpha=0.5)
+                    #vmin=1,vmax=self.idxarray.max()+1)
+            #        levels=N.arange(1,self.objects.shape[0]))
+            label_objs(bmap,ax,locs)
+            ax.set_title("Object eccentricity")
+            return
+
+        def do_label_extent(bmap,ax):
+            locs = dict()
+            for o in self.objects.itertuples():
+                lab = "{:1.2f}".format(o.extent)
+                locs[lab] = (o.centroid_lat,o.centroid_lon)
+            idxarray = N.ma.masked_where(self.OKidxarray < 1, self.OKidxarray)
+            bmap.pcolormesh(data=idxarray,x=x,y=y,alpha=0.5)
+                    #vmin=1,vmax=self.idxarray.max()+1)
+            #        levels=N.arange(1,self.objects.shape[0]))
+            label_objs(bmap,ax,locs)
+            ax.set_title("Object extent (fill pc. of bbox)")
+            return
+
+        def do_label_longest(bmap,ax):
+            locs = dict()
+            for o in self.objects.itertuples():
+                lab = "{}".format(int(o.longaxis_km))
+                locs[lab] = (o.centroid_lat,o.centroid_lon)
+            idxarray = N.ma.masked_where(self.OKidxarray < 1, self.OKidxarray)
+            bmap.pcolormesh(data=idxarray,x=x,y=y,alpha=0.5)
+                    #vmin=1,vmax=self.idxarray.max()+1)
+            #        levels=N.arange(1,self.objects.shape[0]))
+            label_objs(bmap,ax,locs)
+            ax.set_title("Object longest-side length (km)")
+            return
+
+        def do_label_ratio(bmap,ax):
+            locs = dict()
+            for o in self.objects.itertuples():
+                lab = "{:1.2f}".format(o.ratio)
+                locs[lab] = (o.centroid_lat,o.centroid_lon)
+            idxarray = N.ma.masked_where(self.OKidxarray < 1, self.OKidxarray)
+            bmap.pcolormesh(data=idxarray,x=x,y=y,alpha=0.5)
+                    #vmin=1,vmax=self.idxarray.max()+1)
+            #        levels=N.arange(1,self.objects.shape[0]))
+            label_objs(bmap,ax,locs)
+            ax.set_title("Object side-ratio (short/long)")
             return
 
         def do_raw_array(bmap,ax):
             bmap.contourf(data=self.raw_data,x=x,y=y,
                     levels=S.clvs,cmap=S.cm)
-            ax.set_title("Raw data array")
+            ax.set_title("Raw data")
             return
 
         def do_intensity_array(bmap,ax):
@@ -403,14 +509,14 @@ class ObjectID:
             tab = plt.table(cellText=cell_text, colLabels=table.columns, loc='center')
             ax.add_table(tab)
             plt.axis('off')
-        return
+            return
 
         def do_highlow_ecc(bmap,ax,ecc,overunder):
             assert overunder in ("over","under")
             func = N.greater_equal if overunder == "over" else N.less
             locs = dict()
             qlcs_obj = []
-            obj_field = N.zeros_like(data_masked)
+            obj_field = N.zeros_like(self.object_field)
             for o in self.objects.itertuples():
                 if func(o.eccentricity,ecc):
                     locs[str(int(o.label))] = (o.centroid_lat,o.centroid_lon)
@@ -434,7 +540,11 @@ class ObjectID:
         # ax2 is the labelled objects (ID)
         # ax3 is the object field, annotate row/col and lat/lon centroids
         # ax4 is the DataFrame?
-        fig,axes = plt.subplots(1,3,figsize=(9,4))
+        if what == "4-panel":
+            fig,axes = plt.subplots(2,2,figsize=(9,7))
+        else:
+            fig,axes = plt.subplots(1,3,figsize=(9,4))
+
         if fname is None:
             fname = "quicklook.png"
 
@@ -452,17 +562,34 @@ class ObjectID:
             elif n == 1:
                 if what == "qlcs":
                     do_highlow_ecc(bmap,ax,ecc,"over")
+                elif what in ("ecc","extent","4-panel"):
+                    do_label_ecc(bmap,ax)
                 else:
                     do_intensity_array(bmap,ax)
+                #elif what == "ecc":
+                #    do_intensity_array(bmap,ax)
+
 
             elif n==2:
                 if what == "qlcs":
                     do_highlow_ecc(bmap,ax,ecc,"under")
-                else:
+                elif what == "all":
                     do_label_array(bmap,ax)
+                elif what== "ecc":
+                    #do_label_ecc(bmap,ax)
+                    do_label_ratio(bmap,ax)
+                elif what == "shapeindex":
+                    do_label_shapeindex(bmap,ax)
+                elif what == "ratio":
+                    do_label_ratio(bmap,ax)
+                elif what in ("4-panel","extent"):
+                    do_label_extent(bmap,ax)
 
             elif n==3:
-                do_table(bmap,ax)
+                if what == "4-panel":
+                    do_label_longest(bmap,ax)
+                else:
+                    do_table(bmap,ax)
 
         fpath = os.path.join(outdir,fname)
         utils.trycreate(fpath)
@@ -470,4 +597,4 @@ class ObjectID:
         fig.savefig(fpath)
         print("Saved figure to",fpath)
         plt.close(fig)
-        pass
+        return
