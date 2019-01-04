@@ -6,6 +6,7 @@ TODO:
 """
 
 import pdb
+import datetime
 import os
 
 import numpy as N
@@ -25,7 +26,9 @@ from evac.plot.birdseye import BirdsEye
 from evac.plot.scales import Scales
 
 class ObjectID:
-    def __init__(self,data,lats,lons,dx=1,threshold=45.0,footprint=144):
+    def __init__(self,data,lats,lons,dx=1,threshold=45.0,footprint=144,
+                    prod_code=0,time_code=0,lead_time=0,classify=False,pca=None,
+                    scaler=None,features=None):
         """
         Default footprint is multiple of 9 here, so that 108/(3km^2) = dx
             to compare domains.
@@ -34,9 +37,23 @@ class ObjectID:
             dx: grid spacing, in km
             threshold: mimimum dBZ value to identify objects
             footprint: minimum area (in pixels) of objects
+            time_code (datetime): Put in dataframe (otherwise 0)
+            prod_code (float,int): put in dataframe
         """
         assert data.ndim == 2
         assert lats.ndim == 2
+
+        self.classify = classify
+        if classify:
+            self.pca = pca
+            self.scaler = scaler
+            self.features = features
+
+        #if isinstance(time_code,datetime.datetime):
+            # time_code = time_code.toordinal()
+        self.time_code = time_code
+        self.prod_code = prod_code
+        self.lead_time = lead_time
 
         self.dx = dx
         self.raw_data = data
@@ -223,6 +240,13 @@ class ObjectID:
 
                     "ratio":"f4",
                     "longaxis_km":"f4",
+                    # "prod":"i4",
+                    "prod":"object",
+                    # "time":"int32",
+                    "time":"datetime64",
+                    "qlcsness":'f4',
+                    # "qlcsness":'string_',
+                    "lead_time":"f4",
                     }
 
         dtypes = {'names':[], 'formats':[]}
@@ -236,8 +260,8 @@ class ObjectID:
         # objects = N.array(nobjs,dtype=N.dtype(dtypes))
         obj_arr = N.zeros([nprops,nobjs]).T
         # pdb.set_trace()
-        objects = pandas.DataFrame(data=obj_arr,columns=dtypes['names'],
-                            dtype='f4')
+        objects = pandas.DataFrame(data=obj_arr,columns=dtypes['names'],)
+                            # dtype='f4')
 
         for oidx,o in enumerate(obj_props):
             # ID number in regionprops (for looking up more stuff later)
@@ -347,7 +371,19 @@ class ObjectID:
 
             objects['longaxis_km'][oidx] = o.major_axis_length * self.dx
 
+            objects['prod'][oidx] = self.prod_code
+            objects['time'][oidx] = self.time_code
 
+            if self.classify:
+                series = objects.loc[oidx:oidx,self.features]
+                qlcsness = self.pca.transform(self.scaler.transform(series))[0][0]
+                # pdb.set_trace()
+                objects['qlcsness'][oidx] = qlcsness
+                # aa = results[0].loc[0:0,features]
+                # aat = pca.transform(scaler.transform(aa))
+
+            # Lead time in minutes, usually.
+            objects['lead_time'][oidx] = self.lead_time
         return objects
 
     def interp_latlon(self,xcol,yrow):
@@ -390,7 +426,8 @@ class ObjectID:
             fname (str,optional): if None, automatically name.
             ecc (float): eccentricity of object, for discriminating (later)
         """
-        assert what in ("all","qlcs","ecc","shapeindex","ratio","extent","4-panel")
+        assert what in ("all","qlcs","ecc","shapeindex","ratio","extent",
+                            "4-panel","pca")
 
         def label_objs(bmap,ax,locs):
             for k,v in locs.items():
@@ -398,7 +435,8 @@ class ObjectID:
                 # bbox_style = {'boxstyle':'square','fc':'white','alpha':0.5}
                 # bmap.plot(xpt,ypt,'ko',)#markersize=3,zorder=100)
                 # ax.text(xpt,ypt,k,ha='left',fontsize=15)
-                ax.annotate(k,xy=(xpt,ypt),xycoords="data",zorder=1000,fontsize=8)
+                ax.annotate(k,xy=(xpt,ypt),xycoords="data",zorder=1000,
+                                fontsize=7,fontweight='bold')
                 # pdb.set_trace()
             return
 
@@ -469,6 +507,50 @@ class ObjectID:
             #        levels=N.arange(1,self.objects.shape[0]))
             label_objs(bmap,ax,locs)
             ax.set_title("Object longest-side length (km)")
+            return
+
+        def do_label_pca(bmap,ax,discrim_vals=(-0.2,0.5)):
+            locs = dict()
+            obj_discrim = N.zeros_like(self.OKidxarray)
+            for o in self.objects.itertuples():
+                lab = "{:0.2f}".format(o.qlcsness)
+                locs[lab] = (o.centroid_lat,o.centroid_lon)
+                id = int(o.label)
+                if o.qlcsness < discrim_vals[0]:
+                    discrim = 1
+                elif o.qlcsness > discrim_vals[1]:
+                    discrim = 3
+                else:
+                    discrim = 2
+                obj_discrim = N.where(self.idxarray == id, discrim, obj_discrim)
+            marr = N.ma.masked_where(obj_discrim < 1, obj_discrim)
+            pcm = bmap.pcolormesh(data=marr,x=x,y=y,alpha=0.5,vmin=1,vmax=3,
+                                    cmap=M.cm.get_cmap("magma",3),)
+                    #vmin=1,vmax=self.idxarray.max()+1)
+            #        levels=N.arange(1,self.objects.shape[0]))
+
+            mode_names = ["","Cellular","Ambiguous","Linear/Complex"]
+
+            def format_func(x,y):
+                return mode_names[x]
+
+
+            # This function formatter will replace integers with target names
+
+
+            formatter = plt.FuncFormatter(lambda val, loc: mode_names[val])
+
+            # We must be sure to specify the ticks matching our target names
+            cax = fig.add_axes([0.75, 0.1, 0.2, 0.04])
+            #cax.set_xlim(0.5, 3.5)
+            fig.colorbar(pcm,cax=cax,ticks=(1,2,3), format=formatter,
+                            orientation='horizontal')
+
+            # Set the clim so that labels are centered on each block
+
+            label_objs(bmap,ax,locs)
+            #plt.colorbar(pcm,cax=cax)
+            ax.set_title("Object PC1 (QLCS-ness)")
             return
 
         def do_label_ratio(bmap,ax):
@@ -584,6 +666,8 @@ class ObjectID:
                     do_label_ratio(bmap,ax)
                 elif what in ("4-panel","extent"):
                     do_label_extent(bmap,ax)
+                elif what == "pca":
+                    do_label_pca(bmap,ax)
 
             elif n==3:
                 if what == "4-panel":
