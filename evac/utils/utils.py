@@ -23,12 +23,46 @@ import random
 import base64
 from pathlib import Path, PosixPath
 import pytz
+import pandas
 
 # import cartopy.crs as ccrs
 import xarray
 import matplotlib as M
 import numpy as N
 from netCDF4 import Dataset
+
+def distance_angle_from_coords(xA,yA,xB,yB,dx=1):
+    """ Returns an angle in meteorological convection (i.e. same as wind)
+    """
+    # Distance
+    a = N.abs(xA-xB)
+    b = N.abs(yA-yB)
+    c = N.sqrt(a**2 + b**2)
+    cdx = c*dx
+
+    # angle
+    a2 = xB-xA
+    b2 = yB-yA
+    angle = N.degrees(N.arctan2(a,b)) + 180.0
+    assert 0 <= angle <= 360
+
+    return c*dx, angle
+
+def print_progress(total,idx,every):
+    if (idx % every) == 0:
+        pc = 100 * (idx/total)
+        print("{:1.1f}% complete.".format(pc))
+    return
+
+def do_new_df(DTYPES,nrows):
+    dtypes = {'names':[], 'formats':[]}
+    for k,v in DTYPES.items():
+        dtypes['names'].append(k)
+        dtypes['formats'].append(v)
+    ncols = len(dtypes['names'])
+    new_arr = N.zeros([nrows,ncols])
+    new_df = pandas.DataFrame(data=new_arr,columns=dtypes['names'],)
+    return new_df
 
 def decompose_wind(wspd,wdir,wdir_fmt='deg'):
     """Turn a wind speed and direction into u and v components.
@@ -595,7 +629,7 @@ def string_from_time(usage,t,dom=0,strlen=None,convention=0,**kwargs):
 
     Example:
         Various formats for 2016/3/31/18/0/0::
-        
+
             # usage == 'output':
             201603311800
             # usage == 'title':
@@ -1539,7 +1573,7 @@ def get_random(seq,unique=False):
 
 def get_ccrs_proj(proj,ckws=None):
     """ Convert basemap style strings to cartopy
-    projections. 
+    projections.
 
     Args:
         proj (str): name of projection
@@ -1664,7 +1698,7 @@ def bridge(command,frompath,topath,catch_overwrite=False,
     # Use path-like objects
     frompath = enforce_pathobj(frompath)
     topath = enforce_pathobj(topath)
-   
+
     if topath.is_dir():
         topath = topath / frompath.name
 
@@ -1695,15 +1729,15 @@ def bridge(command,frompath,topath,catch_overwrite=False,
 
 def wowprint(message,color='red',bold=True,underline=False,formatargs=False):
     """ Print with colour/bold emphasis on certain things!
-   
+
     message      :   (str) - string with any emphasised
                     item surrounded by two asterisks on both
                     sides. These are replaced.
     color        :   (str,bool) - the colour of the emphasised
                     text. If False, don't emphasise.
-    
+
     Usage:
-    
+
     wowprint("The program **prog** is broken",color='red')
     wowprint("The program {} is broken",formatargs=('prog',),color='blue',
                             underline=True)
@@ -1721,19 +1755,19 @@ def wowprint(message,color='red',bold=True,underline=False,formatargs=False):
                                     " lots of double asterisks.")
             else:
                 return idx
-            
+
     colors = {}
     colors['red'] = "\033[91m" # fail
     colors['purple'] = "\033[95m" # header
     colors['blue'] = "\033[94m" # OK
     colors['yellow'] = "\033[93m" # warning
     colors['green'] = "\033[92m" # OK
-    
+
     colors['bold'] = "\033[1m" # bold
     colors['underline'] = "\033[4m" # underline
-    
+
     endcode = "\033[0m" # use at the end, always
-    
+
     codes = []
     if bold:
         codes.append(colors['bold'])
@@ -1741,7 +1775,7 @@ def wowprint(message,color='red',bold=True,underline=False,formatargs=False):
         codes.append(colors['underline'])
     if color:
         codes.append(colors[color])
-    
+
     colorcode = ''.join(codes)
     # CASE 1: asterisks round coloured part
     if not formatargs:
@@ -1754,9 +1788,9 @@ def wowprint(message,color='red',bold=True,underline=False,formatargs=False):
         # This needs to be implemented
         raise Exception
     # pdb.set_trace()
-    
+
     return
-    
+
 
 def _bridge(cmd,frompath,topath,mv=False,cp=False,ln=False):
     """

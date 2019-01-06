@@ -241,12 +241,13 @@ class ObjectID:
                     "ratio":"f4",
                     "longaxis_km":"f4",
                     # "prod":"i4",
-                    "prod":"object",
+                    "prod_code":"object",
                     # "time":"int32",
                     "time":"datetime64",
                     "qlcsness":'f4',
                     # "qlcsness":'string_',
                     "lead_time":"f4",
+                    "dx":"f4",
                     }
 
         dtypes = {'names':[], 'formats':[]}
@@ -270,35 +271,47 @@ class ObjectID:
 
             # Number of pixels in object (footprint)
             # DTYPE: small int
-            objects['area'][oidx] = o.area
+            # objects['area'][oidx] = o.area
+            objects.loc[oidx,'area'] =  o.area
 
             # Bounding box (min_row, min_col, max_row, max_col)
             # Pixels belonging to the bounding box are in
             # the half-open interval [min_row; max_row) and [min_col; max_col)
             # DTYPE: small ints
             min_row, min_col, max_row, max_col = o.bbox
-            objects['min_row'][oidx] = min_row
-            objects['max_row'][oidx] = max_row
-            objects['min_col'][oidx] = min_col
-            objects['max_col'][oidx] = max_col
+            #objects['min_row'][oidx] = min_row
+            objects.loc[oidx,'min_row'] = min_row
+            #objects['max_row'][oidx] = max_row
+            objects.loc[oidx,'max_row'] = max_row
+            #objects['min_col'][oidx] = min_col
+            objects.loc[oidx,'min_col'] = min_col
+            #objects['max_col'][oidx] = max_col
+            objects.loc[oidx,'max_col'] = max_col
 
             # Bounding box area, in pixels. The rectangle containing obj?
             # DTYPE: small int
             # JRL: this appears to be almost the whole domain?
-            objects['bbox_area'][oidx] = o.bbox_area
+            #objects['bbox_area'][oidx] = o.bbox_area
+            objects.loc[oidx,'bbox_area'] = o.bbox_area
 
             # Centroid as (row,col). DTYLE: small floats
             cr, cc = o.centroid
-            objects['centroid_row'][oidx] = cr
-            objects['centroid_col'][oidx] = cc
+            #objects['centroid_row'][oidx] = cr
+            objects.loc[oidx,'centroid_row'] = cr
+            #objects['centroid_col'][oidx] = cc
+            objects.loc[oidx,'centroid_col'] = cc
+
             # Convert to lat/lon (DTYLE: small floats)
             clat, clon = self.interp_latlon(yrow=cr,xcol=cc)
-            objects['centroid_lat'][oidx] = clat
-            objects['centroid_lon'][oidx] = clon
+            #objects['centroid_lat'][oidx] = clat
+            objects.loc[oidx,'centroid_lat'] = clat[0][0]
+            #objects['centroid_lon'][oidx] = clon
+            objects.loc[oidx,'centroid_lon'] = clon[0][0]
 
             # Number of pixel in convex hull (polygon that encloses region)
             # DTYPE: small int
-            objects['convex_area'][oidx] = o.convex_area
+            #objects['convex_area'][oidx] = o.convex_area
+            objects.loc[oidx,'convex_area'] = o.convex_area
 
             # A boolean array of the object's presence. Not used here.
             # Access via the number
@@ -310,17 +323,20 @@ class ObjectID:
             # Eccentricity of the ellipse with same second moments as object
             # A value of 0 is a circle.
             # DTYPE: small float
-            objects['eccentricity'][oidx] = o.eccentricity
+            #objects['eccentricity'][oidx] = o.eccentricity
+            objects.loc[oidx,'eccentricity'] = o.eccentricity
 
             # Equivalent diameter: a circle with the same area
             # JRL: is this in grid points? Looks the same units as footprint
             # DTYPE: small float
-            objects['equivalent_diameter'][oidx] = o.equivalent_diameter
+            # objects['equivalent_diameter'][oidx] = o.equivalent_diameter
+            objects.loc[oidx,'equivalent_diameter'] = o.equivalent_diameter
 
             # skipping euler_number (number of holes?)
 
             # skipping extent (area/ (rows x cols))
-            objects['extent'][oidx] = o.extent
+            # objects['extent'][oidx] = o.extent
+            objects.loc[oidx,'extent'] = o.extent
 
             # skipped filled_area and filled_image (holes filled in)
 
@@ -332,30 +348,40 @@ class ObjectID:
             # skipped intensity_image, which is each object dBZ
 
             # Is this the same as ID? DTYPE: small int
-            objects['label'][oidx] = o.label
+            #objects['label'][oidx] = o.label
+            objects.loc[oidx,'label'] = o.label
 
             # Centroid, relative to region bounding box... huh? Skipping
 
             # maximum/mean/minimum value in object
             # DTYPE: float
-            objects['max_intensity'][oidx] = o.max_intensity
-            objects['mean_intensity'][oidx] = o.mean_intensity
-            objects['min_intensity'][oidx] = o.min_intensity
+            #objects['max_intensity'][oidx] = o.max_intensity
+            objects.loc[oidx,'max_intensity'] = o.max_intensity
+            #objects['mean_intensity'][oidx] = o.mean_intensity
+            objects.loc[oidx,'mean_intensity'] = o.mean_intensity
+            #objects['min_intensity'][oidx] = o.min_intensity
+            objects.loc[oidx,'min_intensity'] = o.min_intensity
 
             # perimeter - for looking at fractal dimension increase
             # DTYPE:float
-            objects['perimeter'][oidx] = o.perimeter
+            #objects['perimeter'][oidx] = o.perimeter
+            objects.loc[oidx,'perimeter'] = o.perimeter
 
             # JRL: slice is missing from mine - to extract from original data
 
             # weighted centroid. DTYPE: floats
             wcr, wcc = o.weighted_centroid
-            objects['weighted_centroid_row'][oidx] = wcr
-            objects['weighted_centroid_col'][oidx] = wcc
+            # objects['weighted_centroid_row'][oidx] = wcr
+            objects.loc[oidx,'weighted_centroid_row'] = wcr
+            # objects['weighted_centroid_col'][oidx] = wcc
+            objects.loc[oidx,'weighted_centroid_col'] = wcc
+
             # Convert to lat/lon (DTYLE: small floats)
             wclat, wclon = self.interp_latlon(yrow=wcr,xcol=wcc)
-            objects['weighted_centroid_lat'][oidx] = wclat
-            objects['weighted_centroid_lon'][oidx] = wclon
+            # objects['weighted_centroid_lat'][oidx] = wclat[0][0]
+            # objects['weighted_centroid_lon'][oidx] = wclon[0][0]
+            objects.loc[oidx,'weighted_centroid_lat'] = wclat[0][0]
+            objects.loc[oidx,'weighted_centroid_lon'] = wclon[0][0]
 
             # JRL: custom ratio of longest to shortest sides
             #drow = abs(min_row-max_row)
@@ -367,23 +393,31 @@ class ObjectID:
             #    minside = min((drow,dcol))
             #    ratio = maxside/minside
             ratio = o.minor_axis_length/o.major_axis_length
-            objects['ratio'][oidx] = ratio
+            #objects['ratio'][oidx] = ratio
+            objects.loc[oidx,'ratio'] = ratio
 
-            objects['longaxis_km'][oidx] = o.major_axis_length * self.dx
+            #objects['longaxis_km'][oidx] = o.major_axis_length * self.dx
+            objects.loc[oidx,'longaxis_km'] = o.major_axis_length * self.dx
 
-            objects['prod'][oidx] = self.prod_code
-            objects['time'][oidx] = self.time_code
+            #objects['prod'][oidx] = self.prod_code
+            objects.loc[oidx,'prod_code'] = self.prod_code
+            #objects['time'][oidx] = self.time_code
+            objects.loc[oidx,'time'] = self.time_code
 
             if self.classify:
                 series = objects.loc[oidx:oidx,self.features]
                 qlcsness = self.pca.transform(self.scaler.transform(series))[0][0]
                 # pdb.set_trace()
-                objects['qlcsness'][oidx] = qlcsness
+                #objects['qlcsness'][oidx] = qlcsness
+                objects.loc[oidx,'qlcsness'] = qlcsness
                 # aa = results[0].loc[0:0,features]
                 # aat = pca.transform(scaler.transform(aa))
 
             # Lead time in minutes, usually.
-            objects['lead_time'][oidx] = self.lead_time
+            #objects['lead_time'][oidx] = self.lead_time
+            objects.loc[oidx,'lead_time'] = self.lead_time
+            objects.loc[oidx,"dx"] = self.dx
+            # pdb.set_trace()
         return objects
 
     def interp_latlon(self,xcol,yrow):
