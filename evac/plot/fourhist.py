@@ -11,7 +11,7 @@ class FourHist:
 
     def plot(self,df,xname,yname,dataname,bins=20):
         g = sns.FacetGrid(df,row=yname,col=xname,margin_titles=True)
-        g.map(plt.hist, dataname, color='green')
+        g.map(plt.hist, dataname, color='green',bins=bins)
         g.savefig(self.fpath)
         print("Saved figure to",self.fpath)
         return

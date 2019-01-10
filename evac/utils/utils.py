@@ -31,6 +31,18 @@ import matplotlib as M
 import numpy as N
 from netCDF4 import Dataset
 
+
+def combinate_lists(*args,as_iterator=True):
+    # [zip(x,list2) for x in itertools.permutations(list1,len(list2))]
+    #y = [zip(x,list2) for x in itertools.combinations(list1,len(list2))]
+    #for x in itertools.combinations(list1,len(list2)):
+    #    pdb.set_trace()
+    #    y = 0
+    combo = itertools.combinations(itertools.chain(*args),len(args))
+    if not as_iterator:
+        return list(combo)
+    return combo
+
 def distance_angle_from_coords(xA,yA,xB,yB,dx=1):
     """ Returns an angle in meteorological convection (i.e. same as wind)
     """
@@ -564,6 +576,17 @@ def getXY(lats,lons,ptlat,ptlon):
     exactlat = lats[wherelat]
     exactlon = lons[wherelon]
     return lat_idx,lon_idx, exactlat, exactlon
+
+def save_pickle(obj,fpath):
+    utils.trycreate(fpath)
+    with open(fpath,'wb') as f:
+        pickle.dump(obj=obj,file=f)
+    return
+
+def load_pickle(fpath):
+    with open(fpath,'rb') as f:
+        pp = pickle.load(f)
+    return pp
 
 def gettopo():
     fname = '/uufs/chpc.utah.edu/common/home/u0737349/dsws/topodata/globe30.bin'

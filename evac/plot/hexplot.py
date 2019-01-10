@@ -10,8 +10,8 @@ class HexPlot:
     def __init__(self,fpath):
         super().__init__(fpath=fpath)
 
-    def plot(self,df,xname,yname,kind=hex,color='#4CB391'):
-        hex = sns.jointplot(xname,yname,data=df,kind='hex')
+    def plot(self,df,xname,yname,color='#4CB391'):
+        hex = sns.jointplot(xname,yname,data=df,kind='hex',color=color)
         hex.savefig(self.fpath)
         print("Saved figure to",fpath)
         return

@@ -2,14 +2,19 @@ import os
 import pdb
 import multiprocessing
 import pickle
+import itertools
+import datetime
+import operator
 
 import matplotlib as M
 import matplotlib.pyplot as plt
-
 import numpy as N
 import pandas
 import sklearn.preprocessing
 import sklearn.decomposition
+# from scipy.spatial import KDTree
+import scipy.spatial.distance as ssd
+from mpl_toolkits.basemap import Basemap
 
 import evac.utils as utils
 
@@ -46,30 +51,136 @@ class Catalogue:
         # TODO: make sure every object has a unique index, that is preserved
         # even when slicing
 
-    def do_matching(self,models,times):
+    def match_domains(self,members,initutcs,leadtimes,domains):
         """ Use of Total Interest to match objects in time/across models or obs.
 
         Maybe do CombinedObject class. This could score itself!
 
         Need a lat/lon grid for each product.
         """
-        # Loop over a given df (one time, one model, many objects)
-        # Loop over 2x product of objects, within a "sphere" of times and models
-        for inittime, validtime, model in itertools(inittimes,times,models):
-            ti_data = []
-            combo = []
-            # Need to create a dataframe that slices all possible objects
-            for objA, objB in itertools.combinations(objects,2):
-                TI = self.compute_total_interest(propA=objA,propB=objB)
-                combo.append((objA,objB))
-                ti_data.append(TI)
-            # Find the maximum TI and the pair that produced it
-            idx = N.argmax(N.array(ti_data))
-            the_combo = combo[idx]
+        # JRL: not set up for more than 2 domains yet (plus verif)
+        assert len(domains) == 2
+        self.bmap = self.create_bmap()
 
+        # Separate dataset into [domains and ensemble members] and verification
+        def gen():
+            for member, initutc, leadtime in itertools.product(members,
+                                                    initutcs,leadtimes):
+                yield member, initutc, leadtime, domains, None #verif_domain
+
+        itr = gen()
+        print("Submitting jobs to match objects...")
+
+        if self.ncpus > 1:
+            with multiprocessing.Pool(self.ncpus) as pool:
+                results = pool.map(self.match,itr)
+        else:
+            for i in itr:
+                self.match(i)
+
+        print("Jobs done.")
+        return results
+
+    def match_verif(self,members,initutcs,leadtimes,domain,verif_domain):
+        """ Use of Total Interest to match objects in time/across models or obs.
+
+        Maybe do CombinedObject class. This could score itself!
+
+        Need a lat/lon grid for each product.
+        """
+        # JRL: not set up for more than 2 domains yet (plus verif)
+        assert isinstance(domain,str)
+        self.bmap = self.create_bmap()
+
+        # Separate dataset into [domains and ensemble members] and verification
+        def gen():
+            for member, initutc, leadtime in itertools.product(members,
+                                                    initutcs,leadtimes):
+                yield member, initutc, leadtime, domain, verif_domain
+
+        itr = gen()
+        print("Submitting jobs to match objects...")
+
+        if self.ncpus > 1:
+            with multiprocessing.Pool(self.ncpus) as pool:
+                results = pool.map(self.match,itr)
+        else:
+            for i in itr:
+                self.match(i)
+
+        print("Jobs done.")
+        return matches
+
+
+    def match(self,i):
+        def get_sub_df(mf,member,validtime,domain,leadtime):
+            sub_df = mf[(mf['member'] == member) &
+                        (mf['time'] == validtime) &
+                        (mf['domain'] == domain) &
+                        # This line is just for sanity
+                        (mf['lead_time'] == leadtime)]
+            # pdb.set_trace()
+            return sub_df
+
+        member, initutc, leadtime, domains, verif_domain = i
+        mf = self.megaframe
+        validtime = initutc + datetime.timedelta(seconds=60*int(leadtime))
+        if False:
+            print("=====MATCHING!=====\n DEBUG:",member, initutc, leadtime,
+                        domains, verif_domain)
+
+        both_df = dict()
+        if verif_domain is None:
+            for domain in domains:
+                both_df[domain] = get_sub_df(mf,member,validtime,domain,leadtime)
+        else:
+            # To avoid confusion
+            assert isinstance(domains,str)
+            domain = domains
+            del domains
+            both_df[domains] = get_sub_df(mf,member,validtime,domain,leadtime)
+            both_df[verif_domain] = mf[(mf['time']==validtime) & (mf['domain']==verif_domain)]
+
+        # First, let's match the object between all forecast domains
+        # Need to create a dataframe that slices all possible objects
+        tups = {}
+        for domain, df in both_df.items():
+            tups[domain] = []
+            for o in df.itertuples():
+                tups[domain].append(o)
+
+        listoflists = []
+        for domain in domains:
+            td = tups[domain]
+            if len(td) == 0:
+                return None
+            listoflists.append(td)
+
+        # Just for this member:
+        member_TIs = {}
+        print("=====MATCHING!=====\n DEBUG:",member, initutc, leadtime,
+                                domains, verif_domain)
+
+        for objA, objB in itertools.product(*listoflists):
+            compare_tup = (int(objA.megaframe_idx),int(objB.megaframe_idx))
+            # pdb.set_trace()
+            TI = self.compute_total_interest(propA=objA,propB=objB)
+            member_TIs[compare_tup] = TI
+        # Find the maximum TI and the pair that produced it
+
+        matched_pair = max(member_TIs.items(), key=operator.itemgetter(1))[0]
+
+        # idx = N.argmax(N.array(ti_data))
+        # the_combo = combo[idx]
+
+        if member_TIs[matched_pair] < 0.2:
+            return None
+
+        # matches.append(matched_pair)
+        return matched_pair
 
     def compute_total_interest(self,propA=None,propB=None,cd=None,md=None,td=None,
-                            cd_max=40.0,md_max=40.0,td_max=25.0):
+                            cd_max=40.0,md_max=40.0,td_max=25.0,use_bbox=False):
         """
         Returns the total interest between object pairs.
 
@@ -84,24 +195,97 @@ class Catalogue:
             cd_max (float): the limit for centroid distance (km)
             md_max (float): the limit for minimum distance (km)
         """
+        def gen_latlon(idx, lats, lons):
+            pdb.set_trace()
+            latsA = 0
+            lonsA = 0
+            latsB = 0
+            lonsB = 0
+
+            return latsA, lonsA, latsB, lonsB
+
         # Sanity checks
         if propA is not None:
             assert propB is not None
-            assert not all(cd,md,td)
+            assert not all((cd,md,td))
             method = 1
         else:
             assert propB is None
-            assert all(cd,md,td)
+            assert all((cd,md,td))
             method = 2
-        assert all(cd_max,md_max,td_max)
+            raise Exception
+        assert all((cd_max,md_max,td_max))
 
-        if method == 1:
-            # Compute cd, md, td
-            cd = 0
-            md = 0
-            td = 0
+        #if method == 1:
+        # Compute distance between centroids (km)
+        cd = utils.xs_distance(propA.centroid_lat, propA.centroid_lon,
+                        propB.centroid_lat, propB.centroid_lon)/1000.0
 
-        TI = ((td_max-td)/t_max)*0.5*(((cd_max-cd)/cd_max)+((md_max-md)/md_max))
+        # Compute closest distance between objects
+
+        if use_bbox:
+            objidx = []
+            # Assume bounding box is the whole object
+            for obj in (propA,propB):
+                minr = int(obj.min_row)
+                maxr = int(obj.max_row)
+                minc = int(obj.min_col)
+                maxc = int(obj.max_col)
+
+                # Open the right lat/lon file and find the lats/lons
+                objidx.append(slice(minr,maxr),slice(minc,maxc))
+        else:
+            #lonpts = {0:[],1:[]}
+            #latpts = {0:[],1:[]}
+            coords = {0:[],1:[]}
+            llpts = {0:[],1:[]}
+            xypts = {0:[],1:[]}
+            xx = {0:[],1:[]}
+            yy = {0:[],1:[]}
+            for n,obj in enumerate((propA,propB)):
+                OID = utils.load_pickle(obj.fpath_save)
+                # OID.lats, OID.lons
+                # OID
+                for o in OID.object_props:
+                    if all((obj.mean_intensity == o.mean_intensity,
+                                obj.centroid_row == o.centroid[0],
+                                obj.centroid_col == o.centroid[1])):
+                        coords[n] = o.coords
+
+                lats = OID.lats[coords[n][:,0],coords[n][:,1]]
+                lons = OID.lons[coords[n][:,0],coords[n][:,1]]
+                xx[n], yy[n] = self.bmap(lons,lats)
+                xypts[n] = N.array([(x,y) for x,y in zip(xx[n],yy[n])])
+
+
+                #for cx,cy in coords[n]:
+                    # latpts[n].append(OID.lats[cx,cy])
+                    # lonpts[n].append(OID.lons[cx,cy])
+                    #llpts[n].append((OID.lats[cx,cy],OID.lons[cx,cy]))
+                # npts = coords.shape[0]
+                # pdb.set_trace()
+
+                #del coords
+
+
+        # latpts[n] has all latitude values for points in object n
+        #kdarr = N.zeros_like()
+        #KDTree()
+        #combo_lat = list(utils.combinate_lists(latpts[0],latpts[1]))
+        #combo_lon = list(utils.combinate_lists(lonpts[0],lonpts[1]))
+        #latsA, lonsA, latsB, lonsB = gen_latlon(combo_idx,lat,lon_slices)
+
+
+        distances = ssd.cdist(N.array(xypts[0]),N.array(xypts[1]),'euclidean')
+
+
+        #distances = haversine_baker(lonsA, latsA, lonsB, latsB)
+        md = N.nanmin(distances)/1000
+        # pdb.set_trace()
+
+        td = ((propA.time - propB.time).total_seconds())/60
+
+        TI = ((td_max-td)/td_max)*0.5*(((cd_max-cd)/cd_max)+((md_max-md)/md_max))
         return TI
 
     def compute_new_attributes(self,df_in,do_suite="W"):
@@ -139,8 +323,9 @@ class Catalogue:
 
 
         fname = "commands.pickle"
+        do_pickle = False
         fpath = os.path.join(self.tempdir,fname)
-        if os.path.exists(fpath):
+        if os.path.exists(fpath) and do_pickle:
             print("Loading pickle of commands")
             with open(fpath,"rb") as f:
                 commands = pickle.load(file=f)
@@ -159,6 +344,7 @@ class Catalogue:
         else:
             for i in commands:
                 func(i)
+
         print("Jobs done.")
 
         df_out = pandas.concat(results,ignore_index=True)
@@ -215,14 +401,15 @@ class Catalogue:
                 #"megaframe_idx":"i4",
 
                 "max_updraught":"f4",
-                "max_updraught_row":"f4",
-                "max_updraught_col":"f4",
+                "max_updraught_row":"i4",
+                "max_updraught_col":"i4",
 
                 "min_updraught":"f4",
                 "mean_updraught":"f4",
-
-
-                    }
+                "ud_distance_from_centroid":"f4",
+                "ud_angle_from_centroid":"f4",
+                "test_gridsize":"object",
+                }
 
         nobjs = len(obj_df)
         new_df = utils.do_new_df(DTYPES,nobjs,)
@@ -248,40 +435,42 @@ class Catalogue:
             # objidx = obj['coords']
             W_slice = W_field[objidx]
 
-            new_df.loc[oidx,'max_updraught'] = N.max(W_slice)
+            new_df.loc[oidx,'max_updraught'] = N.nanmax(W_slice)
             #N.mean(W_slice)
 
             # Location of max updraught in object
-            maxmax = N.where(W_slice == W_slice.max())
+            maxmax = N.where(W_slice == N.nanmax(W_slice))
             maxur = maxmax[0][0]
             maxuc = maxmax[1][0]
-            # Find this location back on the main grid, I think
-            new_df.loc[oidx,'max_updraught_row'] = maxur
-            new_df.loc[oidx,'max_updraught_col'] = maxuc
-            #new_df.loc[oidx,'max_updraught_row'] = maxur + minr
-            #new_df.loc[oidx,'max_updraught_col'] = maxuc + minc
+            
+            # Find this location back on the main grid
+            new_df.loc[oidx,'max_updraught_row'] = maxur + minr
+            new_df.loc[oidx,'max_updraught_col'] = maxuc + minc
 
             # Min/mean
-            new_df.loc[oidx,'mean_updraught'] = N.mean(W_slice)
-            new_df.loc[oidx,"min_updraught"] = N.min(W_slice)
+            new_df.loc[oidx,'mean_updraught'] = N.nanmean(W_slice)
+            new_df.loc[oidx,"min_updraught"] = N.nanmin(W_slice)
 
             # Relative to centroid? Could be radius, using equivalent circle
             # distance_from_centroid
             cr = obj.centroid_row
             cc = obj.centroid_col
-            dist_km, angle = utils.distance_angle_from_coords(maxur,maxuc,cr,
-                                                                    cc,dx=dx)
-            new_df.loc[oidx,'distance_from_centroid'] = dist_km
+            dist_km, angle = utils.distance_angle_from_coords(maxur+minr,
+                                                    maxuc+minc,cr,cc,dx=dx)
+            new_df.loc[oidx,'ud_distance_from_centroid'] = dist_km
 
             # angle_from_centroid
-            new_df.loc[oidx,'angle_from_centroid'] = angle
+            new_df.loc[oidx,'ud_angle_from_centroid'] = angle
+
+
+
+            new_df.loc[oidx,'test_gridsize'] = str(W_field.shape[0])
 
             # distance_from_wcentroid
 
             # Size of updraught, using W = ? m/s as threshold
             # updraught_area_km
             # updraught_width_km
-            # pdb.set_trace()
             # pdb.set_trace()
 
         return new_df
@@ -319,3 +508,10 @@ class Catalogue:
 
         lda = sklearn.discriminant_analysis.LinearDiscriminantAnalysis()
         hmm = lda.transform(X)
+
+    def create_bmap(self,):
+        bmap = Basemap(width=12000000,height=9000000,
+                    rsphere=(6378137.00,6356752.3142),
+                    resolution='l',projection='lcc',
+                    lat_1=45.,lat_2=55,lat_0=50,lon_0=-107.0)
+        return bmap

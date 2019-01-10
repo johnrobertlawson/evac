@@ -28,7 +28,7 @@ from evac.plot.scales import Scales
 class ObjectID:
     def __init__(self,data,lats,lons,dx=1,threshold=45.0,footprint=144,
                     prod_code=0,time_code=0,lead_time=0,classify=False,pca=None,
-                    scaler=None,features=None):
+                    scaler=None,features=None,fpath_save=None):
         """
         Default footprint is multiple of 9 here, so that 108/(3km^2) = dx
             to compare domains.
@@ -48,6 +48,8 @@ class ObjectID:
             self.pca = pca
             self.scaler = scaler
             self.features = features
+
+        self.fpath_save = fpath_save
 
         #if isinstance(time_code,datetime.datetime):
             # time_code = time_code.toordinal()
@@ -214,7 +216,7 @@ class ObjectID:
         # About 23?
         DTYPES = {
                     # "id":"i4",
-                    "area":"i4",
+                    "area":"f4",
                     "min_row":"i4",
                     "min_col":"i4",
                     "max_row":"i4",
@@ -248,6 +250,9 @@ class ObjectID:
                     # "qlcsness":'string_',
                     "lead_time":"f4",
                     "dx":"f4",
+                    "fpath_save":"object",
+                    "nlats":"i4",
+                    "nlons":"i4",
                     }
 
         dtypes = {'names':[], 'formats':[]}
@@ -272,7 +277,7 @@ class ObjectID:
             # Number of pixels in object (footprint)
             # DTYPE: small int
             # objects['area'][oidx] = o.area
-            objects.loc[oidx,'area'] =  o.area
+            objects.loc[oidx,'area'] =  o.area * self.dx * self.dx
 
             # Bounding box (min_row, min_col, max_row, max_col)
             # Pixels belonging to the bounding box are in
@@ -330,7 +335,7 @@ class ObjectID:
             # JRL: is this in grid points? Looks the same units as footprint
             # DTYPE: small float
             # objects['equivalent_diameter'][oidx] = o.equivalent_diameter
-            objects.loc[oidx,'equivalent_diameter'] = o.equivalent_diameter
+            objects.loc[oidx,'equivalent_diameter'] = o.equivalent_diameter * self.dx
 
             # skipping euler_number (number of holes?)
 
@@ -365,7 +370,7 @@ class ObjectID:
             # perimeter - for looking at fractal dimension increase
             # DTYPE:float
             #objects['perimeter'][oidx] = o.perimeter
-            objects.loc[oidx,'perimeter'] = o.perimeter
+            objects.loc[oidx,'perimeter'] = o.perimeter * self.dx
 
             # JRL: slice is missing from mine - to extract from original data
 
@@ -417,7 +422,12 @@ class ObjectID:
             #objects['lead_time'][oidx] = self.lead_time
             objects.loc[oidx,'lead_time'] = self.lead_time
             objects.loc[oidx,"dx"] = self.dx
+
+            if self.fpath_save:
+                objects.loc[oidx,'fpath_save'] = self.fpath_save
             # pdb.set_trace()
+            objects.loc[oidx,"nlats"] = self.nlats
+            objects.loc[oidx,"nlons"] = self.nlons
         return objects
 
     def interp_latlon(self,xcol,yrow):

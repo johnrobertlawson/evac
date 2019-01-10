@@ -3,26 +3,19 @@ import pdb
 
 import numpy as N
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 #from evac.plot.figure import Figure
 
 class RidgePlot:
     def __init__(self,fpath):
-        super().__init__(fpath=fpath)
-
-    def plot(self,df,xname,yname,kind=hex,color='#4CB391'):
+        self.fpath = fpath
+        
+    def plot(self,df,namelist,):
         sns.set(style="white", rc={"axes.facecolor": (0, 0, 0, 0)})
 
-        # Create the data
-        rs = np.random.RandomState(1979)
-        x = rs.randn(500)
-        g = np.tile(list("ABCDEFGHIJ"), 50)
-        df = pd.DataFrame(dict(x=x, g=g))
-        m = df.g.map(ord)
-        df["x"] += m
-
         # Initialize the FacetGrid object
-        pal = sns.cubehelix_palette(10, rot=-.25, light=.7)
+        pal = sns.cubehelix_palette(len(namelist), rot=-.25, light=.7)
         g = sns.FacetGrid(df, row="g", hue="g", aspect=15, height=.5, palette=pal)
 
         # Draw the densities in a few steps
@@ -30,15 +23,9 @@ class RidgePlot:
         g.map(sns.kdeplot, "x", clip_on=False, color="w", lw=2, bw=.2)
         g.map(plt.axhline, y=0, lw=2, clip_on=False)
 
-
         # Define and use a simple function to label the plot in axes coordinates
-        def label(x, color, label):
-            ax = plt.gca()
-            ax.text(0, .2, label, fontweight="bold", color=color,
-                    ha="left", va="center", transform=ax.transAxes)
 
-
-        g.map(label, "x")
+        g.map(self.label, "x")
 
         # Set the subplots to overlap
         g.fig.subplots_adjust(hspace=-.25)
@@ -48,7 +35,11 @@ class RidgePlot:
         g.set(yticks=[])
         g.despine(bottom=True, left=True)
 
-
         g.savefig(self.fpath)
         print("Saved figure to",fpath)
         return
+
+    def label(self,x, color, label):
+        ax = plt.gca()
+        ax.text(0, .2, label, fontweight="bold", color=color,
+                ha="left", va="center", transform=ax.transAxes)
