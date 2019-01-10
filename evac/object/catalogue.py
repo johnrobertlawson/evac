@@ -321,9 +321,8 @@ class Catalogue:
         if do_suite == "W":
             func = self.get_updraught_attributes
 
-
         fname = "commands.pickle"
-        do_pickle = False
+        do_pickle = True
         fpath = os.path.join(self.tempdir,fname)
         if os.path.exists(fpath) and do_pickle:
             print("Loading pickle of commands")
@@ -332,10 +331,10 @@ class Catalogue:
         else:
             print("Generating list of commands")
             commands = list(get_commands(df_in))
+            # pdb.set_trace()
             with open(fpath,"wb") as f:
                 pickle.dump(obj=commands,file=f)
 
-        # pdb.set_trace()
         # Submit in parallel
         print("Submitting jobs to compute {} attributes...".format(do_suite))
         if self.ncpus > 1:
@@ -347,8 +346,8 @@ class Catalogue:
 
         print("Jobs done.")
 
-        df_out = pandas.concat(results,ignore_index=True)
         # pdb.set_trace()
+        df_out = pandas.concat(results,ignore_index=True)
         return df_out
 
     def lookup_obj_df(self,data,valid_time,fcst_min=0,prod_code=0):
@@ -398,7 +397,7 @@ class Catalogue:
         # utils.print_progress(total=self.nobjs,idx=fidx,every=300)
 
         DTYPES = {
-                #"megaframe_idx":"i4",
+                "megaframe_idx_test":"i4",
 
                 "max_updraught":"f4",
                 "max_updraught_row":"i4",
@@ -423,7 +422,8 @@ class Catalogue:
             # Get index for object in new df
             #Ix = obj.Index
             Ix = obj.megaframe_idx
-            #new_df.loc[oidx,"megaframe_idx"] = Ix
+            new_df.loc[oidx,"megaframe_idx_test"] = Ix
+
 
             minr = int(obj.min_row)
             maxr = int(obj.max_row)
@@ -442,7 +442,7 @@ class Catalogue:
             maxmax = N.where(W_slice == N.nanmax(W_slice))
             maxur = maxmax[0][0]
             maxuc = maxmax[1][0]
-            
+
             # Find this location back on the main grid
             new_df.loc[oidx,'max_updraught_row'] = maxur + minr
             new_df.loc[oidx,'max_updraught_col'] = maxuc + minc

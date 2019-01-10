@@ -511,7 +511,7 @@ def wrfout_files_in(folders,dom=0,init_time='notset',descend=1,avoid=0,
         # We assume the user has wrfout files in different folders for different times
     else:
         try:
-            it = utils.string_from_time('wrfout',init_time)
+            it = string_from_time('wrfout',init_time)
         except:
             print("Not a valid wrfout initialisation time; try again.")
             raise Error
@@ -578,7 +578,7 @@ def getXY(lats,lons,ptlat,ptlon):
     return lat_idx,lon_idx, exactlat, exactlon
 
 def save_pickle(obj,fpath):
-    utils.trycreate(fpath)
+    trycreate(fpath)
     with open(fpath,'wb') as f:
         pickle.dump(obj=obj,file=f)
     return

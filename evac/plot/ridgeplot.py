@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 class RidgePlot:
     def __init__(self,fpath):
         self.fpath = fpath
-        
+
     def plot(self,df,namelist,):
         sns.set(style="white", rc={"axes.facecolor": (0, 0, 0, 0)})
 
