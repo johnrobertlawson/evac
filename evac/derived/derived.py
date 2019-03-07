@@ -11,6 +11,7 @@ For every class, parent is the class from which to "inherit" from.
 """
 import os
 import pdb
+import itertools
 
 import numpy as N
 import evac.utils.met_constants as mc
@@ -953,19 +954,37 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
     # Find the level idx for nearest Z to z0 and z1
     # idx0 = utils.closest(z,z0)
     # idx1 = utils.closest(z,z1)
-    idx0 = N.argmin(N.abs(z-z0),axis=1)
-    idx1 = N.argmin(N.abs(z-z1),axis=1)
+    idx0 = N.argmin(N.abs(z-z0),axis=1)[0,:,:]
+    idx1 = N.argmin(N.abs(z-z1),axis=1)[0,:,:]
 
     # lvidx = slice(idx0,idx1)
     # lvidx = list(range(idx0,idx1+1))
     nt, nlv, nlat, nlon = z.shape
-    _lvidx = [N.arange(idx0[x,y],idx1[x,y]+1)
-                for x,y in itertools.product(
-                    list(range(nlat)),list(range(nlon)) )
-                    ]
-    lvidx = N.array(_lvidx).reshape(nlat,nlon)
-    _4didx = N.array(
-            [N.arange(nt),lvidx,N.arange(nlat),N.arange(nlon)])
+    
+
+    # JRL
+    ###
+    ###
+    ###
+    # Need to optimise, maybe with a new scheme that splits domain into
+    # regions (use scikit?) and computes UH in areas separately
+
+    # Or: find all points that have e.g. 10 levels, those with 11, 12, etc
+    # Then extract only those points, compute, and place the values
+    # into the UH array.
+
+    lvidx = N.zeros([nlat,nlon]) 
+    for x,y in itertools.product(list(range(nlat)),list(range(nlon))):
+        lvidx[x,y] = N.arange(idx0[x,y],idx1[x,y]+1)
+    # lvidx = N.array(_lvidx).reshape(nlat,nlon)
+    _4didx = N.array([N.arange(nt),lvidx,N.arange(nlat),N.arange(nlon)])
+    ###
+    ###
+    ###
+    # JRL
+    
+    
+    
     u = parent.get("U",tidx,None,lonidx,latidx)[_4didx]
     v = parent.get("V",tidx,None,lonidx,latidx)[_4didx]
     w = parent.get("W",tidx,None,lonidx,latidx)[_4didx]
