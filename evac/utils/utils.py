@@ -1836,7 +1836,7 @@ def _bridge(cmd,frompath,topath,mv=False,cp=False,ln=False):
     cmd = "{} {} {}".format(c,frompath,topath)
     return cmd
 
-def trycreate(loc, parents=True,exist_ok=True,isdir=False):
+def trycreate(loc, parents=True,exist_ok=True,isdir=False,debug=True):
     """
     Args:
 
@@ -1848,17 +1848,26 @@ def trycreate(loc, parents=True,exist_ok=True,isdir=False):
     exist_ok    :   (bool) - if True, then warnings are ignored about folder already
                     existing.
     """
+    def _print(debug,*args,**kwargs):
+        if debug:
+            wowprint(*args,**kwargs)
+        else:
+            pass
+        return
+
     l = enforce_pathobj(loc)
 
     # First, check if file or directory exists
     if l.exists():
         if l.is_dir():
-            wowprint("Checking **{}** exists.".format(l),color='blue')
+            _print(debug,"Checking **{}** exists.".format(l),color='blue')
             # print("Directory already exists.")
+            pass
         else:
-            wowprint("Checking **{}** exists.".format(l.parent),color='blue')
+            _print(debug,"Checking **{}** exists.".format(l.parent),color='blue')
             # print("File already exists.")
-        print("Directory already exists.")
+            pass
+        _print(debug,"Directory already exists.")
         return
 
     # If not, create the directory enclosing the file, or
@@ -1872,7 +1881,7 @@ def trycreate(loc, parents=True,exist_ok=True,isdir=False):
 
     # Does the location exist?
     assert l.exists()
-    wowprint("The directory **{}** has been made.".format(l),color='red')
+    _print(debug,"The directory **{}** has been made.".format(l),color='red')
     # pdb.set_trace()
     return
 

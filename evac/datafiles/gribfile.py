@@ -36,6 +36,8 @@ class GribFile(DataFile):
             if len(self.available_fields_unfiltered[row]) < 5:
                 delrows.append(row)
         self.available_fields = N.delete(self.available_fields_unfiltered,delrows)
+
+        pdb.set_trace()
         self.projection()
 
         self.y_dim, self.x_dim = self.lats.shape

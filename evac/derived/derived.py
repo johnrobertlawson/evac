@@ -944,12 +944,12 @@ def return_updraught_helicity_25(parent,tidx,lvidx,lonidx,latidx,other):
 def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000):
     # First, get height idx that area definitely between z0 and z1.
     # 3D field
-    agl_m = parent.get("HGT",tidx,None,lonidx,latidx)[0,:,:,:]
+    agl_m = parent.get("HGT",tidx,None,lonidx,latidx)[0,0,:,:]
 
-    m0 = utils.closest(agl_m,z0)
-    m1 = utils.closest(agl_m,z1)
+    # m0 = utils.closest(agl_m,z0)
+    # m1 = utils.closest(agl_m,z1)
 
-    pdb.set_trace()
+    # Find the levels with...
 
     u0 = parent.get("U",tidx,z0,lonidx,latidx)
     u1 = parent.get("U",tidx,z1,lonidx,latidx)
@@ -958,6 +958,7 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
     w = parent.get("W",tidx,lvidx,lonidx,latidx)
 
     UH = compute_updraught_helicity(u=u,v=v,w=w)
+    pdb.set_trace()
     return UH
     
 def return_maxcol_updraught(parent,tidx,lvidx,lonidx,latidx,other):
