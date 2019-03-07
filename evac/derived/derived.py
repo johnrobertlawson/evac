@@ -945,24 +945,34 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
     # First, get height idx that area definitely between z0 and z1.
     # 3D field
     #agl_m = parent.get("HGT",tidx,None,lonidx,latidx)[0,0,:,:]
-    z = parent.get("Z",tidx,None,lonidx,latidx)
+    z = parent.get("Z",tidx,None,lonidx,latidx)[:,:,:,:]
 
     # m0 = utils.closest(agl_m,z0)
     # m1 = utils.closest(agl_m,z1)
 
     # Find the level idx for nearest Z to z0 and z1
-    idx0 = utils.closest(z,z0)
-    idx1 = utils.closest(z,z1)
+    # idx0 = utils.closest(z,z0)
+    # idx1 = utils.closest(z,z1)
+    idx0 = N.argmin(N.abs(z-z0),axis=1)
+    idx1 = N.argmin(N.abs(z-z1),axis=1)
 
-    u = parent.get("U",tidx,slice(idx0,idx1),lonidx,latidx)
-    #u1 = parent.get("U",tidx,z1,lonidx,latidx)
-    #v = parent.get("V",tidx,lvidx,lonidx,latidx)
-    #w = parent.get("W",tidx,lvidx,lonidx,latidx)
-    v = parent.get("V",tidx,slice(idx0,idx1),lonidx,latidx)
-    w = parent.get("W",tidx,slice(idx0,idx1),lonidx,latidx)
+    # lvidx = slice(idx0,idx1)
+    # lvidx = list(range(idx0,idx1+1))
+    nt, nlv, nlat, nlon = z.shape
+    lvidx = N.array(
+                [N.arange(idx0[x,y],idx1[x,y]+1) 
+                    for x,y in itertools.product(
+                        list(range(nlat)),list(range(nlon)) )
+                            ]
+                            ).reshape(nlat,nlon)
+    4didx = N.array(
+            [N.arange(nt),lvidx,N.arange(nlat),N.arange(nlon)])
+    u = parent.get("U",tidx,None,lonidx,latidx)[4didx]
+    v = parent.get("V",tidx,None,lonidx,latidx)[4didx]
+    w = parent.get("W",tidx,None,lonidx,latidx)[4didx]
 
     utils.enforce_same_dimensions(u,v,w)
-    xi = compute_vorticity(parent=None,u,v)
+    xi = compute_vorticity(parent=None,U=u,V=v)
     UH = N.sum(xi*w)
 
     # UH = compute_updraught_helicity(u=u,v=v,w=w,z0=z0,z1=z1)
