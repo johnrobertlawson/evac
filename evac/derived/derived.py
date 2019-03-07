@@ -959,17 +959,16 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
     # lvidx = slice(idx0,idx1)
     # lvidx = list(range(idx0,idx1+1))
     nt, nlv, nlat, nlon = z.shape
-    lvidx = N.array(
-                [N.arange(idx0[x,y],idx1[x,y]+1) 
-                    for x,y in itertools.product(
-                        list(range(nlat)),list(range(nlon)) )
-                            ]
-                            ).reshape(nlat,nlon)
-    4didx = N.array(
+    _lvidx = [N.arange(idx0[x,y],idx1[x,y]+1)
+                for x,y in itertools.product(
+                    list(range(nlat)),list(range(nlon)) )
+                    ]
+    lvidx = N.array(_lvidx).reshape(nlat,nlon)
+    _4didx = N.array(
             [N.arange(nt),lvidx,N.arange(nlat),N.arange(nlon)])
-    u = parent.get("U",tidx,None,lonidx,latidx)[4didx]
-    v = parent.get("V",tidx,None,lonidx,latidx)[4didx]
-    w = parent.get("W",tidx,None,lonidx,latidx)[4didx]
+    u = parent.get("U",tidx,None,lonidx,latidx)[_4didx]
+    v = parent.get("V",tidx,None,lonidx,latidx)[_4didx]
+    w = parent.get("W",tidx,None,lonidx,latidx)[_4didx]
 
     utils.enforce_same_dimensions(u,v,w)
     xi = compute_vorticity(parent=None,U=u,V=v)
