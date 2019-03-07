@@ -5,7 +5,7 @@ Todo:
     * There might be some overlap from stats.
     * Resolve the API. Do all functions start with a parent to inherit
         from? What if the user wants to call without the parent (e.g.,
-        using arrays of data that already exist)? 
+        using arrays of data that already exist)?
 
 For every class, parent is the class from which to "inherit" from.
 """
@@ -444,7 +444,7 @@ def compute_CAPE(parent,tidx,lvidx,lonidx,latidx,other):
 
     t_diff = t_parc-t_env
     t_diff[t_diff > 0] = 0
-    
+
     for lv in range(1,t_diff.shape[0]):
         t_diff[lv,:,:] = N.where(p[lv,:,:] > lcl_p, 0.0, t_diff[lv,:,:])
 
@@ -936,36 +936,44 @@ def compute_strongest_wind(parent,tidx,lvidx,lonidx,latidx,other):
     return wind_max
 
 def return_updraught_helicity_02(parent,tidx,lvidx,lonidx,latidx,other):
-    return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=0,z1=2000) 
+    return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=0,z1=2000)
 
 def return_updraught_helicity_25(parent,tidx,lvidx,lonidx,latidx,other):
-    return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000) 
+    return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000)
 
 def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000):
     # First, get height idx that area definitely between z0 and z1.
     # 3D field
-    agl_m = parent.get("HGT",tidx,None,lonidx,latidx)[0,0,:,:]
+    #agl_m = parent.get("HGT",tidx,None,lonidx,latidx)[0,0,:,:]
+    z = parent.get("Z",tidx,None,lonidx,latidx)
 
     # m0 = utils.closest(agl_m,z0)
     # m1 = utils.closest(agl_m,z1)
 
-    # Find the levels with...
+    # Find the level idx for nearest Z to z0 and z1
+    idx0 = utils.closest(z,z0)
+    idx1 = utils.closest(z,z1)
 
-    u0 = parent.get("U",tidx,z0,lonidx,latidx)
-    u1 = parent.get("U",tidx,z1,lonidx,latidx)
+    u = parent.get("U",tidx,slice(idx0,idx1),lonidx,latidx)
+    #u1 = parent.get("U",tidx,z1,lonidx,latidx)
+    #v = parent.get("V",tidx,lvidx,lonidx,latidx)
+    #w = parent.get("W",tidx,lvidx,lonidx,latidx)
+    v = parent.get("V",tidx,slice(idx0,idx1),lonidx,latidx)
+    w = parent.get("W",tidx,slice(idx0,idx1),lonidx,latidx)
 
-    v = parent.get("V",tidx,lvidx,lonidx,latidx)
-    w = parent.get("W",tidx,lvidx,lonidx,latidx)
+    utils.enforce_same_dimensions(u,v,w)
+    xi = compute_vorticity(parent=None,u,v)
+    UH = N.sum(xi*w)
 
-    UH = compute_updraught_helicity(u=u,v=v,w=w)
+    # UH = compute_updraught_helicity(u=u,v=v,w=w,z0=z0,z1=z1)
     pdb.set_trace()
     return UH
-    
+
 def return_maxcol_updraught(parent,tidx,lvidx,lonidx,latidx,other):
     w = parent.get("W",tidx,lvidx,lonidx,latidx)
     wmax = N.max(w,axis=1)
     return wmax[:,N.newaxis,:,:]
-    
+
 def compute_updraught_helicity(parent,u,v,w,dz=None,z=None,z0=2000,z1=5000):
     """Eq. 11 & 12 from Kain et al 2008, WAF.
 
@@ -981,9 +989,7 @@ def compute_updraught_helicity(parent,u,v,w,dz=None,z=None,z0=2000,z1=5000):
     Todo:
         * Not sure if this works.
     """
-    utils.enforce_same_dimensions(u,v,w)
-    
-    vort_z = compute_vorticity(None,u,v)
+
     # Need to do mid-point approximation here
     # If dz, don't need to do anything.
     # If z, need to do differences.
