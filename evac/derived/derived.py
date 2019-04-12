@@ -336,15 +336,25 @@ def compute_derivatives(parent,U,V,axis=None):
         for t in range(nt):
             dudx[t,...], dudy[t,...] = N.gradient(U[t,...],parent.dx,parent.dx)
             dvdx[t,...], dvdy[t,...] = N.gradient(V[t,...],parent.dx,parent.dx)
+    elif len(U.shape) == 4:
+        nt,nz,nlat,nlon = U.shape
+        dudx = N.zeros_like(U)
+        dvdx = N.zeros_like(U)
+        dudy = N.zeros_like(U)
+        dvdy = N.zeros_like(U)
+        for t in range(nt):
+            for z in range(nz):
+                dudx[t,z,:,:], dudy[t,z,:,:] = N.gradient(U[t,z,:,:],parent.dx,parent.dx)
+                dvdx[t,z,:,:], dvdy[t,z,:,:] = N.gradient(V[t,z,:,:],parent.dx,parent.dx)
     return dudx, dudy, dvdx, dvdy
 
 def compute_stretch_deformation(parent,U,V):
-    dudx, dudy, dvdx, dvdy = parent.compute_derivatives(U,V)
+    dudx, dudy, dvdx, dvdy = compute_derivatives(parent,U,V)
     Est = dudx - dvdy
     return Est
 
 def compute_shear_deformation(parent,U,V):
-    dudx, dudy, dvdx, dvdy = parent.compute_derivatives(U,V)
+    dudx, dudy, dvdx, dvdy = compute_derivatives(parent,U,V)
     Esh = dudy + dvdx
     return Esh
 
@@ -359,7 +369,7 @@ def compute_vorticity(parent,U,V):
     Returns vertical vorticity. In future, change to allow all thre
     components to be be returned.
     """
-    dudx, dudy, dvdx, dvdy = parent.compute_derivatives(U,V,)
+    dudx, dudy, dvdx, dvdy = compute_derivatives(parent,U,V,)
     zeta = dvdx - dudy
     return zeta
 
@@ -367,19 +377,19 @@ def return_vorticity(parent,tidx,lvidx,lonidx,latidx,other):
     # pdb.set_trace()
     U = parent.get('U',tidx,lvidx,lonidx,latidx)[:,0,:,:]
     V = parent.get('V',tidx,lvidx,lonidx,latidx)[:,0,:,:]
-    zeta = parent.compute_vorticity(U,V)
+    zeta = parent.compute_vorticity(parent,U,V)
     return zeta
 
 def compute_fluid_trapping_diagnostic(parent,tidx,lvidx,lonidx,latidx,other):
     U = parent.get('U10',tidx,lvidx,lonidx,latidx)[0,0,:,:]
     V = parent.get('V10',tidx,lvidx,lonidx,latidx)[0,0,:,:]
     E = parent.compute_total_deformation(U,V)
-    zeta = parent.compute_vorticity(U,V)
+    zeta = parent.compute_vorticity(parent,U,V)
     omega2 = 0.25*(E**2 - zeta**2)
     return omega2
 
 def compute_divergence(parent,U,V):
-    dudx, dudy, dvdx, dvdy = parent.compute_derivatives(U,V)
+    dudx, dudy, dvdx, dvdy = compute_derivatives(parent,U,V)
     div = dudx + dvdy
     return div
 
@@ -943,58 +953,63 @@ def return_updraught_helicity_25(parent,tidx,lvidx,lonidx,latidx,other):
     return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000)
 
 def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000):
-    # First, get height idx that area definitely between z0 and z1.
-    # 3D field
-    #agl_m = parent.get("HGT",tidx,None,lonidx,latidx)[0,0,:,:]
-    z = parent.get("Z",tidx,None,lonidx,latidx)[:,:,:,:]
+    def method1():
+        # Optimisation no. 1:
+        # Simplest!
 
-    # m0 = utils.closest(agl_m,z0)
-    # m1 = utils.closest(agl_m,z1)
+        # Geopotential height
+        z = parent.get("Z",tidx,None,lonidx,latidx)[:,:,:,:]
 
-    # Find the level idx for nearest Z to z0 and z1
-    # idx0 = utils.closest(z,z0)
-    # idx1 = utils.closest(z,z1)
-    idx0 = N.argmin(N.abs(z-z0),axis=1)[0,:,:]
-    idx1 = N.argmin(N.abs(z-z1),axis=1)[0,:,:]
+        # Closest model levels for each lat/lon point to desired AGL-km levels
+        idx0 = N.argmin(N.abs(z-z0),axis=1)[0,:,:]
+        idx1 = N.argmin(N.abs(z-z1),axis=1)[0,:,:]
 
-    # lvidx = slice(idx0,idx1)
-    # lvidx = list(range(idx0,idx1+1))
-    nt, nlv, nlat, nlon = z.shape
+        # Now, subset xi and w to be only levels of interest
+        bot = int(N.median(idx0))
+        top = int(N.median(idx1))
+        zs = slice(bot,top+1,1)
+
+        # Vorticity and updraft
+        # zs = None
+        u = parent.get("U",tidx,None,lonidx,latidx)[:,zs,:,:].data
+        v = parent.get("V",tidx,None,lonidx,latidx)[:,zs,:,:].data
+        w = parent.get("W",tidx,None,lonidx,latidx)[:,zs,:,:].data
+        utils.enforce_same_dimensions(u,v,w)
+        xi = compute_vorticity(parent=parent,U=u,V=v)
+
+        # Final UH computation:
+        assert xi.ndim == 4
+        UH = N.sum(xi*w,axis=1)[0,:,:]
+        return UH
+
+    def method2():
+        pass
+        # no. 2:
+        # Need to optimise with a new scheme that splits domain into
+        # regions (use scikit?) and computes UH in areas separately
+
+    def method3():
+        # no. 3:
+        # For all permutations of bot_uniq:top_uniq,
+        # find the indices that match this and compute UH
+
+        # Tip: find all points that have e.g. 10 levels, those with 11, 12, etc
+        # Then extract only those points, compute, and place the values in UH array
+        bot_unique = N.unique(idx0)
+        top_unique = N.unique(idx1)
+
+        for bot, top in itertools.product(bot_unique,top_unique):
+            pass
+
+
+    # Meta-data
+    # nt, nlv, nlat, nlon = z.shape
+
+    method = 1
+    METHODS = {1:method1,2:method2,3:method3}
+    UH = METHODS[method]()
     
 
-    # JRL
-    ###
-    ###
-    ###
-    # Need to optimise, maybe with a new scheme that splits domain into
-    # regions (use scikit?) and computes UH in areas separately
-
-    # Or: find all points that have e.g. 10 levels, those with 11, 12, etc
-    # Then extract only those points, compute, and place the values
-    # into the UH array.
-
-    lvidx = N.zeros([nlat,nlon]) 
-    for x,y in itertools.product(list(range(nlat)),list(range(nlon))):
-        lvidx[x,y] = N.arange(idx0[x,y],idx1[x,y]+1)
-    # lvidx = N.array(_lvidx).reshape(nlat,nlon)
-    _4didx = N.array([N.arange(nt),lvidx,N.arange(nlat),N.arange(nlon)])
-    ###
-    ###
-    ###
-    # JRL
-    
-    
-    
-    u = parent.get("U",tidx,None,lonidx,latidx)[_4didx]
-    v = parent.get("V",tidx,None,lonidx,latidx)[_4didx]
-    w = parent.get("W",tidx,None,lonidx,latidx)[_4didx]
-
-    utils.enforce_same_dimensions(u,v,w)
-    xi = compute_vorticity(parent=None,U=u,V=v)
-    UH = N.sum(xi*w)
-
-    # UH = compute_updraught_helicity(u=u,v=v,w=w,z0=z0,z1=z1)
-    pdb.set_trace()
     return UH
 
 def return_maxcol_updraught(parent,tidx,lvidx,lonidx,latidx,other):
