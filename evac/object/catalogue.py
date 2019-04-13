@@ -475,13 +475,13 @@ class Catalogue:
 
         return new_df
 
-    def do_pca(self):
+    def do_pca(self,features=None):
         """
         Todo:
             * Move this to PCA stat class. Return that class.
         """
-
-        features = ['area','eccentricity','extent','max_intensity',
+        if features is None:
+            features = ['area','eccentricity','extent','max_intensity',
                         'mean_intensity','perimeter','longaxis_km']
         x = self.megaframe.loc[:,features].values
         y = self.megaframe.loc[:,['prod_code']].values
