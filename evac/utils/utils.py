@@ -1862,11 +1862,11 @@ def trycreate(loc, parents=True,exist_ok=True,isdir=False,debug=True):
         if l.is_dir():
             _print(debug,"Checking **{}** exists.".format(l),color='blue')
             # print("Directory already exists.")
-            pass
+            return
         else:
             _print(debug,"Checking **{}** exists.".format(l.parent),color='blue')
             # print("File already exists.")
-            pass
+            return
         _print(debug,"Directory already exists.")
         return
 

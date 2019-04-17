@@ -224,8 +224,11 @@ class Performance(Figure):
 
         self.ax.scatter(sr,pod,label=label,zorder=500,**plotkwargs)
         # print("Ready to save via save(), or plot more with plot_data().")
+        from matplotlib.ticker import FormatStrFormatter
+        self.ax.xaxis.set_major_formatter(FormatStrFormatter("%.1f"))
+        self.ax.yaxis.set_major_formatter(FormatStrFormatter("%.1f"))
 
-    def save(self,):
+    def save(self,close=True):
         """ Extends Figure.save() by completing tasks before saving.
         """
         if self.legend:
@@ -235,3 +238,5 @@ class Performance(Figure):
         # self.fig.subplots_adjust(top=0.95,right=0.95)
         # super(Performance,self).save(tight=False)
         super().save()
+        if close:
+            plt.close(self.fig)
