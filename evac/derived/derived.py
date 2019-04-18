@@ -980,20 +980,20 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
         _xi = compute_vorticity(parent=parent,U=_u,V=_v)
 
         # Interpolate _w, _xi in the vertical
-        def shift_half_idx(arr):
-            return arr+0.5
-
         nt, nlv, nlat, nlon = _w.shape
-        #oldidx = N.indices(_w.shape)
-        oldidx_4 = N.ogrid[0:nt,0:nlv,0:nlat,0:nlon]
-        oldidx = N.meshgrid(*oldidx_4)
-        #oldidx2 = N.copy(oldidx[:,:-1,:,:])
-        #newidx = N.apply_along_axis(shift_half_idx,1,oldidx2)
-        newidx_4 = N.ogrid[0:nt,0.5:nlv-0.5,0:nlat,0:nlon]
-        newidx = N.meshgrid(*newidx_4)
+        tidx = N.arange(nt)
+        lvidx = N.arange(nlv)
+        i_lvidx = N.arange(0.5,nlv,1.0)
+        latidx = N.arange(nlat)
+        lonidx = N.arange(nlon)
+        RGI = RegularGridInterpolator((tidx,lvidx,latidx,lonidx),_w)
 
-        w = interpn(points=oldidx,values=_w,xi=newidx)
-        xi = interpn(points=oldidx,values=_xi,xi=newidx)
+        newidx = N.array(tidx,i_lvidx,latidx,lonidx)
+        w = RGI(newidx)
+        xi = RGI(newidx)
+
+        #w = interpn(points=oldidx,values=_w,xi=newidx)
+        #xi = interpn(points=oldidx,values=_xi,xi=newidx)
 
         dz = N.diff(z[:,zs,:,:],axis=1)
         # Final UH computation:
