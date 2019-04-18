@@ -14,7 +14,7 @@ import pdb
 import itertools
 
 import numpy as N
-from scipy.interpolate import interp1d, interpn
+from scipy.interpolate import interp1d, interpn, RegularGridInterpolator
 
 import evac.utils.met_constants as mc
 import evac.utils.utils as utils
