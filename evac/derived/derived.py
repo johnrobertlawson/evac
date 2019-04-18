@@ -986,9 +986,9 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
         oldidx = N.indices(_w.shape)
         oldidx2 = N.copy(oldidx[:,:-1,:,:])
         newidx = N.apply_along_axis(shift_half_idx,1,oldidx2)
-        w = interpn(x=oldidx,values=_w,xi=newidx)
+        w = interpn(points=oldidx,values=_w,xi=newidx)
 
-        xi = interpn(x=oldidx,values=_xi,xi=newidx)
+        xi = interpn(points=oldidx,values=_xi,xi=newidx)
 
         dz = N.diff(z[:,zs,:,:],axis=1)
         # Final UH computation:
