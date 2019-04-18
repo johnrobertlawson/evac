@@ -959,10 +959,6 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
         # Optimisation no. 1:
         # Simplest!
         __z = parent.get("Z",tidx,None,lonidx,latidx)[:,:,:,:]
-        _u = parent.get("U",tidx,None,lonidx,latidx)[:,zs,:,:].data
-        _v = parent.get("V",tidx,None,lonidx,latidx)[:,zs,:,:].data
-        _w = parent.get("W",tidx,None,lonidx,latidx)[:,zs,:,:].data
-
         nt, nlv, nlat, nlon = __z.shape
 
         # Closest model levels for each lat/lon point to desired AGL-km levels
@@ -975,8 +971,9 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
         zs = slice(bot,top+1,1)
 
         # Vorticity and updraft
-        # zs = None
-
+        _u = parent.get("U",tidx,None,lonidx,latidx)[:,zs,:,:].data
+        _v = parent.get("V",tidx,None,lonidx,latidx)[:,zs,:,:].data
+        _w = parent.get("W",tidx,None,lonidx,latidx)[:,zs,:,:].data
         utils.enforce_same_dimensions(_u,_v,_w)
         _xi = compute_vorticity(parent=parent,U=_u,V=_v)
 
