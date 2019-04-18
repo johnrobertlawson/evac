@@ -981,7 +981,7 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
         nt, nlv, nlat, nlon = _w.shape
         _tidx = N.arange(nt)
         _lvidx = N.arange(nlv)
-        i_lvidx = N.arange(0.5,nlv,1.0)
+        i_lvidx = N.arange(0.5,nlv-1,1.0)
         _latidx = N.arange(nlat)
         _lonidx = N.arange(nlon)
         # oldidx = (_tidx,_lvidx,_latidx,_lonidx)
