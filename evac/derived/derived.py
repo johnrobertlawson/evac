@@ -977,9 +977,11 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
         utils.enforce_same_dimensions(u,v,w)
         xi = compute_vorticity(parent=parent,U=u,V=v)
 
+        dz = N.diff(z[:,zs+1,:,:])
         # Final UH computation:
         assert xi.ndim == 4
-        UH = N.sum(xi*w,axis=1)[0,:,:]
+        UH = N.sum(xi*w*dz,axis=1)[0,:,:]
+        pdb.set_trace()
         return UH
 
     def method2():
@@ -1008,7 +1010,7 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
     method = 1
     METHODS = {1:method1,2:method2,3:method3}
     UH = METHODS[method]()
-    
+
 
     return UH
 
