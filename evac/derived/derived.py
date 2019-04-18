@@ -958,13 +958,16 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
     def method1():
         # Optimisation no. 1:
         # Simplest!
+        __z = parent.get("Z",tidx,None,lonidx,latidx)[:,:,:,:]
+        _u = parent.get("U",tidx,None,lonidx,latidx)[:,zs,:,:].data
+        _v = parent.get("V",tidx,None,lonidx,latidx)[:,zs,:,:].data
+        _w = parent.get("W",tidx,None,lonidx,latidx)[:,zs,:,:].data
 
-        # Geopotential height
-        z = parent.get("Z",tidx,None,lonidx,latidx)[:,:,:,:]
+        nt, nlv, nlat, nlon = __z.shape
 
         # Closest model levels for each lat/lon point to desired AGL-km levels
-        idx0 = N.argmin(N.abs(z-z0),axis=1)[0,:,:]
-        idx1 = N.argmin(N.abs(z-z1),axis=1)[0,:,:]
+        idx0 = N.argmin(N.abs(__z-z0),axis=1)[0,:,:]
+        idx1 = N.argmin(N.abs(__z-z1),axis=1)[0,:,:]
 
         # Now, subset xi and w to be only levels of interest
         bot = int(N.median(idx0))
@@ -973,9 +976,7 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
 
         # Vorticity and updraft
         # zs = None
-        _u = parent.get("U",tidx,None,lonidx,latidx)[:,zs,:,:].data
-        _v = parent.get("V",tidx,None,lonidx,latidx)[:,zs,:,:].data
-        _w = parent.get("W",tidx,None,lonidx,latidx)[:,zs,:,:].data
+
         utils.enforce_same_dimensions(_u,_v,_w)
         _xi = compute_vorticity(parent=parent,U=_u,V=_v)
 
@@ -986,20 +987,24 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
         i_lvidx = N.arange(0.5,nlv,1.0)
         _latidx = N.arange(nlat)
         _lonidx = N.arange(nlon)
-        RGI = RegularGridInterpolator((_tidx,_lvidx,_latidx,_lonidx),_w)
+        # oldidx = (_tidx,_lvidx,_latidx,_lonidx)
+        # RGI = RegularGridInterpolator((_tidx,_lvidx,_latidx,_lonidx),_w)
 
-        newidx = N.array([_tidx,i_lvidx,_latidx,_lonidx])
-        w = RGI(newidx)
-        xi = RGI(newidx)
 
-        #w = interpn(points=oldidx,values=_w,xi=newidx)
-        #xi = interpn(points=oldidx,values=_xi,xi=newidx)
+        #newidx = N.array([_tidx,i_lvidx,_latidx,_lonidx])
+        #w = RGI(newidx)
+        #xi = RGI(newidx)
 
-        dz = N.diff(z[:,zs,:,:],axis=1)
+        w = interp1d(x=i_lvidx,y=_w,axis=1)
+        pdb.set_trace()
+        #xi = interp1d(points=oldidx,values=_xi,xi=newidx)
+
+
+
+        dz = N.diff(__z[:,zs,:,:],axis=1)
         # Final UH computation:
         assert xi.ndim == 4
         UH = N.sum(xi*w*dz,axis=1)[0,:,:]
-        pdb.set_trace()
         return UH
 
     def method2():
