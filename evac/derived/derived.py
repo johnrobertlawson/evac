@@ -14,6 +14,8 @@ import pdb
 import itertools
 
 import numpy as N
+from scipy.interpolate import interp1d, interpn
+
 import evac.utils.met_constants as mc
 import evac.utils.utils as utils
 
@@ -971,13 +973,24 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
 
         # Vorticity and updraft
         # zs = None
-        u = parent.get("U",tidx,None,lonidx,latidx)[:,zs,:,:].data
-        v = parent.get("V",tidx,None,lonidx,latidx)[:,zs,:,:].data
-        w = parent.get("W",tidx,None,lonidx,latidx)[:,zs,:,:].data
-        utils.enforce_same_dimensions(u,v,w)
-        xi = compute_vorticity(parent=parent,U=u,V=v)
+        _u = parent.get("U",tidx,None,lonidx,latidx)[:,zs,:,:].data
+        _v = parent.get("V",tidx,None,lonidx,latidx)[:,zs,:,:].data
+        _w = parent.get("W",tidx,None,lonidx,latidx)[:,zs,:,:].data
+        utils.enforce_same_dimensions(_u,_v,_w)
+        _xi = compute_vorticity(parent=parent,U=_u,V=_v)
 
-        dz = N.diff(z[:,bot-1:top+1,:,:],axis=1)
+        # Interpolate _w, _xi in the vertical
+        def shift_half_idx(arr):
+            return arr+0.5
+
+        oldidx = N.indices(_w.shape)
+        oldidx2 = N.copy(oldidx[:,:-1,:,:])
+        newidx = N.apply_along_axis(shift_half_idx,1,oldidx2)
+        w = interpn(x=oldidx,values=_w,xi=newidx)
+
+        xi = interpn(x=oldidx,values=_xi,xi=newidx)
+
+        dz = N.diff(z[:,zs,:,:],axis=1)
         # Final UH computation:
         assert xi.ndim == 4
         UH = N.sum(xi*w*dz,axis=1)[0,:,:]
