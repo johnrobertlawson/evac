@@ -988,7 +988,7 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
         _lonidx = N.arange(nlon)
         RGI = RegularGridInterpolator((_tidx,_lvidx,_latidx,_lonidx),_w)
 
-        newidx = N.array(_tidx,i_lvidx,_latidx,_lonidx)
+        newidx = N.array([_tidx,i_lvidx,_latidx,_lonidx])
         w = RGI(newidx)
         xi = RGI(newidx)
 
