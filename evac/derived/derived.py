@@ -985,12 +985,12 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
 
         nt, nlv, nlat, nlon = _w.shape
         #oldidx = N.indices(_w.shape)
-        oldidx_4d = N.ogrid[0:nt,0:nlv,0:nlat,0:nlon]
-        oldidx = N.meshgrid(*oldidx_rowcol)
+        oldidx_4 = N.ogrid[0:nt,0:nlv,0:nlat,0:nlon]
+        oldidx = N.meshgrid(*oldidx_4)
         #oldidx2 = N.copy(oldidx[:,:-1,:,:])
         #newidx = N.apply_along_axis(shift_half_idx,1,oldidx2)
-        newidx_rowcol = N.ogrid[0:nt,0.5:nlv-0.5,0:nlat,0:nlon]
-        newidx = N.meshgrid(*newidx_rowcol)
+        newidx_4 = N.ogrid[0:nt,0.5:nlv-0.5,0:nlat,0:nlon]
+        newidx = N.meshgrid(*newidx_4)
 
         w = interpn(points=oldidx,values=_w,xi=newidx)
         xi = interpn(points=oldidx,values=_xi,xi=newidx)
