@@ -992,7 +992,9 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
         #w = RGI(newidx)
         #xi = RGI(newidx)
 
-        w = interp1d(x=i_lvidx,y=_w,axis=1)
+        interp_func = interp1d(x=_lvidx,y=_w,axis=1)
+        w = interp_func(i_lvidx)
+
         pdb.set_trace()
         #xi = interp1d(points=oldidx,values=_xi,xi=newidx)
 
