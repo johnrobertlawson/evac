@@ -977,7 +977,7 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
         utils.enforce_same_dimensions(u,v,w)
         xi = compute_vorticity(parent=parent,U=u,V=v)
 
-        dz = N.diff(z[:,zs,:,:])
+        dz = N.diff(z[:,bot-1:top+1,:,:],axis=1)
         # Final UH computation:
         assert xi.ndim == 4
         UH = N.sum(xi*w*dz,axis=1)[0,:,:]
