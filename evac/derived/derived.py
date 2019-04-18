@@ -995,15 +995,15 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
         interp_func = interp1d(x=_lvidx,y=_w,axis=1)
         w = interp_func(i_lvidx)
 
-        pdb.set_trace()
+        interp_func = interp1d(x=_lvidx,y=_xi,axis=1)
+        xi = interp_func(i_lvidx)
+
         #xi = interp1d(points=oldidx,values=_xi,xi=newidx)
-
-
 
         dz = N.diff(__z[:,zs,:,:],axis=1)
         # Final UH computation:
-        assert xi.ndim == 4
         UH = N.sum(xi*w*dz,axis=1)[0,:,:]
+        pdb.set_trace()
         return UH
 
     def method2():
