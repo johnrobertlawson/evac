@@ -584,8 +584,14 @@ def save_pickle(obj,fpath):
     return
 
 def load_pickle(fpath):
-    with open(fpath,'rb') as f:
-        pp = pickle.load(f)
+    try:
+        with open(fpath,'rb') as f:
+            pp = pickle.load(f)
+    except:
+        print("Error loading",fpath)
+        pp = "ERROR"
+    # JRL: TODO consider return False
+    # so error can be handled
     return pp
 
 def gettopo():
