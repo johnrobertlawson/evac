@@ -294,6 +294,8 @@ class Catalogue:
         data_in columns: fcst_vrbl, valid_time, fcst_min, prod_code, path_to_pickle
         (all that's needed to find unique matches)
 
+        TODO:
+            * do_suite for UH/AWS?
         """
         def get_commands(df_in):
             commands = []
