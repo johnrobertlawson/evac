@@ -417,6 +417,7 @@ class ObjectID:
                 objects.loc[oidx,'qlcsness'] = qlcsness
                 # aa = results[0].loc[0:0,features]
                 # aat = pca.transform(scaler.transform(aa))
+                # pdb.set_trace()
 
             # Lead time in minutes, usually.
             #objects['lead_time'][oidx] = self.lead_time

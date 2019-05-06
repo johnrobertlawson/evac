@@ -288,7 +288,8 @@ class Catalogue:
         TI = ((td_max-td)/td_max)*0.5*(((cd_max-cd)/cd_max)+((md_max-md)/md_max))
         return TI
 
-    def compute_new_attributes(self,df_in,do_suite="W"):
+    def compute_new_attributes(self,df_in,do_suite="W",rot_exceed_vals=None,
+                                suffix=None):
         """ Adds new attributes from a forecast field to each object dataframe.
 
         data_in columns: fcst_vrbl, valid_time, fcst_min, prod_code, path_to_pickle
@@ -296,7 +297,11 @@ class Catalogue:
 
         TODO:
             * do_suite for UH/AWS?
+
         """
+        if not suffix:
+            suffix = "_" + do_suite
+
         def get_commands(df_in):
             commands = []
             for fidx,fcst_df in enumerate(df_in.itertuples()):
@@ -312,20 +317,22 @@ class Catalogue:
                 # pdb.set_trace()
                 if do_suite == "W":
                     commands.append([obj_df, fcst_df.path_to_pickle, fidx])
-                elif do_suite == "UH02":
-                #    self.get_uh_attributes(lv='02')
-                    raise Exception
-                elif do_suite == "UH25":
-                #    self.get_uh_attributes(lv='25')
-                    raise Exception
+                elif do_suite.startswith("UH"):
+                    commands.append([obj_df, fcst_df.path_to_pickle, fidx,
+                                        rot_exceed_vals])
             return commands
 
+        assert do_suite in ("UH02","UH25","W")
         if do_suite == "W":
             func = self.get_updraught_attributes
+        elif do_suite.startswith("UH"):
+            assert rot_exceed_vals
+            func = self.get_rotation_attributes
 
-        fname = "commands.pickle"
-        do_pickle = True
+        do_pickle = True if suffix != do_suite else False
+        fname = f"commands{suffix}.pickle"
         fpath = os.path.join(self.tempdir,fname)
+        print("Looking for",fpath)
         if os.path.exists(fpath) and do_pickle:
             print("Loading pickle of commands")
             with open(fpath,"rb") as f:
@@ -357,11 +364,22 @@ class Catalogue:
         Args:
             data: an itertuple from a data_in dataframe (appending new info)
         """
-
+        # pdb.set_trace()
         little_slice = data[(data['prod_code'] == prod_code) &
                             (data['lead_time'] == fcst_min) &
                             (data['time'] == valid_time)]
         return little_slice
+
+    def get_data_slice(self,obj,field):
+        minr = int(obj.min_row)
+        maxr = int(obj.max_row)
+        minc = int(obj.min_col)
+        maxc = int(obj.max_col)
+
+        # Max/mean updraught in this object's bbox
+        objidx = slice(minr,maxr),slice(minc,maxc)
+        # objidx = obj['coords']
+        return field[objidx]
 
     # def get_updraught_attributes(self,obj_df,W_field):
     def get_updraught_attributes(self,i):
@@ -426,16 +444,7 @@ class Catalogue:
             Ix = obj.megaframe_idx
             new_df.loc[oidx,"megaframe_idx_test"] = Ix
 
-
-            minr = int(obj.min_row)
-            maxr = int(obj.max_row)
-            minc = int(obj.min_col)
-            maxc = int(obj.max_col)
-
-            # Max/mean updraught in this object's bbox
-            objidx = slice(minr,maxr),slice(minc,maxc)
-            # objidx = obj['coords']
-            W_slice = W_field[objidx]
+            W_slice = self.get_data_slice(obj,W_field)
 
             new_df.loc[oidx,'max_updraught'] = N.nanmax(W_slice)
             #N.mean(W_slice)
@@ -445,6 +454,8 @@ class Catalogue:
             maxur = maxmax[0][0]
             maxuc = maxmax[1][0]
 
+            minc = int(obj.min_col)
+            minr = int(obj.min_row)
             # Find this location back on the main grid
             new_df.loc[oidx,'max_updraught_row'] = maxur + minr
             new_df.loc[oidx,'max_updraught_col'] = maxuc + minc
@@ -476,6 +487,109 @@ class Catalogue:
             # pdb.set_trace()
 
         return new_df
+
+    def get_rotation_attributes(self,i):
+        """
+        rot_exceed_vals is either
+
+        (1) a list/tuple of uh/aws values
+        to exceed. The property name is rot_exceed_ID_#, where the last
+        character(s) is the index of rot_exceed_vals. This way, the user
+        can e.g., specify percentiles in terms of absolute values.
+
+        or
+
+        (2) a Threshs object, which is currently BROKEN! Needs to be implemented
+        from VSE_dx project TODO JRL
+        """
+        obj_df, rot_field, fidx, rot_exceed_vals = i
+
+
+
+        if isinstance(rot_field,str):
+            rot_field = N.load(rot_field)
+
+        mega_idx = obj_df.head(1).megaframe_idx.values[0]
+
+        if False:
+            prod = obj_df.head(1).prod_code.values[0]
+            t = obj_df.head(1).time.values[0]
+            lead_time = obj_df.head(1).lead_time.values[0]
+            print("About to compute rotation attributes for:",
+                prod,t,"||| lead time =", lead_time,"min.")
+
+        DTYPES = {
+                "megaframe_idx_test":"i4",
+                }
+
+        nobjs = len(obj_df)
+        new_df = utils.do_new_df(DTYPES,nobjs,)
+
+        for oidx,obj in enumerate(obj_df.itertuples()):
+            dx = obj.dx
+
+            # Get index for object in megaframe
+            # oidx = obj.label
+
+            # Get index for object in new df
+            #Ix = obj.Index
+            Ix = obj.megaframe_idx
+            new_df.loc[oidx,"megaframe_idx_test"] = Ix
+
+            rot_slice = self.get_data_slice(obj,rot_field)
+
+            new_df.loc[oidx,'max_rot'] = N.nanmax(rot_slice)
+            #N.mean(rot_slice)
+
+            # Location of max updraught in object
+            maxmax = N.where(rot_slice == N.nanmax(rot_slice))
+            maxur = maxmax[0][0]
+            maxuc = maxmax[1][0]
+
+            minc = int(obj.min_col)
+            minr = int(obj.min_row)
+            # Find this location back on the main grid
+            new_df.loc[oidx,'max_rot_row'] = maxur + minr
+            new_df.loc[oidx,'max_rot_col'] = maxuc + minc
+
+            # Min/mean
+            new_df.loc[oidx,'mean_rot'] = N.nanmean(rot_slice)
+            new_df.loc[oidx,"min_rot"] = N.nanmin(rot_slice)
+
+            # Relative to centroid? Could be radius, using equivalent circle
+            # distance_from_centroid
+            cr = obj.centroid_row
+            cc = obj.centroid_col
+            dist_km, angle = utils.distance_angle_from_coords(maxur+minr,
+                                                    maxuc+minc,cr,cc,dx=dx)
+            new_df.loc[oidx,'rot_distance_from_centroid'] = dist_km
+
+            # angle_from_centroid
+            new_df.loc[oidx,'rot_angle_from_centroid'] = angle
+
+            # Exceedence of various percentiles
+            # Would need to know if UH or AWS, and which level (0-2, 2-5 km etc)
+            # Also, do for exceedence of magnitudes.
+            if not isinstance(rot_exceed_vals,(list,tuple)):
+                TH = rot_exceed_vals
+                pdb.set_trace()
+                vrbl = obj
+                percentiles = TH(vrbl)
+
+
+            for n, v in enumerate(rot_exceed_vals):
+                prop_name = f"rot_exceed_ID_{n}"
+
+                if N.where(rot_slice > v)[0].size > 0:
+                    answer = True
+                else:
+                    answer = False
+
+                new_df.loc[oidx,prop_name] = answer
+            # pdb.set_trace()
+
+        return new_df
+
 
     def do_pca(self,features=None):
         """
