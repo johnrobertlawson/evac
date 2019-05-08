@@ -305,8 +305,9 @@ class Catalogue:
         def get_commands(df_in):
             commands = []
             for fidx,fcst_df in enumerate(df_in.itertuples()):
-                if (fcst_df.fcst_min == 0):
-                    continue
+                # JRL: need to change this for obs verification?
+                # if (fcst_df.fcst_min == 0):
+                    # continue
                 utils.print_progress(total=len(df_in),idx=fidx,every=500)
                 obj_df = self.lookup_obj_df(self.megaframe,
                                             valid_time=fcst_df.valid_time,
