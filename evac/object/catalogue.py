@@ -319,7 +319,7 @@ class Catalogue:
                     commands.append([obj_df, fcst_df.path_to_pickle, fidx])
                 elif do_suite.startswith("UH"):
                     commands.append([obj_df, fcst_df.path_to_pickle, fidx,
-                                        rot_exceed_vals])
+                                        rot_exceed_vals,do_suite])
             return commands
 
         assert do_suite in ("UH02","UH25","W")
@@ -502,8 +502,13 @@ class Catalogue:
         (2) a Threshs object, which is currently BROKEN! Needs to be implemented
         from VSE_dx project TODO JRL
         """
-        obj_df, rot_field, fidx, rot_exceed_vals = i
-
+        obj_df, rot_field, fidx, rot_exceed_vals, layer = i
+        if layer.endswith("02"):
+            layer = "02"
+        elif layer.endswith("25"):
+            layer = "25"
+        else:
+            raise Exception
 
 
         if isinstance(rot_field,str):
@@ -527,6 +532,17 @@ class Catalogue:
 
         for oidx,obj in enumerate(obj_df.itertuples()):
             dx = obj.dx
+            if obj.member.startswith("m"):
+                vrbl = "UH" + layer
+            else:
+                vrbl = "AWS" + layer
+            
+            if layer == "02":
+                rot = "lowrot" 
+            elif layer == "25":
+                rot = "midrot"
+            else:
+                raise Exception
 
             # Get index for object in megaframe
             # oidx = obj.label
@@ -538,7 +554,7 @@ class Catalogue:
 
             rot_slice = self.get_data_slice(obj,rot_field)
 
-            new_df.loc[oidx,'max_rot'] = N.nanmax(rot_slice)
+            new_df.loc[oidx,f'max_{rot}'] = N.nanmax(rot_slice)
             #N.mean(rot_slice)
 
             # Location of max updraught in object
@@ -549,12 +565,12 @@ class Catalogue:
             minc = int(obj.min_col)
             minr = int(obj.min_row)
             # Find this location back on the main grid
-            new_df.loc[oidx,'max_rot_row'] = maxur + minr
-            new_df.loc[oidx,'max_rot_col'] = maxuc + minc
+            new_df.loc[oidx,f'max_{rot}_row'] = maxur + minr
+            new_df.loc[oidx,f'max_{rot}_col'] = maxuc + minc
 
             # Min/mean
-            new_df.loc[oidx,'mean_rot'] = N.nanmean(rot_slice)
-            new_df.loc[oidx,"min_rot"] = N.nanmin(rot_slice)
+            new_df.loc[oidx,f'mean_{rot}'] = N.nanmean(rot_slice)
+            new_df.loc[oidx,f"min_{rot}"] = N.nanmin(rot_slice)
 
             # Relative to centroid? Could be radius, using equivalent circle
             # distance_from_centroid
@@ -562,23 +578,23 @@ class Catalogue:
             cc = obj.centroid_col
             dist_km, angle = utils.distance_angle_from_coords(maxur+minr,
                                                     maxuc+minc,cr,cc,dx=dx)
-            new_df.loc[oidx,'rot_distance_from_centroid'] = dist_km
+            new_df.loc[oidx,f'{rot}_distance_from_centroid'] = dist_km
 
             # angle_from_centroid
-            new_df.loc[oidx,'rot_angle_from_centroid'] = angle
+            new_df.loc[oidx,f'{rot}_angle_from_centroid'] = angle
 
             # Exceedence of various percentiles
             # Would need to know if UH or AWS, and which level (0-2, 2-5 km etc)
             # Also, do for exceedence of magnitudes.
             if not isinstance(rot_exceed_vals,(list,tuple)):
                 TH = rot_exceed_vals
-                pdb.set_trace()
-                vrbl = obj
-                percentiles = TH(vrbl)
+                dx = int(obj.dx)
+
+                evs = TH.get_threshs(vrbl=vrbl,fmt=dx)
 
 
-            for n, v in enumerate(rot_exceed_vals):
-                prop_name = f"rot_exceed_ID_{n}"
+            for n, v in enumerate(evs):
+                prop_name = f"{rot}_exceed_ID_{n}"
 
                 if N.where(rot_slice > v)[0].size > 0:
                     answer = True
@@ -586,8 +602,10 @@ class Catalogue:
                     answer = False
 
                 new_df.loc[oidx,prop_name] = answer
+                new_df.loc[oidx,prop_name+"_val"] = v
             # pdb.set_trace()
 
+        # print("Generated vrbl stats.")
         return new_df
 
 
