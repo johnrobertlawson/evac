@@ -315,7 +315,7 @@ class Catalogue:
                                             prod_code=fcst_df.prod_code)
                 if obj_df.shape[0] == 0:
                     # print("Skipping: no object found.")
-                    # pdb.set_trace()
+                    pdb.set_trace()
                     continue
                 if do_suite == "W":
                     commands.append([obj_df, fcst_df.path_to_pickle, fidx])
@@ -360,12 +360,12 @@ class Catalogue:
         print("Jobs done.")
 
         # pdb.set_trace()
-        try:
-            df_out = pandas.concat(results,ignore_index=True)
-        except ValueError: # When no objects are identified
-            return
-        else:
-            return df_out
+        #try:
+        df_out = pandas.concat(results,ignore_index=True)
+        #except ValueError: # When no objects are identified
+        #    return
+        #else:
+        return df_out
 
     def lookup_obj_df(self,data,valid_time,fcst_min=0,prod_code=0):
         """
@@ -559,6 +559,10 @@ class Catalogue:
             #Ix = obj.Index
             Ix = obj.megaframe_idx
             new_df.loc[oidx,"megaframe_idx_test"] = Ix
+
+            if "AWS" in vrbl:
+                # Not matching
+                return new_df
 
             rot_slice = self.get_data_slice(obj,rot_field)
 
