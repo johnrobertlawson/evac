@@ -372,7 +372,6 @@ class Catalogue:
         Args:
             data: an itertuple from a data_in dataframe (appending new info)
         """
-        pdb.set_trace()
         little_slice = data[(data['prod_code'] == prod_code) &
                             (data['lead_time'] == fcst_min) &
                             (data['time'] == valid_time)]
