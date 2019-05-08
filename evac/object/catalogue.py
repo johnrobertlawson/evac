@@ -314,9 +314,9 @@ class Catalogue:
                                             fcst_min=fcst_df.fcst_min,
                                             prod_code=fcst_df.prod_code)
                 if obj_df.shape[0] == 0:
-                    print("Skipping: no object found.")
+                    # print("Skipping: no object found.")
+                    # pdb.set_trace()
                     continue
-                # pdb.set_trace()
                 if do_suite == "W":
                     commands.append([obj_df, fcst_df.path_to_pickle, fidx])
                 elif do_suite.startswith("UH"):
@@ -372,7 +372,7 @@ class Catalogue:
         Args:
             data: an itertuple from a data_in dataframe (appending new info)
         """
-        # pdb.set_trace()
+        pdb.set_trace()
         little_slice = data[(data['prod_code'] == prod_code) &
                             (data['lead_time'] == fcst_min) &
                             (data['time'] == valid_time)]
