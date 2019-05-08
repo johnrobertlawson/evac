@@ -313,6 +313,7 @@ class Catalogue:
                                             fcst_min=fcst_df.fcst_min,
                                             prod_code=fcst_df.prod_code)
                 if obj_df.shape[0] == 0:
+                    print("Skipping: no object found.")
                     continue
                 # pdb.set_trace()
                 if do_suite == "W":
