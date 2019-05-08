@@ -320,6 +320,8 @@ class Catalogue:
                 elif do_suite.startswith("UH"):
                     commands.append([obj_df, fcst_df.path_to_pickle, fidx,
                                         rot_exceed_vals,do_suite])
+                else:
+                    raise Exception
             return commands
 
         assert do_suite in ("UH02","UH25","W")
@@ -536,9 +538,9 @@ class Catalogue:
                 vrbl = "UH" + layer
             else:
                 vrbl = "AWS" + layer
-            
+
             if layer == "02":
-                rot = "lowrot" 
+                rot = "lowrot"
             elif layer == "25":
                 rot = "midrot"
             else:
