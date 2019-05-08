@@ -360,8 +360,12 @@ class Catalogue:
         print("Jobs done.")
 
         # pdb.set_trace()
-        df_out = pandas.concat(results,ignore_index=True)
-        return df_out
+        try:
+            df_out = pandas.concat(results,ignore_index=True)
+        except ValueError: # When no objects are identified
+            return
+        else:
+            return df_out
 
     def lookup_obj_df(self,data,valid_time,fcst_min=0,prod_code=0):
         """
