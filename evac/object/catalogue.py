@@ -5,6 +5,9 @@ import pickle
 import itertools
 import datetime
 import operator
+import time
+import math
+import copy
 
 import matplotlib as M
 import matplotlib.pyplot as plt
@@ -17,6 +20,7 @@ import scipy.spatial.distance as ssd
 from mpl_toolkits.basemap import Basemap
 
 import evac.utils as utils
+from evac.stats.detscores import DetScores
 
 class Catalogue:
     def __init__(self,df_list,ncpus=1,tempdir='./'): #time_list=None,prod_list=None):
@@ -82,11 +86,7 @@ class Catalogue:
         return results
 
     def match_verif(self,members,initutcs,leadtimes,domain,verif_domain):
-        """ Use of Total Interest to match objects in time/across models or obs.
-
-        Maybe do CombinedObject class. This could score itself!
-
-        Need a lat/lon grid for each product.
+        """ Generate 2x2 contingency for each domain.
         """
         # JRL: not set up for more than 2 domains yet (plus verif)
         assert isinstance(domain,str)
@@ -111,6 +111,238 @@ class Catalogue:
         print("Jobs done.")
         return matches
 
+    def match_two_groups(self,dictA,dictB,do_contingency=False,
+                            td_max=20.0):
+        """ Match object belonging to any subset of the megaframe -
+        make them non-overlapping if you don't want weird results.
+
+        Do dictionary as key = property and value = value, like:
+
+        dictA = dict("member" = "m01")
+
+        If do_contingency, also return 2x2 table (see that class module!)
+
+        JRL TODO: must have a way to subset times to within the
+        max time difference window, to limit calculation of permutations
+        """
+        self.bmap = self.create_bmap()
+        rets = self.match_contingency(dictA,dictB,td_max=td_max)
+
+        print("Jobs done.")
+        return rets
+        # iterator can be each of the dictA/dictB keys!
+
+        # For each permutation of objects...
+        # Need to pass back out the result:
+        # a, b, c, d
+
+    def match_contingency(self,dictA,dictB,td_max=20.0):
+        def get_sub_df(mf,the_dict):
+            sf = mf.copy()
+            for k,v in the_dict.items():
+                sf = sf[sf[k] == v]
+            return sf
+
+        mf = self.megaframe
+        # validtime = initutc + datetime.timedelta(seconds=60*int(leadtime))
+
+        both_df = dict()
+        for nd,d in enumerate((dictA,dictB)):
+            both_df[nd] = get_sub_df(mf,d)
+
+        # At this point, we have a both_df[x].shape of (nobj, nprops) for
+        # x = (0,1).
+
+        # Need to create a dataframe that slices all possible objects
+        # JRL TODO: do I need to do permutations with repetition,
+        # especially for verification purposes?
+        # Also need to only permute the list of times that is within the
+        # time window
+
+        # this_gen_len = 0
+        method = 1
+        if method == 1:
+            def gen():
+                # This will shuffle - faster?
+                # itA = both_df[0].sample(frac=1).itertuples()
+                # itB = both_df[1].sample(frac=1).itertuples()
+                itA = both_df[0].itertuples()
+                itB = both_df[1].itertuples()
+                for objA, objB in itertools.product(itA,itB):
+                    # Only yield if objA and objB are within td_max
+                    if abs((objA.time-objB.time).total_seconds()) <= (60.0*td_max):
+                        yield objA, objB, self.bmap
+
+            def count_gen():
+                this_gen_len = 0
+                for objA, objB in itertools.product(both_df[0].itertuples(),
+                                            both_df[1].itertuples()):
+                    if abs((objA.time-objB.time).total_seconds()) <= (60.0*td_max):
+                        this_gen_len += 1
+                return this_gen_len
+
+            gg = gen()
+            # pdb.set_trace()
+            this_gen_len = count_gen()
+
+        elif method == 2:
+            tups = {}
+            # tups will be used to hold a list of each sub_df's objects
+            for nd, df in both_df.items():
+                # nd is indicator of dictA/B
+                tups[nd] = []
+                # Below, looping over all objects - doesn't parallelise
+                # unless you use multiprocess, the fork that allows
+                # dill instead of pickle. That's because itertuples() is NamedTuple.
+                for o in df.itertuples():
+                #for o in df.iterrows():
+                # for o in df.iloc[]
+                    tups[nd].append(o)
+                    # pdb.set_trace()
+
+            # Number of objects for this time in each field
+            nobj = {}
+            listoflists = []
+            for nd in (0,1):
+                td = tups[nd]
+                nobj[nd] = len(td)
+                listoflists.append(td)
+
+            def gen():
+                for objA, objB in itertools.product(*listoflists):
+                    # Find valid time of objA
+                    # Subset objB (is it a DF or Series?) for only those times
+                    yield objA, objB, self.bmap
+            gg = gen()
+
+        if method != 3:
+            time0 = time.time()
+
+            # this_gen_len = sum(1 for x in (gg))
+            # Estimate of chunk size
+            cs = math.ceil(this_gen_len/self.ncpus)
+            # pdb.set_trace()
+            cs2 = math.ceil(this_gen_len/(10*self.ncpus))
+
+            from multiprocess import Pool as mpPool
+            print("About to parallelise!")
+            if self.ncpus > 1:
+                # with multiprocessing.Pool(self.ncpus) as pool:
+                with mpPool(self.ncpus) as pool:
+                # with mpPool(maxtasksperchild=1) as pool:
+                    # results = pool.imap_unordered(self.parallel_match_verif,gg)
+                    results = pool.map(self.parallel_match_verif,gg,chunksize=cs)
+                    # results = pool.map(self.parallel_match_verif,gg)
+
+            else:
+                results = []
+                for oo in gg:
+                    results.append(self.parallel_match_verif(oo))
+            print("Computation done.")
+
+            time1 = time.time()
+            dt = time1-time0
+            dtm = int(dt//60)
+            dts = int(dt%60)
+
+            print(f"TI calculation for all times took {dtm:d} min  {dts:d} sec.")
+        else:
+            # results = utils.load_pickle("./debug_match.pickle")
+            pass
+
+        member_TIs = {}
+        # pdb.set_trace()
+        A_set = set()
+        B_set = set()
+        # if (len(A_set) == 0) or (len(B_set)==0):
+            # return (None,None)
+        for r in results:
+            # ( (intA, intB), TI)
+            # try:
+            compare_tup, TI = r
+            # except:
+            #     return (None,None)
+            member_TIs[compare_tup] = TI
+            A_set.add(compare_tup[0])
+            B_set.add(compare_tup[1])
+
+        # A_set is all unique objects in dictA data, and vice versa for B_set
+
+        # Can we just loop over A_set, or do we need to do union/intersection
+        # of A_set and B_set?
+
+        # Ready for verifying:
+        _a = 0
+        _b = 0
+        _c = 0
+        _d = 0 # Probably not going to use?
+
+        # Find the maximum TI for each obj and the pair that produced it
+        matched_pairs = {}
+        for objID in A_set.union(B_set):
+            all_TIs = []
+            all_otherIDs = []
+            # Find all comparisons that occurred with this object
+            for comp, TI in member_TIs.items():
+                # comp is the tuple of (objA,objB)
+                if objID in comp:
+                    all_TIs.append(TI)
+                    otherID = comp[0] if comp[0] != objID else comp[1]
+                    all_otherIDs.append(otherID)
+
+            # matched_pairs[objID] = max(member_TIs.items(), key=operator.itemgetter(1))[0]
+            maxTI = N.max(N.array(all_TIs))
+            if maxTI < 0.2:
+                matched_pairs[objID] = None
+            else:
+                maxidx = N.argmax(N.array(all_TIs))
+                # otherID = all_otherIDs.index(maxidx)
+                otherID = all_otherIDs[maxidx]
+                matched_pairs[objID] = (otherID,maxTI)
+
+
+            already_hit = []
+            # Verify now
+            # "fcst" is A and "obs" is B - convention for 2x2 table.
+            if objID in A_set:
+                assert objID not in B_set
+
+                # If not match, this is a false alarm
+                if matched_pairs[objID] is None:
+                    _b += 1
+                else:
+                    already_hit.append((objID,otherID))
+                    # If matched, this is a hit
+                    _a += 1
+
+            elif objID in B_set:
+                assert objID not in A_set
+
+                # If matched, this is a hit (already counted?)
+                if (otherID,objID) in already_hit:
+                    print("Already matched 1!")
+                    pass
+                elif (objID,otherID) in already_hit:
+                    print("Already matched 2!")
+                    pass
+                elif matched_pairs[objID] is None:
+                    # If not matched, this is a missed hit
+                    _c += 1
+                else:
+                    _a += 1
+
+
+        CONT = DetScores(a=_a,b=_b,c=_c,d=0)
+        # pdb.set_trace()
+        return matched_pairs, CONT
+
+    def parallel_match_verif(self,oob,td_max=20.0):
+        objA, objB, bmap = oob
+        compare_tup = (int(objA.megaframe_idx),int(objB.megaframe_idx))
+        TI = utils.compute_total_interest(bmap,propA=objA,propB=objB,
+                                            td_max=td_max,)
+        # pdb.set_trace()
+        return (compare_tup, TI)
 
     def match(self,i):
         def get_sub_df(mf,member,validtime,domain,leadtime):
@@ -179,7 +411,7 @@ class Catalogue:
         # matches.append(matched_pair)
         return matched_pair
 
-    def compute_total_interest(self,propA=None,propB=None,cd=None,md=None,td=None,
+    def _compute_total_interest(self,propA=None,propB=None,cd=None,md=None,td=None,
                             cd_max=40.0,md_max=40.0,td_max=25.0,use_bbox=False):
         """
         Returns the total interest between object pairs.
@@ -195,15 +427,6 @@ class Catalogue:
             cd_max (float): the limit for centroid distance (km)
             md_max (float): the limit for minimum distance (km)
         """
-        def gen_latlon(idx, lats, lons):
-            pdb.set_trace()
-            latsA = 0
-            lonsA = 0
-            latsB = 0
-            lonsB = 0
-
-            return latsA, lonsA, latsB, lonsB
-
         # Sanity checks
         if propA is not None:
             assert propB is not None
@@ -254,7 +477,7 @@ class Catalogue:
 
                 lats = OID.lats[coords[n][:,0],coords[n][:,1]]
                 lons = OID.lons[coords[n][:,0],coords[n][:,1]]
-                xx[n], yy[n] = self.bmap(lons,lats)
+                xx[n], yy[n] = bmap(lons,lats)
                 xypts[n] = N.array([(x,y) for x,y in zip(xx[n],yy[n])])
 
 
@@ -315,7 +538,7 @@ class Catalogue:
                                             prod_code=fcst_df.prod_code)
                 if obj_df.shape[0] == 0:
                     # print("Skipping: no object found.")
-                    pdb.set_trace()
+                    # pdb.set_trace()
                     continue
                 if do_suite == "W":
                     commands.append([obj_df, fcst_df.path_to_pickle, fidx])

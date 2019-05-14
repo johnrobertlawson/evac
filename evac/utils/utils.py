@@ -25,6 +25,8 @@ from pathlib import Path, PosixPath
 import pytz
 import pandas
 
+import scipy.spatial.distance as ssd
+
 # import cartopy.crs as ccrs
 import xarray
 import matplotlib as M
@@ -2050,3 +2052,110 @@ def exceed_probs_2d(arr3D,val,overunder='over',fmt='pc'):
         return dec_arr
     else:
         raise Exception
+
+
+def compute_total_interest(bmap,propA=None,propB=None,cd=None,md=None,td=None,
+                        cd_max=40.0,md_max=40.0,td_max=20.0,use_bbox=False):
+    """
+    Returns the total interest between object pairs.
+
+    Args:
+        propA, propB: dictionary? struct array? panda dataframe? slice of
+            one object's properties
+
+        cd (float): the centroid distance between two objects (km)
+        md (float): the minimum distance between two objects (km)
+        td (float): the time difference between the objects (min)
+
+        cd_max (float): the limit for centroid distance (km)
+        md_max (float): the limit for minimum distance (km)
+    """
+    method = 1
+    # Sanity checks
+    # if propA is not None:
+        # assert propB is not None
+        # assert not all((cd,md,td))
+        # method = 1
+    #else:
+        #assert propB is None
+        #assert all((cd,md,td))
+        #method = 2
+        #raise Exception
+    #assert all((cd_max,md_max,td_max))
+
+    # print("Computing Total Interest.")
+    #if method == 1:
+    # Compute distance between centroids (km)
+    cd = xs_distance(propA.centroid_lat, propA.centroid_lon,
+                    propB.centroid_lat, propB.centroid_lon)/1000.0
+
+    # Compute closest distance between objects
+    # print("Computing closest object distance.")
+
+    if use_bbox:
+        objidx = []
+        # Assume bounding box is the whole object
+        for obj in (propA,propB):
+            minr = int(obj.min_row)
+            maxr = int(obj.max_row)
+            minc = int(obj.min_col)
+            maxc = int(obj.max_col)
+
+            # Open the right lat/lon file and find the lats/lons
+            objidx.append(slice(minr,maxr),slice(minc,maxc))
+    else:
+        #lonpts = {0:[],1:[]}
+        #latpts = {0:[],1:[]}
+        coords = {0:[],1:[]}
+        llpts = {0:[],1:[]}
+        xypts = {0:[],1:[]}
+        xx = {0:[],1:[]}
+        yy = {0:[],1:[]}
+        for n,obj in enumerate((propA,propB)):
+            OID = load_pickle(obj.fpath_save)
+            # OID.lats, OID.lons
+            # OID
+            for o in OID.object_props:
+                if all((obj.mean_intensity == o.mean_intensity,
+                            obj.centroid_row == o.centroid[0],
+                            obj.centroid_col == o.centroid[1])):
+                    coords[n] = o.coords
+
+            lats = OID.lats[coords[n][:,0],coords[n][:,1]]
+            lons = OID.lons[coords[n][:,0],coords[n][:,1]]
+            xx[n], yy[n] = bmap(lons,lats)
+            xypts[n] = N.array([(x,y) for x,y in zip(xx[n],yy[n])])
+
+
+            #for cx,cy in coords[n]:
+                # latpts[n].append(OID.lats[cx,cy])
+                # lonpts[n].append(OID.lons[cx,cy])
+                #llpts[n].append((OID.lats[cx,cy],OID.lons[cx,cy]))
+            # npts = coords.shape[0]
+            # pdb.set_trace()
+
+            #del coords
+
+    # print("Object points calculated - now for cdist().")
+
+    # latpts[n] has all latitude values for points in object n
+    #kdarr = N.zeros_like()
+    #KDTree()
+    #combo_lat = list(utils.combinate_lists(latpts[0],latpts[1]))
+    #combo_lon = list(utils.combinate_lists(lonpts[0],lonpts[1]))
+    #latsA, lonsA, latsB, lonsB = gen_latlon(combo_idx,lat,lon_slices)
+
+
+    distances = ssd.cdist(N.array(xypts[0]),N.array(xypts[1]),'euclidean')
+
+    # print("About to determine minimum distance between objects.")
+
+    #distances = haversine_baker(lonsA, latsA, lonsB, latsB)
+    md = N.nanmin(distances)/1000
+    # pdb.set_trace()
+
+    td = abs((propA.time - propB.time).total_seconds())/60
+
+    TI = ((td_max-td)/td_max)*0.5*(((cd_max-cd)/cd_max)+((md_max-md)/md_max))
+    # print(f"Returning TI: {TI}")
+    return TI
