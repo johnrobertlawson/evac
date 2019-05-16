@@ -9,6 +9,9 @@ import time
 import math
 import copy
 
+# John hack
+from multiprocess import Pool as mpPool
+
 import matplotlib as M
 import matplotlib.pyplot as plt
 import numpy as N
@@ -224,7 +227,6 @@ class Catalogue:
             # pdb.set_trace()
             cs2 = math.ceil(this_gen_len/(10*self.ncpus))
 
-            from multiprocess import Pool as mpPool
             print("About to parallelise!")
             if self.ncpus > 1:
                 # with multiprocessing.Pool(self.ncpus) as pool:
@@ -427,6 +429,7 @@ class Catalogue:
 
         def get_commands(df_in):
             commands = []
+            # pdb.set_trace()
             for fidx,fcst_df in enumerate(df_in.itertuples()):
                 # JRL: need to change this for obs verification?
                 # if (fcst_df.fcst_min == 0):
@@ -435,7 +438,8 @@ class Catalogue:
                 obj_df = self.lookup_obj_df(self.megaframe,
                                             valid_time=fcst_df.valid_time,
                                             fcst_min=fcst_df.fcst_min,
-                                            prod_code=fcst_df.prod_code)
+                                            # prod_code=fcst_df.prod_code
+                                            )
                 if obj_df.shape[0] == 0:
                     # print("Skipping: no object found.")
                     # pdb.set_trace()
@@ -447,6 +451,7 @@ class Catalogue:
                                         rot_exceed_vals,do_suite])
                 else:
                     raise Exception
+                # pdb.set_trace()
             return commands
 
         assert do_suite in ("UH02","UH25","W")
@@ -467,14 +472,15 @@ class Catalogue:
         else:
             print("Generating list of commands")
             commands = list(get_commands(df_in))
-            # pdb.set_trace()
             with open(fpath,"wb") as f:
                 pickle.dump(obj=commands,file=f)
 
+        # pdb.set_trace()
         # Submit in parallel
         print("Submitting jobs to compute {} attributes...".format(do_suite))
         if self.ncpus > 1:
-            with multiprocessing.Pool(self.ncpus) as pool:
+            # with multiprocessing.Pool(self.ncpus) as pool:
+            with mpPool(self.ncpus) as pool:
                 results = pool.map(func,commands)
         else:
             for i in commands:
@@ -495,7 +501,8 @@ class Catalogue:
         Args:
             data: an itertuple from a data_in dataframe (appending new info)
         """
-        little_slice = data[(data['prod_code'] == prod_code) &
+        little_slice = data[
+                            # (data['prod_code'] == prod_code) &
                             (data['lead_time'] == fcst_min) &
                             (data['time'] == valid_time)]
         return little_slice
@@ -529,7 +536,7 @@ class Catalogue:
         if isinstance(W_field,str):
             W_field = N.load(W_field)
 
-        #pdb.set_trace()
+        # pdb.set_trace()
         # This won't work because the index is the megaframe idx
         # prod = obj_df.loc[0,"prod_code"]
         #t = obj_df.loc[0,"time"]
@@ -640,7 +647,6 @@ class Catalogue:
         else:
             raise Exception
 
-
         if isinstance(rot_field,str):
             rot_field = N.load(rot_field)
 
@@ -659,6 +665,8 @@ class Catalogue:
 
         nobjs = len(obj_df)
         new_df = utils.do_new_df(DTYPES,nobjs,)
+
+        # pdb.set_trace()
 
         for oidx,obj in enumerate(obj_df.itertuples()):
             dx = obj.dx
@@ -682,17 +690,17 @@ class Catalogue:
             Ix = obj.megaframe_idx
             new_df.loc[oidx,"megaframe_idx_test"] = Ix
 
-            if "AWS" in vrbl:
-                # Not matching
-                return new_df
-
             rot_slice = self.get_data_slice(obj,rot_field)
 
             new_df.loc[oidx,f'max_{rot}'] = N.nanmax(rot_slice)
             #N.mean(rot_slice)
 
-            # Location of max updraught in object
+            # Location of max rot in object
             maxmax = N.where(rot_slice == N.nanmax(rot_slice))
+            if maxmax[0].size == 0:
+                print("No rotation detected (missing?).")
+                # This should fill with NaNs
+                return
             maxur = maxmax[0][0]
             maxuc = maxmax[1][0]
 
@@ -703,7 +711,7 @@ class Catalogue:
             new_df.loc[oidx,f'max_{rot}_col'] = maxuc + minc
 
             # Min/mean
-            new_df.loc[oidx,f'mean_{rot}'] = N.nanmean(rot_slice)
+            new_df.loc[oidx,f'meanabs_{rot}'] = N.abs(N.nanmean(rot_slice))
             new_df.loc[oidx,f"min_{rot}"] = N.nanmin(rot_slice)
 
             # Relative to centroid? Could be radius, using equivalent circle
@@ -738,6 +746,7 @@ class Catalogue:
                 new_df.loc[oidx,prop_name] = answer
                 new_df.loc[oidx,prop_name+"_val"] = v
             # pdb.set_trace()
+            pass
 
         # print("Generated vrbl stats.")
         return new_df
