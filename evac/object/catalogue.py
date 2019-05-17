@@ -40,7 +40,7 @@ class Catalogue:
 
         TODO:
             * Pass in forecast data, and a new 'side' df is created that
-                has megaframe_idx to sync with the main object data.
+                has "index" to sync with the main object data.
         """
         self.df_list = df_list
         self.ncpus = ncpus
@@ -340,7 +340,7 @@ class Catalogue:
 
     def parallel_match_verif(self,oob,td_max=20.0):
         objA, objB, bmap = oob
-        compare_tup = (int(objA.megaframe_idx),int(objB.megaframe_idx))
+        compare_tup = (int(objA.index),int(objB.index))
         TI = utils.compute_total_interest(bmap,propA=objA,propB=objB,
                                             td_max=td_max,)
         # pdb.set_trace()
@@ -396,7 +396,7 @@ class Catalogue:
                                 domains, verif_domain)
 
         for objA, objB in itertools.product(*listoflists):
-            compare_tup = (int(objA.megaframe_idx),int(objB.megaframe_idx))
+            compare_tup = (int(objA.index),int(objB.index))
             # pdb.set_trace()
             TI = self.compute_total_interest(propA=objA,propB=objB)
             member_TIs[compare_tup] = TI
@@ -427,32 +427,9 @@ class Catalogue:
         if not suffix:
             suffix = "_" + do_suite
 
-        def get_commands(df_in):
-            commands = []
-            # pdb.set_trace()
-            for fidx,fcst_df in enumerate(df_in.itertuples()):
-                # JRL: need to change this for obs verification?
-                # if (fcst_df.fcst_min == 0):
-                    # continue
-                utils.print_progress(total=len(df_in),idx=fidx,every=500)
-                obj_df = self.lookup_obj_df(self.megaframe,
-                                            valid_time=fcst_df.valid_time,
-                                            fcst_min=fcst_df.fcst_min,
-                                            # prod_code=fcst_df.prod_code
-                                            )
-                if obj_df.shape[0] == 0:
-                    # print("Skipping: no object found.")
-                    # pdb.set_trace()
-                    continue
-                if do_suite == "W":
-                    commands.append([obj_df, fcst_df.path_to_pickle, fidx])
-                elif do_suite.startswith("UH"):
-                    commands.append([obj_df, fcst_df.path_to_pickle, fidx,
-                                        rot_exceed_vals,do_suite])
-                else:
-                    raise Exception
-                # pdb.set_trace()
-            return commands
+        # These class attributes are temporary for this calculation
+        self.do_suite = do_suite
+        self.rot_exceed_vals = rot_exceed_vals
 
         assert do_suite in ("UH02","UH25","W")
         if do_suite == "W":
@@ -461,24 +438,41 @@ class Catalogue:
             assert rot_exceed_vals
             func = self.get_rotation_attributes
 
-        do_pickle = True if suffix != do_suite else False
+        # do_pickle = True if suffix != do_suite else False
+        do_pickle = False
         fname = f"commands{suffix}.pickle"
         fpath = os.path.join(self.tempdir,fname)
-        print("Looking for",fpath)
+        # print("Looking for",fpath)
         if os.path.exists(fpath) and do_pickle:
             print("Loading pickle of commands")
             with open(fpath,"rb") as f:
                 commands = pickle.load(file=f)
         else:
             print("Generating list of commands")
-            commands = list(get_commands(df_in))
-            with open(fpath,"wb") as f:
-                pickle.dump(obj=commands,file=f)
+
+            gg = self.gen_commands(df_in) #,do_suite,rot_exceed_vals)
+            # cs = int(math.ceil(llgg/self.ncpus))
+
+            if self.ncpus > 1:
+                with mpPool(self.ncpus) as pool:
+                    results = pool.map(self.get_one_command,gg,)#chunksize=cs)
+            else:
+                results = []
+                for i in gg:
+                    results.append(self.get_one_command(i))
+
+            # commands = pandas.concat(results,ignore_index=False)
+            commands = results
+
+            if do_pickle:
+                with open(fpath,"wb") as f:
+                    pickle.dump(obj=commands,file=f)
 
         # pdb.set_trace()
         # Submit in parallel
         print("Submitting jobs to compute {} attributes...".format(do_suite))
-        if self.ncpus > 1:
+        test_test = False
+        if (self.ncpus > 1) and (not test_test):
             # with multiprocessing.Pool(self.ncpus) as pool:
             with mpPool(self.ncpus) as pool:
                 results = pool.map(func,commands)
@@ -496,13 +490,37 @@ class Catalogue:
         #else:
         return df_out
 
-    def lookup_obj_df(self,data,valid_time,fcst_min=0,prod_code=0):
+    def gen_commands(self,df_in,do_suite=None,rot_exceed_vals=None):
+        for fcst_df in df_in.itertuples():
+            # yield fcst_df, do_suite, rot_exceed_vals
+            yield fcst_df, self.do_suite, self.rot_exceed_vals
+
+    def get_one_command(self,args):
+        fcst_df, do_suite, rot_exceed_vals = args
+        obj_df = self.lookup_obj_df(self.megaframe,
+                                    valid_time=fcst_df.valid_time,
+                                    fcst_min=fcst_df.fcst_min,
+                                    member=fcst_df.member)
+        if obj_df.shape[0] == 0:
+            return
+
+        if do_suite == "W":
+            c = [obj_df, fcst_df.path_to_pickle]
+        elif do_suite.startswith("UH"):
+            c = [obj_df, fcst_df.path_to_pickle,
+                                rot_exceed_vals,do_suite]
+        else:
+            raise Exception
+        # pdb.set_trace()
+        return c
+
+    def lookup_obj_df(self,data,valid_time,fcst_min,member):
         """
         Args:
             data: an itertuple from a data_in dataframe (appending new info)
         """
         little_slice = data[
-                            # (data['prod_code'] == prod_code) &
+                            (data['member'] == member) &
                             (data['lead_time'] == fcst_min) &
                             (data['time'] == valid_time)]
         return little_slice
@@ -532,7 +550,9 @@ class Catalogue:
             * Updraught max level (hPa, km AGL), magnitude (m/s)
             * Updraught location along major axis or radius?
         """
-        obj_df, W_field, fidx = i
+        if i is None:
+            return None
+        obj_df, W_field = i
         if isinstance(W_field,str):
             W_field = N.load(W_field)
 
@@ -542,8 +562,6 @@ class Catalogue:
         #t = obj_df.loc[0,"time"]
         #lead_time = obj_df.loc[0,"lead_time"]
 
-        mega_idx = obj_df.head(1).megaframe_idx.values[0]
-        #if (mega_idx % 1000) == 0:
         if False:
             prod = obj_df.head(1).prod_code.values[0]
             t = obj_df.head(1).time.values[0]
@@ -554,7 +572,7 @@ class Catalogue:
         # utils.print_progress(total=self.nobjs,idx=fidx,every=300)
 
         DTYPES = {
-                "megaframe_idx_test":"i4",
+                "index":"object",
 
                 "max_updraught":"f4",
                 "max_updraught_row":"i4",
@@ -578,8 +596,8 @@ class Catalogue:
 
             # Get index for object in new df
             #Ix = obj.Index
-            Ix = obj.megaframe_idx
-            new_df.loc[oidx,"megaframe_idx_test"] = Ix
+            Ix = obj.index
+            new_df.loc[oidx,"index"] = Ix
 
             W_slice = self.get_data_slice(obj,W_field)
 
@@ -639,7 +657,9 @@ class Catalogue:
         (2) a Threshs object, which is currently BROKEN! Needs to be implemented
         from VSE_dx project TODO JRL
         """
-        obj_df, rot_field, fidx, rot_exceed_vals, layer = i
+        if i is None:
+            return None
+        obj_df, rot_field, rot_exceed_vals, layer = i
         if layer.endswith("02"):
             layer = "02"
         elif layer.endswith("25"):
@@ -650,8 +670,6 @@ class Catalogue:
         if isinstance(rot_field,str):
             rot_field = N.load(rot_field)
 
-        mega_idx = obj_df.head(1).megaframe_idx.values[0]
-
         if False:
             prod = obj_df.head(1).prod_code.values[0]
             t = obj_df.head(1).time.values[0]
@@ -660,7 +678,7 @@ class Catalogue:
                 prod,t,"||| lead time =", lead_time,"min.")
 
         DTYPES = {
-                "megaframe_idx_test":"i4",
+                "index":"object",
                 }
 
         nobjs = len(obj_df)
@@ -687,8 +705,8 @@ class Catalogue:
 
             # Get index for object in new df
             #Ix = obj.Index
-            Ix = obj.megaframe_idx
-            new_df.loc[oidx,"megaframe_idx_test"] = Ix
+            Ix = obj.index
+            new_df.loc[oidx,"index"] = Ix
 
             rot_slice = self.get_data_slice(obj,rot_field)
 
@@ -746,7 +764,7 @@ class Catalogue:
                 new_df.loc[oidx,prop_name] = answer
                 new_df.loc[oidx,prop_name+"_val"] = v
             # pdb.set_trace()
-            pass
+            # pass
 
         # print("Generated vrbl stats.")
         return new_df

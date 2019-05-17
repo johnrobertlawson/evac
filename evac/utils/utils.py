@@ -69,13 +69,16 @@ def print_progress(total,idx,every):
     return
 
 def do_new_df(DTYPES,nrows):
-    dtypes = {'names':[], 'formats':[]}
-    for k,v in DTYPES.items():
-        dtypes['names'].append(k)
-        dtypes['formats'].append(v)
-    ncols = len(dtypes['names'])
-    new_arr = N.zeros([nrows,ncols])
-    new_df = pandas.DataFrame(data=new_arr,columns=dtypes['names'],)
+    if DTYPES is not None:
+        dtypes = {'names':[], 'formats':[]}
+        for k,v in DTYPES.items():
+            dtypes['names'].append(k)
+            dtypes['formats'].append(v)
+            ncols = len(dtypes['names'])
+            new_arr = N.zeros([nrows,ncols])
+            new_df = pandas.DataFrame(data=new_arr,columns=dtypes['names'],)
+    else:
+        new_df = pandas.DataFrame()
     return new_df
 
 def decompose_wind(wspd,wdir,wdir_fmt='deg'):
