@@ -44,10 +44,13 @@ class Performance(Figure):
         legendkwargs:   key-words for ax.legend().
     """
     def __init__(self,fpath=None,outdir=None,fname=None,legendkwargs=None,
-                    legend=False):
+                    legend=False,fig=None,ax=None):
         if fpath is None:
             fpath = os.path.join(outdir,fname)
-        super().__init__(fpath=fpath)
+
+        if (fig is None) and (ax is None):
+            fig, ax = plt.subplots(1,figsize=(5,5))
+        super().__init__(fpath=fpath,fig=fig,ax=ax)
         if legendkwargs is None:
             legendkwargs = dict(facecolor = 'white',
                                 framealpha = 1.0)
@@ -72,7 +75,6 @@ class Performance(Figure):
         print("Ready to receive plotting data via plot_data().")
 
     def create_axis(self):
-        self.fig, self.ax = plt.subplots(1,figsize=(5,5))
         self.ax.grid(False)
 
         self.ax.set_xlim([0,1])

@@ -162,95 +162,58 @@ class Catalogue:
         # Also need to only permute the list of times that is within the
         # time window
 
-        # this_gen_len = 0
-        method = 1
-        if method == 1:
-            def gen():
-                # This will shuffle - faster?
-                # itA = both_df[0].sample(frac=1).itertuples()
-                # itB = both_df[1].sample(frac=1).itertuples()
-                itA = both_df[0].itertuples()
-                itB = both_df[1].itertuples()
-                for objA, objB in itertools.product(itA,itB):
-                    # Only yield if objA and objB are within td_max
-                    if abs((objA.time-objB.time).total_seconds()) <= (60.0*td_max):
-                        yield objA, objB, self.bmap
-
-            def count_gen():
-                this_gen_len = 0
-                for objA, objB in itertools.product(both_df[0].itertuples(),
-                                            both_df[1].itertuples()):
-                    if abs((objA.time-objB.time).total_seconds()) <= (60.0*td_max):
-                        this_gen_len += 1
-                return this_gen_len
-
-            gg = gen()
-            # pdb.set_trace()
-            this_gen_len = count_gen()
-
-        elif method == 2:
-            tups = {}
-            # tups will be used to hold a list of each sub_df's objects
-            for nd, df in both_df.items():
-                # nd is indicator of dictA/B
-                tups[nd] = []
-                # Below, looping over all objects - doesn't parallelise
-                # unless you use multiprocess, the fork that allows
-                # dill instead of pickle. That's because itertuples() is NamedTuple.
-                for o in df.itertuples():
-                #for o in df.iterrows():
-                # for o in df.iloc[]
-                    tups[nd].append(o)
-                    # pdb.set_trace()
-
-            # Number of objects for this time in each field
-            nobj = {}
-            listoflists = []
-            for nd in (0,1):
-                td = tups[nd]
-                nobj[nd] = len(td)
-                listoflists.append(td)
-
-            def gen():
-                for objA, objB in itertools.product(*listoflists):
-                    # Find valid time of objA
-                    # Subset objB (is it a DF or Series?) for only those times
+        def gen():
+            # This will shuffle - faster?
+            # itA = both_df[0].sample(frac=1).itertuples()
+            # itB = both_df[1].sample(frac=1).itertuples()
+            itA = both_df[0].itertuples()
+            itB = both_df[1].itertuples()
+            for objA, objB in itertools.product(itA,itB):
+                # Only yield if objA and objB are within td_max
+                if abs((objA.time-objB.time).total_seconds()) <= (60.0*td_max):
                     yield objA, objB, self.bmap
-            gg = gen()
 
-        if method != 3:
-            time0 = time.time()
+        def count_gen():
+            this_gen_len = 0
+            for objA, objB in itertools.product(both_df[0].itertuples(),
+                                        both_df[1].itertuples()):
+                if abs((objA.time-objB.time).total_seconds()) <= (60.0*td_max):
+                    this_gen_len += 1
+            return this_gen_len
 
-            # this_gen_len = sum(1 for x in (gg))
-            # Estimate of chunk size
-            cs = math.ceil(this_gen_len/self.ncpus)
-            # pdb.set_trace()
-            cs2 = math.ceil(this_gen_len/(10*self.ncpus))
+        gg = gen()
+        # pdb.set_trace()
+        this_gen_len = count_gen()
 
-            print("About to parallelise!")
-            if self.ncpus > 1:
-                # with multiprocessing.Pool(self.ncpus) as pool:
-                with mpPool(self.ncpus) as pool:
-                # with mpPool(maxtasksperchild=1) as pool:
-                    # results = pool.imap_unordered(self.parallel_match_verif,gg)
-                    results = pool.map(self.parallel_match_verif,gg,chunksize=cs)
-                    # results = pool.map(self.parallel_match_verif,gg)
+        time0 = time.time()
 
-            else:
-                results = []
-                for oo in gg:
-                    results.append(self.parallel_match_verif(oo))
-            print("Computation done.")
+        # this_gen_len = sum(1 for x in (gg))
+        # Estimate of chunk size
+        cs = math.ceil(this_gen_len/self.ncpus)
+        # pdb.set_trace()
+        cs2 = math.ceil(this_gen_len/(10*self.ncpus))
 
-            time1 = time.time()
-            dt = time1-time0
-            dtm = int(dt//60)
-            dts = int(dt%60)
+        print("About to parallelise!")
+        if self.ncpus > 1:
+            # with multiprocessing.Pool(self.ncpus) as pool:
+            with mpPool(self.ncpus) as pool:
+            # with mpPool(maxtasksperchild=1) as pool:
+                # results = pool.imap_unordered(self.parallel_match_verif,gg)
+                results = pool.map(self.parallel_match_verif,gg,chunksize=cs)
+                # results = pool.map(self.parallel_match_verif,gg)
 
-            print(f"TI calculation for all times took {dtm:d} min  {dts:d} sec.")
         else:
-            # results = utils.load_pickle("./debug_match.pickle")
-            pass
+            results = []
+            for oo in gg:
+                results.append(self.parallel_match_verif(oo))
+        print("Computation done.")
+
+        time1 = time.time()
+        dt = time1-time0
+        dtm = int(dt//60)
+        dts = int(dt%60)
+
+        print(f"TI calculation for all times took {dtm:d} min  {dts:d} sec.")
 
         member_TIs = {}
         # pdb.set_trace()
