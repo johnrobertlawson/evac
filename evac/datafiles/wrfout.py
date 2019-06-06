@@ -340,21 +340,13 @@ class WRFOut(NCFile):
             if debug_get:
                 print(("Variable {0} needs to be computed.".format(vrbl)))
             if lvidx is 'isobaric':
-                # data = self.get_p(vrbl,tidx,level,lonidx, latidx)[N.newaxis,N.newaxis,:,:]
                 data = self.compute(vrbl,tidx,level,lonidx,latidx,other)
             else:
                 data = self.compute(vrbl,tidx,lvidx,lonidx,latidx,other)
 
-        # if len(data.shape) == 2:
-            # data = data[N.newaxis,N.newaxis,:,:]
-        # elif len(data.shape) == 3:
-            # data = data[N.newaxis,:,:,:]
-        # if len(data.shape) == 3:
-            # data = N.expand_dims(data,axis=0)
-        # import pdb; pdb.set_trace()
-        data = self.make_4D(data,vrbl=vrbl)
+        data_4d = self.make_4D(data,vrbl=vrbl)
 
-        return data
+        return data_4d
 
     def load(self,vrbl,tidx,lvidx,lonidx,latidx):
         """
@@ -507,11 +499,15 @@ class WRFOut(NCFile):
         """
         tbl = {}
         tbl['shear'] = derived.compute_shear
+        tbl['shear01'] = derived.compute_shear_01
+        tbl['shear06'] = derived.compute_shear_06
         tbl['thetae'] = derived.compute_thetae
         tbl['cref'] = derived.compute_comp_ref
         tbl['wind10'] = derived.compute_wind10
         tbl['wind'] = derived.compute_wind
         tbl['CAPE'] = derived.compute_CAPE
+        tbl['MLCAPE'] = derived.compute_MLCAPE
+        tbl['CAPE_100mb'] = derived.compute_CAPE_100mb
         tbl['Td'] = derived.compute_Td
         tbl['pressure'] = derived.compute_pressure
         tbl['drybulb'] = derived.compute_drybulb
