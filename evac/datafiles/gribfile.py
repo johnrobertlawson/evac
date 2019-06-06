@@ -24,6 +24,13 @@ class GribFile(DataFile):
         super().__init__(fpath)
         # self.fpath = fpath
         self.G = pygrib.open(self.fpath)
+        self.inspect()
+
+        self.get_projection()
+        self.get_dimensions()
+        self.get_units()
+
+    def inspect(self):
         self.available_records = [gg for gg in self.G]
         self.G.seek(0) # Screw you GRIB!
         self.available_fields_list = [str(gg).split(':') for gg in self.G]
@@ -31,19 +38,25 @@ class GribFile(DataFile):
         self.available_fields_array = N.array(self.available_fields_list)
         # Remove weird variables that aren't variables
         self.available_fields_unfiltered = N.unique(self.available_fields_array[:,1])
-        delrows = []
-        for row in N.arange(self.available_fields_unfiltered.shape[0]):
-            if len(self.available_fields_unfiltered[row]) < 5:
-                delrows.append(row)
-        self.available_fields = N.delete(self.available_fields_unfiltered,delrows)
 
-        pdb.set_trace()
-        self.projection()
+        # Set to False when things work... this deletes everything apart from
+        # geopot. height in NARR, but something is wrong.
+        do_delrows = True
+        if do_delrows:
+            delrows = []
+            for row in N.arange(self.available_fields_unfiltered.shape[0]):
+                # pdb.set_trace()
+                if len(self.available_fields_unfiltered[row]) < 5:
+                    delrows.append(row)
+            self.available_fields = N.delete(self.available_fields_unfiltered,delrows)
+        else:
+            self.available_fields = self.available_fields_unfiltered
+        return
 
+    def get_dimensions(self):
         self.y_dim, self.x_dim = self.lats.shape
         # Only one time per file, right?
         self.t_dim = 1
-        self.get_units()
 
     def get_units(self,):
         """ The units used for variables within.
@@ -77,9 +90,16 @@ class GribFile(DataFile):
             # return idxs[0]
             return 0
         lv_choice = self.available_fields_array[rows,5]
-        # Just assume Pa
-        lv_str = '{:d}'.format(lv*100)
         # pdb.set_trace()
+
+        # JRL: below might need moving to a child class (NARR, etc)
+        if lv is None:
+            lv_str = lv_choice[0]
+        elif isinstance(lv,str):
+            lv_str = lv
+        else:
+            # Just assume Pa
+            lv_str = '{:d}'.format(lv*100)
         for nl,l in enumerate(lv_choice):
             if lv_str in l:
                 return nl
@@ -91,7 +111,7 @@ class GribFile(DataFile):
         it is here to enable compatibility with other get() APIs.
         """
         # TODO: look up level in available fields array, return index
-        vrblkey, idx = self.lookup_vrbl(vrbl)
+        vrblkey = self.lookup_vrbl(vrbl)
         print("Variable {0} has key {1} in Grib data.".format(vrbl,vrblkey))
         # gg = self.get_record(vrblkey,idx=idx)
         # idx lookup should happen in get_record
@@ -113,7 +133,7 @@ class GribFile(DataFile):
     def lookup_vrbl(self,vrbl):
         LOOKUP = {}
         # Children should use the right keys/indices here
-        return (vrbl, 0)
+        return vrbl
 
     def return_latlon(self):
         gg = self.arbitrary_pick()
@@ -121,7 +141,7 @@ class GribFile(DataFile):
         lats, lons = latlon
         return lats,lons
 
-    def projection(self):
+    def get_projection(self):
         # self.m = Basemap(projection='npstere',lon_0=-105.0,#lat_1=60.0,
                 # llcrnrlon=lllon,llcrnrlat=lllat,urcrnrlon=urlon,urcrnrlat=urlat,
                             # boundinglat=24.701632)

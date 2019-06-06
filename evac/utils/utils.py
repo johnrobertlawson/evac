@@ -2073,6 +2073,8 @@ def compute_total_interest(bmap,propA=None,propB=None,cd=None,md=None,td=None,
         cd_max (float): the limit for centroid distance (km)
         md_max (float): the limit for minimum distance (km)
     """
+    if isinstance(bmap,str):
+        bmap = load_pickle(bmap)
     method = 1
     # Sanity checks
     # if propA is not None:

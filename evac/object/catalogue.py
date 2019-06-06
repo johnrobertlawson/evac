@@ -141,9 +141,13 @@ class Catalogue:
 
     def match_contingency(self,dictA,dictB,td_max=20.0):
         def get_sub_df(mf,the_dict):
-            sf = mf.copy()
+            # sf = mf.copy()
+            sf = mf
+            # pdb.set_trace()
+
             for k,v in the_dict.items():
                 sf = sf[sf[k] == v]
+                # pdb.set_trace()
             return sf
 
         mf = self.megaframe
@@ -162,7 +166,10 @@ class Catalogue:
         # Also need to only permute the list of times that is within the
         # time window
 
-        def gen():
+        bmap_fpath = './bmap.pickle'
+        utils.save_pickle(obj=self.bmap,fpath=bmap_fpath)
+
+        def gen(bmap_fpath):
             # This will shuffle - faster?
             # itA = both_df[0].sample(frac=1).itertuples()
             # itB = both_df[1].sample(frac=1).itertuples()
@@ -171,7 +178,7 @@ class Catalogue:
             for objA, objB in itertools.product(itA,itB):
                 # Only yield if objA and objB are within td_max
                 if abs((objA.time-objB.time).total_seconds()) <= (60.0*td_max):
-                    yield objA, objB, self.bmap
+                    yield objA, objB, bmap_fpath
 
         def count_gen():
             this_gen_len = 0
@@ -181,7 +188,7 @@ class Catalogue:
                     this_gen_len += 1
             return this_gen_len
 
-        gg = gen()
+        gg = gen(bmap_fpath)
         # pdb.set_trace()
         this_gen_len = count_gen()
 
@@ -192,6 +199,9 @@ class Catalogue:
         cs = math.ceil(this_gen_len/self.ncpus)
         # pdb.set_trace()
         cs2 = math.ceil(this_gen_len/(10*self.ncpus))
+
+        print(f"We have {this_gen_len} iterations.")
+        # pdb.set_trace()
 
         print("About to parallelise!")
         if self.ncpus > 1:
@@ -303,7 +313,7 @@ class Catalogue:
 
     def parallel_match_verif(self,oob,td_max=20.0):
         objA, objB, bmap = oob
-        compare_tup = (int(objA.index),int(objB.index))
+        compare_tup = (int(objA.Index),int(objB.Index))
         TI = utils.compute_total_interest(bmap,propA=objA,propB=objB,
                                             td_max=td_max,)
         # pdb.set_trace()
@@ -535,17 +545,7 @@ class Catalogue:
         # utils.print_progress(total=self.nobjs,idx=fidx,every=300)
 
         DTYPES = {
-                "index":"object",
-
-                "max_updraught":"f4",
-                "max_updraught_row":"i4",
-                "max_updraught_col":"i4",
-
-                "min_updraught":"f4",
-                "mean_updraught":"f4",
-                "ud_distance_from_centroid":"f4",
-                "ud_angle_from_centroid":"f4",
-                "test_gridsize":"object",
+                "miniframe_idx":"object",
                 }
 
         nobjs = len(obj_df)
@@ -559,8 +559,9 @@ class Catalogue:
 
             # Get index for object in new df
             #Ix = obj.Index
-            Ix = obj.index
-            new_df.loc[oidx,"index"] = Ix
+            # Ix = obj.index
+            # new_df.loc[oidx,"index"] = Ix
+            new_df.loc[oidx,"miniframe_idx"] = obj.Index
 
             W_slice = self.get_data_slice(obj,W_field)
 
@@ -604,6 +605,7 @@ class Catalogue:
             # updraught_width_km
             # pdb.set_trace()
 
+        #new_df.set_index("miniframe_idx",inplace=True)
         return new_df
 
     def get_rotation_attributes(self,i):
@@ -641,7 +643,7 @@ class Catalogue:
                 prod,t,"||| lead time =", lead_time,"min.")
 
         DTYPES = {
-                "index":"object",
+                "miniframe_idx":"object",
                 }
 
         nobjs = len(obj_df)
@@ -668,8 +670,11 @@ class Catalogue:
 
             # Get index for object in new df
             #Ix = obj.Index
-            Ix = obj.index
-            new_df.loc[oidx,"index"] = Ix
+            #Ix = obj.index
+            #new_df.loc[oidx,"index"] = Ix
+
+            new_df.loc[oidx,"miniframe_idx"] = obj.Index
+
 
             rot_slice = self.get_data_slice(obj,rot_field)
 
@@ -730,6 +735,7 @@ class Catalogue:
             # pass
 
         # print("Generated vrbl stats.")
+        # new_df.set_index("miniframe_idx",inplace=True)
         return new_df
 
 
