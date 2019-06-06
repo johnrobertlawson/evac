@@ -8,6 +8,32 @@ import evac.derived.pat as pat
 def compute_CAPE(nc=None,P=None,PB=None,PH=None,PHB=None,T=None,QVAPOR=None,QCLOUD=None,
                     QRAIN=None,QICE=None,QSNOW=None,QGRAUP=None,PSFC=None,tidx=None):
     """
+    You need either:
+        * nc
+        * tidx
+    Or:
+        * P
+        * PB
+        * PH
+        * PHB
+        * T
+        * QVAPOR
+        * QCLOUD
+        * QRAIN
+        * QICE
+        * QSNOW
+        * QGRAUP
+        * PSFC
+
+    The second group are the WRF "keys" for various fields as a mnemonic. These are 3D numpy
+    fields, apart from PSFC, which is 2D.
+
+    Find the WRF "key" meanings here: 
+    http://www2.mmm.ucar.edu/wrf/users/docs/user_guide_V3/users_guide_chap5.htm#fields
+
+    ============
+    THE FOLLOWING IS JUST FOR JRL - NOTES
+    ============
     We need:
         * t_env - 3d numpy array [z,y,x] of environmental temperature (K)
         * t_parc - 3d numpy array [z,y,x] of lifted parcel temperature (K)
