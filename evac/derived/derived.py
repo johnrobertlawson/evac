@@ -443,17 +443,9 @@ def compute_density(parent,tidx,lvidx,lonidx,latidx,other):
 
 def compute_CAPE_100mb(parent,tidx,lvidx,lonidx,latidx,other):
     # val = funcs.compute_CAPE(*args,**kwargs)
-    if isinstance(tidx,int):
-        t = tidx
-    elif isinstance(tidx,N.ndarray):
-        assert tidx.shape[0] == 1
-        assert tidx.ndim == 1
-        t = int(tidx[0])
-    else:
-        print("Not a valid time index. Need only one time for CAPE calcs.")
-        assert True is False
+    t = fix_tidx(tidx)
     val = funcs.compute_CAPE(nc=parent.nc,tidx=t)
-    pdb.set_trace()
+    # pdb.set_trace()
     return val
 
 
@@ -782,20 +774,67 @@ def compute_wind(parent,tidx,lvidx,lonidx,latidx,other):
     data = N.sqrt(u**2 + v**2)
     return data
 
-def compute_shear_01(parent,tidx,lvidx,lonidx,latidx,other):
+def compute_u_shear_01(parent,tidx,lvidx,lonidx,latidx,other):
     kw = dict(parent=parent,tidx=tidx,lvidx=lvidx,lonidx=lonidx,
                 latidx=latidx)
-    return compute_shear(**kw,other={'top':1,'bottom':0})
+    return compute_shear(**kw,other={'top':1,'bottom':0,"component":"U"})
 
 # def compute_shear_06(*args,**kwargs):
-def compute_shear_06(parent,tidx,lvidx,lonidx,latidx,other):
+def compute_u_shear_06(parent,tidx,lvidx,lonidx,latidx,other):
     kw = dict(parent=parent,tidx=tidx,lvidx=lvidx,lonidx=lonidx,
                 latidx=latidx)
-    arr = compute_shear(**kw,other={'top':6,'bottom':0})
-    pdb.set_trace()
+    arr = compute_shear(**kw,other={'top':6,'bottom':0,"component":"U"})
     return arr
 
+def compute_v_shear_01(parent,tidx,lvidx,lonidx,latidx,other):
+    kw = dict(parent=parent,tidx=tidx,lvidx=lvidx,lonidx=lonidx,
+                latidx=latidx)
+    return compute_shear(**kw,other={'top':1,'bottom':0,"component":"V"})
+
+# def compute_shear_06(*args,**kwargs):
+def compute_v_shear_06(parent,tidx,lvidx,lonidx,latidx,other):
+    kw = dict(parent=parent,tidx=tidx,lvidx=lvidx,lonidx=lonidx,
+                latidx=latidx)
+    arr = compute_shear(**kw,other={'top':6,'bottom':0,"component":"V"})
+    return arr
+
+def fix_tidx(tidx):
+    if isinstance(tidx,int):
+        t = tidx
+    elif isinstance(tidx,N.ndarray):
+        assert tidx.shape[0] == 1
+        assert tidx.ndim == 1
+        t = int(tidx[0])
+    else:
+        print("Not a valid time index. Need only one time for CAPE calcs.")
+        assert True is False
+    return t
+
 def compute_shear(parent,tidx,lvidx,lonidx,latidx,other=False):
+    assert ('bottom' in other.keys())
+    assert ('top' in other.keys())
+    assert ('component' in other.keys())
+    t = fix_tidx(tidx)
+    u_arr, v_arr = funcs.compute_shear(nc=parent.nc,tidx=t,
+                            bottom_km=other['bottom'],top_km=other['top'])
+    # pdb.set_trace()
+    if other['component'] == "U":
+        return u_arr
+    elif other['component'] == "V":
+        return v_arr
+    else:
+        raise Exception
+    
+def compute_SRH_03(parent,tidx,lvidx,lonidx,latidx,other=False):
+    t = fix_tidx(tidx)
+    arr = funcs.compute_SRH(nc=parent.nc,tidx=t,
+                            # other={'top':3,'bottom':0})
+                            # bottom_km=other['bottom'],top_km=other['top'])
+                            bottom_km=0,top_km=3)
+    # pdb.set_trace()
+    return arr
+
+def __compute_shear(parent,tidx,lvidx,lonidx,latidx,other=False):
     """
     Args:
         other   :      dictionary of 'top' and 'bottom' levels, km

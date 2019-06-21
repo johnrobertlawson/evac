@@ -498,9 +498,11 @@ class WRFOut(NCFile):
             * Shouldn't this be in derived?
         """
         tbl = {}
-        tbl['shear'] = derived.compute_shear
-        tbl['shear01'] = derived.compute_shear_01
-        tbl['shear06'] = derived.compute_shear_06
+        # tbl['shear'] = derived.compute_shear
+        tbl['u_shear01'] = derived.compute_u_shear_01
+        tbl['v_shear01'] = derived.compute_v_shear_01
+        tbl['u_shear06'] = derived.compute_u_shear_06
+        tbl['v_shear06'] = derived.compute_v_shear_06
         tbl['thetae'] = derived.compute_thetae
         tbl['cref'] = derived.compute_comp_ref
         tbl['wind10'] = derived.compute_wind10
@@ -543,6 +545,7 @@ class WRFOut(NCFile):
         tbl['UH02'] = derived.return_updraught_helicity_02
         tbl['UH25'] = derived.return_updraught_helicity_25
         tbl['Wmax'] = derived.return_maxcol_updraught
+        tbl['SRH03'] = derived.compute_SRH_03
 
 
         return tbl

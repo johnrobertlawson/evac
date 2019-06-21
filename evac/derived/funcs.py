@@ -1,5 +1,12 @@
+"""
+Some wrappers for Pat Skinner's code in:
+news_e_post_environment.py
+
+These OG scripts can be found in my GitHub repo "objectID" in /src.
+"""
 import pdb
 import os
+import time
 
 import numpy as N
 
@@ -130,3 +137,73 @@ def compute_CAPE(nc=None,P=None,PB=None,PH=None,PHB=None,T=None,QVAPOR=None,QCLO
     # pdb.set_trace()
     # Not masked
     return CAPE.data
+
+def check_convert_agl(km,check=True):
+    if check and (km > 100):
+        print("Warning: are you sure bottom_km and top_km are in km?")
+        time.sleep(2)
+
+    m = km * 1000.0
+    return m
+
+def compute_SRH(nc,tidx,bottom_km=0,top_km=3):
+    if nc is not None:
+        # only one time
+        assert isinstance(tidx,int)
+        P = nc.variables['P'][tidx,...]
+        PB = nc.variables['PB'][tidx,...]
+        PH = nc.variables['PH'][tidx,...]
+        PHB = nc.variables['PHB'][tidx,...]
+        HGT = nc.variables["HGT"][tidx,...]   
+        U = nc.variables["U"][tidx,...]    
+        V = nc.variables["V"][tidx,...]    
+
+    bottom_m = check_convert_agl(bottom_km,check=False)
+    top_m = check_convert_agl(top_km)
+    p = (P+PB)/100.0
+
+    uc = destagger(U,"U")
+    vc = destagger(V,"V")
+
+    z, dz = pat.calc_height(PH, PHB)
+    z_agl = z - HGT
+
+    bunk_r_u, bunk_r_v, bunk_l_u, bunk_l_v = pat.calc_bunkers(p, z_agl, dz, uc, vc)
+    srh_0to3 = pat.calc_srh(z_agl, uc, vc, dz, bottom_m, top_m, bunk_r_u, bunk_r_v)
+    return srh_0to3.data
+
+def destagger(arr3d,grid_type):
+    assert arr3d.ndim == 3
+    if grid_type == "U":
+        new_arr = (arr3d[:,:,:-1]+arr3d[:,:,1:])/2. 
+    elif grid_type == "V":
+        new_arr = (arr3d[:,:-1,:]+arr3d[:,1:,:])/2.
+    else:
+        raise Exception
+    return new_arr
+
+def compute_shear(nc,tidx,bottom_km=0,top_km=1):
+    if nc is not None:
+        assert isinstance(tidx,int)
+        U = nc.variables["U"][tidx,...]    
+        V = nc.variables["V"][tidx,...]    
+        P = nc.variables['P'][tidx,...]
+        PB = nc.variables['PB'][tidx,...]
+        PH = nc.variables['PH'][tidx,...]
+        PHB = nc.variables['PHB'][tidx,...]
+        HGT = nc.variables["HGT"][tidx,...]   
+
+    bottom_m = check_convert_agl(bottom_km,check=False)
+    top_m = check_convert_agl(top_km)
+    p = (P+PB)/100.0
+
+    uc = destagger(U,"U")
+    vc = destagger(V,"V")
+
+    z, dz = pat.calc_height(PH, PHB)
+    z_agl = z - HGT
+
+    u_shear, v_shear = pat.calc_wind_shear(z_agl, uc, vc, bottom_m, top_m)
+    # shear = (u_shear + v_shear)**2
+    # return shear.data
+    return u_shear, v_shear
