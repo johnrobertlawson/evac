@@ -12,9 +12,7 @@ https://johnrobertlawson.github.io/evac/
 If you're a slave to Python 2.x, it's easy to create a new Anaconda environment in
 Python 3.x (replace `yourcustomname` with the name of the new environment). 
 
-`conda create -n yourcustomname python=3.6`
-
-It's important to use no higher than 3.6, as some dependencies work with a maximum of 3.6 via conda install.
+`conda create -n yourcustomname python=3.7`
 
 As a sidenote, I encourage all users of Python to cite packages and acknowledge fellow
 users in publications and presentations. There is often little incentive for
