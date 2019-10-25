@@ -824,7 +824,7 @@ def compute_shear(parent,tidx,lvidx,lonidx,latidx,other=False):
         return v_arr
     else:
         raise Exception
-    
+
 def compute_SRH_03(parent,tidx,lvidx,lonidx,latidx,other=False):
     t = fix_tidx(tidx)
     arr = funcs.compute_SRH(nc=parent.nc,tidx=t,
@@ -1034,6 +1034,9 @@ def return_updraught_helicity_02(parent,tidx,lvidx,lonidx,latidx,other):
 
 def return_updraught_helicity_25(parent,tidx,lvidx,lonidx,latidx,other):
     return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000)
+
+def return_updraught_helicity_01(parent,tidx,lvidx,lonidx,latidx,other):
+    return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=0,z1=1000)
 
 def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000):
     def method1():
