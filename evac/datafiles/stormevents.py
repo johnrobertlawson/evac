@@ -1,4 +1,10 @@
 import pdb
+import os
+import datetime
+
+import numpy as N
+from mpl_toolkits.basemap import Basemap
+import matplotlib.pyplot as plt
 
 from evac.datafiles.csvfile import CSVFile
 
@@ -18,7 +24,9 @@ class StormEvents(CSVFile):
         self.convert_times()
 
     def convert_times(self,):
-        LOLtimes = self.r['BEGIN_TIME']
+        LOLtimes = [s for s in self.r['BEGIN_TIME']]
+        LOLdates = [s.decode() for s in self.r['BEGIN_DATE']]
+        # LOLtimes = self.r['BEGIN_TIME']
         padtimes = []
         for t in LOLtimes:
             intt = int(t)
@@ -26,8 +34,11 @@ class StormEvents(CSVFile):
 
         hours = [s[:-2] for s in padtimes]
         mins = [s[-2:] for s in padtimes]
+
+        # pdb.set_trace()
+
         self.datetimes = N.array([datetime.datetime.strptime(s+h+m,'%m/%d/%Y%H%M')
-                        for s,h,m in zip(self.r['BEGIN_DATE'],hours,mins)])
+                        for s,h,m in zip(LOLdates,hours,mins)])
         # import pdb; pdb.set_trace()
         # import numpy.lib.recfunctions
         # self.r = numpy.lib.recfunctions.append_fields(self.r,'datetimes',N.array(dates))
@@ -35,7 +46,8 @@ class StormEvents(CSVFile):
     def plot(self,reports,itime,ftime,fname,outdir,Nlim=False,
             Elim=False,Slim=False,Wlim=False,
             annotate=True,fig=False,ax=False,ss=50,color='blue'):
-        reportidx = N.array([n for n,t in zip(list(range(len(self.r['EVENT_TYPE']))),self.r['EVENT_TYPE']) if reports in t])
+        LOLtypes = [s.decode() for s in self.r['EVENT_TYPE']]
+        reportidx = N.array([n for n,t in zip(list(range(len(LOLtypes))),LOLtypes) if reports in t])
         lateidx = N.where(self.datetimes > itime)
         earlyidx = N.where(self.datetimes < ftime)
         timeidx = N.intersect1d(earlyidx,lateidx,)#assume_unique=True)
@@ -61,4 +73,6 @@ class StormEvents(CSVFile):
         m.scatter(self.r['BEGIN_LON'][plotidx],self.r['BEGIN_LAT'][plotidx],latlon=True,
                     marker='D',facecolors=color,edgecolors='black',s=ss)
         fig.tight_layout()
-        plt.savefig(os.path.join(outdir,fname))
+        fpath = os.path.join(outdir,fname)
+        plt.savefig(fpath)
+        print("Saved to",fpath)
