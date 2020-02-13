@@ -16,6 +16,7 @@ import itertools
 import numpy as N
 from scipy.interpolate import interp1d, interpn, RegularGridInterpolator
 
+import evac.derived.funcs as funcs
 import evac.utils.met_constants as mc
 import evac.utils.utils as utils
 
@@ -440,12 +441,26 @@ def compute_density(parent,tidx,lvidx,lonidx,latidx,other):
     # drybulb = 273.15 + (T/((100000.0/(level*100.0))**(mc.R/mc.cp)))
     return rho
 
+def compute_CAPE_100mb(parent,tidx,lvidx,lonidx,latidx,other):
+    # val = funcs.compute_CAPE(*args,**kwargs)
+    t = fix_tidx(tidx)
+    val = funcs.compute_CAPE(nc=parent.nc,tidx=t)
+    # pdb.set_trace()
+    return val
+
+
+def compute_MLCAPE(*args,**kwargs):
+    val = compute_CAPE(*args,**kwargs)
+    # pdb.set_trace()
+    return val
+
 def compute_CAPE(parent,tidx,lvidx,lonidx,latidx,other):
     """CAPE, taken from Pat Skinner's cookbook.
     """
     kwargs = dict(utc=tidx,level=lvidx,lons=lonidx,lats=latidx,other=other)
     # Environmental temperature
     t_env = parent.get('drybulb',**kwargs)
+    # pdb.set_trace()
     # Lifted parcel temperature
     t_parc = parent.get('LPT',**kwargs)
     # Environmental pressure
@@ -462,6 +477,7 @@ def compute_CAPE(parent,tidx,lvidx,lonidx,latidx,other):
         t_diff[lv,:,:] = N.where(p[lv,:,:] > lcl_p, 0.0, t_diff[lv,:,:])
 
     CAPE = mc.g * N.trapz((t_diff/t_env),dx=dz[:-1,:,:],axis=0)
+    pdb.set_trace()
     return CAPE
 
 def compute_lifted_parcel_temp(parent,tidx,lvidx,lonidx,latidx,other):
@@ -735,10 +751,15 @@ def compute_drybulb(parent,tidx,lvidx,lonidx,latidx,other='K'):
 
     # Theta-e at level 2
     drybulb = theta*((P/100000.0)**(287.04/1004.0))
-    if other=='K':
+
+    # pdb.set_trace()
+
+    if (other=='K') or (other is False) or (other is None):
         return drybulb
     elif other=='C':
         return drybulb-273.15
+    else:
+        raise Exception
 
 def compute_theta(parent,tidx,lvidx,lonidx,latidx,other):
     theta = parent.get('T',tidx,lvidx,lonidx,latidx)
@@ -753,7 +774,67 @@ def compute_wind(parent,tidx,lvidx,lonidx,latidx,other):
     data = N.sqrt(u**2 + v**2)
     return data
 
+def compute_u_shear_01(parent,tidx,lvidx,lonidx,latidx,other):
+    kw = dict(parent=parent,tidx=tidx,lvidx=lvidx,lonidx=lonidx,
+                latidx=latidx)
+    return compute_shear(**kw,other={'top':1,'bottom':0,"component":"U"})
+
+# def compute_shear_06(*args,**kwargs):
+def compute_u_shear_06(parent,tidx,lvidx,lonidx,latidx,other):
+    kw = dict(parent=parent,tidx=tidx,lvidx=lvidx,lonidx=lonidx,
+                latidx=latidx)
+    arr = compute_shear(**kw,other={'top':6,'bottom':0,"component":"U"})
+    return arr
+
+def compute_v_shear_01(parent,tidx,lvidx,lonidx,latidx,other):
+    kw = dict(parent=parent,tidx=tidx,lvidx=lvidx,lonidx=lonidx,
+                latidx=latidx)
+    return compute_shear(**kw,other={'top':1,'bottom':0,"component":"V"})
+
+# def compute_shear_06(*args,**kwargs):
+def compute_v_shear_06(parent,tidx,lvidx,lonidx,latidx,other):
+    kw = dict(parent=parent,tidx=tidx,lvidx=lvidx,lonidx=lonidx,
+                latidx=latidx)
+    arr = compute_shear(**kw,other={'top':6,'bottom':0,"component":"V"})
+    return arr
+
+def fix_tidx(tidx):
+    if isinstance(tidx,int):
+        t = tidx
+    elif isinstance(tidx,N.ndarray):
+        assert tidx.shape[0] == 1
+        assert tidx.ndim == 1
+        t = int(tidx[0])
+    else:
+        print("Not a valid time index. Need only one time for CAPE calcs.")
+        assert True is False
+    return t
+
 def compute_shear(parent,tidx,lvidx,lonidx,latidx,other=False):
+    assert ('bottom' in other.keys())
+    assert ('top' in other.keys())
+    assert ('component' in other.keys())
+    t = fix_tidx(tidx)
+    u_arr, v_arr = funcs.compute_shear(nc=parent.nc,tidx=t,
+                            bottom_km=other['bottom'],top_km=other['top'])
+    # pdb.set_trace()
+    if other['component'] == "U":
+        return u_arr
+    elif other['component'] == "V":
+        return v_arr
+    else:
+        raise Exception
+
+def compute_SRH_03(parent,tidx,lvidx,lonidx,latidx,other=False):
+    t = fix_tidx(tidx)
+    arr = funcs.compute_SRH(nc=parent.nc,tidx=t,
+                            # other={'top':3,'bottom':0})
+                            # bottom_km=other['bottom'],top_km=other['top'])
+                            bottom_km=0,top_km=3)
+    # pdb.set_trace()
+    return arr
+
+def __compute_shear(parent,tidx,lvidx,lonidx,latidx,other=False):
     """
     Args:
         other   :      dictionary of 'top' and 'bottom' levels, km
@@ -953,6 +1034,9 @@ def return_updraught_helicity_02(parent,tidx,lvidx,lonidx,latidx,other):
 
 def return_updraught_helicity_25(parent,tidx,lvidx,lonidx,latidx,other):
     return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000)
+
+def return_updraught_helicity_01(parent,tidx,lvidx,lonidx,latidx,other):
+    return return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=0,z1=1000)
 
 def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5000):
     def method1():
