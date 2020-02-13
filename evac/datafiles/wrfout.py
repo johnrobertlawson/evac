@@ -102,9 +102,6 @@ class WRFOut(NCFile):
         elif fmt is "met_em":
             self.ideal_init()
 
-        self.Nlim, self.Elim, self.Slim, self.Wlim = self.get_limits()
-        self.initutc = utils.ensure_datetime(self.utcs[0])
-
     def get_dimensions(self,fmt='em_real'):
         self.t_dim = len(self.nc.dimensions['Time'])
         self.x_dim = len(self.nc.dimensions['west_east'])
@@ -133,6 +130,8 @@ class WRFOut(NCFile):
         the middle of the domain. They shouldn't be used for plotting.
 
         """
+        self.Nlim, self.Elim, self.Slim, self.Wlim = self.get_limits()
+
         self.lats = self.nc.variables['XLAT'][0,...] # Might fail if only one time?
         self.lons = self.nc.variables['XLONG'][0,...]
 
@@ -150,6 +149,8 @@ class WRFOut(NCFile):
         self.llcrnrlat = lims['llcrnrlat']
         self.llcrnrlon = lims['llcrnrlon']
 
+        self.initutc = utils.ensure_datetime(self.utcs[0])
+        return
 
     def ideal_init(self):
         pass

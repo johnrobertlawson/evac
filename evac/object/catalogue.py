@@ -139,7 +139,7 @@ class Catalogue:
         # Need to pass back out the result:
         # a, b, c, d
 
-    def match_contingency(self,dictA,dictB,td_max=20.0):
+    def match_contingency(self,dictA,dictB,td_max=20.0,return_sorted_pairs=True):
         def get_sub_df(mf,the_dict):
             # sf = mf.copy()
             sf = mf
@@ -309,11 +309,23 @@ class Catalogue:
 
         CONT = DetScores(a=_a,b=_b,c=_c,d=0)
         # pdb.set_trace()
-        return matched_pairs, CONT
+        sorted_pairs = []
+        if return_sorted_pairs:
+            for k,v in matched_pairs.items():
+                if v is not None:
+                    sorted_pairs.append(sorted([k,v[0]]))
+
+        return matched_pairs, CONT, sorted_pairs
 
     def parallel_match_verif(self,oob,td_max=20.0):
         objA, objB, bmap = oob
         compare_tup = (int(objA.Index),int(objB.Index))
+        # Could have optimsation here that returns TI=9999 if
+        # the basic xs distance is too much. This is because
+        # closest gridpoints (cdist) takes way longer, (CHECK).
+        # However, if you want TI scores for all possible pairs,
+        # e.g. to cluster objects to generate probabilities for false
+        # alarms, then this optimisation would be turned off. 
         TI = utils.compute_total_interest(bmap,propA=objA,propB=objB,
                                             td_max=td_max,)
         # pdb.set_trace()
@@ -369,7 +381,7 @@ class Catalogue:
                                 domains, verif_domain)
 
         for objA, objB in itertools.product(*listoflists):
-            compare_tup = (int(objA.index),int(objB.index))
+            compare_tup = (int(objA.Index),int(objB.Index))
             # pdb.set_trace()
             TI = self.compute_total_interest(propA=objA,propB=objB)
             member_TIs[compare_tup] = TI

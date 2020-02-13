@@ -30,7 +30,7 @@ class DetScores:
         a,b,c,d (int)   :   Number of elements in 2x2 matrix.
     """
     def __init__(self,arr2x2=None,a=None,b=None,c=None,d=None,
-                    fcst_arr=None,obs_arr=None,thresh=None,overunder=None,
+                    fcst_arr=None,obs_arr=None,thresh=None,overunder="over",
                     close_checks=False):
         self.close_checks = close_checks
         if arr2x2 is not None:

@@ -37,7 +37,7 @@ class FSS:
         self.enforce_2D()
         self.do_grid_check()
 
-        self.xdim = data
+        self.xdim, self.ydim = data_obs.shape
 
         # Neighbourhoods
         # if ns is None:
@@ -48,7 +48,7 @@ class FSS:
         self.compute_MSE()
         self.compute_FSS()
         return
-        
+
     def enforce_2D(self,):
         """Both data grids need to be 2D.
         """
@@ -73,7 +73,7 @@ class FSS:
         if self.data_obs.shape != (self.ydim,self.xdim):
             raise FormatError("Obs and forecast data not same size.")
         return
-    
+
     def compute_FSS(self):
         maxlen = max(self.ydim,self.xdim)
 
@@ -115,8 +115,7 @@ class FSS:
 
                 # Reference self.MSE
                 self.MSE[th][n]['ref'] = (1/(cutlenx*cutleny))*(N.sum(On**2)+N.sum(Mn**2))
-            
+
                 # self.FSS
                 self.FSS[th][n] = 1 - (self.MSE[th][n]['score'] / self.MSE[th][n]['ref'])
         return
-

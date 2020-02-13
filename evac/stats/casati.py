@@ -9,8 +9,8 @@ from evac.utils.exceptions import QCError, FormatError
 class Casati:
     """ Scale-aware verification scheme from Casati et al. 2004, Meteorol. Appl.
 
-    All data in SI units (mm). 
-    
+    All data in SI units (mm).
+
     Access attributes by a threshold then spatial key.
 
     Attributes:
@@ -19,7 +19,7 @@ class Casati:
         self.SS                     :   Skill score
 
     Example:
-        self.SS[4][3] will return the skill score for 4 mm/hr threshold 
+        self.SS[4][3] will return the skill score for 4 mm/hr threshold
             and the L=3 spatial scale (= 2**3 grid points)
 
     Args:
@@ -61,8 +61,8 @@ class Casati:
         # pdb.set_trace()
         self.do_BED()
         self.do_MSE()
-        self.do_SS()
-
+        # self.do_SS()
+        return self.MSE_total
 
     def enforce_2D(self,):
         """Make sure the grid is 2-D.
@@ -79,7 +79,7 @@ class Casati:
                 print("Passed 2D grid check.")
         return
 
-    
+
     def do_square_check(self):
         """Assert that the grid is a power of 2.
         """
@@ -99,7 +99,7 @@ class Casati:
     def do_QC(self,print_location=True,min_thresh=0.0,max_thresh=500,
                 fatal_exception=False):
         """Check for stupid values in data.
-        
+
         Optional:
         print_location (bool) - if True, print the array location where
                                 the nonsensical values exist
@@ -202,7 +202,7 @@ class Casati:
 
     def calc_ecdf(self,arr,val):
         """ Do empirical cumulative distribution of an array.
-        
+
         arr -   N.ndarray
         val -   threshold
         """
@@ -216,7 +216,7 @@ class Casati:
         if valshape is not None:
             ecd = ecd.reshape(valshape)
         return ecd
-    
+
     def do_BED(self,):
         """Binary error decomposition.
 
@@ -302,4 +302,3 @@ class Casati:
                 ep = N.sum(self.Zl[th][l])/self.Zl[th][l].size
                 self.SS[th][l] = 1 - (self.MSE[th][l]/(2*ep*(1-ep)*(1/l)))
         print("SS calculation complete.")
-

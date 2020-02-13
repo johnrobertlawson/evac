@@ -21,8 +21,10 @@ import datetime
 import heapq
 import random
 import base64
+import string
 from pathlib import Path, PosixPath
 import pytz
+import multiprocessing
 import pandas
 
 import scipy.spatial.distance as ssd
@@ -1465,10 +1467,15 @@ def get_latlon_idx(lats,lons,lat,lon):
     # lon, lat
     return [int(c) for c in coords]
 
-def make_subplot_label(ax,label):
+def generate_letters_loop(n):
+    for letter in string.ascii_lowercase[:n]:
+        yield letter
+
+def make_subplot_label(ax,label,loc_frac=(0.1,0.15)):
+    lx, ly = loc_frac
     if not label.endswith(')'):
         label = label + ')'
-    ax.text(0.1,0.15,label,transform=ax.transAxes,
+    ax.text(lx,ly,label,transform=ax.transAxes,
         bbox={'facecolor':'white'},fontsize=13,zorder=1000)
     return ax
 
@@ -1662,7 +1669,7 @@ def time_me(f):
         result = f(*args, **kwargs)
         t1 = time.time()
 
-        print('function {} took {:2.3f} sec'.format(f.__name__,t1-t0))
+        print('The function {} took {:2.3f} sec'.format(f.__name__,t1-t0))
         return result
 
     return timed
@@ -2072,6 +2079,8 @@ def compute_total_interest(bmap,propA=None,propB=None,cd=None,md=None,td=None,
 
         cd_max (float): the limit for centroid distance (km)
         md_max (float): the limit for minimum distance (km)
+
+        JRL: could we have option that returns 9999 for distances
     """
     if isinstance(bmap,str):
         bmap = load_pickle(bmap)
@@ -2164,3 +2173,40 @@ def compute_total_interest(bmap,propA=None,propB=None,cd=None,md=None,td=None,
     TI = ((td_max-td)/td_max)*0.5*(((cd_max-cd)/cd_max)+((md_max-md)/md_max))
     # print(f"Returning TI: {TI}")
     return TI
+
+def generate_shared_arr(shape, dtype):
+    """Construct a numpy array of the specified shape and dtype for which the
+    underlying storage is a multiprocessing RawArray in shared memory.
+
+    Parameters
+    ----------
+    shape : tuple
+      Shape of numpy array
+    dtype : data-type
+      Data type of array
+
+    Returns
+    -------
+    arr : ndarray
+      Numpy array
+
+    Example 1 from:
+    https://www.programcreek.com/python/example/99209/multiprocessing.RawArray
+    """
+
+    sz = int(N.product(shape))
+    csz = sz * N.dtype(dtype).itemsize
+    raw = multiprocessing.RawArray('c', csz)
+    return N.frombuffer(raw, dtype=dtype, count=sz).reshape(shape)
+
+def dither_one_value(val):
+    print("about to dither array.")
+    # Randomly dither between 100 times the smallest number and smallest number
+    dither_val = 10E-6 * N.random.ranf((1))[0]
+    # Randomly pick add or subtract
+    func_pick = [N.add,N.subtract][int(N.random.choice([0,1]))]
+    if isinstance(val,datetime.datetime):
+        dither_val = datetime.timedelta(seconds=float(dither_val))
+    new_val =  func_pick(val,dither_val)
+    # pdb.set_trace()
+    return new_val
