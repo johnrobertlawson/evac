@@ -45,33 +45,57 @@ class StormEvents(CSVFile):
 
     def plot(self,reports,itime,ftime,fname,outdir,Nlim=False,
             Elim=False,Slim=False,Wlim=False,
-            annotate=True,fig=False,ax=False,ss=50,color='blue'):
-        LOLtypes = [s.decode() for s in self.r['EVENT_TYPE']]
-        reportidx = N.array([n for n,t in zip(list(range(len(LOLtypes))),LOLtypes) if reports in t])
-        lateidx = N.where(self.datetimes > itime)
-        earlyidx = N.where(self.datetimes < ftime)
-        timeidx = N.intersect1d(earlyidx,lateidx,)#assume_unique=True)
-        plotidx = N.intersect1d(reportidx,timeidx)
+            annotate=True,fig=None,ax=None,ss=80,color=None):
+        if "+" in reports:
+            reportlist = reports.split("+")
+            hold = True
+        else:
+            reportlist = reports
+            hold = False
+        m = None
+        for report in reportlist:
+            LOLtypes = [s.decode() for s in self.r['EVENT_TYPE']]
+            reportidx = N.array([n for n,t in zip(list(range(len(LOLtypes))),LOLtypes) if report in t])
+            lateidx = N.where(self.datetimes > itime)
+            earlyidx = N.where(self.datetimes < ftime)
+            timeidx = N.intersect1d(earlyidx,lateidx,)#assume_unique=True)
+            plotidx = N.intersect1d(reportidx,timeidx)
 
-        from mpl_toolkits.basemap import Basemap
+            # Need to edit if color is to be custom 
+            assert report in ("Wind","Hail")
+            if report == "Wind":
+                color = "blue"
+            elif report == "Hail":
+                color = "lightgreen"
+            else:
+                assert True is False
+            print("Plotting",report)
 
-        if fig==False:
-            fig,ax = plt.subplots(1,figsize=(6,6))
-        m = Basemap(projection='merc',
-                    llcrnrlat=Slim,
-                    llcrnrlon=Wlim,
-                    urcrnrlat=Nlim,
-                    urcrnrlon=Elim,
-                    lat_ts=(Nlim-Slim)/2.0,
-                    resolution='i',
-                    ax=ax)
+            if fig is None:
+                # if this is the first time round a loop of reports, or custom fig arg
+                fig,ax = plt.subplots(1,figsize=(6,8))
 
-        m.drawcoastlines()
-        m.drawstates()
-        m.drawcountries()
+            if hold is True:
+                if m is None:
+                    m = Basemap(projection='merc',
+                                llcrnrlat=Slim,
+                                llcrnrlon=Wlim,
+                                urcrnrlat=Nlim,
+                                urcrnrlon=Elim,
+                                lat_ts=(Nlim-Slim)/2.0,
+                                resolution='h',
+                                ax=ax)
 
-        m.scatter(self.r['BEGIN_LON'][plotidx],self.r['BEGIN_LAT'][plotidx],latlon=True,
-                    marker='D',facecolors=color,edgecolors='black',s=ss)
+                    m.drawcoastlines()
+                    m.drawstates()
+                    m.drawcountries()
+
+            print("color =",color)
+            m.scatter(self.r['BEGIN_LON'][plotidx],self.r['BEGIN_LAT'][plotidx],latlon=True,
+                        c=color,s=ss,
+                        marker='s',alpha=0.6,linewidths=1.5,
+                        facecolors=color,edgecolors='black',
+                        )
         fig.tight_layout()
         fpath = os.path.join(outdir,fname)
         plt.savefig(fpath)

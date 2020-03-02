@@ -2199,8 +2199,9 @@ def generate_shared_arr(shape, dtype):
     raw = multiprocessing.RawArray('c', csz)
     return N.frombuffer(raw, dtype=dtype, count=sz).reshape(shape)
 
-def dither_one_value(val):
-    print("about to dither array.")
+def dither_one_value(val,debug=False):
+    if debug:
+        print("about to dither array.")
     # Randomly dither between 100 times the smallest number and smallest number
     dither_val = 10E-6 * N.random.ranf((1))[0]
     # Randomly pick add or subtract

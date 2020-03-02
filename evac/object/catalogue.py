@@ -176,6 +176,7 @@ class Catalogue:
             itA = both_df[0].itertuples()
             itB = both_df[1].itertuples()
             for objA, objB in itertools.product(itA,itB):
+                # pdb.set_trace()
                 # Only yield if objA and objB are within td_max
                 if abs((objA.time-objB.time).total_seconds()) <= (60.0*td_max):
                     yield objA, objB, bmap_fpath
@@ -197,8 +198,8 @@ class Catalogue:
         # this_gen_len = sum(1 for x in (gg))
         # Estimate of chunk size
         cs = math.ceil(this_gen_len/self.ncpus)
-        # pdb.set_trace()
         cs2 = math.ceil(this_gen_len/(10*self.ncpus))
+        # pdb.set_trace()
 
         print(f"We have {this_gen_len} iterations.")
         # pdb.set_trace()
@@ -325,7 +326,7 @@ class Catalogue:
         # closest gridpoints (cdist) takes way longer, (CHECK).
         # However, if you want TI scores for all possible pairs,
         # e.g. to cluster objects to generate probabilities for false
-        # alarms, then this optimisation would be turned off. 
+        # alarms, then this optimisation would be turned off.
         TI = utils.compute_total_interest(bmap,propA=objA,propB=objB,
                                             td_max=td_max,)
         # pdb.set_trace()
