@@ -130,13 +130,13 @@ class WRFOut(NCFile):
         the middle of the domain. They shouldn't be used for plotting.
 
         """
-        self.Nlim, self.Elim, self.Slim, self.Wlim = self.get_limits()
-
         self.lats = self.nc.variables['XLAT'][0,...] # Might fail if only one time?
         self.lons = self.nc.variables['XLONG'][0,...]
 
         self.lats1D = self.lats[:,int(len(self.lats)/2)]
         self.lons1D = self.lons[int(len(self.lons)/2),:]
+
+        self.Nlim, self.Elim, self.Slim, self.Wlim = self.get_limits()
 
         self.cen_lat = float(self.nc.CEN_LAT)
         self.cen_lon = float(self.nc.CEN_LON)
