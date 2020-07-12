@@ -1093,6 +1093,7 @@ def return_updraught_helicity(parent,tidx,lvidx,lonidx,latidx,other,z0=2000,z1=5
             wxi = w*xi
             UH = N.sum(wxi,axis=1) * N.sum(dz,axis=1)
 
+        # JRL: I think this is negative (sign error).
         # pdb.set_trace()
         return UH[:,N.newaxis,:,:]
 
