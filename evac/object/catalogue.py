@@ -10,7 +10,11 @@ import math
 import copy
 
 # John hack
-from multiprocess import Pool as mpPool
+
+import multiprocess
+ctx = multiprocess.get_context("spawn")
+# multiprocess.set_start_method('spawn',force=True)
+# from multiprocess import Pool as mpPool
 
 import matplotlib as M
 import matplotlib.pyplot as plt
@@ -24,6 +28,8 @@ from mpl_toolkits.basemap import Basemap
 
 import evac.utils as utils
 from evac.stats.detscores import DetScores
+
+# os.system("taskset -p 0xff %d" % os.getpid())
 
 class Catalogue:
     def __init__(self,df_list,ncpus=1,tempdir='./'): #time_list=None,prod_list=None):
@@ -114,8 +120,8 @@ class Catalogue:
         print("Jobs done.")
         return matches
 
-    def match_two_groups(self,dictA,dictB,do_contingency=False,
-                            td_max=20.0):
+    def match_two_groups(self,dictA,dictB,do_contingency=True,
+                            td_max=20.0,optimise=False):
         """ Match object belonging to any subset of the megaframe -
         make them non-overlapping if you don't want weird results.
 
@@ -129,7 +135,8 @@ class Catalogue:
         max time difference window, to limit calculation of permutations
         """
         self.bmap = self.create_bmap()
-        rets = self.match_contingency(dictA,dictB,td_max=td_max)
+        rets = self.match_contingency(dictA,dictB,td_max=td_max,optimise=optimise,
+                                do_contingency=do_contingency)
 
         print("Jobs done.")
         return rets
@@ -139,7 +146,9 @@ class Catalogue:
         # Need to pass back out the result:
         # a, b, c, d
 
-    def match_contingency(self,dictA,dictB,td_max=20.0,return_sorted_pairs=True):
+    def match_contingency(self,dictA,dictB,td_max=20.0,
+                            return_sorted_pairs=True,optimise=False,
+                            do_contingency=True):
         def get_sub_df(mf,the_dict):
             # sf = mf.copy()
             sf = mf
@@ -169,7 +178,7 @@ class Catalogue:
         bmap_fpath = './bmap.pickle'
         utils.save_pickle(obj=self.bmap,fpath=bmap_fpath)
 
-        def gen(bmap_fpath):
+        def gen(bmap_fpath,optimise=False):
             # This will shuffle - faster?
             # itA = both_df[0].sample(frac=1).itertuples()
             # itB = both_df[1].sample(frac=1).itertuples()
@@ -179,7 +188,7 @@ class Catalogue:
                 # pdb.set_trace()
                 # Only yield if objA and objB are within td_max
                 if abs((objA.time-objB.time).total_seconds()) <= (60.0*td_max):
-                    yield objA, objB, bmap_fpath
+                    yield objA, objB, bmap_fpath, optimise
 
         def count_gen():
             this_gen_len = 0
@@ -189,7 +198,7 @@ class Catalogue:
                     this_gen_len += 1
             return this_gen_len
 
-        gg = gen(bmap_fpath)
+        gg = gen(bmap_fpath,optimise=True)
         # pdb.set_trace()
         this_gen_len = count_gen()
 
@@ -204,14 +213,37 @@ class Catalogue:
         print(f"We have {this_gen_len} iterations.")
         # pdb.set_trace()
 
-        print("About to parallelise!")
+
+
+        print(f"About to parallelise using {self.ncpus} cores.")
         if self.ncpus > 1:
-            # with multiprocessing.Pool(self.ncpus) as pool:
-            with mpPool(self.ncpus) as pool:
-            # with mpPool(maxtasksperchild=1) as pool:
-                # results = pool.imap_unordered(self.parallel_match_verif,gg)
-                results = pool.map(self.parallel_match_verif,gg,chunksize=cs)
-                # results = pool.map(self.parallel_match_verif,gg)
+
+            if False:
+                # Start worker processes
+                workers = []
+                for m in range(self.ncpus):
+                    p = multiprocessing.Process(target=self.parallel_match_verif,
+                                args=(gg,))
+                    workers.append(p)
+                    p.start()
+
+                # Wait for all workers to complete
+                for p in workers:
+                    p.join()
+
+
+
+            if True:
+
+
+                # with multiprocessing.Pool(self.ncpus) as pool:
+                # with mpPool(processes=self.ncpus) as pool:
+                with ctx.Pool(processes=self.ncpus) as pool:
+
+                # with mpPool(maxtasksperchild=1) as pool:
+                    # results = pool.imap_unordered(self.parallel_match_verif,gg)
+                    results = pool.map(self.parallel_match_verif,gg,)#chunksize=cs)
+                    # results = pool.map_async(self.parallel_match_verif,gg)
 
         else:
             results = []
@@ -276,6 +308,9 @@ class Catalogue:
                 otherID = all_otherIDs[maxidx]
                 matched_pairs[objID] = (otherID,maxTI)
 
+            if do_contingency is False:
+                # pdb.set_trace()
+                return matched_pairs
 
             already_hit = []
             # Verify now
@@ -318,8 +353,11 @@ class Catalogue:
 
         return matched_pairs, CONT, sorted_pairs
 
-    def parallel_match_verif(self,oob,td_max=20.0):
-        objA, objB, bmap = oob
+    @staticmethod
+    # def parallel_match_verif(self,oob,td_max=20.0):
+    def parallel_match_verif(oob):
+        td_max = 20.0
+        objA, objB, bmap, optimise = oob
         compare_tup = (int(objA.Index),int(objB.Index))
         # Could have optimsation here that returns TI=9999 if
         # the basic xs distance is too much. This is because
@@ -328,7 +366,7 @@ class Catalogue:
         # e.g. to cluster objects to generate probabilities for false
         # alarms, then this optimisation would be turned off.
         TI = utils.compute_total_interest(bmap,propA=objA,propB=objB,
-                                            td_max=td_max,)
+                                            optimise=optimise)
         # pdb.set_trace()
         return (compare_tup, TI)
 

@@ -2065,7 +2065,8 @@ def exceed_probs_2d(arr3D,val,overunder='over',fmt='pc'):
 
 
 def compute_total_interest(bmap,propA=None,propB=None,cd=None,md=None,td=None,
-                        cd_max=40.0,md_max=40.0,td_max=20.0,use_bbox=False):
+                        cd_max=40.0,md_max=40.0,td_max=20.0,use_bbox=False,
+                        optimise=False):
     """
     Returns the total interest between object pairs.
 
@@ -2082,8 +2083,6 @@ def compute_total_interest(bmap,propA=None,propB=None,cd=None,md=None,td=None,
 
         JRL: could we have option that returns 9999 for distances
     """
-    if isinstance(bmap,str):
-        bmap = load_pickle(bmap)
     method = 1
     # Sanity checks
     # if propA is not None:
@@ -2099,10 +2098,21 @@ def compute_total_interest(bmap,propA=None,propB=None,cd=None,md=None,td=None,
 
     # print("Computing Total Interest.")
     #if method == 1:
+
+    # Escape if the time is too far apart
+    td = abs((propA.time - propB.time).total_seconds())/60
+    if (td > td_max) and optimise:
+        return -9999
+
     # Compute distance between centroids (km)
+    # Escape if the centroid distance is too far apart
     cd = xs_distance(propA.centroid_lat, propA.centroid_lon,
                     propB.centroid_lat, propB.centroid_lon)/1000.0
+    if (cd > cd_max) and optimise:
+        return -9999
 
+    if isinstance(bmap,str):
+        bmap = load_pickle(bmap)
     # Compute closest distance between objects
     # print("Computing closest object distance.")
 
@@ -2128,11 +2138,15 @@ def compute_total_interest(bmap,propA=None,propB=None,cd=None,md=None,td=None,
         for n,obj in enumerate((propA,propB)):
             OID = load_pickle(obj.fpath_save)
             # OID.lats, OID.lons
-            # OID
+            # pdb.set_trace()
             for o in OID.object_props:
+                # # HACK:
+                o.slice = o._slice
                 if all((obj.mean_intensity == o.mean_intensity,
                             obj.centroid_row == o.centroid[0],
-                            obj.centroid_col == o.centroid[1])):
+                            obj.centroid_col == o.centroid[1],
+                            obj.max_intensity == o.max_intensity,
+                            )):
                     coords[n] = o.coords
 
             lats = OID.lats[coords[n][:,0],coords[n][:,1]]
@@ -2166,9 +2180,10 @@ def compute_total_interest(bmap,propA=None,propB=None,cd=None,md=None,td=None,
 
     #distances = haversine_baker(lonsA, latsA, lonsB, latsB)
     md = N.nanmin(distances)/1000
+    if (md > md_max) and optimise:
+        return -9999
     # pdb.set_trace()
 
-    td = abs((propA.time - propB.time).total_seconds())/60
 
     TI = ((td_max-td)/td_max)*0.5*(((cd_max-cd)/cd_max)+((md_max-md)/md_max))
     # print(f"Returning TI: {TI}")
