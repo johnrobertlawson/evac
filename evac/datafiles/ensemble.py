@@ -1,344 +1,158 @@
+"""Load ensemble data (one model or a superensemble).
+
+TODO:
+    * Write and update data classes in this directory
+    * Add in RawArray and fix parallel processing via staticmethods?
+
+JRL, Valparaiso Univ., 2022
+"""
+
 import os
 import glob
 import pdb
 import datetime
+import copy
+import multiprocessing
+from multiprocessing import RawArray
+import collections
+import functools
+import operator
 
-import numpy as N
+import numpy as np
 
 from evac.utils.grid import Grid
 import evac.utils as utils
 from evac.datafiles.wrfout import WRFOut
 from evac.datafiles.gefs import GEFS
 
-# Dummy variable in place of proper subclass of WRFOut
-AuxWRFOut = object
-
 class Ensemble:
-    """ Class containing an ensemble of (netCDF, WRF) forecasts.
-
-    A deterministic forecast (i.e. ensemble of one control member) can
-    be created by using one member.
-
-    Each ensemble member needs to have a separate folder (named
-    as the ensemble member's name), but different domains can be
-    within a single member's folder.
-
-    Todos:
-        * Change from ensemble of WRFOut files to any sort of datafile.
-        * Consistency with method names (e.g., get() )
-
-    Example:
-        To load a 5-D array of 10-m wind at the second time (and using defaults)::
-
-            import datetime
-            from evac.datafiles.ensemble import Ensemble
-
-            initutc = datetime.datetime(2016,3,31,18,0,0)
-            E = Ensemble(rootdir='/path/to/data',initutc=initutc)
-            E.get('wind10',utc=1)
-
-    Args:
-        rootdir (str):  Directory at root of datafiles
-        initutc (datetime.datetime): Initialization time (assumed UTC)
-        doms (int, optional): Number of domains
-        ctrl (bool, optional): Whether ensemble has control member
-        aux (bool, dict, optional): Dictionary lists, per domain, data
-            files that contain additional variables and each
-            file's prefix. Default is False (no auxiliary files).
-            Not implemented yet.
-        enstype (str, optional): Type of ensemble. Default is for
-            Weather Research and Forecast (WRF) model.
-        fmt (str, optional): The type of simulations. Default is
-            real-world simulations (em_real from WRF).
-        f_prefix (tuple, optional): Tuple of prefixes for each
-            ensemble member's main data files. Must be length /doms/.
-            The string 'default' will look for the wrfout_d0* string.
-            Set None for a method to determine
-            the file name using default outputs from e.g. WRF.
-        allow_empty (bool): if False, raise exception if the ensemble
-            instance has no members.
-        ignore_str (str): if a folder contains this string, it is ignored
-            (e.g., for broken members, etc)
-    """
-    def __init__(self,rootdir,initutc=None,ndoms=1,ctrl='ctrl',aux=False,
-                model='wrf',fmt='em_real',f_prefix='default',loadobj=True,
-                ncf=False,debug=False,onefolder=False,fileformat='netcdf',
-                gefsformat=False,allow_empty=True,ignore_str='broken'):
-        self.model = model.lower()
-        if self.model == 'wrf':
-            print("File type is wrfout.")
-            loadfunc = WRFOut
-        elif self.model == 'gefs':
-            self.gefsformat = gefsformat
-            print("File type is GEFS.")
-            loadfunc = GEFS
+    def __init__(self,data_inf,ctrl=False,aux=None,lazy_load=True):
+        """ Class containing an ensemble of forecasts.
+    
+        A deterministic forecast (i.e. ensemble of one control member) can
+        be created by using one member. Information on each member must first
+        be passed during instantiation. Data is converted to the 
+        multiprocessing.RawArray format to enable parallelisation and try to
+        avoid running out of memory. 
+    
+        Todos:
+            * Change from ensemble of WRFOut files to any sort of datafile.
+            * Consistency with method names (e.g., get() )
+            * Enable lagged ensembles - the initialisation data must be
+                loaded from the metadata and attached to the member
+                attributes herein.
+    
+        Example:
+                To load a 5-D array [ensemble_member,time,level,lat,lon] of 
+                10-m wind at the second time (and using other defaults)::
+    
+                import datetime
+                from evac.datafiles.ensemble import Ensemble
+                
+                # Create dictionary list of data information
+                # Only one member here, called ctrl
+                datainf = [{"model":"GFS",
+                        "initutc": datetime.datetime(2016,3,31,18,0,0),
+                        "path":"/path_to/data",name="ctrl"},]
+    
+                E = Ensemble(datainf)
+                E.get('wind10',utc=1)
+    
+        Args:
+            data_inf (list,tuple): a collection of dictionaries for loading 
+                ensemble data. Each dictionary is a member, and must contain
+                the model ("GEFS","GFS","WRF","ECMWF") and the absolute
+                filepath. Optional keys are ["name","ctrl","wrf_type",
+                "np_array","utc_list","init_utc"]. Include "name" as the
+                ensemble-member name, and each must be unique; if this is not
+                specified, each member will be named in sequential order of the
+                list, with the first as "ctrl" if ctrl is True. 
+                If the model is generic WRF output, the type of simulation must
+                be specified, passed as"ideal" for idealised WRF 
+                and "em_real" for the real-world simulations ("em_real" 
+                from WRF). The key {"ctrl":True} sets 
+                that member as a control member. The key "np_array", with
+                a value of a 4-D numpy array, adds a member that skips the
+                data format identification. Of course, this data cannot
+                be lazy-loaded, and a seequence of times corresponding to
+                each of the time dimension must be assigned to the member with
+                "utc_list". For other files, if multiple times are loaded
+                (e.g., a separate netCDF file for each valid time), use
+                "init_utc" to assign a datetime object as the initialisation
+                for that file or data. 
+            lazy_load (bool): if False, load the filetype upon instantiation.
+                Otherwise, lazy load, i.e., identify the class but do not
+                load data. The data is acquired later via get().
+        """        
+        self.data_inf = data_inf
+        self.lazy_load = lazy_load
+        
+        
+        self.mandatory_keys = ["model","fpath",]
+        self.optional_keys = ["name","ctrl","wrf_type","np_array","utc_list",
+                                "init_utc"]
+        self.member_keys = self.mandatory_keys + self.optional_keys
+        
+        self.members = self.load_metadata()
+        self.n_members = len(self.members)
+        
+    def load_metadata(self,):
+        member_list = []
+        member_names = []
+        
+        for mem_dict in self.data_inf:
+            assert key in mem_dict.keys() for key in self.mandatory_keys
+            assert key in self.optional_keys for key in mem_dict.keys()
+            member_ntuple = self.get_member_namedtuple(mem_dict,len(
+                                    member_list))
+            # To double-check name uniqueness
+            assert member_ntuple.name is not in member_names
+            member_names.append(member_ntuple.name)
+            
+            member_list.append(member_ntuple)
+        return member_list
+        
+    def get_member_namedtuple(self,mem_dict,n):
+        EnsembleMember = collections.namedtuple("EnsembleMember",
+            self.member_keys,defaults=["None",]*len(self.optional_keys))
+        name = self.make_member_name(mem_dict,n)
+        return ntuple
+        
+    def make_member_name(self,mem_dict,n):
+        if "name" in mem_dict.keys():
+            return mem_dict["name"]
         else:
-            raise NotImplementedError()
+            return f"p{n+1:03d}"
+        
+    def get_dims(self,member_name):
+        """Identify the size of data to assign to metadata.
+        """
+        # get() always returns 5D, with first dimension being n_members.
+        nt,nz,nlats,nlons = self.get(member_name,vrbl="T").shape[1:]
+        return nt,nz,nlats,nlons
 
-        self.ignore_str = ignore_str
-        self.ndoms = ndoms
-        self.doms = list(range(1,ndoms+1))
-
-        if ncf:
-            self.f_prefix = [ncf for d in self.doms]
-        elif f_prefix is 'default':
-            self.f_prefix = ['wrfout_d{0:02d}'.format(d) for d in self.doms]
-        else:
-            raise Exception
-
-        self.debug = debug
-        self.fileformat = fileformat
-        self.ctrl = ctrl
-        # Remove any trailing slash!
-        self.rootdir = rootdir.rstrip("/")
-        if initutc is None:
-            assert ncf
-        self.initutc = initutc
-        self.fmt = fmt
-        self.loadobj = loadobj
-        self.aux = aux
-        self.ncf = ncf
-# 
-        self.isaux = True if isinstance(self.aux,dict) else False
-        if (self.f_prefix is not None) and (len(self.f_prefix) != self.ndoms):
-            raise Exception("Length of main datafile prefixes must "
-                                "match number of domains.")
-        self.isctrl = True if ctrl else False
-        self.members, self.fdt = self.get_members()
-        self.member_names = sorted(self.members.keys())
-        self.nmems = len(self.member_names)
-        assert self.nmems > 0
-        self.nperts = self.nmems - self.isctrl
-
-        # Check to see if the ensemble isn't just an empty list!
-        if self.nmems == 0 and (not allow_empty):
-            print("Files not found.")
-            print("rootdir is {}".format(self.rootdir))
-            raise Exception
-
-        # Get start and end of whole dataset (inclusive)
-        self.filetimes = self.list_of_filetimes(arb=True)
-        self.nt_per_file = self.compute_nt_per_file()
-        self.itime = self.filetimes[0]
-        self.hdt = self.compute_history_dt()
-        # pdb.set_trace()
-        if self.fdt is None:
-            # self.ftime = self.filetimes[-1] + datetime.timedelta(seconds=self.hdt)
-            self.timespan_sec = self.hdt*(self.nt_per_file-1)*len(self.filetimes)
-            # Why is this happening?! TODO
-            if isinstance(self.timespan_sec,datetime.timedelta):
-                self.ftime = self.itime + self.timespan_sec
-            else:
-                self.ftime = self.itime + datetime.timedelta(seconds=self.timespan_sec)
-        else:
-            self.ftime = self.filetimes[-1] + (
-                    (self.nt_per_file-1)*datetime.timedelta(seconds=self.fdt))
-
-        # Difference in output times across whole dataset
-        # Might be split between history files
-        if self.fdt is None:
-            self.validtimes = [self.initutc + (x*datetime.timedelta(seconds=self.hdt)) 
-                                for x in range(self.nt_per_file)]
-        else:
-            raise Exception("Need to implement validtimes over numerous file times.")
-
-    def get_dims(self,dom=1):
-        nt,nz,nlats,nlons = self.arbitrary_pick(dataobj=True,
-                                    dom=dom).get(vrbl="T").shape
-        return self.nmems,nt,nz,nlats,nlons
-
-    def get_grid(self,dom=1):
-        return Grid(self.arbitrary_pick(dataobj=True,dom=dom))
-        # return self.arbitrary_pick(dataobj=True,dom=dom).grid
-
-    def compute_fdt(self):
-        """Compute the difference in time between each data file's first entry.
+    def compute_fdt(self,member_name):
+        """Compute the difference in time.
 
         Returns the difference in seconds.
+        
+        Use for models with numerous times (GFS?) and individual files for
+        each time (ICON?)
         """
-        f_diff = self.filetimes[1] - self.filetimes[0]
-        return f_diff.seconds
+        return
 
-    def get_gefs_members(self,):
-        """ Load GEFS grib files that are all in one folder."""
-        members = {}
-        self.member_names = ['gec00',] + ['gep{:02d}'.format(n)
-                                for n in range(1,21)]
-        ftimes = ['anl',] + ['f{:02d}'.format(n) for n in range(6,180,6)]
-        utcs = [self.initutc + datetime.timedelta(seconds=hr*3600) for
-                        hr in range(0,180,6)]
-        for member in self.member_names:
-            members[member] = {1:{}}
-            for t,ft in zip(utcs,ftimes):
-                suffx = '.'.join((self.gefsformat,ft))
-                try_fname = '{0}.t{1:02d}z.{2}'.format(
-                # try_fname = '{0}.t{1:02d}z.{2}{3}'.format(
-                                # member,self.initutc.hour,self.gefsformat,ft)
-                                member,self.initutc.hour,suffx)
-                try_fpath = os.path.join(self.rootdir,try_fname)
-                if os.path.isfile(try_fpath):
-                    dataobj = self.datafile_object(try_fpath,loadobj=self.loadobj)
-                    members[member][1][t] = {'dataobj':dataobj,
-                                            'fpath':try_fpath,
-                                            'control': (member is self.ctrl)}
-        fdt = 6 # fdt is 6 for gefs - at least for sensible ranges?
-        # pdb.set_trace()
-        return members, fdt
-
-
-    def get_members(self,):
-        """Create a dictionary with all data.
-
-        Format is:
-        members[member][domain][time][data]
-
-        Returns members (dict): Dictionary of ensemble members
-
-        Also returns fdt (int): Seconds between output files.
-        """
-        members = {}
-        if self.model == 'gefs':
-            members,fdt = self.get_gefs_members()
-        elif self.model == 'wrf':
-            members,fdt = self.get_wrf_members()
-        else:
-            raise NotImplementedError
-        return members, fdt
-
-    def get_wrf_members(self):
-        members = {}
-        fdt = None
-        # TODO: refactor to use self.
-        doms = self.doms 
-        for domn, dom in enumerate(doms):
-            # Get file name for initialisation time and domain
-            # main_fname = self.get_data_fname(dom=dom,prod='main')
-            if not self.ncf:
-                main_fname  = utils.get_netcdf_naming(self.model,self.initutc,dom)
-            else:
-                main_fname = self.ncf
-            # if dom in self.aux:
-                # aux_fname = self.get_data_fname(dom=dom,prod='aux')
-            # Each ensemble member has a domain
-            print(main_fname)
-            for dirname,subdirs,files in os.walk(self.rootdir):
-                if self.ignore_str in dirname:
-                    print("Skipping {} due to ignore_str setting.".format(dirname))
-                    continue
-                # If ensemble size = 1, there will be no subdirs.
-                matched_files = [f for f in files if f.startswith(self.f_prefix[domn])]
-                # pdb.set_trace()
-                if main_fname in matched_files:
-                    print("Found",main_fname,"in",dirname)
-                    dsp =  dirname.split('/')
-                    rsp = self.rootdir.split('/')
-
-                    # The following logic merges subdir names
-                    # e.g. ensemble grouped twice by perturbation type?
-                    # pdb.set_trace()
-                    if dsp[:-1] == rsp:
-                        member = dirname.split('/')[-1]
-                    elif dsp[:-2] == rsp:
-                        member = '_'.join(dirname.split('/')[-2:])
-                    else:
-                        # pdb.set_trace()
-                        # raise Exception("What is this folder structure?", dsp, rsp, dirname)
-                        print("Skipping file in {}".format(dirname))
-                        continue
-                    if self.debug:
-                        print("Looking at member {0}".format(member))
-                    if member not in members:
-                        members[member] = {d:{} for d in doms}
-                    # if dom==1:
-                        # self.member_names.append(member)
-                    while True:
-                        if not self.ncf:
-                            t = self.initutc
-                            t_fname = utils.get_netcdf_naming(self.model,t,dom)
-                        else:
-                            t_fname = self.ncf
-                        # Check for history output time
-                        fpath = os.path.join(self.rootdir,dirname,t_fname)
-                        try:
-                            dataobj = self.datafile_object(fpath,loadobj=self.loadobj)
-                        except IOError:
-                            # All wrfout files have been found
-                            break
-                        else:
-                            if self.initutc is None:
-                                self.initutc = dataobj.initutc
-                                t = self.initutc
-                            # print("Assigning file path and maybe object.")
-                            members[member][dom][t] = {'dataobj':dataobj,
-                                                'fpath':fpath,
-                                                'control': (member is self.ctrl)}
-                            # print("Done.")
-                        if (self.aux is not False) and (dom in self.aux):
-                            # TODO: implement
-                            fpath = os.path.join(self.rootdir,dirname,aux_fname)
-                            dataobj = self.datafile_object(fpath,loadobj=self.loadobj)
-                            members[member][dom][t]['auxdataobj'] = dataobj
-                            members[member][dom][t]['auxfpath'] = fpath
-                            members[member][dom][t]['control'] = member is self.ctrl
-
-                        # Move to next time
-                        if not self.ncf:
-                            if fdt is None:
-                                if len(matched_files) == 1:
-                                    break
-                                else:
-                                    # Loop through files and estimate dt based on fname
-                                    f1, f2 = sorted(matched_files)[:2]
-                                    fdt = utils.dt_from_fnames(f1,f2,'wrf')
-                            else:
-                                t = t + datetime.timedelta(seconds=fdt)
-                        else:
-                            break
-
-        return members, fdt
-
-    def datafile_object(self,fpath,loadobj=False,**kwargs):
-        #Extend to include other files (GEFS, RUC etc)
-        #TODO: Implement auxiliary wrfout files
-        # print(fpath)
-        if loadobj:
-            ops = {'wrf':WRFOut,'aux':AuxWRFOut,'gefs':GEFS}
-            answer = ops[self.model](fpath,**kwargs)
-        else:
-            os.stat(fpath)
-            answer = False
-        return answer
-
-    def get_gefs_ensemble(self):
-        """
-        All gefs data files should be in the same folder.
-        Each forecast time is a different file.
-        """
-        members = {}
-        # This will break with subset of members, times, a/b grib files...
-        allmembers = ['c00',] + ['p{0:02d}'.format(n) for n in range(1,21)]
-        allfiles = glob.glob(os.path.join(self.rootdir,'ge*'))
-        alltimes = N.arange(0,390,6)
-
-        for ens in allmembers:
-            self.memnames.append(ens)
-            for t in alltimes:
-                utc = self.initt + datetime.timedelta(hours=int(t))
-                fname = 'ge{0}.t{1:02d}z.pgrb2f{2:02d}.nc'.format(
-                            ens,self.initt.hour,t)
-                if os.path.join(self.rootdir,fname) in allfiles:
-                    if ens not in members.keys():
-                        members[ens] = {}
-                    members[ens][utc] = {'data':GEFS(os.path.join(self.rootdir,
-                                fname)),'control':ens is 'c00'}
-        return members
-
+    def datafile_object(self,fpath,model):
+        data_classes = {'wrf':WRFOut,'gefs':GEFS}
+        return data_classes["model"](fpath)
+        
     def get_exceedance_probs(self,vrbl,overunder,threshold,
                             level=None,itime=None,
                             ftime=None,fcsttime=None,Nlim=None,
                             Elim=None,Slim=None,Wlim=None,
                             dom=1,fcsthr=None):
         """
+        MOVE TO ANOTHER FOLDER OR SCRIPT
+        
         Return probability of exceeding or reaching a threshold.
 
         Args:
@@ -398,16 +212,10 @@ class Ensemble:
 
         return self.members_names[ensidx]
 
-
-    # def return_df_for_t(self,utc,member,dom=1):
-    def return_datafile(self,utc,member,dom=1):
+    def return_datafile(self,utc,member):
+        # Find file for the required time and member
         t, tidx = self.find_file_for_t(utc,member,dom=dom)
-        if self.debug:
-            print("Loading data for time {0}".format(utc))
-        # pdb.set_trace()
-        fpath = self.members[member][dom][t]['fpath']
-        DF = self.datafile_object(fpath,loadobj=True)
-        return DF
+        return 
 
     def get(self,vrbl,level=None,utc=None,itime=False,ftime=False,
                         fcsttime=False,Nlim=None,Elim=None,
@@ -418,7 +226,7 @@ class Ensemble:
         """
         Returns 5D array of data for ranges.
 
-        Needs to load WRFOut files if self.loadobj is False.
+        Needs to load WRFOut files if self.load_dataobj is False.
 
         Ordered in descending order on pert. members
         First dimension is ensemble members.
@@ -490,7 +298,7 @@ class Ensemble:
                     if self.debug:
                         print("Loading data for time {0}".format(ft))
                     fpath = self.members[mem][dom][t]['fpath']
-                    DF = self.datafile_object(fpath,loadobj=True)
+                    DF = self.datafile_object(fpath,load_dataobj=True)
                     try:
                         m_t_data = DF.get(vrbl,utc=tidx,level=level,lons=lons,lats=lats)[0,...]
                     except:
@@ -508,7 +316,8 @@ class Ensemble:
         # pdb.set_trace()
         return all_ens_data
 
-    def accumulated(self,vrbl='RAINNC',itime=None,ftime=None,level=False,Nlim=False,
+    def accumulated(self,vrbl='RAINNC',itime=None,ftime=None,level=False,
+                    Nlim=False,
                     Elim=False,Slim=False,Wlim=False,inclusive=False,
                     lons=None,lats=None,dom=1,fcsttime=None,accum_hr=1,
                     members=None):
@@ -575,31 +384,6 @@ class Ensemble:
         else:
             return std
 
-    def arbitrary_pick(self,dataobj=False,give_keys=False,give_path=False,dom=1):
-        """Arbitrary pick of a datafile entry in the members dictionary.
-
-        Args:
-            dataobj (bool, optional): if True, return the DataFile subclass.
-                Otherwise, return filepath.
-            give_keys (bool, optional): if True, return a list of
-                member, domain, time keys to enter into a dictionary.
-
-        """
-        mem = self.member_names[0]
-        t = self.initutc
-        # pdb.set_trace()
-        arb = self.members[mem][dom][t]
-        if dataobj:
-            if give_keys:
-                raise Exception("Pick only one of give_keys and dataobj.")
-            return self.datafile_object(arb['fpath'],loadobj=True)
-        elif give_keys:
-            return mem, dom, t
-        elif give_path:
-            return arb['fpath']
-        else:
-            return arb
-
     def list_of_filetimes(self,arb=False,member=False,dom=1):
         """Return list of times for each data file's first time entry,
         for a member and domain.
@@ -621,113 +405,19 @@ class Ensemble:
         alltimes = sorted(list(self.members[member][dom].keys()))
         return alltimes
 
-    def compute_nt_per_file(self):
-        DF = self.arbitrary_pick(dataobj=True)
-        return DF.t_dim
-
-    def compute_history_dt(self,):
-        """Calculate time difference between each history output
-        time. This could be across multiple files or in one.
-        """
-        if self.nt_per_file == 1:
-            hdt = self.fdt
-        else:
-            # arbitrarily pick data file
-            DF = self.arbitrary_pick(dataobj=True)
-            hdt = DF.dt
-        return hdt
-
-
-    def find_file_for_t(self,simutc,member,dom=1):
-        """Determine file to load given required time.
-
-        Raises exception if history time doesn't exist.
-
-        Args:
-            utc (datetime.datetime): Desired time
-            member (str): Name of member to look up. If "arb", pick
-                a member arbitrarily (this assumes members have
-                identical structure of times in the data).
-            dom (int, optional): Domain number to look up
-
-        Returns:
-            t (datetime.datetime): members dictionary key for right file,
-            index (int): Index in that file.
-
-        Todos:
-            * Give nearest time (and/or file object) if time doesn't exist.
-        """
-        if member == 'arb':
-            member = self.member_names[0]
-
-        if not ((simutc <= self.ftime) and (simutc >= self.itime)):
-            raise Exception("Time outside range of data times.")
-
-        # Returns index of file containing data
-        ftidx, tdiff = utils.closest_datetime(self.filetimes,simutc,round='beforeinc')
-
-        # Make positive
-        tdiff = abs(tdiff)
-
-        if tdiff == 0:
-            assert self.filetimes[ftidx] == simutc
-            t = simutc
-            tidx = 0
-        else:
-            t = self.filetimes[ftidx]
-            # tidx = int(self.hdt/(self.hdt + tdiff))
-            tidx = int(tdiff/self.hdt)
-
-        # pdb.set_trace()
-
-        return t, tidx
 
     def get_corners(self,dom,chop_inside=False):
         """ Return the corners of a given domain.
+        
+        Use to find mutual data coverage?
         """
-        W = self.arbitrary_pick(dataobj=True,dom=dom)
         return W.get_corners(chop_inside=chop_inside)
-
-    def get_limits(self,dom=1,fmt='dict'):
-        """ Return the limits of the domain.
-
-        Args:
-
-        dom     :   (int) - domain number to return
-        fmt     :   (str) - format to return data.
-                    If 'dict', dictionary.
+        
+    def find_mutual_geocoverage(self):
+        """Find all unique lat/lon grids. Then create a grid that covers the 
+        mutual area. Then interpolate each member to that grid during load.
         """
-        W = self.arbitrary_pick(dataobj=True,dom=dom)
-        if fmt is 'dict':
-            return {'Nlim':W.Nlim,
-                    'Elim':W.Elim,
-                    'Slim':W.Slim,
-                    'Wlim':W.Wlim,}
-        else:
-            raise Exception
-
-    def get_latlons(self,dom=1):
-        W = self.arbitrary_pick(dataobj=True,dom=dom)
-        return W.lats, W.lons
-
-    def get_lats(self,dom=1):
-        return self.get_latlons(dom=dom)[0]
-
-    def get_lons(self,dom=1):
-        return self.get_latlons(dom=dom)[1]
-
-    # def get_xx_yy(self,dom=1):
-        # W = self.arbitrary_pick(dataobj=True,dom=dom)
-        # return W.xx, W.yy
-
-    def get_nx_ny(self,dom=1):
-        W = self.arbitrary_pick(dataobj=True,dom=dom)
-        # return W.nx, W.ny
-        return W.x_dim, W.y_dim
-
-    def get_cenlatlons(self,dom=1):
-        W = self.arbitrary_pick(dataobj=True,dom=dom)
-        return W.cen_lat, W.cen_lon
+        return
 
     def __str__(self):
         return ("This ensemble contains {} members, was initialised"
@@ -745,3 +435,4 @@ class Ensemble:
         mem = self.member_names[self.pick_member_idx]
         # return mem, self.members[mem]
         return mem
+        
